@@ -17,12 +17,14 @@ import {
 import CardCategory from "./CardCategory";
 import { InspirationCategoryData } from "@/type/inspiration";
 import { ScrollArea } from "../ui/scroll-area";
+import Link from "next/link";
 
 interface MenuProps {
   categories: InspirationCategoryData[];
+  placesTogCategorie: InspirationCategoryData[];
 }
 
-const Menu = ({ categories }: MenuProps) => {
+const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -37,7 +39,7 @@ const Menu = ({ categories }: MenuProps) => {
         <div className="grid gap-8 py-6 w-[350px]">
           <HoverCard>
             <HoverCardTrigger asChild>
-              <Button variant="link" className="text-xl">
+              <Button variant="link" className="text-[1.4rem]">
                 Be Inspired
               </Button>
             </HoverCardTrigger>
@@ -57,6 +59,33 @@ const Menu = ({ categories }: MenuProps) => {
               </ScrollArea>
             </HoverCardContent>
           </HoverCard>
+
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <Button variant="link" className="text-[1.4rem]">
+                Places To Go
+              </Button>
+            </HoverCardTrigger>
+            <HoverCardContent className="!w-full">
+              <ScrollArea className="h-full w-full rounded-md border">
+                <div className="w-full h-[250px] flex flex-wrap gap-4 p-4 items-stretch justify-start">
+                  {placesTogCategorie.length > 0
+                    ? placesTogCategorie?.map(
+                        (category: InspirationCategoryData) => (
+                          <CardCategory
+                            key={category.id}
+                            categoryName={category.categoryName}
+                            imageUrl={category.imageUrl}
+                          />
+                        )
+                      )
+                    : "no data found ."}
+                </div>
+              </ScrollArea>
+            </HoverCardContent>
+          </HoverCard>
+          <Link href={"/"} className="w-full text-primary text-center text-[1.4rem]">Plan your trip</Link>
+          <Link href={"/"} className="w-full text-primary text-center text-[1.4rem]">Programs</Link>
         </div>
       </SheetContent>
     </Sheet>

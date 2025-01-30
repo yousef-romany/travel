@@ -66,44 +66,50 @@ const IndexPage = ({ slug }: { slug: string }) => {
                       </h1>
                     </Link>
                     {/* slider */}
-                    <Carousel
-                      opts={{
-                        align: "start",
-                      }}
-                      className="w-full"
-                    >
-                      <CarouselContent className="space-x-6">
-                        {item?.inspire_blogs?.map((itemBlog: InspireBlogs) => (
-                          <Link
-                            key={itemBlog?.id}
-                            href={`/inspiration/${slug}/${item?.categoryName}/${itemBlog?.title}`}
-                            className="md:basis-1/2 lg:basis-1/3 rounded-3xl z-[-99999]"
-                          >
-                            <CarouselItem
-                              key={itemBlog?.id}
-                              className="rounded-3xl z-[-99999]"
-                            >
-                              <Card className="p-0 h-[370px] rounded-3xl relative z-[-99999]">
-                                <CardContent className="p-0 rounded-3xl">
-                                  <img
-                                    src={itemBlog?.imageUrl}
-                                    alt={itemBlog?.title}
-                                    className="w-full h-full object-content rounded-3xl z-[-99999999]"
-                                  />
-                                </CardContent>
-                                <CardFooter className="rounded-3xl absolute bottom-0 left-[50%] translate-x-[-50%]">
-                                  <h1 className="text-4xl text-secondary font-extrabold text-primary-600 drop-shadow-2xl shadow-black">
-                                    {itemBlog?.title}
-                                  </h1>
-                                </CardFooter>
-                              </Card>
-                            </CarouselItem>
-                          </Link>
-                        ))}
-                      </CarouselContent>
-                      <CarouselPrevious />
-                      <CarouselNext />
-                    </Carousel>
+                    {(item?.inspire_blogs?.length ?? 0) > 0 ? (
+                      <Carousel
+                        opts={{
+                          align: "start",
+                        }}
+                        className="w-full"
+                      >
+                        <CarouselContent className="space-x-6">
+                          {item?.inspire_blogs?.map(
+                            (itemBlog: InspireBlogs) => (
+                              <Link
+                                key={itemBlog?.id}
+                                href={`/inspiration/${slug}/${item?.categoryName}/${itemBlog?.title}`}
+                                className="md:basis-1/2 lg:basis-1/3 rounded-3xl z-[-99999]"
+                              >
+                                <CarouselItem
+                                  key={itemBlog?.id}
+                                  className="rounded-3xl z-[-99999]"
+                                >
+                                  <Card className="p-0 h-[370px] rounded-3xl relative z-[-99999]">
+                                    <CardContent className="p-0 rounded-3xl">
+                                      <img
+                                        src={itemBlog?.imageUrl}
+                                        alt={itemBlog?.title}
+                                        className="w-full h-full object-content rounded-3xl z-[-99999999]"
+                                      />
+                                    </CardContent>
+                                    <CardFooter className="w-full rounded-3xl absolute bottom-0 left-[50%] translate-x-[-50%]">
+                                      <h1 className="w-full text-[2rem] text-secondary font-extrabold text-primary-600 drop-shadow-2xl shadow-black">
+                                        {itemBlog?.title}
+                                      </h1>
+                                    </CardFooter>
+                                  </Card>
+                                </CarouselItem>
+                              </Link>
+                            )
+                          )}
+                        </CarouselContent>
+                        <CarouselPrevious />
+                        <CarouselNext />
+                      </Carousel>
+                    ) : (
+                      "No Data"
+                    )}
                   </div>
                 ))
             : "No Data"}

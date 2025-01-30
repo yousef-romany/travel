@@ -12,17 +12,17 @@ import Link from "next/link";
 import { memo } from "react";
 
 const CardFlex = ({
+  link,
   title,
   imageUrl,
   details,
-  link
 }: {
+  link: string;
   routes: string;
   slug: string;
   title: string;
   details: string;
   imageUrl: string;
-  link:string
 }) => {
   return (
     <Card className="overflow-hidden lg:max-h-[15em] md:max-h-[15em] sm:max-h-fit">

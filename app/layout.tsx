@@ -5,6 +5,7 @@ import NavBar from "@/components/layout/NavBar";
 import { ThemeProvider } from "@/components/Providers";
 import Footer from "@/components/layout/Footer";
 import Script from "next/script";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,10 @@ export default function RootLayout({
           // strategy="beforeInteractive"
           defer
         />
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet/dist/leaflet.css"
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
@@ -55,6 +60,7 @@ export default function RootLayout({
           <div id="google_translate_element"></div>
 
           <Footer />
+          <ScrollToTopButton />
         </ThemeProvider>
       </body>
     </html>

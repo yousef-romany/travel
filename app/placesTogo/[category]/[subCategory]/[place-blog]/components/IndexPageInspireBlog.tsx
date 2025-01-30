@@ -2,20 +2,21 @@
 "use client";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchInspirationOneBlog } from "@/fetch/category";
 import MDXRenderer from "@/components/MDXRenderer";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
 import InstagramEmbed from "react-instagram-embed";
-import { InspireBlogs, meta } from "@/type/inspiration";
+import { fetchPlaceToGoOneBlog } from "@/fetch/placesToGo";
+import MapComponent from "@/components/Map";
+import { meta, PlacesToGoBlogs } from "@/type/placesToGo";
 import { FaArrowTurnDown } from "react-icons/fa6";
 
 const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
   const { data, error, isLoading } = useQuery<
-    { data: InspireBlogs[]; meta: meta },
+    { data: PlacesToGoBlogs[]; meta: meta },
     Error
   >({
-    queryKey: ["fetchInspirationOneBlog"],
-    queryFn: () => fetchInspirationOneBlog(decodeURIComponent(slug)),
+    queryKey: ["fetchPlaceToGoOneBlog"],
+    queryFn: () => fetchPlaceToGoOneBlog(decodeURIComponent(slug)),
   });
   if (isLoading) return <p>Loading categories...</p>;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
@@ -39,18 +40,28 @@ const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
 
         {data?.data?.at(-1)?.youtubeUrl && (
           <div className="w-full flex justify-center items-center flex-col">
-            <div className="flex flex-col w-full items-start">
-              <h1 className="text-[2.4rem] font-bold flex items-center gap-2 ">
-                Curated Video Showcase <FaArrowTurnDown className="" />
+            <div className="flex flex-col">
+              <h1 className="w-full text-[2.4rem] font-bold">
+                Curated Video Showcase
               </h1>
-              <p className="text-[1.2rem] text-center mb-12 px-4 ">
+              <p className="text-[1.2rem] text-center mb-12">
                 Discover and preview top-notch content from across the YouTube
-                universe .
+                universe
               </p>
             </div>
             <YouTubeEmbed videoUrl={data?.data?.at(-1)?.youtubeUrl as string} />
           </div>
         )}
+        <div className="w-full flex justify-center items-center flex-col">
+          <h1 className="w-full text-[2.4rem] font-bold flex items-center gap-2 ">
+            Location Preview Map <FaArrowTurnDown className="" />
+          </h1>
+          <MapComponent
+            title={data?.data?.at(-1)?.title as string}
+            lat={data?.data?.at(-1)?.lat as number}
+            lng={data?.data?.at(-1)?.lng as number}
+          />
+        </div>
       </div>
     </div>
   );

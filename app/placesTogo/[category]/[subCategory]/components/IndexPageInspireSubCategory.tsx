@@ -1,14 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { Button } from "@/components/ui/button";
-import { fetchInspirationOneSubCategory } from "@/fetch/category";
 import { useQuery } from "@tanstack/react-query";
 import { memo, useState } from "react";
 import CardFlex from "./CardFlex";
 import CardGrid from "./CardGrid";
 import { CiGrid41 } from "react-icons/ci";
 import { CiGrid2H } from "react-icons/ci";
-import { InspireBlogs, InspireSubcategories, meta } from "@/type/inspiration";
+import { meta } from "@/type/inspiration";
+import { fetchPlaceToOneSubCategory } from "@/fetch/placesToGo";
+import { PlacesToGoBlogs, PlacesToGoSubcategories } from "@/type/placesToGo";
 
 const IndexPageInspireSubCategory = ({
   routes,
@@ -19,11 +20,11 @@ const IndexPageInspireSubCategory = ({
 }) => {
   const [view, setView] = useState<string>("grid");
   const { data, error, isLoading } = useQuery<
-    { data: InspireSubcategories[]; meta: meta },
+    { data: PlacesToGoSubcategories[]; meta: meta },
     Error
   >({
-    queryKey: ["fetchInspirationOneSubCategory"],
-    queryFn: () => fetchInspirationOneSubCategory(slug),
+    queryKey: ["fetchPlaceToOneSubCategory"],
+    queryFn: () => fetchPlaceToOneSubCategory(slug),
   });
   if (isLoading) return <p>Loading categories...</p>;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
@@ -54,31 +55,35 @@ const IndexPageInspireSubCategory = ({
 
         {view == "grid" ? (
           <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 gap-4">
-            {data?.data?.at(-1)?.inspire_blogs?.map((item: InspireBlogs) => (
-              <CardGrid
-                key={item.id}
-                details={item.details}
-                title={item.title}
-                imageUrl={item.imageUrl}
-                routes={routes}
-                slug={slug}
-                link={`/inspiration/${routes}/${slug}/${item.title}` as string}
-              />
-            ))}
+            {data?.data
+              ?.at(-1)
+              ?.place_to_go_blogs?.map((item: PlacesToGoBlogs) => (
+                <CardGrid
+                  key={item.id}
+                  details={item.details}
+                  title={item.title}
+                  imageUrl={item.imageUrl}
+                  routes={routes}
+                  slug={slug}
+                  link={`/placesTogo/${routes}/${slug}/${item.title}` as string}
+                />
+              ))}
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            {data?.data?.at(-1)?.inspire_blogs?.map((item: InspireBlogs) => (
-              <CardFlex
-                key={item.id}
-                details={item.details}
-                title={item.title}
-                imageUrl={item.imageUrl}
-                routes={routes}
-                slug={slug}
-                link={`/inspiration/${routes}/${slug}/${item.title}` as string}
-              />
-            ))}
+            {data?.data
+              ?.at(-1)
+              ?.place_to_go_blogs?.map((item: PlacesToGoBlogs) => (
+                <CardFlex
+                  key={item.id}
+                  details={item.details}
+                  title={item.title}
+                  imageUrl={item.imageUrl}
+                  routes={routes}
+                  slug={slug}
+                  link={`/placesTogo/${routes}/${slug}/${item.title}` as string}
+                />
+              ))}
           </div>
         )}
       </div>

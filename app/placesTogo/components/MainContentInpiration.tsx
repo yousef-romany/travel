@@ -10,7 +10,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { fetchInspirationCategories } from "@/fetch/category";
+import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
 import {
   InspirationCategory,
   InspirationCategoryData,
@@ -21,8 +21,8 @@ import { memo } from "react";
 
 const MainContentInpiration = () => {
   const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
-    queryKey: ["fetchInspirationCategories2"],
-    queryFn: () => fetchInspirationCategories(),
+    queryKey: ["fetchPlaceToGoCategories2"],
+    queryFn: () => fetchPlaceToGoCategories(),
   });
   if (isLoading) return <p>Loading categories...</p>;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
@@ -38,7 +38,7 @@ const MainContentInpiration = () => {
             <BreadcrumbSeparator />
             <BreadcrumbItem className="text-secondary">
               <BreadcrumbPage className="text-secondary border-b-2">
-                {"Inspiration"}
+                {"Places To Go"}
               </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>

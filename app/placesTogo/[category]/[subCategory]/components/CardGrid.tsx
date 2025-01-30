@@ -14,7 +14,7 @@ export default function CardGrid({
   imageUrl,
   title,
   details,
-  link
+  link,
 }: {
   title: string;
   details: string;
