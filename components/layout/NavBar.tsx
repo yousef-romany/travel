@@ -20,7 +20,7 @@ const NavBar = () => {
   if (isLoading) return <p>Loading categories...</p>;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
   return (
-    <div className="w-full h-[76px] px-[32px] fixed top-0 left-0 border-b-2 bg-card flex justify-between items-center">
+    <div className="w-full h-[76px] px-[2em] fixed top-0 left-0 border-b-2 bg-card flex justify-between items-center">
       <Menu categories={data?.data || []} />
       <Image src={logo} alt="logo" className="max-w-[200px] h-auto" />
       <NavigationMenuDemo categories={data?.data || []} />

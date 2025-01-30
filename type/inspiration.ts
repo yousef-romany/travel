@@ -1,5 +1,5 @@
 export interface InspirationCategory {
-  data: InspirationCategoryData;
+  data: InspirationCategoryData[];
   meta: meta;
 }
 export interface InspirationCategoryData {
@@ -23,6 +23,7 @@ export interface InspireSubcategories {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
+  inspire_blogs?: InspireBlogs[]
 }
 
 export interface InspireBlogs {

@@ -1,3 +1,4 @@
+"use client"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,16 +9,13 @@ import {
 } from "@/components/ui/breadcrumb";
 import { memo } from "react";
 import IndexPageInspireSubCategory from "./components/IndexPageInspireSubCategory";
-// import IndexPage from "./components/IndexPage";
+import { useParams } from "next/navigation";
 
-const InspirationDynamic = async ({
-  params,
-}: {
-  params: { category: string; subCategory: string };
-}) => {
+const InspirationDynamic = () => {
+  const params: { category: string; subCategory: string } = useParams(); // Get params dynamically
   return (
     <div className="flex flex-col h-fit">
-      <div className="bg-primary w-full p-2 px-[32px]">
+      <div className="bg-primary w-full p-2 px-[2em]">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem className="text-secondary">
@@ -29,21 +27,26 @@ const InspirationDynamic = async ({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem className="text-secondary">
-              <BreadcrumbLink href={`/inspiration/${params.category}`}>
-                {params.category}
+              <BreadcrumbLink
+                href={`/inspiration/${decodeURIComponent(params?.category)}`}
+              >
+                {decodeURIComponent(params?.category)}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem className="text-secondary">
               <BreadcrumbPage className="text-secondary border-b-2">
-                {params.subCategory}
+                {decodeURIComponent(params?.subCategory)}
               </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
 
-      <IndexPageInspireSubCategory slug={params.subCategory as string} />
+      <IndexPageInspireSubCategory
+        routes={decodeURIComponent(params.category)}
+        slug={decodeURIComponent(params.subCategory) as string}
+      />
     </div>
   );
 };

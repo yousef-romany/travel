@@ -68,11 +68,6 @@ export function NavigationMenuDemo({ categories }: MenuProps) {
             <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
               {categories.length > 0
                 ? categories?.map((category: InspirationCategoryData) => (
-                    // <CardCategory
-
-                    //   categoryName={category.categoryName}
-                    //   imageUrl={category.imageUrl}
-                    // />
                     <ListItem
                       key={category.id}
                       href={`/inspiration/${category.categoryName}`}
@@ -183,9 +178,7 @@ const ListItem = React.forwardRef<
           {...props}
         >
           <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
-          </p>
         </a>
       </NavigationMenuLink>
     </li>
