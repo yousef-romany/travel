@@ -3,6 +3,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* .VIpgJd-ZVi9od-ORHb-OEVmcd {
+  visibility: hidden !important;
+} 
+.skiptranslate {
+  visibility: hidden !important;
+} */
 body {
   font-family: Arial, Helvetica, sans-serif;
 }

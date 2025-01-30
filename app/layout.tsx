@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/layout/NavBar";
 import { ThemeProvider } from "@/components/Providers";
+import Footer from "@/components/layout/Footer";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,13 +28,34 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
+      <head>
+        {/* Google Translate Script */}
+        <Script
+          src="/assets/scripts/lang-config.js"
+          // strategy="beforeInteractive"
+          defer
+        />
+        <Script
+          src="/assets/scripts/translation.js"
+          // strategy="beforeInteractive"
+          defer
+        />
+        <Script
+          src="//translate.google.com/translate_a/element.js?cb=TranslateInit"
+          // strategy="beforeInteractive"
+          defer
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
       >
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <NavBar />
-            <div className="pt-[76px]">{children}</div>
-          </ThemeProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <NavBar />
+          <div className="pt-[76px]">{children}</div>
+          <div id="google_translate_element"></div>
+
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

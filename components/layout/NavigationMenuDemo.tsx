@@ -61,7 +61,7 @@ export function NavigationMenuDemo({ categories }: MenuProps) {
     <NavigationMenu className="lg:block md:hidden sm:hidden">
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="text-lg">
+          <NavigationMenuTrigger className="text-[1.2rem]">
             Be inspired
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -95,7 +95,7 @@ export function NavigationMenuDemo({ categories }: MenuProps) {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="text-lg">
+          <NavigationMenuTrigger className="text-[1.2rem]">
             Places to go
           </NavigationMenuTrigger>
           <NavigationMenuContent className="">
@@ -113,7 +113,7 @@ export function NavigationMenuDemo({ categories }: MenuProps) {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="text-lg">
+          <NavigationMenuTrigger className="text-[1.2rem]">
             Things to do
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -131,7 +131,7 @@ export function NavigationMenuDemo({ categories }: MenuProps) {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="text-lg">
+          <NavigationMenuTrigger className="text-[1.2rem]">
             Plan your trip
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -151,7 +151,7 @@ export function NavigationMenuDemo({ categories }: MenuProps) {
         <NavigationMenuItem>
           <Link href="/docs" legacyBehavior passHref>
             <NavigationMenuLink
-              className={cn("!text-lg", navigationMenuTriggerStyle())}
+              className={cn("!text-[1.2rem]", navigationMenuTriggerStyle())}
             >
               Programs
             </NavigationMenuLink>

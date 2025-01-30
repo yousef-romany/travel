@@ -10,6 +10,7 @@ import Menu from "./Menu";
 import { fetchInspirationCategories } from "@/fetch/category";
 import { useQuery } from "@tanstack/react-query";
 import { InspirationCategory } from "@/type/inspiration";
+import Link from "next/link";
 
 const NavBar = () => {
   const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
@@ -20,15 +21,17 @@ const NavBar = () => {
   if (isLoading) return <p>Loading categories...</p>;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
   return (
-    <div className="w-full h-[76px] px-[2em] fixed top-0 left-0 border-b-2 bg-card flex justify-between items-center">
+    <div className="z-50 w-full h-[76px] px-[2em] fixed top-0 left-0 border-b-2 border-primary bg-card flex justify-between items-center">
       <Menu categories={data?.data || []} />
-      <Image src={logo} alt="logo" className="max-w-[200px] h-auto" />
+      <Link href={"/"}>
+        <Image src={logo} alt="logo" className="max-w-[200px] h-auto" />
+      </Link>
       <NavigationMenuDemo categories={data?.data || []} />
       <div className="flex items-center gap-2">
-      <Button size={"icon"} variant={"outline"}>
-        <FaRegHeart size={20} className="text-primary" />
-      </Button>
-      <ModeToggle />
+        <Button size={"icon"} variant={"outline"}>
+          <FaRegHeart size={20} className="text-primary" />
+        </Button>
+        <ModeToggle />
       </div>
     </div>
   );

@@ -77,18 +77,18 @@ const IndexPage = ({ slug }: { slug: string }) => {
                           <Link
                             key={itemBlog?.id}
                             href={`/inspiration/${slug}/${item?.categoryName}/${itemBlog?.title}`}
-                            className="md:basis-1/2 lg:basis-1/3 rounded-3xl"
+                            className="md:basis-1/2 lg:basis-1/3 rounded-3xl z-[-99999]"
                           >
                             <CarouselItem
                               key={itemBlog?.id}
-                              className="rounded-3xl"
+                              className="rounded-3xl z-[-99999]"
                             >
-                              <Card className="p-0 h-[370px] rounded-3xl relative">
+                              <Card className="p-0 h-[370px] rounded-3xl relative z-[-99999]">
                                 <CardContent className="p-0 rounded-3xl">
                                   <img
                                     src={itemBlog?.imageUrl}
                                     alt={itemBlog?.title}
-                                    className="w-full h-full object-content rounded-3xl"
+                                    className="w-full h-full object-content rounded-3xl z-[-99999999]"
                                   />
                                 </CardContent>
                                 <CardFooter className="rounded-3xl absolute bottom-0 left-[50%] translate-x-[-50%]">
