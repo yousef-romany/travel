@@ -6,11 +6,12 @@ import Link from "next/link";
 interface props {
   categoryName: string;
   imageUrl: string;
+  url: string
 }
 
-const CardCategory = ({ categoryName, imageUrl }: props) => {
+const CardCategory = ({ categoryName, imageUrl, url }: props) => {
   return (
-    <Link href={`/inspiration/${categoryName}`}>
+    <Link href={url}>
       <div className="w-[210px] h-[210px] flex flex-col rounded-xl bg-sidebar gap-6">
         {imageUrl ? (
           <Image

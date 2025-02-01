@@ -37,7 +37,8 @@ export interface PlacesToGoBlogs {
   updatedAt: string;
   publishedAt: string;
   lng: number;
-  lat: number
+  lat: number;
+  instagram_posts: instaGramVedios[]
 }
 
 export interface meta {
@@ -47,4 +48,19 @@ export interface meta {
     pageCount: number;
     total: number;
   };
+}
+
+export interface instaGramVedios {
+  id?: number;
+  documentId?: string;
+  caption?: string;
+  imageUrl?: string;
+  postUrl?: string;
+  createdAtInsta?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string;
+  media_type?: string;
+  permalink?: string;
+  thumbnail_url?: string;
 }

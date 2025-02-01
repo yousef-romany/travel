@@ -52,6 +52,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                           key={category.id}
                           categoryName={category.categoryName}
                           imageUrl={category.imageUrl}
+                          url={`/inspiration/${category.categoryName}`}
                         />
                       ))
                     : "no data found ."}
@@ -76,6 +77,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                             key={category.id}
                             categoryName={category.categoryName}
                             imageUrl={category.imageUrl}
+                            url={`/placesTogo/${category.categoryName}`}
                           />
                         )
                       )

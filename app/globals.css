@@ -1,4 +1,4 @@
-@import 'https://cdn.jsdelivr.net/npm/prismjs@1.28.0/themes/prism.css';
+@import "https://cdn.jsdelivr.net/npm/prismjs@1.28.0/themes/prism.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -61,7 +61,7 @@ body {
 
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-  
+
   .dark {
     --background: 40 7% 8%;
     --foreground: 60 9% 98%;
@@ -110,8 +110,6 @@ body {
   }
 }
 
-
-
 .mdx-container {
   font-size: 1rem; /* Increases the font size for the entire MDX content */
   font-weight: 700;
@@ -121,21 +119,24 @@ body {
 }
 
 .mdx-container img {
-  border-radius: 1rem;
+  border-radius: var(--radius);
 }
 
 /* For specific elements */
 .mdx-container p {
   font-size: 1rem; /* Increase font size of paragraphs */
-  font-weight: 700;
+  font-weight: 500;
 }
 
-.mdx-container h1, .mdx-container h2, .mdx-container h3 {
+.mdx-container h1,
+.mdx-container h2,
+.mdx-container h3 {
   font-size: 2.4rem; /* Increase font size for headings */
-  font-weight: 900;
+  font-weight: 900
 }
 
-.mdx-container pre, .mdx-container code {
+.mdx-container pre,
+.mdx-container code {
   font-size: 1rem; /* Increase font size for code blocks */
   font-weight: 700;
 }
@@ -149,8 +150,8 @@ body {
   margin: 10px 0;
   font-size: 1.1rem;
   list-style: circle !important;
+  font-weight: 500;
 }
-
 
 .mdx-container table {
   width: 100%;
@@ -158,23 +159,29 @@ body {
   margin: 20px 0;
   font-size: 1rem;
   text-align: left;
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
 }
 
-.mdx-container th, 
+.mdx-container th,
 .mdx-container td {
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid hsl(var(--border));
 }
 
 .mdx-container th {
-  background-color: #f4f4f4;
+  background-color: hsl(var(--muted));
   font-weight: bold;
+  color: hsl(var(--muted-foreground));
 }
 
 .mdx-container tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: hsl(var(--accent));
 }
 
 .mdx-container tr:hover {
-  background-color: #f1f1f1;
+  background-color: hsl(var(--ring));
 }
+/* IGAAIeGhFnnCxBZAE5pMU9hRU9iQUJiYUEySFE0eC03RjlIRzJnRWdEZAlZAiZAmhwMWhqVUFNR2dUYXlJeFV6Y21KQW1wMXdWOFZAfQThzdGJOa0UwR0c4Wnc1eTBoVU00OXpxZA0RZATTZAOM3ZA4UXBXd1FoQ1IzdE5USVE3OHFMNFZAHawZDZD */
+/* 8886910461377481 */
+/* https://graph.instagram.com/8886910461377481/media?access_token=IGAAIeGhFnnCxBZAE5pMU9hRU9iQUJiYUEySFE0eC03RjlIRzJnRWdEZAlZAiZAmhwMWhqVUFNR2dUYXlJeFV6Y21KQW1wMXdWOFZAfQThzdGJOa0UwR0c4Wnc1eTBoVU00OXpxZA0RZATTZAOM3ZA4UXBXd1FoQ1IzdE5USVE3OHFMNFZAHawZDZD&fields=id,media_type,media_url,caption,permalink,thumbnail_url */

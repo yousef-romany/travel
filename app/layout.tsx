@@ -50,6 +50,16 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://unpkg.com/leaflet/dist/leaflet.css"
         />
+        <Script
+          src="https://www.instagram.com/embed.js"
+          strategy="lazyOnload"
+          // onLoad={() => {
+          //   console.log("Instagram embed script loaded");
+          //   if (window?.instgrm) {
+          //     window?.instgrm.Embeds.process(); // Manually process embeds
+          //   }
+          // }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
