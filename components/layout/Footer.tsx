@@ -23,7 +23,7 @@ export default function Footer() {
 
       {/* Acknowledgement of Country */}
       <div className="max-w-7xl mx-auto mb-16">
-        <h2 className="text-2xl font-semibold mb-6">
+        <h2 role="heading"  className="text-2xl font-semibold mb-6">
           Acknowledgement of Country
         </h2>
         <div className="flex items-start gap-6">
@@ -56,7 +56,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Language Selector */}
         <div className="md:col-span-1">
-          <h3 className="text-lg font-semibold mb-4">
+          <h3 role="heading"  className="text-lg font-semibold mb-4">
             Change your region and language
           </h3>
           <LanguageSwitcher />
@@ -64,7 +64,7 @@ export default function Footer() {
 
         {/* Social Media */}
         <div className="md:col-span-1">
-          <h3 className="text-lg font-semibold mb-4">Find us on</h3>
+          <h3 role="heading"  className="text-lg font-semibold mb-4">Find us on</h3>
           <div className="flex gap-4">
             <Link href="#" className="hover:text-primary transition-colors">
               <Facebook className="w-6 h-6" />
@@ -87,7 +87,7 @@ export default function Footer() {
 
         {/* About Links */}
         <div className="md:col-span-1">
-          <h3 className="text-lg font-semibold mb-4">About this site</h3>
+          <h3 role="heading"  className="text-lg font-semibold mb-4">About this site</h3>
           <ul className="space-y-2">
             <li>
               <Link href="#" className="hover:text-primary transition-colors">
@@ -109,7 +109,7 @@ export default function Footer() {
 
         {/* Other Sites */}
         <div className="md:col-span-1">
-          <h3 className="text-lg font-semibold mb-4">Other sites</h3>
+          <h3 role="heading"  className="text-lg font-semibold mb-4">Other sites</h3>
           <ul className="space-y-2">
             <li>
               <Link href="#" className="hover:text-primary transition-colors">

@@ -18,13 +18,14 @@ import {
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Link from "next/link";
 import { MdArrowOutward } from "react-icons/md";
+import Loading from "@/components/Loading";
 
 const IndexPage = ({ slug }: { slug: string }) => {
   const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
     queryKey: ["fetchInspirationOneCategory"],
     queryFn: () => fetchInspirationOneCategory(slug),
   });
-  if (isLoading) return <p>Loading categories...</p>;
+  if (isLoading) return <Loading />
   if (error instanceof Error) return <p>Error: {error.message}</p>;
   return (
     <div className="flex gap-4 flex-col h-fit justify-between">
@@ -34,14 +35,14 @@ const IndexPage = ({ slug }: { slug: string }) => {
           alt={data?.data?.at(-1)?.categoryName}
           className="w-full h-full object-cover !z-[-9999]"
         />
-        <h1 className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-8xl text-primary font-extrabold text-primary-600 drop-shadow-xl shadow-black">
+        <h1 role="heading"  className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-8xl text-primary font-extrabold text-primary-600 drop-shadow-xl shadow-black">
           {data?.data?.at(-1)?.categoryName}
         </h1>
       </div>
       <div className="w-full h-fit py-10 px-[2em] space-y-16">
         {/* sub category text */}
         <div className=" w-full flex justify-center items-center">
-          <h1 className="text-4xl text-primary border-b-4 text-bold">
+          <h1 role="heading"  className="text-4xl text-primary border-b-4 text-bold">
             SubCategory
           </h1>
         </div>
@@ -61,7 +62,7 @@ const IndexPage = ({ slug }: { slug: string }) => {
                       href={`/inspiration/${slug}/${item?.categoryName}`}
                       className="w-fit hover:border-b-2"
                     >
-                      <h1 className="text-[2rem] font-bold flex items-center gap-2 w-fit">
+                      <h1 role="heading"  className="text-[2rem] font-bold flex items-center gap-2 w-fit">
                         {item?.categoryName} <MdArrowOutward />
                       </h1>
                     </Link>
@@ -94,7 +95,7 @@ const IndexPage = ({ slug }: { slug: string }) => {
                                       />
                                     </CardContent>
                                     <CardFooter className="w-full rounded-3xl">
-                                      <h1 className="w-full text-[1.6rem] text-primary font-extrabold text-primary-600 drop-shadow-2xl shadow-black">
+                                      <h1 role="heading"  className="w-full text-[1.6rem] text-primary font-extrabold text-primary-600 drop-shadow-2xl shadow-black">
                                         {itemBlog?.title}
                                       </h1>
                                     </CardFooter>

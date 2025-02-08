@@ -5,6 +5,8 @@ import { serialize } from "next-mdx-remote/serialize";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight"; // For syntax highlighting
 import remarkToc from "remark-toc";
+import Loading from "./Loading";
+import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 
 const MDXRenderer = ({ mdxString }: { mdxString: string }) => {
   const [mdxSource, setMdxSource] = useState<any>(null);
@@ -27,7 +29,13 @@ const MDXRenderer = ({ mdxString }: { mdxString: string }) => {
     renderMDX();
   }, [mdxString]);
 
-  if (!mdxSource) return <p>Loading...</p>;
+  useEffect(() => {
+    if (mdxSource) {
+      applyHieroglyphEffect();
+    }
+  }, [mdxSource]);
+
+  if (!mdxSource) return <Loading />;
 
   return (
     <div className="mdx-container">

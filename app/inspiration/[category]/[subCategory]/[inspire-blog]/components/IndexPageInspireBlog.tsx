@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchInspirationOneBlog } from "@/fetch/category";
 import MDXRenderer from "@/components/MDXRenderer";
@@ -9,8 +9,13 @@ import { PlacesToGoBlogs, instagramPostsType, meta } from "@/type/placesToGo";
 import { FaArrowTurnDown } from "react-icons/fa6";
 import InstagramModal from "@/components/InstagramModal";
 import { Separator } from "@/components/ui/separator";
+import Loading from "@/components/Loading";
+import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 
 const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
+  useEffect(() => {
+    applyHieroglyphEffect()
+  }, [])
   const { data, error, isLoading } = useQuery<
     { data: PlacesToGoBlogs[]; meta: meta },
     Error
@@ -18,7 +23,7 @@ const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
     queryKey: ["fetchInspirationOneBlog"],
     queryFn: () => fetchInspirationOneBlog(decodeURIComponent(slug)),
   });
-  if (isLoading) return <p>Loading categories...</p>;
+  if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
   return (
     <div className="flex gap-4 flex-col h-fit justify-between">
@@ -33,7 +38,7 @@ const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
       {(data?.data?.at(-1)?.instagram_posts?.length || 0) > 0 ? (
         <div className="w-full flex justify-center items-center flex-col mt-4 gap-[2em] px-[2em]">
           <div className="flex flex-col w-full items-start">
-            <h1 className="text-[2.4rem] font-extrabold flex items-center gap-2">
+            <h1 role="heading"  className="text-[2.4rem] font-extrabold flex items-center gap-2">
               Instagram Feeds <FaArrowTurnDown />
             </h1>
             <p className="text-[1.2rem] text-center mb-12 px-4 font-thin">
@@ -62,7 +67,7 @@ const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
         {data?.data?.at(-1)?.youtubeUrl && (
           <div className="w-full flex justify-center items-center flex-col gap-[2em]">
             <div className="flex flex-col w-full items-start">
-              <h1 className="text-[2.4rem] flex items-center gap-2 font-extrabold">
+              <h1 role="heading"  className="text-[2.4rem] flex items-center gap-2 font-extrabold">
                 Curated Video Showcase <FaArrowTurnDown className="" />
               </h1>
               <p className="text-[1.2rem] text-center mb-12 px-4  font-thin">

@@ -131,7 +131,9 @@
   font-weight: 700;
   color: hsl(var(--primary));
 }
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: hsl(var(--primary)) !important;
   text-shadow: 2px 2px 4px hsl(var(--primary), 0.5);
 }
@@ -160,6 +162,7 @@ p {
   margin: 10px 0;
   font-size: 1.1rem;
   list-style: circle !important;
+  color: hsl(var(--primary)) !important;
   font-weight: 500;
 }
 
@@ -195,3 +198,27 @@ p {
 /* IGAAIeGhFnnCxBZAE5pMU9hRU9iQUJiYUEySFE0eC03RjlIRzJnRWdEZAlZAiZAmhwMWhqVUFNR2dUYXlJeFV6Y21KQW1wMXdWOFZAfQThzdGJOa0UwR0c4Wnc1eTBoVU00OXpxZA0RZATTZAOM3ZA4UXBXd1FoQ1IzdE5USVE3OHFMNFZAHawZDZD */
 /* 8886910461377481 */
 /* https://graph.instagram.com/8886910461377481/media?access_token=IGAAIeGhFnnCxBZAE5pMU9hRU9iQUJiYUEySFE0eC03RjlIRzJnRWdEZAlZAiZAmhwMWhqVUFNR2dUYXlJeFV6Y21KQW1wMXdWOFZAfQThzdGJOa0UwR0c4Wnc1eTBoVU00OXpxZA0RZATTZAOM3ZA4UXBXd1FoQ1IzdE5USVE3OHFMNFZAHawZDZD&fields=id,media_type,media_url,caption,permalink,thumbnail_url */
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: fit-content;
+  font-weight: bold;
+  white-space: pre;
+  font-size: 5rem;
+  line-height: 1.2em;
+  height: 1.2em;
+  overflow: hidden;
+}
+.loader:before {
+  content: "Loading...\A𓂀oading...\A𓂀𓏤ading...\A𓂀𓏤𓏃ding...\A𓂀𓏤𓏃𓇳ing...\A𓂀𓏤𓏃𓇳𓏇g...\A𓂀𓏤𓏃𓇳𓏇𓋴...\A𓂀𓏤𓏃𓇳𓏇𓋴𓏏..\A𓂀𓏤𓏃𓇳𓏇𓋴𓏏𓅓.\A𓂀𓏤𓏃𓇳𓏇𓋴𓏏𓅓𓏏";
+  white-space: pre;
+  display: inline-block;
+  animation: l39 1s infinite steps(11) alternate;
+  color: hsl(var(--primary));
+}
+
+@keyframes l39 {
+  100% {
+    transform: translateY(-100%);
+  }
+}

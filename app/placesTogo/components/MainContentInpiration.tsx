@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import Loading from "@/components/Loading";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,18 +16,21 @@ import {
   InspirationCategory,
   InspirationCategoryData,
 } from "@/type/inspiration";
+import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { memo } from "react";
+import { memo, useEffect } from "react";
 
 const MainContentInpiration = () => {
+  useEffect(() => {
+    applyHieroglyphEffect()
+  }, [])
   const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
     queryKey: ["fetchPlaceToGoCategories2"],
     queryFn: () => fetchPlaceToGoCategories(),
   });
-  if (isLoading) return <p>Loading categories...</p>;
+  if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
-  console.log(data);
   return (
     <div className="flex flex-col h-screen w-full">
       <div className="bg-primary w-full p-2 px-[2em]">
@@ -56,7 +60,7 @@ const MainContentInpiration = () => {
         {/* Content */}
         <div className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] w-full h-fit z-20 flex flex-col items-center justify-center min-h-screen text-white px-4 sm:px-6 lg:px-8">
           {/* Main Heading */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-4">
+          <h1 role="heading"  className="text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-4">
             Discover Amazing Content
           </h1>
 

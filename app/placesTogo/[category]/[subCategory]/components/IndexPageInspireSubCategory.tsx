@@ -10,6 +10,7 @@ import { CiGrid2H } from "react-icons/ci";
 import { meta } from "@/type/inspiration";
 import { fetchPlaceToOneSubCategory } from "@/fetch/placesToGo";
 import { PlacesToGoBlogs, PlacesToGoSubcategories } from "@/type/placesToGo";
+import Loading from "@/components/Loading";
 
 const IndexPageInspireSubCategory = ({
   routes,
@@ -26,7 +27,7 @@ const IndexPageInspireSubCategory = ({
     queryKey: ["fetchPlaceToOneSubCategory"],
     queryFn: () => fetchPlaceToOneSubCategory(slug),
   });
-  if (isLoading) return <p>Loading categories...</p>;
+  if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
   console.log(data);
   return (
@@ -41,7 +42,7 @@ const IndexPageInspireSubCategory = ({
 
       <div className="w-full flex flex-col gap-6 px-[2em]">
         <div className="w-full flex justify-between items-center">
-          <h1 className="text-[2rem] font-bold">ALL you want about {slug}</h1>
+          <h1 role="heading"  className="text-[2rem] font-bold">ALL you want about {slug}</h1>
 
           <div className="flex gap-2 items-center flex-wrap">
             <Button onClick={() => setView("grid")}>

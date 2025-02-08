@@ -25,7 +25,7 @@ const CardCategory = ({ categoryName, imageUrl, url }: props) => {
         ) : (
           <Skeleton className="h-[125px] w-[250px] rounded-xl" />
         )}
-        <h1 className="text-lg font-bold text-center p-4">{categoryName}</h1>
+        <h1 role="heading"  className="text-lg font-bold text-center p-4">{categoryName}</h1>
       </div>
     </Link>
   );

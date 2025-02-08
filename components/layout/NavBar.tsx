@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { InspirationCategory } from "@/type/inspiration";
 import Link from "next/link";
 import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
+import Loading from "../Loading";
 
 const NavBar = () => {
   const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
@@ -24,7 +25,7 @@ const NavBar = () => {
     queryFn: fetchPlaceToGoCategories,
   });
 
-  if (placeToGo.isLoading && isLoading) return <p>Loading categories...</p>;
+  if (placeToGo.isLoading && isLoading) return <Loading />;
   if (placeToGo.error && error instanceof Error)
     return <p>Error: {error.message}</p>;
   return (

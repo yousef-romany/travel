@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import MDXRenderer from "@/components/MDXRenderer";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
@@ -10,8 +10,13 @@ import { instagramPostsType, meta, PlacesToGoBlogs } from "@/type/placesToGo";
 import { FaArrowTurnDown } from "react-icons/fa6";
 import InstagramModal from "@/components/InstagramModal";
 import { Separator } from "@/components/ui/separator";
+import Loading from "@/components/Loading";
+import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 
 const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
+  useEffect(() => {
+    applyHieroglyphEffect()
+  }, [])
   const { data, error, isLoading } = useQuery<
     { data: PlacesToGoBlogs[]; meta: meta },
     Error
@@ -19,7 +24,7 @@ const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
     queryKey: ["fetchPlaceToGoOneBlog"],
     queryFn: () => fetchPlaceToGoOneBlog(decodeURIComponent(slug)),
   });
-  if (isLoading) return <p>Loading categories...</p>;
+  if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
   return (
     <div className="flex gap-4 flex-col h-fit justify-between">
@@ -34,7 +39,7 @@ const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
       {(data?.data?.at(-1)?.instagram_posts?.length || 0) > 0 ? (
         <div className="w-full flex justify-center items-center flex-col mt-4 gap-[2em] px-[2em]">
           <div className="flex flex-col w-full items-start">
-            <h1 className="text-primary text-[2.4rem] font-extrabold flex items-center gap-2">
+            <h1 role="heading"  className="text-primary text-[2.4rem] font-extrabold flex items-center gap-2">
               Instagram Feeds <FaArrowTurnDown />
             </h1>
             <p className="font-medium text-[1.2rem] text-center mb-12 px-4">
@@ -64,7 +69,7 @@ const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
         {data?.data?.at(-1)?.youtubeUrl && (
           <div className="w-full flex justify-center items-center flex-col gap-[2em]">
             <div className="flex flex-col">
-              <h1 className="text-primary w-full text-[2.4rem] font-extrabold">
+              <h1 role="heading"  className="text-primary w-full text-[2.4rem] font-extrabold">
                 Curated Video Showcase
               </h1>
               <p className="text-[1.2rem] text-center mb-12  font-thin">
@@ -76,7 +81,7 @@ const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
           </div>
         )}
         <div className="w-full flex justify-center items-center flex-col gap-[2em]">
-          <h1 className="text-primary w-full text-[2.4rem] font-extrabold flex items-center gap-2 ">
+          <h1 role="heading"  className="text-primary w-full text-[2.4rem] font-extrabold flex items-center gap-2 ">
             Location Preview Map <FaArrowTurnDown className="" />
           </h1>
           <MapComponent

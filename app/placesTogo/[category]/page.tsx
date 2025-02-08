@@ -7,11 +7,15 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import IndexPage from "./components/IndexPage";
 import { useParams } from "next/navigation";
+import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 
 const InspirationDynamic = () => {
+  useEffect(() => {
+    applyHieroglyphEffect()
+  }, [])
   const params: { category: string } = useParams(); // Get params dynamically
 
   return (
