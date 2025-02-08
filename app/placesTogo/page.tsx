@@ -3,11 +3,11 @@ import MainContentInpiration from "./components/MainContentInpiration";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "ZoeHoliday | Be Inspired",
-  description: "ZoeHoliday | Let Place To Go",
+  title: "Places To Go | ZoeHoliday",
+  description: "Let Place To Go | ZoeHoliday",
   openGraph: {
-    title: "ZoeHoliday | Be Inspired",
-    description: "ZoeHoliday | Let Place To Go",
+    title: "Places To Go | ZoeHoliday",
+    description: "Let Place To Go | ZoeHoliday",
     type: "website",
   },
 };
