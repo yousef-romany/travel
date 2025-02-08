@@ -5,10 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchInspirationOneBlog } from "@/fetch/category";
 import MDXRenderer from "@/components/MDXRenderer";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
-// import InstagramEmbed from "react-instagram-embed";
-import { PlacesToGoBlogs, instaGramVedios, meta } from "@/type/placesToGo";
+import { PlacesToGoBlogs, instagramPostsType, meta } from "@/type/placesToGo";
 import { FaArrowTurnDown } from "react-icons/fa6";
 import InstagramModal from "@/components/InstagramModal";
+import { Separator } from "@/components/ui/separator";
 
 const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
   const { data, error, isLoading } = useQuery<
@@ -30,40 +30,37 @@ const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
         />
       </div>
 
-      {data?.data?.at(-1)?.instagram_posts?.length as number > 0 ? (
-        <div className="w-full flex justify-center items-center flex-col mt-4 px-[2em] gap-9">
+      {(data?.data?.at(-1)?.instagram_posts?.length || 0) > 0 ? (
+        <div className="w-full flex justify-center items-center flex-col mt-4 gap-[2em] px-[2em]">
           <div className="flex flex-col w-full items-start">
-            <h1 className="text-[2.4rem] flex items-center gap-2 font-extrabold">
-              Instagram Feeds <FaArrowTurnDown className="" />
+            <h1 className="text-[2.4rem] font-extrabold flex items-center gap-2">
+              Instagram Feeds <FaArrowTurnDown />
             </h1>
-            <p className="text-[1.2rem] text-center mb-12 px-4  font-thin">
+            <p className="text-[1.2rem] text-center mb-12 px-4 font-thin">
               Discover and preview top-notch content from across the Instagram
               universe.
             </p>
           </div>
           <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-10 px-[2em]">
-            {data?.data
-              ?.at(-1)
-              ?.instagram_posts.map((item: instaGramVedios) => (
-                <InstagramModal
-                  key={item.id}
-                  createdAtInsta={item.createdAtInsta}
-                  imageUrl={item.imageUrl}
-                  thumbnail_url={item.thumbnail_url}
-                  caption={item.caption}
-                  permalink={item.permalink}
-                  media_type={item.media_type}
-                />
-              ))}
+            {data?.data?.at(-1)?.instagram_posts &&
+              (data?.data?.at(-1)?.instagram_posts as instagramPostsType[]).map(
+                (itemPost) => (
+                  <InstagramModal
+                    key={itemPost?.id}
+                    idPost={itemPost?.idPost}
+                  />
+                )
+              )}
           </div>
         </div>
       ) : null}
 
-      <div className=" px-[2em] flex flex-col gap-6">
+      <div className=" px-[2em] flex flex-col gap-6 py-6">
+        <Separator />
         <MDXRenderer mdxString={data?.data?.at(-1)?.details as string} />
-
+        <Separator />
         {data?.data?.at(-1)?.youtubeUrl && (
-          <div className="w-full flex justify-center items-center flex-col gap-9">
+          <div className="w-full flex justify-center items-center flex-col gap-[2em]">
             <div className="flex flex-col w-full items-start">
               <h1 className="text-[2.4rem] flex items-center gap-2 font-extrabold">
                 Curated Video Showcase <FaArrowTurnDown className="" />

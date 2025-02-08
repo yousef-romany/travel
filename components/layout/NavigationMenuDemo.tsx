@@ -28,7 +28,7 @@ export function NavigationMenuDemo({
     <NavigationMenu className="lg:block md:hidden sm:hidden">
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="text-[1.2rem]">
+          <NavigationMenuTrigger className="text-[1.2rem] text-primary">
             Be inspired
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -62,7 +62,7 @@ export function NavigationMenuDemo({
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="text-[1.2rem]">
+          <NavigationMenuTrigger className="text-[1.2rem] text-primary">
             Places to go
           </NavigationMenuTrigger>
           <NavigationMenuContent className="">
@@ -100,7 +100,7 @@ export function NavigationMenuDemo({
         <NavigationMenuItem>
           <Link href="/docs" legacyBehavior passHref>
             <NavigationMenuLink
-              className={cn("!text-[1.2rem]", navigationMenuTriggerStyle())}
+              className={cn("!text-[1.2rem] text-primary", navigationMenuTriggerStyle())}
             >
               Plan Your Trip
             </NavigationMenuLink>
@@ -109,7 +109,7 @@ export function NavigationMenuDemo({
         <NavigationMenuItem>
           <Link href="/docs" legacyBehavior passHref>
             <NavigationMenuLink
-              className={cn("!text-[1.2rem]", navigationMenuTriggerStyle())}
+              className={cn("!text-[1.2rem] text-primary", navigationMenuTriggerStyle())}
             >
               Programs
             </NavigationMenuLink>

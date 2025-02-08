@@ -1,21 +1,28 @@
 "use client";
-import Image from "next/image";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { instaGramVedios } from "@/type/placesToGo";
-import { Button } from "./ui/button";
-import { useState } from "react";
+import { X } from "lucide-react";
+import { useEffect, useState } from "react";
 import MediaContent from "./MediaContent";
+import { instagramPostsType, instaGramType } from "@/type/placesToGo";
 
-export default function InstagramModal({
-  createdAtInsta,
-  imageUrl,
-  thumbnail_url,
-  caption,
-  permalink,
-  media_type,
-}: instaGramVedios) {
+export default function InstagramModal({ idPost }: instagramPostsType) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const formattedDate = new Date(createdAtInsta as string).toLocaleDateString(
+  const [data, setData] = useState<instaGramType>({} as instaGramType);
+  useEffect(() => {
+    try {
+      fetch(
+        `https://graph.instagram.com/${idPost}?fields=id,media_type,media_url,caption,permalink,thumbnail_url,timestamp&access_token=${process.env.NEXT_PUBLIC_INSTAGRAM_TOKEN}`
+      )
+        .then((res) => res.json())
+        .then((resData) => {
+          console.log(resData, idPost);
+          setData(resData);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [idPost]);
+
+  const formattedDate = new Date(data?.timestamp as string).toLocaleDateString(
     "en-US",
     {
       day: "numeric",
@@ -26,10 +33,11 @@ export default function InstagramModal({
   return (
     <>
       <img
-        src={thumbnail_url}
-        alt={caption}
+        src={data?.thumbnail_url}
+        alt={data?.caption}
         onClick={() => setIsModalOpen(true)}
         className="w-full h-full rounded-[2rem] cursor-pointer"
+        loading="lazy"
       />
       {isModalOpen && (
         <div className="fixed inset-0 bg-card flex items-center justify-center z-50">
@@ -54,20 +62,14 @@ export default function InstagramModal({
             <div className="flex flex-col md:flex-row">
               {/* Media */}
               <div className="relative flex-1 bg-card aspect-square md:aspect-auto">
-                <button className="absolute left-4 top-1/2 -translate-y-1/2 p-1 rounded-full bg-card/50 text-muted z-10">
-                  <ChevronLeft className="w-6 h-6" />
-                </button>
                 <div className="h-full">
                   <MediaContent
-                    media_type={media_type}
-                    imageUrl={imageUrl}
-                    thumbnail_url={thumbnail_url}
+                    media_type={data?.media_type}
+                    imageUrl={data?.media_url}
+                    thumbnail_url={data?.thumbnail_url}
                     // className="w-full h-full"
                   />
                 </div>
-                <button className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full bg-card/50 text-muted z-10">
-                  <ChevronRight className="w-6 h-6" />
-                </button>
               </div>
 
               {/* Caption */}
@@ -80,7 +82,7 @@ export default function InstagramModal({
                         <span className="font-semibold text-primary/75">
                           @ZoeHolidays
                         </span>{" "}
-                        {caption}
+                        {data?.caption}
                       </p>
                       <p className="text-xs text-secondary-500 mt-1">
                         {formattedDate}
@@ -93,7 +95,7 @@ export default function InstagramModal({
                 <div className="p-4 border-t">
                   <div className="flex gap-2">
                     <a
-                      href={permalink}
+                      href={data?.permalink}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-blue-600 hover:text-blue-800"
@@ -102,7 +104,7 @@ export default function InstagramModal({
                     </a>
                     <span className="text-secondary-300">•</span>
                     <span className="text-sm text-secondary-500">
-                      {media_type}
+                      {data?.media_type}
                     </span>
                   </div>
                 </div>

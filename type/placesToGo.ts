@@ -28,6 +28,7 @@ export interface PlacesToGoSubcategories {
 
 export interface PlacesToGoBlogs {
   id: number;
+  instagram_posts?: string[];
   documentId: string;
   title: string;
   imageUrl: string;
@@ -38,7 +39,6 @@ export interface PlacesToGoBlogs {
   publishedAt: string;
   lng: number;
   lat: number;
-  instagram_posts: instaGramVedios[]
 }
 
 export interface meta {
@@ -63,4 +63,23 @@ export interface instaGramVedios {
   media_type?: string;
   permalink?: string;
   thumbnail_url?: string;
+}
+
+export interface instaGramType {
+  id: string;
+  media_type: string;
+  media_url: string;
+  permalink: string;
+  thumbnail_url: string;
+  timestamp: string;
+  caption: string;
+}
+
+export interface instagramPostsType {
+  id?: string;
+  documentId?: string;
+  idPost?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string;
 }

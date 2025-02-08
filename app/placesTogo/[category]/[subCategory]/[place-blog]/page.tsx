@@ -8,7 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { memo } from "react";
-import IndexPageInspireBlog from "./components/IndexPageInspireBlog";
+import IndexPagePlaceToGoBlog from "./components/IndexPagePlaceToGoBlog";
 import { useParams } from "next/navigation";
 
 const InspirationDynamic = () => {
@@ -57,7 +57,7 @@ const InspirationDynamic = () => {
         </Breadcrumb>
       </div>
 
-      <IndexPageInspireBlog
+      <IndexPagePlaceToGoBlog
         slug={decodeURIComponent(params["place-blog"]) as string}
       />
     </div>

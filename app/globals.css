@@ -1,5 +1,5 @@
 @import "https://cdn.jsdelivr.net/npm/prismjs@1.28.0/themes/prism.css";
-@import url('https://fonts.googleapis.com/css2?family=Blinker:wght@100;200;300;400;600;700;800;900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Overlock:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@300..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Blinker:wght@100;200;300;400;600;700;800;900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Overlock:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@300..700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -128,9 +128,16 @@
 /* For specific elements */
 .mdx-container p {
   font-size: 1rem; /* Increase font size of paragraphs */
-  font-weight: 500;
+  font-weight: 700;
+  color: hsl(var(--primary));
 }
-
+h1, h2, h3 {
+  color: hsl(var(--primary)) !important;
+  text-shadow: 2px 2px 4px hsl(var(--primary), 0.5);
+}
+p {
+  color: hsl(var(--primary)) !important;
+}
 .mdx-container h1,
 .mdx-container h2,
 .mdx-container h3 {

@@ -4,14 +4,14 @@ import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import MDXRenderer from "@/components/MDXRenderer";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
-import InstagramEmbed from "react-instagram-embed";
 import { fetchPlaceToGoOneBlog } from "@/fetch/placesToGo";
 import MapComponent from "@/components/Map";
-import { instaGramVedios, meta, PlacesToGoBlogs } from "@/type/placesToGo";
+import { instagramPostsType, meta, PlacesToGoBlogs } from "@/type/placesToGo";
 import { FaArrowTurnDown } from "react-icons/fa6";
 import InstagramModal from "@/components/InstagramModal";
+import { Separator } from "@/components/ui/separator";
 
-const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
+const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
   const { data, error, isLoading } = useQuery<
     { data: PlacesToGoBlogs[]; meta: meta },
     Error
@@ -31,47 +31,40 @@ const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
         />
       </div>
 
-      {(data?.data?.at(-1)?.instagram_posts?.length as number) > 0 ? (
-        <div className="w-full flex justify-center items-center flex-col mt-4 gap-9 px-[2em]">
+      {(data?.data?.at(-1)?.instagram_posts?.length || 0) > 0 ? (
+        <div className="w-full flex justify-center items-center flex-col mt-4 gap-[2em] px-[2em]">
           <div className="flex flex-col w-full items-start">
-            <h1 className="text-[2.4rem] font-extrabold flex items-center gap-2 ">
-              Instagram Feeds <FaArrowTurnDown className="" />
+            <h1 className="text-primary text-[2.4rem] font-extrabold flex items-center gap-2">
+              Instagram Feeds <FaArrowTurnDown />
             </h1>
-            <p className="text-[1.2rem] text-center mb-12 px-4 font-thin">
+            <p className="font-medium text-[1.2rem] text-center mb-12 px-4">
               Discover and preview top-notch content from across the Instagram
               universe.
             </p>
           </div>
           <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-10 px-[2em]">
-            {data?.data
-              ?.at(-1)
-              ?.instagram_posts.map((item: instaGramVedios) => (
-                <InstagramModal
-                  key={item.id}
-                  createdAtInsta={item.createdAtInsta}
-                  imageUrl={item.imageUrl}
-                  thumbnail_url={item.thumbnail_url}
-                  caption={item.caption}
-                  permalink={item.permalink}
-                  media_type={item.media_type}
-                />
-              ))}
+            {data?.data?.at(-1)?.instagram_posts &&
+              (data?.data?.at(-1)?.instagram_posts as instagramPostsType[]).map(
+                (itemPost) => (
+                  <InstagramModal
+                    key={itemPost?.id}
+                    idPost={itemPost?.idPost}
+                  />
+                )
+              )}
           </div>
         </div>
       ) : null}
 
-      <InstagramEmbed
-        url={"https://www.instagram.com/p/DFVTlLGiBbf/"}
-        clientAccessToken={"417a223b383891a82700267246c50581"}
-      />
-
-      <div className=" px-[2em] flex flex-col gap-6">
+      <div className=" px-[2em] flex flex-col gap-6 py-6">
+        <Separator />
         <MDXRenderer mdxString={data?.data?.at(-1)?.details as string} />
 
+        <Separator />
         {data?.data?.at(-1)?.youtubeUrl && (
-          <div className="w-full flex justify-center items-center flex-col gap-9">
+          <div className="w-full flex justify-center items-center flex-col gap-[2em]">
             <div className="flex flex-col">
-              <h1 className="w-full text-[2.4rem] font-extrabold">
+              <h1 className="text-primary w-full text-[2.4rem] font-extrabold">
                 Curated Video Showcase
               </h1>
               <p className="text-[1.2rem] text-center mb-12  font-thin">
@@ -82,8 +75,8 @@ const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
             <YouTubeEmbed videoUrl={data?.data?.at(-1)?.youtubeUrl as string} />
           </div>
         )}
-        <div className="w-full flex justify-center items-center flex-col gap-9">
-          <h1 className="w-full text-[2.4rem] font-extrabold flex items-center gap-2 ">
+        <div className="w-full flex justify-center items-center flex-col gap-[2em]">
+          <h1 className="text-primary w-full text-[2.4rem] font-extrabold flex items-center gap-2 ">
             Location Preview Map <FaArrowTurnDown className="" />
           </h1>
           <MapComponent
@@ -96,4 +89,4 @@ const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
     </div>
   );
 };
-export default memo(IndexPageInspireBlog);
+export default memo(IndexPagePlaceToGoBlog);
