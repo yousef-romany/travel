@@ -34,7 +34,7 @@ export function ProgramCarousel({
                     src={image.imageUrl || "/placeholder.svg"}
                     alt={`Travel destination ${image.id + 1} ${image.title}`}
                     fill
-                    className="object-cover"
+                    className="object-cover rounded-tl-xl rounded-tr-xl"
                   />
                 </div>
               </div>

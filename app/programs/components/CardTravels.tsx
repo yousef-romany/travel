@@ -30,7 +30,7 @@ const CardTravels = ({
         {images && <ProgramCarousel images={images} />}
       </CardHeader>
       <CardContent className="flex-grow pt-4">
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="text-primary">{title}</CardTitle>
         <CardDescription>{descraption}</CardDescription>
         <p className="mt-2">
           <strong>Location:</strong> {Location}
@@ -41,7 +41,7 @@ const CardTravels = ({
         <p>
           <strong>Price:</strong> ${Number(price)}
         </p>
-        <div className="flex items-center mt-2">
+        <div className="flex items-center mt-2 text-primary">
           <strong className="mr-2">Rating:</strong>
           {[...Array(5)].map((_, i) => (
             <Star
