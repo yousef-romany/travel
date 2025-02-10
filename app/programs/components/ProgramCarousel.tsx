@@ -4,9 +4,13 @@ import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import Image from "next/image"
+import Image from "next/image";
 
-export function ProgramCarousel({ images }: { images: string[] }) {
+export function ProgramCarousel({
+  images,
+}: {
+  images: { id: number; title: string; imageUrl: string }[];
+}) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay()]);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -22,18 +26,20 @@ export function ProgramCarousel({ images }: { images: string[] }) {
     <div className="relative">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
-          {images.map((image, index) => (
-            <div className="flex-[0_0_100%] min-w-0" key={index}>
-              <div className="relative h-48 w-full">
-                <Image
-                  src={image || "/placeholder.svg"}
-                  alt={`Travel destination ${index + 1}`}
-                  fill
-                  className="object-cover"
-                />
+          {images.map(
+            (image: { id: number; title: string; imageUrl: string }) => (
+              <div className="flex-[0_0_100%] min-w-0" key={image.id}>
+                <div className="relative h-48 w-full">
+                  <Image
+                    src={image.imageUrl || "/placeholder.svg"}
+                    alt={`Travel destination ${image.id + 1} ${image.title}`}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
       </div>
       <button

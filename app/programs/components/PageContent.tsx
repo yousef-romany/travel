@@ -1,82 +1,53 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { dataTypeCardTravel } from "@/type/programs";
 import CardTravels from "./CardTravels";
-
-const travelPrograms = [
-  {
-    title: "European Adventure",
-    description: "Explore the rich history and diverse cultures of Europe",
-    duration: "14 days",
-    price: 3499,
-    location: "Europe",
-    rating: 4.5,
-    images: [
-      "/placeholder.svg?height=300&width=400&text=Paris",
-      "/placeholder.svg?height=300&width=400&text=Rome",
-      "/placeholder.svg?height=300&width=400&text=Barcelona",
-    ],
-  },
-  {
-    title: "African Safari",
-    description:
-      "Experience the wildlife and breathtaking landscapes of Africa",
-    duration: "10 days",
-    price: 4299,
-    location: "Africa",
-    rating: 4.8,
-    images: [
-      "/placeholder.svg?height=300&width=400&text=Serengeti",
-      "/placeholder.svg?height=300&width=400&text=Kruger",
-      "/placeholder.svg?height=300&width=400&text=Masai Mara",
-    ],
-  },
-  {
-    title: "Caribbean Cruise",
-    description:
-      "Relax and unwind on a luxurious Caribbean island-hopping cruise",
-    duration: "7 days",
-    price: 1899,
-    location: "Caribbean",
-    rating: 4.2,
-    images: [
-      "/placeholder.svg?height=300&width=400&text=Bahamas",
-      "/placeholder.svg?height=300&width=400&text=Jamaica",
-      "/placeholder.svg?height=300&width=400&text=St. Lucia",
-    ],
-  },
-  {
-    title: "Asian Expedition",
-    description: "Discover the ancient traditions and modern marvels of Asia",
-    duration: "16 days",
-    price: 3999,
-    location: "Asia",
-    rating: 4.6,
-    images: [
-      "/placeholder.svg?height=300&width=400&text=Tokyo",
-      "/placeholder.svg?height=300&width=400&text=Bangkok",
-      "/placeholder.svg?height=300&width=400&text=Singapore",
-    ],
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { fetchProgramsList } from "@/fetch/programs";
+import Loading from "@/components/Loading";
+import { meta } from "@/type/placesToGo";
 
 export default function PageContent() {
   const [searchTerm, setSearchTerm] = useState("");
   const [priceRange, setPriceRange] = useState([0, 5000]);
-  const [filteredPrograms, setFilteredPrograms] = useState(travelPrograms);
 
+  const { data, error, isLoading } = useQuery<
+    { data: dataTypeCardTravel[]; meta: meta },
+    Error
+  >({
+    queryKey: ["fetchProgramsList"],
+    queryFn: fetchProgramsList,
+  });
+
+  const [filteredPrograms, setFilteredPrograms] = useState<dataTypeCardTravel[]>(
+    []
+  );
+
+  // Update filteredPrograms when data changes
   useEffect(() => {
-    const filtered = travelPrograms.filter(
-      (program) =>
-        program.location.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        program.price >= priceRange[0] &&
-        program.price <= priceRange[1]
-    );
-    setFilteredPrograms(filtered);
-  }, [searchTerm, priceRange]);
+    if (data?.data) {
+      setFilteredPrograms(data.data);
+    }
+  }, [data]);
+
+  // Filter programs based on search term and price range
+  useEffect(() => {
+    if (data?.data) {
+      const filtered = data.data.filter(
+        (program: dataTypeCardTravel) =>
+          program?.Location.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          Number(program.price) >= priceRange[0] &&
+          Number(program.price) <= priceRange[1]
+      );
+      setFilteredPrograms(filtered);
+    }
+  }, [searchTerm, priceRange, data]);
+
+  if (isLoading) return <Loading />;
+  if (error instanceof Error) return <p>Error: {error.message}</p>;
 
   return (
     <div className="w-full mx-auto py-8 !px-[2em]">
@@ -108,18 +79,22 @@ export default function PageContent() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredPrograms.map((program: dataTypeCardTravel, index: number) => (
-          <CardTravels
-            key={index}
-            title={program.title}
-            rating={program.rating}
-            duration={program.duration}
-            location={program.location}
-            description={program.description}
-            price={program.price}
-            images={program.images}
-          />
-        ))}
+        {filteredPrograms.length > 0 ? (
+          filteredPrograms.map((program: dataTypeCardTravel, index: number) => (
+            <CardTravels
+              key={index}
+              title={program.title}
+              rating={program.rating}
+              duration={program.duration}
+              Location={program.Location}
+              descraption={program.descraption}
+              price={program.price}
+              images={program.images}
+            />
+          ))
+        ) : (
+          <p>No programs found.</p>
+        )}
       </div>
     </div>
   );
