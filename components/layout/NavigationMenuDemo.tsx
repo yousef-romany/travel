@@ -98,7 +98,7 @@ export function NavigationMenuDemo({
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/plan-your-trip" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn("!text-[1.2rem] text-primary", navigationMenuTriggerStyle())}
             >
@@ -107,7 +107,7 @@ export function NavigationMenuDemo({
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/programs" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn("!text-[1.2rem] text-primary", navigationMenuTriggerStyle())}
             >

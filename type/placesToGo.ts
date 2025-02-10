@@ -39,6 +39,7 @@ export interface PlacesToGoBlogs {
   publishedAt: string;
   lng: number;
   lat: number;
+  price?: number
 }
 
 export interface meta {
