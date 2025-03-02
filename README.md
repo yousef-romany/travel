@@ -3,7 +3,7 @@
 ![Travel in Egypt](./screenshots/homepage.png)
 
 ## Overview 🌍
-Travel in Egypt is a modern, fully responsive travel booking platform built using **Next.js** and **Strapi**. It provides an immersive user experience with a beautifully designed UI, seamless **PayPal payments**, and a powerful admin dashboard for full control over bookings, destinations, and content.
+Travel in Egypt is a modern, fully responsive travel booking platform built using **Next.js** and **Strapi**. It provides an immersive user experience with a beautifully designed UI, seamless **PayPal payments**, and a powerful admin dashboard for full control over bookings, destinations, and content. 
 
 ---
 
@@ -15,6 +15,7 @@ Travel in Egypt is a modern, fully responsive travel booking platform built usin
 - **React Audio Player** - Enhancing the user experience with immersive sounds.
 - **Tailwind CSS** - Modern styling with responsive design.
 - **PayPal API** - Secure online payments.
+- **Instagram API** - Display latest posts using token-based authentication.
 
 ---
 
@@ -26,6 +27,7 @@ Travel in Egypt is a modern, fully responsive travel booking platform built usin
 ✅ **Secure Payment System** - Integrated with PayPal.
 ✅ **Optimized Performance** - Fast & SEO-friendly with Next.js.
 ✅ **Interactive Audio Experience** - Background sounds for an immersive feel.
+✅ **Instagram Feed Integration** - Displays latest travel posts dynamically.
 
 ---
 
@@ -41,6 +43,9 @@ Travel in Egypt is a modern, fully responsive travel booking platform built usin
 ![Checkout](./screenshots/checkout.png)
 
 
+### 🔹 Instagram Feed
+![Instagram Feed](./screenshots/instagram-feed.png)
+
 ---
 
 ## Skills Gained 🛠️
@@ -51,6 +56,7 @@ Travel in Egypt is a modern, fully responsive travel booking platform built usin
 ⚡ **Optimizing performance & SEO with SSR & ISR**  
 🔊 **Enhancing user experience with React Audio Player**  
 📊 **Managing state & data fetching using TanStack Query**  
+📷 **Fetching & displaying Instagram feed using API tokens**  
 
 ---
 
@@ -77,6 +83,11 @@ Start Strapi CMS:
 cd backend
 npm run develop
 ```
+
+Set up Instagram Feed:
+1. Obtain an Instagram API token.
+2. Store it in your environment variables.
+3. Use it to fetch and display posts dynamically.
 
 ---
 
