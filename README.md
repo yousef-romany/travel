@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Travel in Egypt - Explore the Beauty of Egypt 🇪🇬
 
-## Getting Started
+![Travel in Egypt](./screenshots/homepage.png)
 
-First, run the development server:
+## Overview 🌍
+Travel in Egypt is a modern, fully responsive travel booking platform built using **Next.js** and **Strapi**. It provides an immersive user experience with a beautifully designed UI, seamless **PayPal payments**, and a powerful admin dashboard for full control over bookings, destinations, and content.
 
+---
+
+## Tech Stack ⚙️
+
+- **Next.js** - Powerful React framework for SSR & SEO.
+- **Strapi** - Headless CMS for content management.
+- **TanStack React Query** - Efficient data fetching & state management.
+- **React Audio Player** - Enhancing the user experience with immersive sounds.
+- **Tailwind CSS** - Modern styling with responsive design.
+- **PayPal API** - Secure online payments.
+
+---
+
+## Features ✨
+
+✅ **Beautiful UI/UX** - Sleek & modern design for an engaging experience.
+✅ **Responsive Design** - Works perfectly on all devices.
+✅ **Admin Dashboard** - Full control over bookings, destinations & users.
+✅ **Secure Payment System** - Integrated with PayPal.
+✅ **Optimized Performance** - Fast & SEO-friendly with Next.js.
+✅ **Interactive Audio Experience** - Background sounds for an immersive feel.
+
+---
+
+## Screenshots 📸
+
+### 🔹 Home Page
+![Home Page](./screenshots/homepage.png)
+
+### 🔹 Destination Page
+![Destinations](./screenshots/destinations.png)
+
+### 🔹 Booking & Checkout
+![Checkout](./screenshots/checkout.png)
+
+
+---
+
+## Skills Gained 🛠️
+
+🚀 **Full-stack development with Next.js & Strapi**  
+🎨 **Building complex UI with Tailwind CSS**  
+🔗 **Integrating payments using PayPal API**  
+⚡ **Optimizing performance & SEO with SSR & ISR**  
+🔊 **Enhancing user experience with React Audio Player**  
+📊 **Managing state & data fetching using TanStack Query**  
+
+---
+
+## Installation & Setup 🛠️
+
+Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/travel-in-egypt.git
+cd travel-in-egypt
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Run the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Start Strapi CMS:
+```bash
+cd backend
+npm run develop
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Contributing 🤝
+We welcome contributions! Feel free to open an issue or submit a pull request.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License 📜
+This project is licensed under the **MIT License**.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contact 📬
+For any inquiries, feel free to reach out:
+- **Email**: yousefromany527@example.com  
+- **GitHub**: [yousef romany](https://github.com/yousef-romany)  
+- **LinkedIn**: [Your yousef romany](https://www.linkedin.com/in/yousef-romany-09a2a5233/)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
