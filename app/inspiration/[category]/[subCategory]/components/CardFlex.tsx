@@ -1,5 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
+ 
 import MDXRenderer from "@/components/MDXRenderer";
+import OptimizedImage from "@/components/OptimizedImage";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,20 +16,24 @@ const CardFlex = ({
   title,
   imageUrl,
   details,
-  link
+  link,
 }: {
   routes: string;
   slug: string;
   title: string;
   details: string;
   imageUrl: string;
-  link:string
+  link: string;
 }) => {
   return (
     <Card className="overflow-hidden lg:max-h-[15em] md:max-h-[15em] sm:max-h-fit">
       <div className="flex sm:flex-row h-full justify-between !items-stretch">
         <div className="relative lg:w-2/5 md:w-2/5 sm:w-full !h-full ">
-          <img src={imageUrl} alt={title} className="!h-full object-cover" />
+          <OptimizedImage
+            src={imageUrl as string}
+            alt={title as string}
+            className="!h-full object-cover"
+          />
         </div>
         <div className="flex flex-col justify-between h-full w-full sm:w-3/5 p-4 sm:p-6">
           <div>
@@ -41,9 +46,7 @@ const CardFlex = ({
           </div>
           <CardFooter className="p-0 mt-4">
             <Button asChild variant="outline">
-              <Link href={link}>
-                Read More
-              </Link>
+              <Link href={link}>Read More</Link>
             </Button>
           </CardFooter>
         </div>

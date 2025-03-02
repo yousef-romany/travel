@@ -90,12 +90,12 @@ const LanguageSwitcher = () => {
   return (
     <div>
       <Select value={selectedLang} onValueChange={handleChangeLang}>
-        <SelectTrigger className="w-[220px]" defaultValue={selectedLang}>
-          <SelectValue placeholder="Select Language" />
+        <SelectTrigger className="!text-primary w-[220px]" defaultValue={selectedLang}>
+          <SelectValue className="!text-primary" placeholder="Select Language" />
         </SelectTrigger>
         <SelectContent>
           {languages.map((lang, key) => (
-            <SelectItem key={key} value={lang.name}>
+            <SelectItem className="!text-primary" key={key} value={lang.name}>
               {lang.title}
             </SelectItem>
           ))}

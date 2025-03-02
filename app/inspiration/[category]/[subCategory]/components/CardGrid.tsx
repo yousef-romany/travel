@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import {
   Card,
@@ -9,24 +8,25 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import MDXRenderer from "@/components/MDXRenderer";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function CardGrid({
   imageUrl,
   title,
   details,
-  link
+  link,
 }: {
   title: string;
   details: string;
   imageUrl: string;
   routes: string;
   slug: string;
-  link: string
+  link: string;
 }) {
   return (
     <Card className="overflow-hidden flex flex-col h-full">
       <div className="relative w-full ">
-        <img
+        <OptimizedImage
           src={imageUrl}
           alt={title}
           className="w-full max-h-[200px] object-cover"
@@ -39,7 +39,7 @@ export default function CardGrid({
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0 flex-grow">
-          <MDXRenderer mdxString={details.slice(0,15)} /> ...
+          <MDXRenderer mdxString={details.slice(0, 15)} /> ...
         </CardContent>
         <CardFooter className="p-0 mt-4">
           <Button asChild variant="outline">

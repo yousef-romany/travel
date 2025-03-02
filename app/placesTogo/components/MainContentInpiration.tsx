@@ -1,7 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
+ 
 "use client";
 
 import Loading from "@/components/Loading";
+import OptimizedImage from "@/components/OptimizedImage";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -51,7 +52,7 @@ const MainContentInpiration = () => {
 
       <div className="relative h-full w-full">
         {/* Background Image */}
-        <img
+        <OptimizedImage
           src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1738236129/2639898_f1hvdj.jpg"
           alt="Hero background"
           className="object-cover opacity-50 bg-black w-full h-full"

@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
@@ -15,6 +14,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { InspirationCategoryData } from "@/type/inspiration";
 import { Skeleton } from "../ui/skeleton";
+import OptimizedImage from "../OptimizedImage";
 
 interface MenuProps {
   categories: InspirationCategoryData[];
@@ -42,13 +42,10 @@ export function NavigationMenuDemo({
                     >
                       <div className="flex flex-col gap-4">
                         {category?.imageUrl ? (
-                          <Image
+                          <OptimizedImage
                             src={category.imageUrl}
                             alt={category.categoryName}
                             className="h-[140px] min-w-[200px] rounded-xl"
-                            loading="lazy"
-                            height={140}
-                            width={200}
                           />
                         ) : (
                           <Skeleton className="h-[125px] w-[250px] rounded-xl" />
@@ -57,7 +54,7 @@ export function NavigationMenuDemo({
                       </div>
                     </ListItem>
                   ))
-                : "no data found ."}
+                : "<NoDataPlaceholder /> found ."}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -77,13 +74,10 @@ export function NavigationMenuDemo({
                       >
                         <div className="flex flex-col gap-4">
                           {category?.imageUrl ? (
-                            <Image
+                            <OptimizedImage
                               src={category.imageUrl}
                               alt={category.categoryName}
                               className="h-[140px] min-w-[200px] rounded-xl"
-                              loading="lazy"
-                              height={140}
-                              width={200}
                             />
                           ) : (
                             <Skeleton className="h-[125px] w-[250px] rounded-xl" />
@@ -93,23 +87,29 @@ export function NavigationMenuDemo({
                       </ListItem>
                     )
                   )
-                : "no data found ."}
+                : "<NoDataPlaceholder /> found ."}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/plan-your-trip" legacyBehavior passHref>
             <NavigationMenuLink
-              className={cn("!text-[1.2rem] text-primary", navigationMenuTriggerStyle())}
+              className={cn(
+                "!text-[1.2rem] text-primary",
+                navigationMenuTriggerStyle()
+              )}
             >
               Plan Your Trip
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/programs" legacyBehavior passHref>
             <NavigationMenuLink
-              className={cn("!text-[1.2rem] text-primary", navigationMenuTriggerStyle())}
+              className={cn(
+                "!text-[1.2rem] text-primary",
+                navigationMenuTriggerStyle()
+              )}
             >
               Programs
             </NavigationMenuLink>

@@ -32,7 +32,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
 
   return (
     <>
-      <img
+       <OptimizedImage
         src={data?.thumbnail_url}
         alt={data?.caption}
         onClick={() => setIsModalOpen(true)}
