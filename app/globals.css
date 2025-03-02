@@ -127,7 +127,7 @@
 
 /* For specific elements */
 .mdx-container p {
-  font-size: 1rem; /* Increase font size of paragraphs */
+  font-size: 1.1rem; /* Increase font size of paragraphs */
   font-weight: 700;
   color: hsl(var(--primary));
 }
@@ -204,7 +204,7 @@ p {
   width: fit-content;
   font-weight: bold;
   white-space: pre;
-  font-size: 5rem;
+  font-size: 4rem;
   line-height: 1.2em;
   height: 1.2em;
   overflow: hidden;

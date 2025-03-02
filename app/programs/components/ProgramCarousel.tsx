@@ -30,7 +30,7 @@ export function ProgramCarousel({
             (image: { id: number; title: string; imageUrl: string }) => (
               <div className="flex-[0_0_100%] min-w-0" key={image.id}>
                 <div className="relative h-48 w-full">
-                  <Image
+                  <OptimizedImage
                     src={image.imageUrl || "/placeholder.svg"}
                     alt={`Travel destination ${image.id + 1} ${image.title}`}
                     fill

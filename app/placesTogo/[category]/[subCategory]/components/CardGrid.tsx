@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+ 
 import Link from "next/link";
 import {
   Card,
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import MDXRenderer from "@/components/MDXRenderer";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function CardGrid({
   imageUrl,
@@ -26,7 +27,7 @@ export default function CardGrid({
   return (
     <Card className="overflow-hidden flex flex-col h-full">
       <div className="relative w-full ">
-        <img
+        <OptimizedImage
           src={imageUrl}
           alt={title}
           className="w-full max-h-[200px] object-cover"

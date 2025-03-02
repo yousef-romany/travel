@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+ 
 "use client";
 import { Button } from "@/components/ui/button";
 import { fetchInspirationOneSubCategory } from "@/fetch/category";
@@ -10,6 +10,7 @@ import { CiGrid41 } from "react-icons/ci";
 import { CiGrid2H } from "react-icons/ci";
 import { InspireBlogs, InspireSubcategories, meta } from "@/type/inspiration";
 import Loading from "@/components/Loading";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const IndexPageInspireSubCategory = ({
   routes,
@@ -32,16 +33,18 @@ const IndexPageInspireSubCategory = ({
   return (
     <div className="flex gap-4 flex-col h-fit justify-between">
       <div className="relative w-full h-[calc(100vh-80px)] !z-[-9999]">
-        <img
-          src={data?.data?.at(-1)?.imageUrl}
-          alt={data?.data?.at(-1)?.categoryName}
+        <OptimizedImage
+          src={data?.data?.at(-1)?.imageUrl as string}
+          alt={data?.data?.at(-1)?.categoryName as string}
           className="w-full h-full object-cover !z-[-9999]"
         />
       </div>
 
       <div className="w-full flex flex-col gap-6 px-[2em]">
         <div className="w-full flex justify-between items-center">
-          <h1 role="heading"  className="text-[2rem] font-bold">ALL you want about {slug}</h1>
+          <h1 role="heading" className="text-[2rem] font-bold">
+            ALL you want about {slug}
+          </h1>
 
           <div className="flex gap-2 items-center flex-wrap">
             <Button onClick={() => setView("grid")}>

@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import Image from "next/image";
 import { memo } from "react";
 import logo from "@/public/logo.png";
 import { FaRegHeart } from "react-icons/fa6";
@@ -13,6 +13,7 @@ import { InspirationCategory } from "@/type/inspiration";
 import Link from "next/link";
 import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
 import Loading from "../Loading";
+import Image from "next/image";
 
 const NavBar = () => {
   const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
@@ -30,13 +31,24 @@ const NavBar = () => {
     return <p>Error: {error.message}</p>;
   return (
     <div className="z-50 w-full h-[76px] px-[2em] fixed top-0 left-0 border-b-2 border-primary bg-card flex justify-between items-center">
-      <Menu categories={data?.data || []} placesTogCategorie={Array.isArray(placeToGo?.data?.data) ? placeToGo.data.data : []} />
+      <Menu
+        categories={data?.data || []}
+        placesTogCategorie={
+          Array.isArray(placeToGo?.data?.data) ? placeToGo.data.data : []
+        }
+      />
       <Link href={"/"}>
-        <Image src={logo} alt="logo" className="max-w-[200px] h-auto" />
+        <Image
+          src={logo as any}
+          alt="logo"
+          className="!w-[200px] !max-w-[200px] h-auto"
+        />
       </Link>
       <NavigationMenuDemo
         categories={data?.data || []}
-        placesTogCategorie={Array.isArray(placeToGo?.data?.data) ? placeToGo.data.data : []}
+        placesTogCategorie={
+          Array.isArray(placeToGo?.data?.data) ? placeToGo.data.data : []
+        }
       />
       <div className="flex items-center gap-2">
         <Button size={"icon"} variant={"outline"}>

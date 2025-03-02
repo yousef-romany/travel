@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -31,6 +32,7 @@ import {
   PlacesToGoSubcategories,
 } from "@/type/placesToGo";
 import { fetchPlanYourTrip } from "@/fetch/planYourTrip";
+import { Badge } from "@/components/ui/badge";
 
 export default function PlanYourTravel() {
   const [travelPlan, setTravelPlan] = useState<any[]>([]);
@@ -103,7 +105,10 @@ export default function PlanYourTravel() {
     );
   };
 
-  const totalPrice = travelPlan.reduce((sum, place) => sum + Number(place.price), 0);
+  const totalPrice = travelPlan.reduce(
+    (sum, place) => sum + Number(place.price),
+    0
+  );
 
   const { data, isLoading, error } = useQuery<PlacesToGoCategory>({
     queryKey: ["fetchPlanYourTrip"],
@@ -141,7 +146,7 @@ export default function PlanYourTravel() {
               </h2>
               <div className="flex flex-wrap gap-2">
                 {data?.data?.map((category: PlacesToGoCategoryData) => (
-                  <button
+                  <Badge
                     key={category?.id}
                     onClick={() => {
                       setSelectedCategory(category);
@@ -149,14 +154,15 @@ export default function PlanYourTravel() {
                         category?.place_to_go_subcategories[0]
                       );
                     }}
-                    className={`px-4 py-2 rounded-full text-sm font-medium ${
+                    className={`px-4 py-2 rounded-full text-sm font-medium cursor-pointer`}
+                    variant={
                       selectedCategory?.categoryName === category.categoryName
-                        ? `bg-muted text-primary`
-                        : "bg-gray-200 text-primary"
-                    }`}
+                        ? "default"
+                        : "secondary"
+                    }
                   >
                     {category.categoryName}
-                  </button>
+                  </Badge>
                 ))}
               </div>
             </div>
@@ -167,18 +173,19 @@ export default function PlanYourTravel() {
               <div className="flex flex-wrap gap-2">
                 {selectedCategory?.place_to_go_subcategories.map(
                   (subcategory: PlacesToGoSubcategories) => (
-                    <button
+                    <Badge
                       key={subcategory.categoryName}
                       onClick={() => setSelectedSubcategory(subcategory)}
-                      className={`px-4 py-2 rounded-full text-sm font-medium ${
+                      className={`px-4 py-2 rounded-full text-sm font-medium cursor-pointer`}
+                      variant={
                         selectedSubcategory?.categoryName ===
                         subcategory?.categoryName
-                          ? "bg-gray-200 text-primary"
-                          : `bg-secondary text-primary`
-                      }`}
+                          ? "default"
+                          : "secondary"
+                      }
                     >
                       {subcategory.categoryName}
-                    </button>
+                    </Badge>
                   )
                 )}
               </div>

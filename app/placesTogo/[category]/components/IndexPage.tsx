@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -19,6 +18,7 @@ import {
 } from "@/type/placesToGo";
 import { fetchPlaceToGoCategoriesOneCategory } from "@/fetch/placesToGo";
 import Loading from "@/components/Loading";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const IndexPage = ({ slug }: { slug: string }) => {
   const { data, error, isLoading } = useQuery<PlacesToGoCategory, Error>({
@@ -30,19 +30,25 @@ const IndexPage = ({ slug }: { slug: string }) => {
   return (
     <div className="flex gap-4 flex-col h-fit justify-between">
       <div className="relative w-full h-[calc(100vh-80px)] !z-[-9999]">
-        <img
-          src={data?.data?.at(-1)?.imageUrl}
-          alt={data?.data?.at(-1)?.categoryName}
+        <OptimizedImage
+          src={data?.data?.at(-1)?.imageUrl as string}
+          alt={data?.data?.at(-1)?.categoryName as string}
           className="w-full h-full object-cover !z-[-9999]"
         />
-        <h1 role="heading"  className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-8xl text-primary font-extrabold text-primary-600 drop-shadow-xl shadow-black">
+        <h1
+          role="heading"
+          className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-8xl text-primary font-extrabold text-primary-600 drop-shadow-xl shadow-black"
+        >
           {data?.data?.at(-1)?.categoryName}
         </h1>
       </div>
       <div className="w-full h-fit py-10 px-[2em] space-y-16">
         {/* sub category text */}
         <div className=" w-full flex justify-center items-center">
-          <h1 role="heading"  className="text-4xl text-primary border-b-4 text-bold">
+          <h1
+            role="heading"
+            className="text-4xl text-primary border-b-4 text-bold"
+          >
             SubCategory
           </h1>
         </div>
@@ -63,7 +69,10 @@ const IndexPage = ({ slug }: { slug: string }) => {
                         href={`/placesTogo/${slug}/${item?.categoryName}`}
                         className="w-fit hover:border-b-2"
                       >
-                        <h1 role="heading"  className="text-[2rem] font-bold flex items-center gap-2 w-fit">
+                        <h1
+                          role="heading"
+                          className="text-[2rem] font-bold flex items-center gap-2 w-fit"
+                        >
                           {item?.categoryName} <MdArrowOutward />
                         </h1>
                       </Link>
@@ -89,14 +98,17 @@ const IndexPage = ({ slug }: { slug: string }) => {
                                   >
                                     <Card className="p-0 h-fit rounded-[1.3em] relative z-[-99999]">
                                       <CardContent className="p-0 rounded-[1.3em]">
-                                        <img
+                                        <OptimizedImage
                                           src={itemBlog?.imageUrl}
                                           alt={itemBlog?.title}
                                           className="w-full object-content rounded-[1.3em] z-[-99999999] max-h-[370px]"
                                         />
                                       </CardContent>
                                       <CardFooter className="w-full rounded-[1.3em]">
-                                        <h1 role="heading"  className="w-full text-[1.6rem] text-primary font-extrabold text-primary-600 drop-shadow-2xl shadow-primary">
+                                        <h1
+                                          role="heading"
+                                          className="w-full text-[1.6rem] text-primary font-extrabold text-primary-600 drop-shadow-2xl shadow-primary"
+                                        >
                                           {itemBlog?.title}
                                         </h1>
                                       </CardFooter>
@@ -110,12 +122,12 @@ const IndexPage = ({ slug }: { slug: string }) => {
                           <CarouselNext />
                         </Carousel>
                       ) : (
-                        "No Data"
+                        "<NoDataPlaceholder />"
                       )}
                     </div>
                   )
                 )
-            : "No Data"}
+            : "<NoDataPlaceholder />"}
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
-import Image from "next/image";
 import { useDraggable } from "@dnd-kit/core";
 import { Check } from "lucide-react";
 import { PlacesToGoBlogs } from "@/type/placesToGo";
+import OptimizedImage from "@/components/OptimizedImage";
 
 interface PlaceCardProps {
   place: PlacesToGoBlogs;
@@ -31,11 +31,9 @@ export default function PlaceCard({ place, isInPlan }: PlaceCardProps) {
         isDragging ? "opacity-50" : ""
       } ${isInPlan ? "border-2 border-green-500" : ""}`}
     >
-      <Image
+      <OptimizedImage
         src={place?.imageUrl || "/placeholder.svg"}
         alt={place?.title || "null"}
-        width={200}
-        height={200}
         className="w-full h-32 object-cover"
       />
       <div className="p-4">
