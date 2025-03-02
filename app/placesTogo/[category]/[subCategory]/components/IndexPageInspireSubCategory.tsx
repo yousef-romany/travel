@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+ 
 "use client";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +11,7 @@ import { meta } from "@/type/inspiration";
 import { fetchPlaceToOneSubCategory } from "@/fetch/placesToGo";
 import { PlacesToGoBlogs, PlacesToGoSubcategories } from "@/type/placesToGo";
 import Loading from "@/components/Loading";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const IndexPageInspireSubCategory = ({
   routes,
@@ -33,9 +34,9 @@ const IndexPageInspireSubCategory = ({
   return (
     <div className="flex gap-4 flex-col h-fit justify-between">
       <div className="relative w-full h-[calc(100vh-80px)] !z-[-9999]">
-        <img
-          src={data?.data?.at(-1)?.imageUrl}
-          alt={data?.data?.at(-1)?.categoryName}
+        <OptimizedImage
+          src={data?.data?.at(-1)?.imageUrl as string}
+          alt={data?.data?.at(-1)?.categoryName as string}
           className="w-full h-full object-cover !z-[-9999]"
         />
       </div>

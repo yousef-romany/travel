@@ -55,7 +55,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                           url={`/inspiration/${category.categoryName}`}
                         />
                       ))
-                    : "no data found ."}
+                    : "<NoDataPlaceholder /> found ."}
                 </div>
               </ScrollArea>
             </HoverCardContent>
@@ -81,7 +81,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                           />
                         )
                       )
-                    : "no data found ."}
+                    : "<NoDataPlaceholder /> found ."}
                 </div>
               </ScrollArea>
             </HoverCardContent>

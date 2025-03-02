@@ -37,7 +37,7 @@ export default function MediaContent({
   }
 
   return (
-    <Image
+    <OptimizedImage
       src={imageUrl || "/placeholder.svg"}
       alt="Instagram content"
       width={800}

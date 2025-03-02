@@ -1,7 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
+ 
 "use client";
 
 import Loading from "@/components/Loading";
+import OptimizedImage from "@/components/OptimizedImage";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -23,8 +24,8 @@ import { memo, useEffect } from "react";
 
 const MainContentInpiration = () => {
   useEffect(() => {
-    applyHieroglyphEffect()
-  }, [])
+    applyHieroglyphEffect();
+  }, []);
   const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
     queryKey: ["fetchInspirationCategories2"],
     queryFn: () => fetchInspirationCategories(),
@@ -51,16 +52,20 @@ const MainContentInpiration = () => {
 
       <div className="relative h-full w-full">
         {/* Background Image */}
-        <img
+        <OptimizedImage
           src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1738236129/2639898_f1hvdj.jpg"
           alt="Hero background"
           className="object-cover opacity-50 bg-black w-full h-full"
+ 
         />
 
         {/* Content */}
         <div className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] w-full h-fit z-20 flex flex-col items-center justify-center min-h-screen text-white px-4 sm:px-6 lg:px-8">
           {/* Main Heading */}
-          <h1 role="heading"  className="text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-4">
+          <h1
+            role="heading"
+            className="text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-4"
+          >
             Discover Amazing Content
           </h1>
 

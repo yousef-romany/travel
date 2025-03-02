@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import Image from "next/image";
 import { Star, Clock, MapPin, Check, X, Info } from "lucide-react";
 import { fetchProgramOne } from "@/fetch/programs";
 import { dataTypeCardTravel } from "@/type/programs";
@@ -15,6 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const ProgramPage = () => {
   const params: { title: string } = useParams();
@@ -31,7 +32,7 @@ const ProgramPage = () => {
   if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="container mx-auto px-4 py-8 max-w-6xl mb-[60px]">
       <h1 className="text-4xl font-bold mb-6 text-primary">
         {data?.data?.at(0)?.title}
       </h1>
@@ -40,14 +41,12 @@ const ProgramPage = () => {
         <div className="space-y-4">
           <div className="relative aspect-video rounded-lg overflow-hidden">
             {data?.data?.at(0)?.images && (
-              <Image
+              <OptimizedImage
                 src={
                   data?.data?.at(0)?.images?.at(activeImage)?.imageUrl ||
                   "/placeholder.svg"
                 }
                 alt={`Travel image ${activeImage + 1}`}
-                layout="fill"
-                objectFit="cover"
                 className="transition-opacity duration-500"
               />
             )}
@@ -61,11 +60,9 @@ const ProgramPage = () => {
                 }`}
                 onClick={() => setActiveImage(index)}
               >
-                <Image
+                <OptimizedImage
                   src={img.imageUrl || "/placeholder.svg"}
                   alt={`Thumbnail ${index + 1} ${img.title}`}
-                  layout="fill"
-                  objectFit="cover"
                 />
               </div>
             ))}
@@ -105,17 +102,19 @@ const ProgramPage = () => {
           {data?.data?.at(0)?.content_steps &&
             data?.data?.at(0)?.content_steps?.map(
               (
-                step: {
-                  title: string;
-                  place_to_go_subcategories: {
-                    categoryName: string;
-                    place_to_go_categories: { categoryName: string }[];
-                  }[];
-                },
+                step:
+                  | {
+                      title: string;
+                      place_to_go_subcategories: {
+                        categoryName: string;
+                        place_to_go_categories: { categoryName: string }[];
+                      }[];
+                    }
+                  | any,
                 index: number
               ) => (
                 <li key={index} className="flex items-center justify-start">
-                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white font-bold mr-4">
+                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold mr-4">
                     {index + 1}
                   </span>
                   <span className="text-primary font-bold">{step?.title}</span>
@@ -123,24 +122,29 @@ const ProgramPage = () => {
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button variant="outline" size="icon" className="ml-2">
-                          <Info className="h-[1.4rem] w-[1.4rem]" />
+                          <Info className="h-[1.4rem] w-[1.4rem] text-primary" />
                           <span className="sr-only">More info</span>
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
                         <p className="!text-secondary">{step.title}</p>
+                        <OptimizedImage
+                          src={step?.imageUrl as string}
+                          alt={step?.title as string}
+                          className="max-w-[150px] rounded-xl"
+                        />
                         <a
                           href={`/placesTogo/${
                             step?.place_to_go_subcategories
                               ?.at(-1)
-                              ?.place_to_go_categories?.at(-1)?.categoryName 
+                              ?.place_to_go_categories?.at(-1)?.categoryName
                           }/${
                             step?.place_to_go_subcategories?.at(-1)
                               ?.categoryName
                           }/${step.title}`}
                           className="text-blue-500 hover:underline"
                         >
-                          Learn more
+                          More Info
                         </a>
                       </TooltipContent>
                     </Tooltip>
