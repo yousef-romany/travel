@@ -3,21 +3,33 @@
 import Link from "next/link";
 import { Facebook, Instagram, Youtube, Twitter } from "lucide-react";
 import logo from "@/public/logo.png";
+import logoLight from "@/public/logoLight.png";
 import smallLogo from "@/public/mainLogo.png";
-
+import smallLogoLight from "@/public/mainLogoLight.png";
+import Image from "next/image";
 import LanguageSwitcher from "../LanguageSwitcher";
 import OptimizedImage from "../OptimizedImage";
+import { useTheme } from "next-themes";
 
 export default function Footer() {
+  const { theme } = useTheme();
   return (
     <footer className="py-12 px-4 md:px-8 rounded-tr-xl rounded-tl-xl shadow-2xl shadow-primary mt-[40px]">
       {/* Logo */}
       <div className="max-w-7xl mx-auto mb-16">
-        <OptimizedImage
-          src={logo as any}
-          alt="ZoeHoliday.com Logo"
-          className="mx-auto !h-[100px] !w-[220px] object-contain"
-        />
+        {theme == "light" ? (
+          <OptimizedImage
+            src={logoLight as any}
+            alt="ZoeHoliday.com Logo"
+            className="mx-auto !h-[100px] !w-[220px] object-contain"
+          />
+        ) : (
+          <OptimizedImage
+            src={logo as any}
+            alt="ZoeHoliday.com Logo"
+            className="mx-auto !h-[100px] !w-[220px] object-contain"
+          />
+        )}
       </div>
 
       {/* Acknowledgement of Country */}
@@ -28,11 +40,19 @@ export default function Footer() {
         <div className="flex items-start gap-6">
           <div className="hidden md:block">
             <div className="p-4 bg-primary rounded-full flex items-center justify-center">
-              <OptimizedImage
-                src={smallLogo as any}
-                alt="ZoeHoliday.com Logo"
-                className="mx-auto !w-[40px] !h-[40px]"
-              />
+              {theme == "light" ? (
+                <Image
+                  src={smallLogo as any}
+                  alt="ZoeHoliday.com Logo"
+                  className="mx-auto !w-[40px] !h-[40px]"
+                />
+              ) : (
+                <Image
+                  src={smallLogoLight as any}
+                  alt="ZoeHoliday.com Logo"
+                  className="mx-auto !w-[40px] !h-[40px]"
+                />
+              )}
             </div>
           </div>
           <div className="flex-1">

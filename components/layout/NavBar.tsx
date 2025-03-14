@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { memo } from "react";
-import logo from "@/public/logo.png";
+import Image from "next/image";
 import { FaRegHeart } from "react-icons/fa6";
 import { Button } from "../ui/button";
 import ModeToggle from "./ModeToggle";
@@ -13,9 +12,12 @@ import { InspirationCategory } from "@/type/inspiration";
 import Link from "next/link";
 import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
 import Loading from "../Loading";
-import Image from "next/image";
+import logo from "@/public/logo.png";
+import logoLight from "@/public/logoLight.png";
+import { useTheme } from "next-themes";
 
 const NavBar = () => {
+  const { theme } = useTheme();
   const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
     queryKey: ["InspirationCategories"],
     queryFn: fetchInspirationCategories,
@@ -29,6 +31,7 @@ const NavBar = () => {
   if (placeToGo.isLoading && isLoading) return <Loading />;
   if (placeToGo.error && error instanceof Error)
     return <p>Error: {error.message}</p>;
+
   return (
     <div className="z-50 w-full h-[76px] px-[2em] fixed top-0 left-0 border-b-2 border-primary bg-card flex justify-between items-center">
       <Menu
@@ -38,11 +41,19 @@ const NavBar = () => {
         }
       />
       <Link href={"/"}>
-        <Image
-          src={logo as any}
-          alt="logo"
-          className="!w-[200px] !max-w-[200px] h-auto"
-        />
+        {theme == "light" ? (
+          <Image
+            src={logoLight}
+            alt="logo"
+            className="!w-[200px] !max-w-[200px] h-auto"
+          />
+        ) : (
+          <Image
+            src={logo}
+            alt="logo"
+            className="!w-[200px] !max-w-[200px] h-auto"
+          />
+        )}
       </Link>
       <NavigationMenuDemo
         categories={data?.data || []}
