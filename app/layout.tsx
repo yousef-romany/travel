@@ -68,9 +68,6 @@ export default function RootLayout({
           <NavBar />
           <div className="pt-[76px]">{children}</div>
           <div id="google_translate_element"></div>
-
-          <Footer />
-          <ScrollToTopButton />
         </ThemeProvider>
       </body>
     </html>
