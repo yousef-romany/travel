@@ -1,108 +1,79 @@
-"use client"; // This is needed because the useEffect is client-side only
-import { memo, useEffect, useState } from "react";
-import { parseCookies, setCookie } from "nookies";
+"use client";
+
+import { useState, useEffect } from "react";
+import { setCookie, parseCookies } from "nookies";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select"; // Adjust the import as needed
+} from "@/components/ui/select";
 
-const COOKIE_NAME = "language"; // Define your cookie name
+const COOKIE_NAME = "googtrans";
 
-const LanguageSwitcher = () => {
-  const [selectedLang, setSelectedLang] = useState<string>("en");
-  const [languages, setLanguages] = useState([
-    { title: "English", name: "en" },
-    { title: "Deutsch", name: "de" },
-    { title: "Español", name: "es" },
-    { title: "Français", name: "fr" },
-    { title: "日本語", name: "ja" }, // Japanese
-    { title: "中文", name: "zh-CN" }, // Chinese
-    { title: "Português (Brasil)", name: "pt-BR" }, // Brazilian Portuguese
-    { title: "Português", name: "pt" }, // Portuguese
-    { title: "Русский", name: "ru" }, // Russian
-  ]);
+const languages = [
+  { title: "English", name: "en" },
+  { title: "Deutsch", name: "de" },
+  { title: "Français", name: "fr" },
+  { title: "Español", name: "es" },
+  { title: "Русский", name: "ru" },
+];
 
-  const handleChangeLang = (lang: string) => {
+export default function LanguageSwitcher() {
+  const cookies = parseCookies();
+  const current = cookies[COOKIE_NAME]?.split("/")?.[2] || "en";
+  const [selectedLang, setSelectedLang] = useState(current);
+
+  const changeLang = (lang: string) => {
     setSelectedLang(lang);
-    setCookie(null, COOKIE_NAME, "/auto/" + lang, {
+
+    // Set Google Translate language cookie
+    setCookie(null, COOKIE_NAME, `/auto/${lang}`, {
       path: "/",
-      maxAge: 30 * 24 * 60 * 60, // Cookie expires in 30 days
+      maxAge: 365 * 24 * 60 * 60,
     });
 
-    // Trigger translation after language selection
-    if (window.google && window.google.translate) {
-      const translateElement = new window.google.translate.TranslateElement(
+    // Reload to apply translation instantly
+    window.location.reload();
+  };
+
+  useEffect(() => {
+    // Load Google Translate script once
+    const script = document.createElement("script");
+    script.src =
+      "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Silent initialization (widget hidden)
+    (window as any).googleTranslateElementInit = () => {
+      new (window as any).google.translate.TranslateElement(
         {
-          pageLanguage: lang,
-          includedLanguages: "en,de,es,fr,ja,zh-CN,pt-BR,pt,ru", // Add your supported languages here
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false, // Avoid automatic display of the Google Translate widget
+          autoDisplay: false,
         },
         "google_translate_element"
       );
-
-      // Optionally reload the page after translation
-      window.location.reload();
-    }
-  };
-
-  // Load Google Translate API script when the component mounts
-  useEffect(() => {
-    const loadGoogleTranslate = () => {
-      const script = document.createElement("script");
-      script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-      script.async = true;
-      document.body.appendChild(script);
     };
-
-    if (!window.google || !window.google.translate) {
-      loadGoogleTranslate();
-    }
-
-    // Read the cookie to set the language if already selected
-    const cookies = parseCookies();
-    const existingLanguageCookieValue = cookies[COOKIE_NAME];
-    let languageValue;
-    if (existingLanguageCookieValue) {
-      const sp = existingLanguageCookieValue.split("/");
-      if (sp.length > 2) {
-        languageValue = sp[2];
-      }
-    }
-
-    if (global.__GOOGLE_TRANSLATION_CONFIG__ && !languageValue) {
-      languageValue = global.__GOOGLE_TRANSLATION_CONFIG__.defaultLanguage;
-    }
-
-    if (languageValue) {
-      setSelectedLang(languageValue);
-    }
   }, []);
 
-  // Don't display anything if current language information is unavailable
-  if (!selectedLang) {
-    return null;
-  }
-
   return (
-    <div>
-      <Select value={selectedLang} onValueChange={handleChangeLang}>
-        <SelectTrigger className="!text-primary w-[220px]" defaultValue={selectedLang}>
-          <SelectValue className="!text-primary" placeholder="Select Language" />
+    <>
+      {/* Hidden element to attach Google Translate to */}
+      <div id="google_translate_element" style={{ display: "none" }} className="!hidden"></div>
+
+      <Select value={selectedLang} onValueChange={changeLang}>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Language" />
         </SelectTrigger>
         <SelectContent>
-          {languages.map((lang, key) => (
-            <SelectItem className="!text-primary" key={key} value={lang.name}>
+          {languages.map((lang) => (
+            <SelectItem key={lang.name} value={lang.name}>
               {lang.title}
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
-    </div>
+    </>
   );
-};
-
-export default memo(LanguageSwitcher);
+}

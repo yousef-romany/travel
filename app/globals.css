@@ -222,3 +222,7 @@ p {
     transform: translateY(-100%);
   }
 }
+
+.skiptranslate {
+  display: none !important;
+}
