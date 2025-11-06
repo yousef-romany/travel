@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Confirmation - ZoeHolidays</title>
+    <style>
+      body {
+        background-color: #faf9f7;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .email-container {
+        max-width: 600px;
+        margin: auto;
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(217, 119, 6, 0.1);
+      }
+      .header {
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        padding: 32px 24px;
+        color: #ffffff;
+        text-align: center;
+      }
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+      }
+      .content {
+        padding: 32px 24px;
+        color: #1f2937;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .button {
+        display: inline-block;
+        padding: 14px 32px;
+        margin-top: 20px;
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        color: #ffffff !important;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+      }
+      .footer {
+        text-align: center;
+        font-size: 13px;
+        color: #999;
+        padding: 16px;
+        border-top: 1px solid #f0e5d8;
+      }
+      .highlight {
+        color: #d97706;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div class="header">
+        <div class="logo">ZOE HOLIDAYS</div>
+        <p style="margin: 0; font-size: 14px; opacity: 0.9;">Welcome to Premium Egyptian Travel</p>
+      </div>
+      <div class="content">
+        <p>Hello,</p>
+        <p>Thank you for registering with <span class="highlight">ZoeHolidays</span>! We're thrilled to have you join our community of travelers exploring the wonders of Egypt.</p>
+        <p>Before you can start booking your dream journey, please confirm your email address by clicking the button below:</p>
+        <p style="text-align:center;">
+          <a class="button" href="http://localhost:3000/email-confirmation?confirmation=<%= CODE %>">
+            Confirm Email Address
+          </a>
+        </p>
+        <p>If the button above does not work, copy and paste the following link into your browser:</p>
+        <p style="word-break: break-all; color: #666;">
+          <small>http://localhost:3000/email-confirmation?confirmation=<%= CODE %></small>
+        </p>
+        <p style="margin-top: 24px; border-top: 1px solid #f0e5d8; padding-top: 16px;">
+          <strong>Why are we asking for confirmation?</strong><br>
+          This helps us ensure your email address is correct and secure your account.
+        </p>
+      </div>
+      <div class="footer">
+        © 2025 ZoeHolidays. All rights reserved. | <a href="http://localhost:3000/privacy" style="color: #d97706; text-decoration: none;">Privacy Policy</a>
+      </div>
+    </div>
+  </body>
+</html>

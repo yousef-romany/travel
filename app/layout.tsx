@@ -3,9 +3,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import NavBar from "@/components/layout/NavBar";
 import { ThemeProvider } from "@/components/Providers";
-import Footer from "@/components/layout/Footer";
 import Script from "next/script";
-import ScrollToTopButton from "@/components/ScrollToTopButton";
+import { AuthProvider } from "@/context/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,11 +63,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
       >
+        <AuthProvider>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <NavBar />
           <div className="pt-[76px]">{children}</div>
           <div id="google_translate_element"></div>
         </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

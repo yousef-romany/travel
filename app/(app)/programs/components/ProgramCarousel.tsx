@@ -1,10 +1,10 @@
 "use client";
 
+import OptimizedImage from "@/components/OptimizedImage";
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 export function ProgramCarousel({
   images,
@@ -33,7 +33,6 @@ export function ProgramCarousel({
                   <OptimizedImage
                     src={image.imageUrl || "/placeholder.svg"}
                     alt={`Travel destination ${image.id + 1} ${image.title}`}
-                    fill
                     className="object-cover rounded-tl-xl rounded-tr-xl"
                   />
                 </div>

@@ -1,0 +1,182 @@
+travel
+ ┣ app
+ ┃ ┣ (app)
+ ┃ ┃ ┣ about
+ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┣ inspiration
+ ┃ ┃ ┃ ┣ [category]
+ ┃ ┃ ┃ ┃ ┣ [subCategory]
+ ┃ ┃ ┃ ┃ ┃ ┣ [inspire-blog]
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ components
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ IndexPageInspireBlog.tsx
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┃ ┃ ┃ ┣ components
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ CardFlex.tsx
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ CardGrid.tsx
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ IndexPageInspireSubCategory.tsx
+ ┃ ┃ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┃ ┃ ┣ components
+ ┃ ┃ ┃ ┃ ┃ ┗ IndexPage.tsx
+ ┃ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┃ ┣ components
+ ┃ ┃ ┃ ┃ ┗ MainContentInpiration.tsx
+ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┣ invoice-demo
+ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┣ me
+ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┣ placesTogo
+ ┃ ┃ ┃ ┣ [category]
+ ┃ ┃ ┃ ┃ ┣ [subCategory]
+ ┃ ┃ ┃ ┃ ┃ ┣ [place-blog]
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ components
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ IndexPagePlaceToGoBlog.tsx
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┃ ┃ ┃ ┣ components
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ CardFlex.tsx
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ CardGrid.tsx
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ IndexPageInspireSubCategory.tsx
+ ┃ ┃ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┃ ┃ ┣ components
+ ┃ ┃ ┃ ┃ ┃ ┗ IndexPage.tsx
+ ┃ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┃ ┣ components
+ ┃ ┃ ┃ ┃ ┗ MainContentInpiration.tsx
+ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┣ plan-your-trip
+ ┃ ┃ ┃ ┣ components
+ ┃ ┃ ┃ ┃ ┣ Categories.tsx
+ ┃ ┃ ┃ ┃ ┣ PlaceCard.tsx
+ ┃ ┃ ┃ ┃ ┣ PlacesList.tsx
+ ┃ ┃ ┃ ┃ ┣ TravelPlan.tsx
+ ┃ ┃ ┃ ┃ ┗ TravelPlanItem.tsx
+ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┣ programs
+ ┃ ┃ ┃ ┣ [title]
+ ┃ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┃ ┣ components
+ ┃ ┃ ┃ ┃ ┣ CardTravels.tsx
+ ┃ ┃ ┃ ┃ ┣ PageContent.tsx
+ ┃ ┃ ┃ ┃ ┗ ProgramCarousel.tsx
+ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┣ terms
+ ┃ ┃ ┃ ┗ page.tsx
+ ┃ ┃ ┣ layout.tsx
+ ┃ ┃ ┗ page.tsx
+ ┃ ┣ api
+ ┃ ┃ ┗ confirm-email
+ ┃ ┃ ┃ ┗ route.ts
+ ┃ ┣ complete-profile
+ ┃ ┃ ┗ page.tsx
+ ┃ ┣ email-confirmation
+ ┃ ┃ ┗ page.tsx
+ ┃ ┣ forgot-password
+ ┃ ┃ ┗ page.tsx
+ ┃ ┣ login
+ ┃ ┃ ┗ page.tsx
+ ┃ ┣ reset-password
+ ┃ ┃ ┗ page.tsx
+ ┃ ┣ signup
+ ┃ ┃ ┗ page.tsx
+ ┃ ┣ favicon.ico
+ ┃ ┣ globals.css
+ ┃ ┣ layout.tsx
+ ┃ ┗ middleware.ts
+ ┣ components
+ ┃ ┣ layout
+ ┃ ┃ ┣ CardCategory.tsx
+ ┃ ┃ ┣ Footer.tsx
+ ┃ ┃ ┣ Menu.tsx
+ ┃ ┃ ┣ ModeToggle.tsx
+ ┃ ┃ ┣ NavBar.tsx
+ ┃ ┃ ┗ NavigationMenuDemo.tsx
+ ┃ ┣ ui
+ ┃ ┃ ┣ accordion.tsx
+ ┃ ┃ ┣ avatar.tsx
+ ┃ ┃ ┣ badge.tsx
+ ┃ ┃ ┣ breadcrumb.tsx
+ ┃ ┃ ┣ button.tsx
+ ┃ ┃ ┣ card.tsx
+ ┃ ┃ ┣ carousel.tsx
+ ┃ ┃ ┣ dropdown-menu.tsx
+ ┃ ┃ ┣ hover-card.tsx
+ ┃ ┃ ┣ input.tsx
+ ┃ ┃ ┣ label.tsx
+ ┃ ┃ ┣ navigation-menu.tsx
+ ┃ ┃ ┣ scroll-area.tsx
+ ┃ ┃ ┣ select.tsx
+ ┃ ┃ ┣ separator.tsx
+ ┃ ┃ ┣ sheet.tsx
+ ┃ ┃ ┣ sidebar.tsx
+ ┃ ┃ ┣ skeleton.tsx
+ ┃ ┃ ┣ slider.tsx
+ ┃ ┃ ┣ table.tsx
+ ┃ ┃ ┣ tabs.tsx
+ ┃ ┃ ┗ tooltip.tsx
+ ┃ ┣ EgyptInvoice.tsx
+ ┃ ┣ InstagramModal.tsx
+ ┃ ┣ LanguageSwitcher.tsx
+ ┃ ┣ Loading.tsx
+ ┃ ┣ MDXRenderer.tsx
+ ┃ ┣ Map.tsx
+ ┃ ┣ MediaContent.tsx
+ ┃ ┣ NoDataPlaceholder.tsx
+ ┃ ┣ OptimizedImage.tsx
+ ┃ ┣ Providers.tsx
+ ┃ ┣ ScrollToTopButton.tsx
+ ┃ ┣ YouTubeEmbed.tsx
+ ┃ ┣ invoices-section.tsx
+ ┃ ┣ personal-info.tsx
+ ┃ ┣ profile-header.tsx
+ ┃ ┣ trips-section.tsx
+ ┃ ┗ wishlist-section.tsx
+ ┣ context
+ ┃ ┗ AuthContext.tsx
+ ┣ fetch
+ ┃ ┣ category.ts
+ ┃ ┣ placesToGo.ts
+ ┃ ┣ planYourTrip.tsx
+ ┃ ┗ programs.ts
+ ┣ hooks
+ ┃ ┣ use-mobile.tsx
+ ┃ ┗ useRequireAuth.ts
+ ┣ lib
+ ┃ ┣ api.ts
+ ┃ ┗ utils.ts
+ ┣ public
+ ┃ ┣ assets
+ ┃ ┃ ┗ scripts
+ ┃ ┃ ┃ ┣ lang-config.js
+ ┃ ┃ ┃ ┗ translation.js
+ ┃ ┣ audio
+ ┃ ┃ ┗ mainAudio.mp3
+ ┃ ┣ favicon.ico
+ ┃ ┣ file.svg
+ ┃ ┣ globe.svg
+ ┃ ┣ logo.png
+ ┃ ┣ logoLight.png
+ ┃ ┣ mainLogo.png
+ ┃ ┣ mainLogoLight.png
+ ┃ ┣ next.svg
+ ┃ ┣ vercel.svg
+ ┃ ┗ window.svg
+ ┣ type
+ ┃ ┣ inspiration.ts
+ ┃ ┣ placesToGo.ts
+ ┃ ┗ programs.ts
+ ┣ utils
+ ┃ ┗ applyHieroglyphEffect.ts
+ ┣ .env
+ ┣ .gitignore
+ ┣ Email-Confirmation-template.html
+ ┣ README.md
+ ┣ Reset-Password-template.html
+ ┣ bun.lockb
+ ┣ components.json
+ ┣ eslint.config.mjs
+ ┣ next-env.d.ts
+ ┣ next.config.ts
+ ┣ package.json
+ ┣ postcss.config.mjs
+ ┣ tailwind.config.ts
+ ┗ tsconfig.json

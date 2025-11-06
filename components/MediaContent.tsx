@@ -3,6 +3,7 @@
 import { instaGramVedios } from "@/type/placesToGo";
 import Image from "next/image";
 import { useRef, useEffect } from "react";
+import OptimizedImage from "./OptimizedImage";
 
 export default function MediaContent({
   media_type,
