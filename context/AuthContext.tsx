@@ -1,4 +1,5 @@
 "use client";
+
 import { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
@@ -6,12 +7,17 @@ type User = {
   email: string;
   username: string;
   profile?: any;
+  token: string; // ✅ مهم
 };
 
 type AuthContextType = {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
+  resetPassword: (code: string, password: string, passwordConfirmation: string) => Promise<void>;
+  resendConfirmation: (email: string) => Promise<void>;
   logout: () => void;
 };
 
@@ -21,57 +27,145 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Load user on refresh
+  // ✅ Load user on refresh
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
-    setLoading(false);
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    const loadUser = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/users/me?populate=profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!res.ok) throw new Error();
+
+        const rawUser = await res.json();
+        setUser({ ...rawUser, token });
+      } catch (err) {
+        localStorage.removeItem("authToken");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUser();
   }, []);
 
+  // ✅ LOGIN
   const login = async (email: string, password: string) => {
-  setLoading(true);
-  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/local`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ identifier: email, password }),
-  });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/local`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier: email, password }),
+    });
 
-  const data = await res.json();
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error?.message || "Login failed");
 
-  if (!res.ok) {
-    setLoading(false);
-    throw new Error(data?.error?.message || "Login failed");
-  }
+    localStorage.setItem("authToken", data.jwt);
 
-  // ✅ هنا التعديل المهم
-  if (!data.user.confirmed) {
-    setLoading(false);
-    throw new Error("Please verify your email before logging in.");
-  }
+    const userRes = await fetch(
+      `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/users/me?populate=profile`,
+      { headers: { Authorization: `Bearer ${data.jwt}` } }
+    );
+    const rawUser = await userRes.json();
 
-  localStorage.setItem("token", data.jwt);
-  localStorage.setItem("user", JSON.stringify(data.user));
-  setUser(data.user);
-  setLoading(false);
-};
+    setUser({ ...rawUser, token: data.jwt });
 
+    // ✅ Redirect
+    if (rawUser.profile?.isProfileCompleted) {
+      window.location.href = "/dashboard";
+    } else {
+      window.location.href = "/complete-profile";
+    }
+  };
 
+  // ✅ SIGNUP
+  const signup = async (email: string, password: string) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/local/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: email, email, password }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error?.message || "Signup failed");
+
+    localStorage.setItem("authToken", data.jwt);
+
+    // Create profile
+    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/profiles`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${data.jwt}`,
+      },
+      body: JSON.stringify({
+        data: { user: data.user.id, isProfileCompleted: false },
+      }),
+    });
+
+    setUser({ ...data.user, token: data.jwt });
+    window.location.href = "/email-confirmation";
+  };
+
+  // ✅ Forgot Password
+  const forgotPassword = async (email: string) => {
+    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/forgot-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+  };
+
+  // ✅ Reset Password
+  const resetPassword = async (code: string, password: string, passwordConfirmation: string) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, password, passwordConfirmation }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || "Reset failed");
+
+    localStorage.setItem("authToken", data.jwt);
+
+    setUser({ ...data.user, token: data.jwt });
+    window.location.href = "/dashboard";
+  };
+
+  // ✅ Resend Confirmation
+  const resendConfirmation = async (email: string) => {
+    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/send-email-confirmation`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+  };
+
+  // ✅ Logout
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.removeItem("authToken");
     setUser(null);
+    window.location.href = "/login";
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, signup, forgotPassword, resetPassword, resendConfirmation, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Hook
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be inside AuthProvider");
+  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
   return ctx;
 };

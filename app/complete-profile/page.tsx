@@ -1,10 +1,213 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react"
-import Link from "next/link"
-import { CheckCircle, ArrowLeft } from "lucide-react"
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { CheckCircle, ArrowLeft } from "lucide-react";
+import { FormField } from "@/components/form-field";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { useAuth } from "@/context/AuthContext";
 
+const MotionButton = motion(Button);
+
+// ---------------- Countries List ----------------
+const COUNTRIES = [
+  "Afghanistan",
+  "Albania",
+  "Algeria",
+  "Andorra",
+  "Angola",
+  "Antigua and Barbuda",
+  "Argentina",
+  "Armenia",
+  "Aruba",
+  "Australia",
+  "Austria",
+  "Azerbaijan",
+  "Bahamas",
+  "Bahrain",
+  "Bangladesh",
+  "Barbados",
+  "Belarus",
+  "Belgium",
+  "Belize",
+  "Benin",
+  "Bhutan",
+  "Bolivia",
+  "Bosnia and Herzegovina",
+  "Botswana",
+  "Brazil",
+  "Brunei",
+  "Bulgaria",
+  "Burkina Faso",
+  "Burundi",
+  "Cabo Verde",
+  "Cambodia",
+  "Cameroon",
+  "Canada",
+  "Central African Republic",
+  "Chad",
+  "Chile",
+  "China",
+  "Colombia",
+  "Comoros",
+  "Congo, Republic of the",
+  "Congo, Democratic Republic of the",
+  "Costa Rica",
+  "Côte d'Ivoire",
+  "Croatia",
+  "Cuba",
+  "Curaçao",
+  "Cyprus",
+  "Czechia",
+  "Denmark",
+  "Djibouti",
+  "Dominica",
+  "Dominican Republic",
+  "Ecuador",
+  "Egypt",
+  "El Salvador",
+  "Equatorial Guinea",
+  "Eritrea",
+  "Estonia",
+  "Eswatini",
+  "Ethiopia",
+  "Fiji",
+  "Finland",
+  "France",
+  "Gabon",
+  "Gambia",
+  "Georgia",
+  "Germany",
+  "Ghana",
+  "Greece",
+  "Grenada",
+  "Guatemala",
+  "Guinea",
+  "Guinea-Bissau",
+  "Guyana",
+  "Haiti",
+  "Honduras",
+  "Hong Kong",
+  "Hungary",
+  "Iceland",
+  "India",
+  "Indonesia",
+  "Iran",
+  "Iraq",
+  "Ireland",
+  "Israel",
+  "Italy",
+  "Jamaica",
+  "Japan",
+  "Jordan",
+  "Kazakhstan",
+  "Kenya",
+  "Kuwait",
+  "Kyrgyzstan",
+  "Laos",
+  "Latvia",
+  "Lebanon",
+  "Lesotho",
+  "Liberia",
+  "Libya",
+  "Lithuania",
+  "Luxembourg",
+  "Madagascar",
+  "Malawi",
+  "Malaysia",
+  "Maldives",
+  "Mali",
+  "Malta",
+  "Mauritania",
+  "Mauritius",
+  "Mexico",
+  "Moldova",
+  "Monaco",
+  "Mongolia",
+  "Montenegro",
+  "Morocco",
+  "Mozambique",
+  "Myanmar",
+  "Namibia",
+  "Nepal",
+  "Netherlands",
+  "New Zealand",
+  "Nicaragua",
+  "Niger",
+  "Nigeria",
+  "North Macedonia",
+  "Norway",
+  "Oman",
+  "Pakistan",
+  "Panama",
+  "Paraguay",
+  "Peru",
+  "Philippines",
+  "Poland",
+  "Portugal",
+  "Qatar",
+  "Romania",
+  "Russia",
+  "Rwanda",
+  "Saudi Arabia",
+  "Senegal",
+  "Serbia",
+  "Seychelles",
+  "Sierra Leone",
+  "Singapore",
+  "Slovakia",
+  "Slovenia",
+  "Somalia",
+  "South Africa",
+  "South Korea",
+  "Spain",
+  "Sri Lanka",
+  "Sudan",
+  "Suriname",
+  "Sweden",
+  "Switzerland",
+  "Syria",
+  "Taiwan",
+  "Tajikistan",
+  "Tanzania",
+  "Thailand",
+  "Togo",
+  "Trinidad and Tobago",
+  "Tunisia",
+  "Turkey",
+  "Uganda",
+  "Ukraine",
+  "United Arab Emirates",
+  "United Kingdom",
+  "United States",
+  "Uruguay",
+  "Uzbekistan",
+  "Vatican City",
+  "Venezuela",
+  "Vietnam",
+  "Yemen",
+  "Zambia",
+  "Zimbabwe",
+];
+
+// ---------------- Page ----------------
 export default function CompleteProfilePage() {
+  const { user, loading: authLoading } = useAuth();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,132 +222,307 @@ export default function CompleteProfilePage() {
     zipCode: "",
     emergencyContactName: "",
     emergencyContactPhone: "",
-  })
+  });
 
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  // حماية الصفحة
+  const [countryOpen, setCountryOpen] = useState(false);
+  const [countryQuery, setCountryQuery] = useState("");
+
+  // ✅ Prevent redirect loop
   useEffect(() => {
-    const token = localStorage.getItem("authToken")
-    if (!token) window.location.href = "/login"
-  }, [])
+    if (!authLoading && !user?.token) {
+      window.location.href = "/login";
+    }
+  }, [authLoading, user]);
+
+  const filteredCountries = countryQuery
+    ? COUNTRIES.filter((c) =>
+        c.toLowerCase().includes(countryQuery.toLowerCase())
+      )
+    : COUNTRIES;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+  const handleSelectCountry = (c: string) => {
+    setFormData({ ...formData, country: c });
+    setCountryOpen(false);
+    setCountryQuery("");
+  };
 
-    try {
-      const token = localStorage.getItem("authToken")
-      if (!token) return (window.location.href = "/login")
+  // ---------------- Submit ----------------
+  const handleSubmit = async (e: any) => {
+  e.preventDefault();
+  setLoading(true);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/profile/complete`, {
-        method: "POST",
+  try {
+    const token = user?.token;
+    if (!token) return (window.location.href = "/login");
+
+    // 1. Check if profile exists
+    const p = await fetch(
+      `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/profiles?filters[user][id]=${user.id}`,
+      {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
-      })
+      }
+    ).then((r) => r.json());
 
-      if (!res.ok) throw new Error("Server Error")
+    let profileId;
 
-      setSuccess(true)
-      setTimeout(() => (window.location.href = "/dashboard"), 2000)
-    } catch (err: any) {
-      alert(err.message)
-    } finally {
-      setLoading(false)
+    // 2. Create profile if not found (Strapi v5 syntax)
+    if (!p.data.length) {
+      const created = await fetch(
+        `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/profiles`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            data: {
+              ...formData,
+              isProfileCompleted: true,
+              user: {
+                connect: [user.id], // <-- أهم تعديل
+              },
+            },
+          }),
+        }
+      ).then((r) => r.json());
+
+      if (!created.data) throw new Error("create-failed");
+
+      profileId = created.data.id;
+
+    } else {
+      // 3. Update existing profile
+      profileId = p.data[0].id;
+
+      await fetch(
+        `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/profiles/${profileId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            data: {
+              ...formData,
+              isProfileCompleted: true,
+            },
+          }),
+        }
+      );
     }
+
+    setSuccess(true);
+    setTimeout(() => (window.location.href = "/"), 1000);
+
+  } catch (err) {
+    console.error(err);
+    alert("Error updating/creating profile");
+  } finally {
+    setLoading(false);
   }
+};
 
-  const isFormValid = Object.values(formData).every((v) => v.trim() !== "")
-
-  if (success) {
+  if (success)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-amber-100 px-4">
-        <div className="bg-white border border-amber-200 p-8 rounded-2xl shadow-xl text-center max-w-md w-full">
-          <div className="flex justify-center mb-4">
-            <CheckCircle size={42} className="text-green-600" />
-          </div>
-          <p className="text-2xl font-bold text-amber-900">Profile Completed!</p>
-          <p className="text-amber-600">Redirecting...</p>
-        </div>
+      <div className="min-h-screen flex justify-center items-center text-primary">
+        <CheckCircle size={72} />
+        <p className="ml-3 text-2xl font-semibold">Profile Completed!</p>
       </div>
-    )
-  }
+    );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center px-4 py-12">
-      <div className="relative w-full max-w-4xl">
-        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl">
-
-          <div className="text-center mb-10">
-            <div className="inline-block px-4 py-2 bg-amber-100 border border-amber-200 rounded-full text-amber-900 font-semibold">
-              ZOE HOLIDAYS
+    <div className="min-h-screen py-12 bg-gradient-to-br from-background-950 to-muted-950 flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Glow background */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
+      </div>
+      
+        <motion.div className="w-full max-w-4xl bg-background/30 p-10 rounded-2xl border border-primary/20">
+          <form onSubmit={handleSubmit} className="space-y-12">
+            {/* PERSONAL */}
+            <div className="grid grid-cols-2 gap-6">
+              <FormField
+                label="First Name"
+                placeholder="Joe"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
+              <FormField
+                label="Last Name"
+                placeholder="Romany"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+              />
+              <FormField
+                label="Phone Number"
+                placeholder="+20 10 123 4567"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+              <FormField
+                type="date"
+                label="Date of Birth"
+                name="dateOfBirth"
+                value={formData.dateOfBirth}
+                onChange={handleChange}
+                required
+              />
+              <FormField
+                label="Nationality"
+                placeholder="Egyptian"
+                name="nationality"
+                value={formData.nationality}
+                onChange={handleChange}
+                required
+              />
             </div>
-            <h1 className="text-3xl font-bold mt-4 text-amber-950">Complete Your Profile</h1>
-            <p className="text-amber-700">To activate your travel account</p>
-          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-10">
+            {/* PASSPORT */}
+            <div className="grid grid-cols-2 gap-6">
+              <FormField
+                label="Passport Number"
+                placeholder="A12345678"
+                name="passportNumber"
+                value={formData.passportNumber}
+                onChange={handleChange}
+                required
+              />
+              <FormField
+                type="date"
+                label="Passport Expiry"
+                name="passportExpiry"
+                value={formData.passportExpiry}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-            {/* Personal */}
-            <section>
-              <h2 className="section-title">Personal Information</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" className="input" required />
-                <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" className="input" required />
-                <input name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone Number" className="input" required />
-                <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} className="input" required />
-                <input name="nationality" value={formData.nationality} onChange={handleChange} placeholder="Nationality" className="input" required />
+            {/* ADDRESS */}
+            <div className="grid grid-cols-2 gap-6">
+              <FormField
+                label="Street Address"
+                placeholder="12 Garden St"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                required
+              />
+              <FormField
+                label="City"
+                placeholder="Cairo"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                required
+              />
+
+              {/* COUNTRY DROPDOWN */}
+              <div>
+                <label className="text-sm text-primary">Country</label>
+                <Popover open={countryOpen} onOpenChange={setCountryOpen}>
+                  <PopoverTrigger asChild>
+                    <button className="w-full px-4 py-3 rounded-xl text-primary border border-primary/20 text-left">
+                      {formData.country || "Select country..."}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0 w-[260px]">
+                    <Command>
+                      <CommandInput
+                        placeholder="Search..."
+                        value={countryQuery}
+                        onValueChange={setCountryQuery}
+                      />
+                      <CommandList>
+                        <CommandEmpty>No results.</CommandEmpty>
+                        <CommandGroup>
+                          {filteredCountries.map((c) => (
+                            <CommandItem
+                              key={c}
+                              onSelect={() => handleSelectCountry(c)}
+                            >
+                              {c}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
-            </section>
 
-            {/* Passport */}
-            <section>
-              <h2 className="section-title">Passport Information</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                <input name="passportNumber" value={formData.passportNumber} onChange={handleChange} placeholder="Passport Number" className="input" required />
-                <input type="date" name="passportExpiry" value={formData.passportExpiry} onChange={handleChange} className="input" required />
-              </div>
-            </section>
+              <FormField
+                label="Zip Code"
+                placeholder="11511"
+                name="zipCode"
+                value={formData.zipCode}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-            {/* Address */}
-            <section>
-              <h2 className="section-title">Address</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                <input name="address" value={formData.address} onChange={handleChange} placeholder="Street Address" className="input md:col-span-2" required />
-                <input name="city" value={formData.city} onChange={handleChange} placeholder="City" className="input" required />
-                <input name="country" value={formData.country} onChange={handleChange} placeholder="Country" className="input" required />
-                <input name="zipCode" value={formData.zipCode} onChange={handleChange} placeholder="Zip Code" className="input" required />
-              </div>
-            </section>
+            {/* EMERGENCY CONTACT */}
+            <div className="grid grid-cols-2 gap-6">
+              <FormField
+                label="Emergency Contact Name"
+                placeholder="Mohamed Ali"
+                name="emergencyContactName"
+                value={formData.emergencyContactName}
+                onChange={handleChange}
+                required
+              />
+              <FormField
+                label="Emergency Contact Phone"
+                placeholder="+20 11 987 6543"
+                name="emergencyContactPhone"
+                value={formData.emergencyContactPhone}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-            {/* Emergency */}
-            <section>
-              <h2 className="section-title">Emergency Contact</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                <input name="emergencyContactName" value={formData.emergencyContactName} onChange={handleChange} placeholder="Contact Name" className="input" required />
-                <input name="emergencyContactPhone" value={formData.emergencyContactPhone} onChange={handleChange} placeholder="Contact Phone" className="input" required />
-              </div>
-            </section>
-
-            <button type="submit" disabled={!isFormValid || loading} className="btn-primary w-full">
-              {loading ? "Saving..." : "Complete Profile"}
-            </button>
+            {/* SUBMIT */}
+            <MotionButton
+              whileHover={{ scale: loading ? 1 : 1.04 }}
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 text-lg font-semibold bg-primary text-black rounded-xl"
+            >
+              {loading ? (
+                <div className="flex justify-center items-center gap-2">
+                  <span className="animate-spin h-4 w-4 border-2 border-black border-t-transparent rounded-full"></span>
+                  Saving...
+                </div>
+              ) : (
+                "Complete Profile"
+              )}
+            </MotionButton>
           </form>
 
-          <Link href="/signup" className="flex items-center justify-center mt-6 text-amber-600 font-medium">
-            <ArrowLeft size={16} className="mr-1" /> Back to Signup
+          <Link
+            href="/signup"
+            className="block text-center mt-6 text-primary hover:text-primary"
+          >
+            <ArrowLeft size={16} className="inline mr-1" /> Back to Signup
           </Link>
-        </div>
-      </div>
+        </motion.div>
     </div>
-  )
+  );
 }

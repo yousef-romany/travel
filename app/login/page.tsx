@@ -1,38 +1,51 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { user, loading, login, resendConfirmation } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingBtn, setLoadingBtn] = useState(false);
   const [error, setError] = useState("");
 
-  // Resend Verification UI
   const [showResend, setShowResend] = useState(false);
   const [resendStatus, setResendStatus] = useState<null | "sending" | "sent" | "failed">(null);
 
+  // ✅ لو المستخدم مسجّل → حوله على /dashboard
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/me");
+    }
+  }, [user, loading, router]);
+
+  if (loading || user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        <Loader2 className="animate-spin" size={28} />
+      </div>
+    );
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setLoadingBtn(true);
     setError("");
 
     try {
       await login(email, password);
-      router.push("/");
+      // 🚀 AuthContext بالفعل بيعمل redirect
     } catch (err: any) {
       const msg = err.message || "Invalid email or password";
 
-      // Detect "Email not confirmed"
       if (msg.toLowerCase().includes("confirm")) {
         setShowResend(true);
         setError("Your email is not verified yet. Please confirm your email.");
@@ -41,23 +54,14 @@ export default function LoginPage() {
       }
     }
 
-    setLoading(false);
+    setLoadingBtn(false);
   };
 
   const handleResend = async () => {
     setResendStatus("sending");
     try {
-      const res = await fetch("/api/resend-confirmation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      if (res.ok) {
-        setResendStatus("sent");
-      } else {
-        setResendStatus("failed");
-      }
+      await resendConfirmation(email);
+      setResendStatus("sent");
     } catch {
       setResendStatus("failed");
     }
@@ -84,10 +88,8 @@ export default function LoginPage() {
             <p className="text-slate-400 mt-1">Log in to continue your journey</p>
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <p className="text-red-400 text-center text-sm mb-4">{error}</p>
-          )}
+          {/* Error */}
+          {error && <p className="text-red-400 text-center text-sm mb-4">{error}</p>}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             
@@ -141,11 +143,11 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Resend Verification Section */}
+          {/* Resend verification */}
           {showResend && (
             <div className="mt-6 bg-slate-800 p-4 rounded-lg text-center space-y-3">
               <p className="text-slate-300 text-sm">
-                Didn’t receive your verification email? 
+                Didn’t receive the verification email?
               </p>
 
               <button
@@ -156,21 +158,14 @@ export default function LoginPage() {
                 {resendStatus === "sending" ? "Sending..." : "Resend Verification Email"}
               </button>
 
-              {resendStatus === "sent" && (
-                <p className="text-green-400 text-sm">✅ Verification email sent successfully.</p>
-              )}
-
-              {resendStatus === "failed" && (
-                <p className="text-red-400 text-sm">❌ Could not send email. Try again later.</p>
-              )}
+              {resendStatus === "sent" && <p className="text-green-400 text-sm">✅ Email sent.</p>}
+              {resendStatus === "failed" && <p className="text-red-400 text-sm">❌ Failed, try later.</p>}
             </div>
           )}
 
           <p className="text-center text-slate-400 mt-6">
-            Don't have an account?{" "}
-            <Link href="/signup" className="text-amber-400 hover:text-amber-300 font-semibold">
-              Create one
-            </Link>
+            Don't have an account?
+            <Link href="/signup" className="text-amber-400 hover:text-amber-300 font-semibold"> Create one</Link>
           </p>
 
         </div>

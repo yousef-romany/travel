@@ -1,45 +1,52 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Edit2, TrendingUp, Plane, Heart, Calendar } from "lucide-react"
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Edit2, TrendingUp, Plane, Heart, Calendar } from "lucide-react";
 
 export default function PersonalInfo() {
-  const [user, setUser] = useState<any>(null)
+  const router = useRouter();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    if (!token) {
-      window.location.href = "/login"
-      return
+    if (!loading && !user) {
+      router.push("/login");
     }
-
-    const fetchUser = async () => {
+    if (!loading && user) {
+    const checkProfile = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/users/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/profiles?filters[user][id]=${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
 
-        if (!res.ok) {
-          localStorage.removeItem("token")
-          window.location.href = "/login"
-          return
+        const data = await res.json();
+
+        // User has NO profile → redirect them
+        if (!data.data.length) {
+          router.push("/complete-profile");
         }
 
-        const data = await res.json()
-        setUser(data)
-      } catch (error) {
-        console.error("Error fetching user:", error)
+      } catch (err) {
+        console.error("Error checking profile:", err);
       }
+    };
+
+    checkProfile();
     }
+  }, [user, loading, router]);
 
-    fetchUser()
-  }, [])
-
-  if (!user) {
-    return <p className="text-center text-white py-10">Loading your profile...</p>
+  if (loading || !user) {
+    return <p className="text-center text-white py-10">Loading your profile...</p>;
   }
 
   const stats = [
@@ -47,7 +54,7 @@ export default function PersonalInfo() {
     { label: "Total Spent", value: user.totalSpent ? `$${user.totalSpent}` : "$0", icon: TrendingUp, color: "text-green-500" },
     { label: "Wishlist Items", value: user.wishlistCount || "0", icon: Heart, color: "text-rose-500" },
     { label: "Member Since", value: user.createdAt?.slice(0, 4) || "—", icon: Calendar, color: "text-amber-500" },
-  ]
+  ];
 
   return (
     <div className="space-y-6">
@@ -55,7 +62,7 @@ export default function PersonalInfo() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => {
-          const IconComponent = stat.icon
+          const IconComponent = stat.icon;
           return (
             <Card key={stat.label} className="border border-border bg-card hover:border-amber-500/50 transition-all shadow-sm hover:shadow-md">
               <CardContent className="pt-6">
@@ -70,7 +77,7 @@ export default function PersonalInfo() {
                 </div>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
 
@@ -122,5 +129,5 @@ export default function PersonalInfo() {
       </Card>
 
     </div>
-  )
+  );
 }

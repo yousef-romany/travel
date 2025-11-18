@@ -4,8 +4,10 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { Mail, ArrowLeft } from "lucide-react"
+import { useAuth } from "@/context/AuthContext" // ✅ important
 
 export default function ForgotPasswordPage() {
+  const { forgotPassword } = useAuth() // ✅ call from context
   const [email, setEmail] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -15,21 +17,7 @@ export default function ForgotPasswordPage() {
     setLoading(true)
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/forgot-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      })
-
-      let data
-      try {
-        data = await res.json()
-      } catch {
-        throw new Error("Server returned HTML instead of JSON. Check Strapi Email configuration.")
-      }
-
-      if (!res.ok) throw new Error(data?.error?.message || "Something went wrong")
-
+      await forgotPassword(email) // ✅ Replace fetch with context method
       setSubmitted(true)
     } catch (err: any) {
       alert(err.message)
