@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     }
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/send-email-confirmation`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/send-email-confirmation`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

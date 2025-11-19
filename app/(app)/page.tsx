@@ -1,6 +1,6 @@
 "use client";
 import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -17,12 +17,113 @@ import {
   Plane,
   Star,
   Ticket,
+  Loader2,
 } from "lucide-react";
+import { ProgramCarousel } from "./programs/components/ProgramCarousel";
+
+const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+
+interface InspireBlog {
+  id: number;
+  documentId: string;
+  title: string;
+  imageUrl: string;
+  details: string;
+  inspire_category?: {
+    categoryName: string;
+  };
+}
+
+interface PlaceToGoCategory {
+  id: number;
+  documentId: string;
+  categoryName: string;
+  imageUrl: string;
+  description: string;
+}
+
+interface Program {
+  id: number;
+  documentId: string;
+  title: string;
+  descraption: string;
+  Location: string;
+  price: number;
+  duration: number;
+  rating: number;
+  overView: string;
+  images?: Array<{
+    id: number;
+    imageUrl: string;
+  }>;
+}
+
+interface InstagramPost {
+  id: number;
+  documentId: string;
+  idPost: string;
+  place_to_go_blogs?: Array<{
+    title: string;
+    imageUrl: string;
+  }>;
+}
 
 export default function Home() {
+  const [inspireBlogs, setInspireBlogs] = useState<InspireBlog[]>([]);
+  const [placeCategories, setPlaceCategories] = useState<PlaceToGoCategory[]>([]);
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [instagramPosts, setInstagramPosts] = useState<InstagramPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     applyHieroglyphEffect();
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch Inspire Blogs (Be Inspired Section)
+      const inspireRes = await fetch(
+        `${API_URL}/api/inspire-blogs?populate=inspire_category&pagination[limit]=3`
+      );
+      const inspireData = await inspireRes.json();
+      setInspireBlogs(inspireData.data || []);
+
+      // Fetch Place To Go Categories
+      const placesRes = await fetch(
+        `${API_URL}/api/place-to-go-categories?pagination[limit]=4`
+      );
+      const placesData = await placesRes.json();
+      setPlaceCategories(placesData.data || []);
+
+      // Fetch Programs
+      const programsRes = await fetch(
+        `${API_URL}/api/programs?populate=images&pagination[limit]=3&sort=rating:desc`
+      );
+      const programsData = await programsRes.json();
+      setPrograms(programsData.data || []);
+
+      // Fetch Instagram Posts
+      const instaRes = await fetch(
+        `${API_URL}/api/instagram-posts?populate=place_to_go_blogs&pagination[limit]=6`
+      );
+      const instaData = await instaRes.json();
+      setInstagramPosts(instaData.data || []);
+      
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getImageUrl = (url: string) => {
+    if (!url) return "/placeholder.svg?height=600&width=800";
+    return url.startsWith("http") ? url : `${API_URL}${url}`;
+  };
+
   return (
     <div className="!w-full flex-1">
       {/* Hero Section */}
@@ -41,17 +142,19 @@ export default function Home() {
           <p className="text-xl md:text-2xl max-w-3xl mb-8">
             Experience 7,000 years of history, culture, and adventure
           </p>
-          <Button
-            size="lg"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
-          >
-            Start Your Journey
-          </Button>
+          <Link href="/programs">
+            <Button
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              Start Your Journey
+            </Button>
+          </Link>
         </div>
       </section>
 
       {/* Be Inspired Section */}
-      <section id="be-inspired" className="py-16  !w-full px-[2em]">
+      <section id="be-inspired" className="py-16 !w-full px-[2em]">
         <div className="flex flex-col items-center mb-12 text-center">
           <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
             <Heart className="h-6 w-6 text-primary" />
@@ -62,88 +165,48 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="!w-full grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Card className="overflow-hidden group">
-            <div className="relative h-64 overflow-hidden">
-              <Image
-                src="/placeholder.svg?height=600&width=800"
-                alt="Ancient Temples"
-                fill
-                className="object-cover transition-transform group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                <h3 className="text-xl font-bold text-white">
-                  Ancient Temples
-                </h3>
-              </div>
-            </div>
-            <CardContent className="p-6">
-              <p className="text-muted-foreground mb-4">
-                Explore the magnificent temples of Luxor, Karnak, and Abu Simbel
-              </p>
-              <Link
-                href="#"
-                className="text-primary font-medium hover:underline inline-flex items-center"
-              >
-                Learn more <Compass className="ml-2 h-4 w-4" />
-              </Link>
-            </CardContent>
-          </Card>
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          <div className="!w-full grid grid-cols-1 md:grid-cols-3 gap-8">
+            {inspireBlogs.slice(0, 3).map((blog) => (
+              <Card key={blog.id} className="overflow-hidden group">
+                <div className="relative h-64 overflow-hidden">
+                  <Image
+                    src={getImageUrl(blog.imageUrl)}
+                    alt={blog.title}
+                    fill
+                    className="object-cover transition-transform group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
+                    <h3 className="text-xl font-bold text-white">{blog.title}</h3>
+                  </div>
+                </div>
+                <CardContent className="p-6">
+                  <p className="text-muted-foreground mb-4 line-clamp-2">
+                    {blog.details?.replace(/<[^>]*>/g, '') || "Explore amazing destinations"}
+                  </p>
+                  <Link
+                    href={`/inspire/${blog.documentId}`}
+                    className="text-primary font-medium hover:underline inline-flex items-center"
+                  >
+                    Learn more <Compass className="ml-2 h-4 w-4" />
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
 
-          <Card className="overflow-hidden group">
-            <div className="relative h-64 overflow-hidden">
-              <Image
-                src="/placeholder.svg?height=600&width=800"
-                alt="Red Sea"
-                fill
-                className="object-cover transition-transform group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                <h3 className="text-xl font-bold text-white">
-                  Red Sea Wonders
-                </h3>
-              </div>
-            </div>
-            <CardContent className="p-6">
-              <p className="text-muted-foreground mb-4">
-                Dive into crystal clear waters and discover vibrant coral reefs
-              </p>
-              <Link
-                href="#"
-                className="text-primary font-medium hover:underline inline-flex items-center"
-              >
-                Learn more <Compass className="ml-2 h-4 w-4" />
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className="overflow-hidden group">
-            <div className="relative h-64 overflow-hidden">
-              <Image
-                src="/placeholder.svg?height=600&width=800"
-                alt="Desert Safari"
-                fill
-                className="object-cover transition-transform group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                <h3 className="text-xl font-bold text-white">
-                  Desert Adventures
-                </h3>
-              </div>
-            </div>
-            <CardContent className="p-6">
-              <p className="text-muted-foreground mb-4">
-                Experience the magic of the Sahara with camel rides and
-                stargazing
-              </p>
-              <Link
-                href="#"
-                className="text-primary font-medium hover:underline inline-flex items-center"
-              >
-                Learn more <Compass className="ml-2 h-4 w-4" />
-              </Link>
-            </CardContent>
-          </Card>
+        <div className="flex justify-center mt-10">
+          <Link href="/inspire">
+            <Button variant="outline" className="gap-2">
+              View All Stories
+              <Heart className="h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </section>
 
@@ -165,99 +228,51 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="overflow-hidden group">
-              <div className="relative h-48 overflow-hidden">
-                <Image
-                  src="/placeholder.svg?height=500&width=500"
-                  alt="Cairo"
-                  fill
-                  className="object-cover transition-transform group-hover:scale-105"
-                />
-              </div>
-              <CardContent className="p-4 text-center">
-                <h3 className="font-bold text-lg mb-1">Cairo</h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  The vibrant capital
-                </p>
-                <Button variant="outline" size="sm" className="!w-full">
-                  Explore
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="overflow-hidden group">
-              <div className="relative h-48 overflow-hidden">
-                <Image
-                  src="/placeholder.svg?height=500&width=500"
-                  alt="Luxor"
-                  fill
-                  className="object-cover transition-transform group-hover:scale-105"
-                />
-              </div>
-              <CardContent className="p-4 text-center">
-                <h3 className="font-bold text-lg mb-1">Luxor</h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  The world{"'"}s greatest open-air museum
-                </p>
-                <Button variant="outline" size="sm" className="!w-full">
-                  Explore
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="overflow-hidden group">
-              <div className="relative h-48 overflow-hidden">
-                <Image
-                  src="/placeholder.svg?height=500&width=500"
-                  alt="Aswan"
-                  fill
-                  className="object-cover transition-transform group-hover:scale-105"
-                />
-              </div>
-              <CardContent className="p-4 text-center">
-                <h3 className="font-bold text-lg mb-1">Aswan</h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Gateway to Nubian culture
-                </p>
-                <Button variant="outline" size="sm" className="!w-full">
-                  Explore
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="overflow-hidden group">
-              <div className="relative h-48 overflow-hidden">
-                <Image
-                  src="/placeholder.svg?height=500&width=500"
-                  alt="Sharm El Sheikh"
-                  fill
-                  className="object-cover transition-transform group-hover:scale-105"
-                />
-              </div>
-              <CardContent className="p-4 text-center">
-                <h3 className="font-bold text-lg mb-1">Sharm El Sheikh</h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Red Sea paradise
-                </p>
-                <Button variant="outline" size="sm" className="!w-full">
-                  Explore
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {placeCategories.slice(0, 4).map((category) => (
+                <Card key={category.id} className="overflow-hidden group">
+                  <div className="relative h-48 overflow-hidden">
+                    <Image
+                      src={getImageUrl(category.imageUrl)}
+                      alt={category.categoryName}
+                      fill
+                      className="object-cover transition-transform group-hover:scale-105"
+                    />
+                  </div>
+                  <CardContent className="p-4 text-center">
+                    <h3 className="font-bold text-lg mb-1">{category.categoryName}</h3>
+                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                      {category.description || "Discover amazing places"}
+                    </p>
+                    <Link href={`/places/${category.documentId}`}>
+                      <Button variant="outline" size="sm" className="!w-full">
+                        Explore
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
 
           <div className="flex justify-center mt-10">
-            <Button variant="outline" className="gap-2">
-              View All Destinations
-              <Compass className="h-4 w-4" />
-            </Button>
+            <Link href="/places">
+              <Button variant="outline" className="gap-2">
+                View All Destinations
+                <Compass className="h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Plan Your Trip Section */}
-      <section id="plan-your-trip" className="py-16  !w-full px-[2em]">
+      <section id="plan-your-trip" className="py-16 !w-full px-[2em]">
         <div className="flex flex-col items-center mb-12 text-center">
           <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
             <Calendar className="h-6 w-6 text-primary" />
@@ -480,126 +495,63 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="overflow-hidden">
-              <div className="relative">
-                <div className="relative h-56 overflow-hidden">
-                  <Image
-                    src="/placeholder.svg?height=600&width=800"
-                    alt="Classic Egypt Tour"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
-                  Best Seller
-                </div>
-              </div>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-bold text-lg">Classic Egypt Tour</h3>
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-primary text-primary" />
-                    <span className="font-medium">4.9</span>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {programs.map((program, index) => (
+                <Card key={program.id} className="overflow-hidden">
+                  <div className="relative">
+                    <div className="relative h-56 overflow-hidden">
+                      
+                      {program.images && <ProgramCarousel images={program.images as []} />}
+                    </div>
+                    {index === 0 && (
+                      <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
+                        Best Seller
+                      </div>
+                    )}
+                    {index === 2 && (
+                      <div className="absolute top-4 right-4 bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-sm font-medium">
+                        New
+                      </div>
+                    )}
                   </div>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  8 days exploring Cairo, Luxor, and Aswan with a Nile cruise
-                </p>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="text-lg font-bold">$1,299</span>
-                    <span className="text-muted-foreground text-sm">
-                      {" "}
-                      / person
-                    </span>
-                  </div>
-                  <Button>View Details</Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="overflow-hidden">
-              <div className="relative">
-                <div className="relative h-56 overflow-hidden">
-                  <Image
-                    src="/placeholder.svg?height=600&width=800"
-                    alt="Red Sea Diving Adventure"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-bold text-lg">
-                    Red Sea Diving Adventure
-                  </h3>
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-primary text-primary" />
-                    <span className="font-medium">4.8</span>
-                  </div>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  5 days of diving and relaxation in Sharm El Sheikh
-                </p>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="text-lg font-bold">$899</span>
-                    <span className="text-muted-foreground text-sm">
-                      {" "}
-                      / person
-                    </span>
-                  </div>
-                  <Button>View Details</Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="overflow-hidden">
-              <div className="relative">
-                <div className="relative h-56 overflow-hidden">
-                  <Image
-                    src="/placeholder.svg?height=600&width=800"
-                    alt="Desert Safari"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="absolute top-4 right-4 bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-sm font-medium">
-                  New
-                </div>
-              </div>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-bold text-lg">White Desert Expedition</h3>
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-primary text-primary" />
-                    <span className="font-medium">4.7</span>
-                  </div>
-                </div>
-                <p className="text-muted-foreground mb-4">
-                  3-day adventure in the surreal landscapes of the White Desert
-                </p>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="text-lg font-bold">$649</span>
-                    <span className="text-muted-foreground text-sm">
-                      {" "}
-                      / person
-                    </span>
-                  </div>
-                  <Button>View Details</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="font-bold text-lg line-clamp-1">{program.title}</h3>
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 fill-primary text-primary" />
+                        <span className="font-medium">{program.rating}</span>
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground mb-4 line-clamp-2">
+                      {program.descraption || program.overView}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <span className="text-lg font-bold">${program.price}</span>
+                        <span className="text-muted-foreground text-sm"> / person</span>
+                      </div>
+                      <Link href={`/programs/${program.documentId}`}>
+                        <Button>View Details</Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
 
           <div className="flex justify-center mt-10">
-            <Button className="gap-2">
-              View All Programs
-              <Ticket className="h-4 w-4" />
-            </Button>
+            <Link href="/programs">
+              <Button className="gap-2">
+                View All Programs
+                <Ticket className="h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -612,48 +564,68 @@ export default function Home() {
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Instagram</h2>
           <p className="text-muted-foreground max-w-3xl">
-            Follow our adventures and get inspired by our latest Instagram
-            videos
+            Follow our adventures and get inspired by our latest Instagram videos
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((item) => (
-            <div
-              key={item}
-              className="relative group rounded-lg overflow-hidden"
-            >
-              <div className="relative aspect-square bg-muted">
-                <Image
-                  src={`/placeholder.svg?height=600&width=600&text=Instagram+Video+${item}`}
-                  alt={`Instagram Video ${item}`}
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full bg-white/20 backdrop-blur-sm border-white/40 text-white hover:bg-white/30 hover:text-white"
-                  >
-                    <Play className="h-6 w-6 fill-white" />
-                  </Button>
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {instagramPosts.map((post) => {
+              const blog = post.place_to_go_blogs?.[0];
+              return (
+                <div
+                  key={post.id}
+                  className="relative group rounded-lg overflow-hidden"
+                >
+                  <div className="relative aspect-square bg-muted">
+                    <Image
+                      src={getImageUrl(blog?.imageUrl || "")}
+                      alt={blog?.title || `Instagram Post ${post.idPost}`}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <a
+                        href={`https://www.instagram.com/p/${post.idPost}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="rounded-full bg-white/20 backdrop-blur-sm border-white/40 text-white hover:bg-white/30 hover:text-white"
+                        >
+                          <Play className="h-6 w-6 fill-white" />
+                        </Button>
+                      </a>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent text-white">
+                    <p className="font-medium text-sm line-clamp-1">
+                      {blog?.title || "Exploring Egypt #EgyptTravel"}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent text-white">
-                <p className="font-medium text-sm">
-                  Exploring the wonders of Egypt #EgyptTravel
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+              );
+            })}
+          </div>
+        )}
 
         <div className="flex justify-center mt-10">
-          <Button variant="outline" className="gap-2">
-            <Instagram className="h-4 w-4" />
-            Follow Us on Instagram
-          </Button>
+          <a
+            href="https://www.instagram.com/yourprofile"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button variant="outline" className="gap-2">
+              <Instagram className="h-4 w-4" />
+              Follow Us on Instagram
+            </Button>
+          </a>
         </div>
       </section>
 

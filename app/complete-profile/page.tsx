@@ -264,7 +264,7 @@ export default function CompleteProfilePage() {
 
     // 1. Check if profile exists
     const p = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/profiles?filters[user][id]=${user.id}`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles?filters[user][id]=${user.id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -277,7 +277,7 @@ export default function CompleteProfilePage() {
     // 2. Create profile if not found (Strapi v5 syntax)
     if (!p.data.length) {
       const created = await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/profiles`,
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles`,
         {
           method: "POST",
           headers: {
@@ -305,7 +305,7 @@ export default function CompleteProfilePage() {
       profileId = p.data[0].id;
 
       await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/profiles/${profileId}`,
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles/${profileId}`,
         {
           method: "PUT",
           headers: {

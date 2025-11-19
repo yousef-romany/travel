@@ -70,28 +70,6 @@ export default function ProfileHeader() {
               </div>
             </div>
           </div>
-
-          <div className="flex gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-slate-700 hover:bg-slate-800 hover:text-white gap-2 bg-transparent"
-            >
-              <Settings className="w-4 h-4" />
-              Settings
-            </Button>
-
-            <Button
-              onClick={logout}
-              variant="outline"
-              size="sm"
-              className="border-slate-700 hover:bg-slate-800 hover:text-white gap-2 bg-transparent"
-            >
-              <LogOut className="w-4 h-4" />
-              Logout
-            </Button>
-          </div>
-
         </div>
       </div>
     </div>

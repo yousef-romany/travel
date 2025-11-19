@@ -22,3 +22,36 @@ export interface dataTypeCardTravel {
   title?: string;
   updatedAt?: string;
 }
+
+
+// src/type/programs.ts
+export interface MediaFormat {
+  url: string;
+  width: number;
+  height: number;
+}
+
+export interface Media {
+  id: number;
+  name: string;
+  url: string;
+  formats?: {
+    thumbnail?: MediaFormat;
+    small?: MediaFormat;
+    medium?: MediaFormat;
+    large?: MediaFormat;
+  };
+}
+
+export interface ProgramType {
+  id: number;
+  documentId: string;
+  title: string;
+  descraption: string;
+  Location: string;
+  duration: number;
+  price: number;
+  rating: number;
+  overView: string;
+  images: Media[];
+}

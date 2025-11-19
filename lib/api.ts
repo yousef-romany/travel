@@ -7,7 +7,7 @@ export const api = async (path: string, options: RequestInit = {}) => {
     ...(options.headers || {}),
   };
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}${path}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}${path}`, {
     ...options,
     headers,
   });

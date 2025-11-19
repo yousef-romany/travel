@@ -8,7 +8,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Missing confirmation token" }, { status: 400 });
   }
 
-  const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_HOST;
+  const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
   const url = `${STRAPI_URL}/api/auth/email-confirmation?confirmation=${token}`;
 
   const res = await fetch(url, { method: "GET" });

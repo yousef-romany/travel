@@ -27,7 +27,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         alt={alt}
         fill
         className={cn(
-          "object-cover transition-opacity duration-300",
+          "object-contain transition-opacity duration-300",
           className
         )}
         loading="lazy"

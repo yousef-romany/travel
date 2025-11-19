@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const loadUser = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/users/me?populate=profile`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me?populate=profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // ✅ LOGIN
   const login = async (email: string, password: string) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/local`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/local`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ identifier: email, password }),
@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem("authToken", data.jwt);
 
     const userRes = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/users/me?populate=profile`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me?populate=profile`,
       { headers: { Authorization: `Bearer ${data.jwt}` } }
     );
     const rawUser = await userRes.json();
@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // ✅ Redirect
     if (rawUser.profile?.isProfileCompleted) {
-      window.location.href = "/dashboard";
+      window.location.href = "/";
     } else {
       window.location.href = "/complete-profile";
     }
@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // ✅ SIGNUP
   const signup = async (email: string, password: string) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/local/register`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/local/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: email, email, password }),
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem("authToken", data.jwt);
 
     // Create profile
-    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/profiles`, {
+    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -115,7 +115,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // ✅ Forgot Password
   const forgotPassword = async (email: string) => {
-    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/forgot-password`, {
+    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/forgot-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
@@ -124,7 +124,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // ✅ Reset Password
   const resetPassword = async (code: string, password: string, passwordConfirmation: string) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/reset-password`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/reset-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code, password, passwordConfirmation }),
@@ -136,12 +136,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem("authToken", data.jwt);
 
     setUser({ ...data.user, token: data.jwt });
-    window.location.href = "/dashboard";
+    window.location.href = "/";
   };
 
   // ✅ Resend Confirmation
   const resendConfirmation = async (email: string) => {
-    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/auth/send-email-confirmation`, {
+    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/send-email-confirmation`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),

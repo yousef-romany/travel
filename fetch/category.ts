@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const fetchInspirationCategories = async () => {
   try {
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/inspire-categories?populate=*`;
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/inspire-categories?populate=*`;
 
     const response = await axios.get(url, {
       headers: {
@@ -21,7 +21,7 @@ export const fetchInspirationCategories = async () => {
 export const fetchInspirationOneCategory = async (name: string) => {
   // http://localhost:1337/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/inspire-categories?filters[categoryName][$eq]=${name}&populate[inspire_subcategories][populate]=*`;
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/inspire-categories?filters[categoryName][$eq]=${name}&populate[inspire_subcategories][populate]=*`;
 
     const response = await axios.get(String(url), {
       headers: {
@@ -40,7 +40,7 @@ export const fetchInspirationOneCategory = async (name: string) => {
 export const fetchInspirationOneSubCategory = async (name: string) => {
   // http://localhost:1337/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/inspire-subCategories?filters[categoryName][$eq]=${name}&populate=*`;
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/inspire-subCategories?filters[categoryName][$eq]=${name}&populate=*`;
 
     const response = await axios.get(String(url), {
       headers: {
@@ -59,7 +59,7 @@ export const fetchInspirationOneSubCategory = async (name: string) => {
 export const fetchInspirationOneBlog = async (name: string) => {
   // http://localhost:1337/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_HOST}/api/inspire-blogs?filters[title][$eq]=${name}&populate=*`;
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/inspire-blogs?filters[title][$eq]=${name}&populate=*`;
 
     const response = await axios.get(String(url), {
       headers: {

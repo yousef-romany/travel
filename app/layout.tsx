@@ -5,6 +5,7 @@ import NavBar from "@/components/layout/NavBar";
 import { ThemeProvider } from "@/components/Providers";
 import Script from "next/script";
 import { AuthProvider } from "@/context/AuthContext";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -68,6 +69,7 @@ export default function RootLayout({
           <NavBar />
           <div className="pt-[76px]">{children}</div>
           <div id="google_translate_element"></div>
+          <Toaster />
         </ThemeProvider>
         </AuthProvider>
       </body>
