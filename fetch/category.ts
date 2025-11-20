@@ -21,7 +21,14 @@ export const fetchInspirationCategories = async () => {
 export const fetchInspirationOneCategory = async (name: string) => {
   // http://localhost:1337/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/inspire-categories?filters[categoryName][$eq]=${name}&populate[inspire_subcategories][populate]=*`;
+const url =
+  `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/inspire-categories` +
+  `?filters[categoryName][$eq]=${encodeURIComponent(name)}` +
+  `&populate[image]=true` + 
+  `&populate[inspire_subcategories][populate][image]=true` +
+  `&populate[inspire_subcategories][populate][inspire_blogs][populate][image]=true`;
+
+
 
     const response = await axios.get(String(url), {
       headers: {

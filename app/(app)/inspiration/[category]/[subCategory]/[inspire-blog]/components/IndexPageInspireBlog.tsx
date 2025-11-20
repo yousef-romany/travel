@@ -11,6 +11,8 @@ import { Separator } from "@/components/ui/separator";
 import Loading from "@/components/Loading";
 import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 import OptimizedImage from "@/components/OptimizedImage";
+import { getImageUrl } from "@/lib/utils";
+import { Media } from "@/type/programs";
 
 const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
   useEffect(() => {
@@ -27,11 +29,16 @@ const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
   if (error instanceof Error) return <p>Error: {error.message}</p>;
   return (
     <div className="flex gap-4 flex-col h-fit justify-between">
-      <div className="relative w-full h-[calc(100vh-80px)] !z-[-9999]">
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
+      </div>
+      <div className="relative w-full h-[calc(100vh-80px)] z-0">
         <OptimizedImage
-          src={data?.data?.at(-1)?.imageUrl as string}
+          src={getImageUrl(data?.data?.at(-1)?.image as Media)}
           alt={data?.data?.at(-1)?.title as string}
-          className="w-full h-full object-cover !z-[-9999]"     />
+          className="min-w-full "
+        />
       </div>
 
       {(data?.data?.at(-1)?.instagram_posts?.length || 0) > 0 ? (

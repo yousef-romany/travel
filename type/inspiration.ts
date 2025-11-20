@@ -1,3 +1,5 @@
+import { Media } from "./programs";
+
 export interface InspirationCategory {
   data: InspirationCategoryData[];
   meta: meta;
@@ -7,7 +9,7 @@ export interface InspirationCategoryData {
   documentId: number;
   categoryName: string;
   description: string;
-  imageUrl: string;
+  image: Media;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
@@ -19,7 +21,7 @@ export interface InspireSubcategories {
   id: number;
   documentId: string;
   categoryName: string;
-  imageUrl: string;
+  image: Media;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
@@ -30,7 +32,7 @@ export interface InspireBlogs {
   id: number;
   documentId: string;
   title: string;
-  imageUrl: string;
+  image: Media;
   details: string;
   youtubeUrl: string;
   createdAt: string;

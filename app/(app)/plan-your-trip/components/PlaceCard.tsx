@@ -2,6 +2,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { Check } from "lucide-react";
 import { PlacesToGoBlogs } from "@/type/placesToGo";
 import OptimizedImage from "@/components/OptimizedImage";
+import { getImageUrl } from "@/lib/utils";
 
 interface PlaceCardProps {
   place: PlacesToGoBlogs;
@@ -32,7 +33,7 @@ export default function PlaceCard({ place, isInPlan }: PlaceCardProps) {
       } ${isInPlan ? "border-2 border-green-500" : ""}`}
     >
       <OptimizedImage
-        src={place?.imageUrl || "/placeholder.svg"}
+        src={getImageUrl(place?.image) || "/placeholder.svg"}
         alt={place?.title || "null"}
         className="w-full h-32 object-cover"
       />

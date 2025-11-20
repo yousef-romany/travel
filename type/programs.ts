@@ -1,12 +1,15 @@
+export interface ContentStep {
+  title: string;
+  imageUrl?: string;
+  place_to_go_subcategories?: {
+    categoryName: string;
+    place_to_go_categories?: { categoryName: string }[];
+  }[];
+}
+
 export interface dataTypeCardTravel {
   Location?: string;
-  content_steps?: {
-    title: string;
-    place_to_go_subcategories: {
-      categoryName: string;
-      place_to_go_categories: { categoryName: string }[];
-    }[];
-  }[];
+  content_steps?: ContentStep[];
   createdAt?: string;
   descraption?: string;
   documentId?: string;
@@ -25,7 +28,9 @@ export interface dataTypeCardTravel {
 
 
 // src/type/programs.ts
-export interface MediaFormat {
+
+
+interface MediaFormat {
   url: string;
   width: number;
   height: number;

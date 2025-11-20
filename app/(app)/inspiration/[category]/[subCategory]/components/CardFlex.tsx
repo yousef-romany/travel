@@ -9,6 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getImageUrl } from "@/lib/utils";
+import { Media } from "@/type/programs";
 import Link from "next/link";
 import { memo } from "react";
 
@@ -22,7 +24,7 @@ const CardFlex = ({
   slug: string;
   title: string;
   details: string;
-  imageUrl: string;
+  imageUrl: Media;
   link: string;
 }) => {
   return (
@@ -30,7 +32,7 @@ const CardFlex = ({
       <div className="flex sm:flex-row h-full justify-between !items-stretch">
         <div className="relative lg:w-2/5 md:w-2/5 sm:w-full !h-full ">
           <OptimizedImage
-            src={imageUrl as string}
+            src={getImageUrl(imageUrl)}
             alt={title as string}
             className="!h-full object-cover"
           />

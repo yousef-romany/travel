@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import Loading from "@/components/Loading";
 import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 import OptimizedImage from "@/components/OptimizedImage";
+import { getImageUrl } from "@/lib/utils";
 
 const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
   useEffect(() => {
@@ -30,7 +31,7 @@ const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
     <div className="flex gap-4 flex-col h-fit justify-between">
       <div className="relative w-full h-[calc(100vh-80px)] !z-[-9999]">
         <OptimizedImage
-          src={data?.data?.at(-1)?.imageUrl as string}
+          src={getImageUrl(data?.data?.at(-1)?.image) as string}
           alt={data?.data?.at(-1)?.title as string}
           className="w-full h-full object-cover !z-[-9999]"
  

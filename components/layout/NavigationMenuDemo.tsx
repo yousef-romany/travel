@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -39,18 +39,19 @@ export function NavigationMenuDemo({
                       key={category.id}
                       href={`/inspiration/${category.categoryName}`}
                       title={category.categoryName}
+                      className="text-primary"
                     >
-                      <div className="flex flex-col gap-4">
-                        {category?.imageUrl ? (
+                      <div className="flex flex-col gap-4 text-primary">
+                        {category?.image ? (
                           <OptimizedImage
-                            src={category.imageUrl}
+                            src={getImageUrl(category.image)}
                             alt={category.categoryName}
                             className="h-[140px] min-w-[200px] rounded-xl"
                           />
                         ) : (
                           <Skeleton className="h-[125px] w-[250px] rounded-xl" />
                         )}
-                        {category.description}
+                        {category.description.slice(0,16) + "...more"}
                       </div>
                     </ListItem>
                   ))
@@ -71,18 +72,19 @@ export function NavigationMenuDemo({
                         key={category.id}
                         href={`/placesTogo/${category.categoryName}`}
                         title={category.categoryName}
+                        className="text-primary"
                       >
-                        <div className="flex flex-col gap-4">
-                          {category?.imageUrl ? (
+                        <div className="flex flex-col gap-4 text-primary">
+                          {category?.image ? (
                             <OptimizedImage
-                              src={category.imageUrl}
+                              src={getImageUrl(category.image)}
                               alt={category.categoryName}
                               className="h-[140px] min-w-[200px] rounded-xl"
                             />
                           ) : (
                             <Skeleton className="h-[125px] w-[250px] rounded-xl" />
                           )}
-                          {category.description}
+                          {category.description.slice(0,16) + "...more"}
                         </div>
                       </ListItem>
                     )

@@ -76,7 +76,9 @@ export default function PageContent() {
       const filtered = data.data.filter(
         (program: ProgramType) =>
           (program?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            program?.Location?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+            program?.Location?.toLowerCase().includes(
+              searchTerm.toLowerCase()
+            )) &&
           Number(program.price) >= priceRange[0] &&
           Number(program.price) <= priceRange[1]
       );
@@ -89,6 +91,10 @@ export default function PageContent() {
 
   return (
     <div className="w-full mx-auto py-8 !px-[2em]">
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
+      </div>
       <h1 className="text-4xl font-bold mb-4 text-center">Travel Programs</h1>
       <p className="text-xl text-center mb-8">
         Discover our exciting travel programs and embark on your next adventure!
@@ -102,7 +108,8 @@ export default function PageContent() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <p className="text-sm text-muted-foreground">
-          {filteredPrograms.length} program{filteredPrograms.length !== 1 ? "s" : ""} found
+          {filteredPrograms.length} program
+          {filteredPrograms.length !== 1 ? "s" : ""} found
         </p>
       </div>
 
@@ -139,8 +146,12 @@ export default function PageContent() {
           ))
         ) : (
           <div className="col-span-full text-center py-12">
-            <p className="text-lg text-muted-foreground">No programs found matching your criteria.</p>
-            <p className="text-sm text-muted-foreground mt-2">Try adjusting your search or price range.</p>
+            <p className="text-lg text-muted-foreground">
+              No programs found matching your criteria.
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Try adjusting your search or price range.
+            </p>
           </div>
         )}
       </div>

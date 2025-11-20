@@ -12,6 +12,7 @@ import { fetchPlaceToOneSubCategory } from "@/fetch/placesToGo";
 import { PlacesToGoBlogs, PlacesToGoSubcategories } from "@/type/placesToGo";
 import Loading from "@/components/Loading";
 import OptimizedImage from "@/components/OptimizedImage";
+import { getImageUrl } from "@/lib/utils";
 
 const IndexPageInspireSubCategory = ({
   routes,
@@ -30,12 +31,12 @@ const IndexPageInspireSubCategory = ({
   });
   if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
-  console.log(data);
+  console.log("data , : hello", data);
   return (
     <div className="flex gap-4 flex-col h-fit justify-between">
       <div className="relative w-full h-[calc(100vh-80px)] !z-[-9999]">
         <OptimizedImage
-          src={data?.data?.at(-1)?.imageUrl as string}
+          src={getImageUrl(data?.data?.at(-1)?.image) as string}
           alt={data?.data?.at(-1)?.categoryName as string}
           className="w-full h-full object-cover !z-[-9999]"
         />
@@ -64,7 +65,7 @@ const IndexPageInspireSubCategory = ({
                   key={item.id}
                   details={item.details}
                   title={item.title}
-                  imageUrl={item.imageUrl}
+                  imageUrl={item.image}
                   routes={routes}
                   slug={slug}
                   link={`/placesTogo/${routes}/${slug}/${item.title}` as string}
@@ -80,7 +81,7 @@ const IndexPageInspireSubCategory = ({
                   key={item.id}
                   details={item.details}
                   title={item.title}
-                  imageUrl={item.imageUrl}
+                  imageUrl={item.image}
                   routes={routes}
                   slug={slug}
                   link={`/placesTogo/${routes}/${slug}/${item.title}` as string}

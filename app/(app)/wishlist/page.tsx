@@ -1,16 +1,16 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Heart, MapPin, Star, Clock, Filter, ArrowLeft, Loader2 } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { useAuth } from "@/context/AuthContext"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-
-const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"
+import { getProgramImageUrl } from "@/lib/utils"
 
 interface Media {
   id: number
@@ -60,7 +60,7 @@ export default function WishlistPage() {
   }, [user, authLoading, router])
 
   // Fetch user's wishlist
-  const fetchWishlist = async () => {
+  const fetchWishlist = useCallback(async () => {
     if (!user?.token) {
       setLoading(false)
       return
@@ -87,7 +87,7 @@ export default function WishlistPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [user?.token])
 
   // Remove from wishlist
   const removeFromWishlist = async (programId: number) => {
@@ -122,7 +122,7 @@ export default function WishlistPage() {
     if (user?.token) {
       fetchWishlist()
     }
-  }, [user])
+  }, [user?.token, fetchWishlist])
 
   // Extract categories from wishlist items
   const categories = [...new Set(wishlistItems.map((item) => item.program.descraption || "General"))]
@@ -142,16 +142,6 @@ export default function WishlistPage() {
     }
     return b.program.rating - a.program.rating
   })
-
-  // Get image URL
-  const getImageUrl = (program: Program) => {
-    if (program.images && program.images.length > 0) {
-      const image = program.images[0]
-      const imageUrl = image.formats?.medium?.url || image.formats?.small?.url || image.url
-      return imageUrl.startsWith("http") ? imageUrl : `${API_URL}${imageUrl}`
-    }
-    return "/placeholder.svg?height=192&width=400"
-  }
 
   if (authLoading || loading) {
     return (
@@ -238,10 +228,11 @@ export default function WishlistPage() {
                 className="border border-border bg-card overflow-hidden hover:border-accent/50 transition-all shadow-sm hover:shadow-lg group"
               >
                 <div className="relative h-48 bg-slate-200 dark:bg-slate-800 overflow-hidden">
-                  <img
-                    src={getImageUrl(item.program)}
+                  <Image
+                    src={getProgramImageUrl(item.program, 0, "/placeholder.svg?height=192&width=400")}
                     alt={item.program.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <Badge className="absolute top-3 left-3 bg-accent text-accent-foreground">
                     {item.program.descraption || "Adventure"}

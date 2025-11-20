@@ -19,6 +19,10 @@ const InspirationDynamic = () => {
   } = useParams(); // Get params dynamically
   return (
     <div className="flex flex-col h-fit">
+            <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
+      </div>
       <div className="bg-primary w-full p-2 px-[2em]">
         <Breadcrumb>
           <BreadcrumbList>

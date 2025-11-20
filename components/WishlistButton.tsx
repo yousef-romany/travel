@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Heart, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/context/AuthContext"
@@ -21,7 +21,7 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
   const [checking, setChecking] = useState(true)
 
   // Check if program is in wishlist
-  const checkWishlist = async () => {
+  const checkWishlist = useCallback(async () => {
     try {
       if (!user?.token) {
         setChecking(false)
@@ -43,7 +43,7 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
     } finally {
       setChecking(false)
     }
-  }
+  }, [user?.token, programId])
 
   // Toggle wishlist
   const toggleWishlist = async (e: React.MouseEvent) => {
@@ -103,7 +103,7 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
 
   useEffect(() => {
     checkWishlist()
-  }, [programId, user])
+  }, [checkWishlist])
 
   if (checking) {
     return (

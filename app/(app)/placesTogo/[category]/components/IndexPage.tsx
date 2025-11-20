@@ -18,7 +18,9 @@ import {
 } from "@/type/placesToGo";
 import { fetchPlaceToGoCategoriesOneCategory } from "@/fetch/placesToGo";
 import Loading from "@/components/Loading";
+import { NoDataPlaceholder } from "@/components/NoDataPlaceholder";
 import OptimizedImage from "@/components/OptimizedImage";
+import { getImageUrl } from "@/lib/utils";
 
 const IndexPage = ({ slug }: { slug: string }) => {
   const { data, error, isLoading } = useQuery<PlacesToGoCategory, Error>({
@@ -29,9 +31,13 @@ const IndexPage = ({ slug }: { slug: string }) => {
   if (error instanceof Error) return <p>Error: {error.message}</p>;
   return (
     <div className="flex gap-4 flex-col h-fit justify-between">
+            <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
+      </div>
       <div className="relative w-full h-[calc(100vh-80px)] !z-[-9999]">
         <OptimizedImage
-          src={data?.data?.at(-1)?.imageUrl as string}
+          src={getImageUrl(data?.data?.at(-1)?.image) as string}
           alt={data?.data?.at(-1)?.categoryName as string}
           className="w-full h-full object-cover !z-[-9999]"
         />
@@ -99,9 +105,9 @@ const IndexPage = ({ slug }: { slug: string }) => {
                                     <Card className="p-0 h-fit rounded-[1.3em] relative z-[-99999]">
                                       <CardContent className="p-0 rounded-[1.3em]">
                                         <OptimizedImage
-                                          src={itemBlog?.imageUrl}
+                                          src={getImageUrl(itemBlog?.image)}
                                           alt={itemBlog?.title}
-                                          className="w-full object-content rounded-[1.3em] z-[-99999999] max-h-[370px]"
+                                          className="w-full h-[100px] object-content rounded-[1.3em] z-[-99999999] max-h-[370px]"
                                         />
                                       </CardContent>
                                       <CardFooter className="w-full rounded-[1.3em]">
@@ -122,12 +128,12 @@ const IndexPage = ({ slug }: { slug: string }) => {
                           <CarouselNext />
                         </Carousel>
                       ) : (
-                        "<NoDataPlaceholder />"
+                        <NoDataPlaceholder />
                       )}
                     </div>
                   )
                 )
-            : "<NoDataPlaceholder />"}
+            : <NoDataPlaceholder />}
         </div>
       </div>
     </div>

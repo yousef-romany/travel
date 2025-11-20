@@ -20,6 +20,8 @@ import { MdArrowOutward } from "react-icons/md";
 import Loading from "@/components/Loading";
 import { NoDataPlaceholder } from "@/components/NoDataPlaceholder";
 import OptimizedImage from "@/components/OptimizedImage";
+import { getImageUrl } from "@/lib/utils";
+import { Media } from "@/type/programs";
 
 const IndexPage = ({ slug }: { slug: string }) => {
   const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
@@ -28,14 +30,15 @@ const IndexPage = ({ slug }: { slug: string }) => {
   });
   if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
+  
   return (
     <div className="flex gap-4 flex-col h-fit justify-between">
       <div className="relative w-full h-[calc(100vh-80px)] !z-[-9999]">
-        <OptimizedImage
-          src={data?.data?.at(-1)?.imageUrl as string}
+        {data?.data?.at(-1)?.image && <OptimizedImage
+          src={getImageUrl(data?.data?.at(-1)?.image as Media)}
           alt={data?.data?.at(-1)?.categoryName as string}
           className="w-full h-full object-cover !z-[-9999]"
-        />
+        />}
         <h1
           role="heading"
           className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-8xl text-primary font-extrabold text-primary-600 drop-shadow-xl shadow-black"
@@ -95,13 +98,14 @@ const IndexPage = ({ slug }: { slug: string }) => {
                               key={itemBlog?.id}
                               className="rounded-3xl z-[-99999]"
                             >
-                              <Card className="p-0 h-fit rounded-3xl relative z-[-99999]">
+                              <Card className="p-0 h-fit rounded-3xl relative z-[-99999] max-h-[400px]">
                                 <CardContent className="p-0 rounded-3xl">
                                   <OptimizedImage
-                                    src={itemBlog?.imageUrl}
+                                    src={getImageUrl(itemBlog.image) as string}
                                     alt={itemBlog?.title}
-                                    className="w-full h-full object-content rounded-3xl z-[-99999999] max-h-[370px]"
-                                  />
+                                    className="w-full h-full z-[-99999999] max-h-[370px]"
+                                    />
+                                    {/* {getImageUrl(itemBlog?.image)} */}
                                 </CardContent>
                                 <CardFooter className="w-full rounded-3xl">
                                   <h1

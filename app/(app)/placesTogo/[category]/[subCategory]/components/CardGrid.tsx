@@ -10,6 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import MDXRenderer from "@/components/MDXRenderer";
 import OptimizedImage from "@/components/OptimizedImage";
+import { Media } from "@/type/programs";
+import { getImageUrl } from "@/lib/utils";
 
 export default function CardGrid({
   imageUrl,
@@ -19,7 +21,7 @@ export default function CardGrid({
 }: {
   title: string;
   details: string;
-  imageUrl: string;
+  imageUrl: Media;
   routes: string;
   slug: string;
   link: string
@@ -28,7 +30,7 @@ export default function CardGrid({
     <Card className="overflow-hidden flex flex-col h-full">
       <div className="relative w-full ">
         <OptimizedImage
-          src={imageUrl}
+          src={getImageUrl(imageUrl)}
           alt={title}
           className="w-full max-h-[200px] object-cover"
         />

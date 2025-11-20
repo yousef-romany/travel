@@ -71,22 +71,42 @@ export const fetchProgramsList = async (): Promise<ProgramsResponse> => {
 };
 
 /**
- * Fetch a single program by title
+ * Fetch a single program by title or documentId
  */
-export const fetchProgramOne = async (title: string) => {
+export const fetchProgramOne = async (titleOrId: string) => {
   try {
-    const url = `${API_URL}/api/programs?populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true&filters[title][$eq]=${title}`;
+    // First try to fetch by title
+    const urlByTitle = `${API_URL}/api/programs?populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true&filters[title][$eq]=${titleOrId}`;
 
-    const response = await axios.get(String(url), {
+    const responseByTitle = await axios.get(String(urlByTitle), {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${API_TOKEN}`,
       },
     });
-    
-    return response.data;
+
+    // If found by title, return result
+    if (responseByTitle.data.data && responseByTitle.data.data.length > 0) {
+      return responseByTitle.data;
+    }
+
+    // Otherwise, try to fetch by documentId
+    const urlById = `${API_URL}/api/programs/${titleOrId}?populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true`;
+
+    const responseById = await axios.get(String(urlById), {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${API_TOKEN}`,
+      },
+    });
+
+    // Wrap single document in array format to match the collection response
+    return {
+      data: responseById.data.data ? [responseById.data.data] : [],
+      meta: responseById.data.meta || {}
+    };
   } catch (error) {
-    console.error("Error fetching program by title:", error);
+    console.error("Error fetching program by title or ID:", error);
     throw error;
   }
 };

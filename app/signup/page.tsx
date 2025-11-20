@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function SignupPage() {
-  const router = useRouter();
   const { signup } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -25,27 +23,25 @@ export default function SignupPage() {
   const isMatch = formData.password === formData.confirmPassword;
   const isValid = formData.email && formData.password && formData.confirmPassword && isMatch && formData.agreeTerms;
 
-  function handleChange(e: any) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, type, value, checked } = e.target;
     setFormData((p) => ({ ...p, [name]: type === "checkbox" ? checked : value }));
   }
 
-  async function handleSubmit(e: any) {
-  e.preventDefault();
-  setLoading(true);
-  setErrorMsg("");
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg("");
 
-  const result = await signup(formData.email, formData.password);
-
-  if (!result.success) {
-    setErrorMsg(result.message || "Signup failed.");
-    setLoading(false);
-    return;
+    try {
+      await signup(formData.email, formData.password);
+      // Signup function handles redirect internally
+      setLoading(false);
+    } catch (error) {
+      setErrorMsg(error instanceof Error ? error.message : "Signup failed.");
+      setLoading(false);
+    }
   }
-
-  router.push("/email-confirmation");
-  setLoading(false);
-}
 
 
   return (

@@ -1,4 +1,3 @@
- 
 "use client";
 import { Button } from "@/components/ui/button";
 import { fetchInspirationOneSubCategory } from "@/fetch/category";
@@ -11,6 +10,7 @@ import { CiGrid2H } from "react-icons/ci";
 import { InspireBlogs, InspireSubcategories, meta } from "@/type/inspiration";
 import Loading from "@/components/Loading";
 import OptimizedImage from "@/components/OptimizedImage";
+import { getImageUrl } from "@/lib/utils";
 
 const IndexPageInspireSubCategory = ({
   routes,
@@ -32,11 +32,15 @@ const IndexPageInspireSubCategory = ({
   console.log(data);
   return (
     <div className="flex gap-4 flex-col h-fit justify-between">
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
+      </div>
       <div className="relative w-full h-[calc(100vh-80px)] !z-[-9999]">
         <OptimizedImage
-          src={data?.data?.at(-1)?.imageUrl as string}
+          src={getImageUrl(data?.data?.at(-1)?.image)}
           alt={data?.data?.at(-1)?.categoryName as string}
-          className="w-full h-full object-cover !z-[-9999]"
+          className="w-full"
         />
       </div>
 
@@ -63,7 +67,7 @@ const IndexPageInspireSubCategory = ({
                 key={item.id}
                 details={item.details}
                 title={item.title}
-                imageUrl={item.imageUrl}
+                imageUrl={item.image}
                 routes={routes}
                 slug={slug}
                 link={`/inspiration/${routes}/${slug}/${item.title}` as string}
@@ -77,7 +81,7 @@ const IndexPageInspireSubCategory = ({
                 key={item.id}
                 details={item.details}
                 title={item.title}
-                imageUrl={item.imageUrl}
+                imageUrl={item.image}
                 routes={routes}
                 slug={slug}
                 link={`/inspiration/${routes}/${slug}/${item.title}` as string}

@@ -18,6 +18,7 @@ import CardCategory from "./CardCategory";
 import { InspirationCategoryData } from "@/type/inspiration";
 import { ScrollArea } from "../ui/scroll-area";
 import Link from "next/link";
+import { getImageUrl } from "@/lib/utils";
 
 interface MenuProps {
   categories: InspirationCategoryData[];
@@ -51,7 +52,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                         <CardCategory
                           key={category.id}
                           categoryName={category.categoryName}
-                          imageUrl={category.imageUrl}
+                          imageUrl={getImageUrl(category.image)}
                           url={`/inspiration/${category.categoryName}`}
                         />
                       ))
@@ -76,7 +77,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                           <CardCategory
                             key={category.id}
                             categoryName={category.categoryName}
-                            imageUrl={category.imageUrl}
+                            imageUrl={getImageUrl(category.image)}
                             url={`/placesTogo/${category.categoryName}`}
                           />
                         )

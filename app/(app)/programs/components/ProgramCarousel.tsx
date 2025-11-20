@@ -1,30 +1,12 @@
 "use client";
 
 import OptimizedImage from "@/components/OptimizedImage";
+import { getImageUrl } from "@/lib/utils";
+import { Media } from "@/type/programs";
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-
-const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
-
-interface MediaFormat {
-  url: string;
-  width: number;
-  height: number;
-}
-
-interface Media {
-  id: number;
-  name: string;
-  url: string;
-  formats?: {
-    thumbnail?: MediaFormat;
-    small?: MediaFormat;
-    medium?: MediaFormat;
-    large?: MediaFormat;
-  };
-}
 
 interface ProgramCarouselProps {
   images: Media[];
@@ -42,17 +24,6 @@ export function ProgramCarousel({ images }: ProgramCarouselProps) {
     }
   }, [emblaApi]);
 
-  // Get the best image URL from Strapi media
-  const getImageUrl = (image: Media) => {
-    // Try to get large format first, then medium, then small, then original
-    const imageUrl = 
-      image.formats?.large?.url || 
-      image.formats?.medium?.url || 
-      image.formats?.small?.url || 
-      image.url;
-    
-    return imageUrl.startsWith("http") ? imageUrl : `${API_URL}${imageUrl}`;
-  };
 
   // If no images, show placeholder
   if (!images || images.length === 0) {
@@ -68,11 +39,11 @@ export function ProgramCarousel({ images }: ProgramCarouselProps) {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {images.map((image: Media, index: number) => (
-            <div className="flex-[0_0_100%] min-w-0" key={image.id}>
+            <div className="flex-[0_0_100%] min-w-0" key={image?.id}>
               <div className="relative h-48 w-full">
                 <OptimizedImage
                   src={getImageUrl(image)}
-                  alt={image.name || `Travel destination ${index + 1}`}
+                  alt={image?.name || `Travel destination ${index + 1}`}
                   className="object-cover rounded-tl-xl rounded-tr-xl"
                 />
               </div>

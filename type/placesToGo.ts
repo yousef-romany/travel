@@ -1,3 +1,5 @@
+import { Media } from "./programs";
+
 export interface PlacesToGoCategory {
   data: PlacesToGoCategoryData[];
   meta: meta;
@@ -7,7 +9,7 @@ export interface PlacesToGoCategoryData {
   documentId: number;
   categoryName: string;
   description: string;
-  imageUrl: string;
+  image: Media;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
@@ -19,7 +21,7 @@ export interface PlacesToGoSubcategories {
   id: number;
   documentId: string;
   categoryName: string;
-  imageUrl: string;
+  image: Media;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
@@ -31,7 +33,7 @@ export interface PlacesToGoBlogs {
   instagram_posts?: string[];
   documentId: string;
   title: string;
-  imageUrl: string;
+  image: Media;
   details: string;
   youtubeUrl: string;
   createdAt: string;
