@@ -2,6 +2,7 @@
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import MediaContent from "./MediaContent";
+import OptimizedImage from "./OptimizedImage";
 import { instagramPostsType, instaGramType } from "@/type/placesToGo";
 
 export default function InstagramModal({ idPost }: instagramPostsType) {
@@ -32,13 +33,16 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
 
   return (
     <>
-       <OptimizedImage
-        src={data?.thumbnail_url}
-        alt={data?.caption}
+      <div
         onClick={() => setIsModalOpen(true)}
-        className="w-full h-full rounded-[2rem] cursor-pointer"
-        loading="lazy"
-      />
+        className="w-full h-full rounded-[2rem] cursor-pointer overflow-hidden"
+      >
+        <OptimizedImage
+          src={data?.thumbnail_url}
+          alt={data?.caption}
+          className="w-full h-full rounded-[2rem]"
+        />
+      </div>
       {isModalOpen && (
         <div className="fixed inset-0 bg-card flex items-center justify-center z-50">
           <div className="relative max-w-5xl w-full mx-4 bg-muted rounded-lg overflow-hidden">

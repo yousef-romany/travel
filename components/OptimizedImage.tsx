@@ -26,6 +26,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         src={src}
         alt={alt}
         fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         className={cn(
           "object-contain transition-opacity duration-300",
           className
@@ -34,7 +35,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         style={{
           visibility: imageLoaded ? "visible" : "hidden",
         }}
-        onLoadingComplete={() => setImageLoaded(true)}
+        onLoad={() => setImageLoaded(true)}
         placeholder="blur"
         blurDataURL="/placeholder.svg"
         {...props}

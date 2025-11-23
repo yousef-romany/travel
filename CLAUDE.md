@@ -25,6 +25,8 @@ Required environment variables in `.env`:
 - `STRAPI_HOST` - Strapi host URL
 - `NEXT_PUBLIC_STRAPI_TOKEN` - Strapi API token for authenticated requests
 - `NEXT_PUBLIC_INSTAGRAM_TOKEN` - Instagram API token for feed integration
+- `NEXT_PUBLIC_WHATSAPP_NUMBER` - WhatsApp number for booking notifications (format: 201000000000, without + or spaces)
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID` - Google Analytics 4 measurement ID for tracking
 
 ## Architecture Overview
 

@@ -4,9 +4,11 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
   id: number;
+  documentId?: string;
   email: string;
   username: string;
   profile?: any;
+  createdAt?: string;
   token: string; // ✅ مهم
 };
 

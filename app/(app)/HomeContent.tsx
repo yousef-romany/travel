@@ -1,6 +1,6 @@
 "use client";
 import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,6 @@ import {
   Star,
   Ticket,
   AlertCircle,
-  Mail,
 } from "lucide-react";
 import { ProgramCarousel } from "./programs/components/ProgramCarousel";
 import { useQuery } from "@tanstack/react-query";
@@ -30,18 +29,21 @@ import {
   InstagramSectionSkeleton,
 } from "@/components/skeletons/HomeSkeletons";
 import {
-  trackNewsletterSignup,
   trackProgramView,
   trackSocialShare,
 } from "@/lib/analytics";
-import { toast } from "sonner";
 import { getImageUrl } from "@/lib/utils";
-import { Media } from "@/type/programs";
+import { BackgroundVideo } from "@/components/ui/background-video";
+
+// Egypt travel videos from Cloudinary
+const HERO_VIDEOS = [
+  "https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922614/Egypt_Unmatched_Diversity_fbtjmf.mp4",
+  "https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922583/Let_s_Go_-_Egypt_A_Beautiful_Destinations_Original_1_ayt7re.mp4",
+  "https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922572/This_is_Egypt_x6b0oo.mp4",
+  "https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922524/Escape_to_Egypt_Cinematic_Film_lfq32y.mp4",
+];
 
 export default function HomeContent() {
-  const [email, setEmail] = useState("");
-  const [isSubscribing, setIsSubscribing] = useState(false);
-
   useEffect(() => {
     applyHieroglyphEffect();
   }, []);
@@ -53,39 +55,6 @@ export default function HomeContent() {
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 2,
   });
-
-  // Newsletter subscription handler
-  const handleNewsletterSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-
-      if (!email || !email.includes("@")) {
-        toast.error("Please enter a valid email address");
-        return;
-      }
-
-      setIsSubscribing(true);
-
-      try {
-        // Track newsletter signup
-        trackNewsletterSignup(email);
-
-        // TODO: Implement actual newsletter API call
-        // await subscribeToNewsletter(email);
-
-        toast.success(
-          "Thanks for subscribing! Check your email for confirmation."
-        );
-        setEmail("");
-      } catch (error) {
-        console.error("Newsletter subscription error:", error);
-        toast.error("Failed to subscribe. Please try again later.");
-      } finally {
-        setIsSubscribing(false);
-      }
-    },
-    [email]
-  );
 
   // Program view tracking
   const handleProgramClick = useCallback((program: Program) => {
@@ -103,31 +72,31 @@ export default function HomeContent() {
         <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
         <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
       </div>
-      {/* Hero Section */}
+      {/* Hero Section with Background Video */}
       <section className="relative h-[70vh] overflow-hidden !w-full">
-        <Image
-          src="/placeholder.svg?height=1080&width=1920"
-          alt="Egypt Pyramids and ancient wonders"
-          fill
-          className="object-cover"
+        <BackgroundVideo
+          videos={HERO_VIDEOS}
           priority
-        />
-        <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white text-center p-4">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Discover the Magic of Egypt
-          </h1>
-          <p className="text-xl md:text-2xl max-w-3xl mb-8">
-            Experience 7,000 years of history, culture, and adventure
-          </p>
-          <Link href="/programs">
-            <Button
-              size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
-              Start Your Journey
-            </Button>
-          </Link>
-        </div>
+          autoRotate
+          rotationInterval={30000}
+        >
+          <div className="flex flex-col items-center justify-center text-white text-center p-4 h-full">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
+              Discover the Magic of Egypt
+            </h1>
+            <p className="text-xl md:text-2xl max-w-3xl mb-8 drop-shadow-md">
+              Experience 7,000 years of history, culture, and adventure
+            </p>
+            <Link href="/programs">
+              <Button
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-shadow"
+              >
+                Start Your Journey
+              </Button>
+            </Link>
+          </div>
+        </BackgroundVideo>
       </section>
 
       {/* Be Inspired Section */}
@@ -667,7 +636,7 @@ export default function HomeContent() {
         </div>
       </section>
 
-      {/* Newsletter Section */}
+      {/* Newsletter Section
       <section className="py-16 bg-muted !w-full">
         <div className="max-w-3xl mx-auto text-center px-[2em]">
           <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
@@ -701,7 +670,7 @@ export default function HomeContent() {
             </Button>
           </form>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

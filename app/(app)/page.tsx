@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import HomeContent from "./HomeContent";
 import WebPageSchema from "@/components/seo/WebPageSchema";
 import FAQSchema from "@/components/seo/FAQSchema";
+import VideoSchema from "@/components/seo/VideoSchema";
 
 export const metadata: Metadata = {
   title: "ZoeHoliday - Explore the Beauty of Egypt | Travel & Tour Packages",
@@ -62,6 +63,13 @@ export default function Home() {
         url="/"
       />
       <FAQSchema faqs={faqs} />
+      <VideoSchema
+        name="Discover Egypt - Immersive Travel Experience"
+        description="Experience the breathtaking beauty of Egypt through immersive video showcasing ancient pyramids, Nile River cruises, historic temples, and vibrant culture. Watch stunning footage of Egypt's unmatched diversity and rich heritage."
+        thumbnailUrl="/og-image.jpg"
+        contentUrl="https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922614/Egypt_Unmatched_Diversity_fbtjmf.mp4"
+        duration="PT45S"
+      />
       <HomeContent />
     </>
   );

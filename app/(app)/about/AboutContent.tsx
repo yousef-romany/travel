@@ -3,25 +3,34 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Globe, MapPin, Users } from "lucide-react";
 import OptimizedImage from "@/components/OptimizedImage";
+import { BackgroundVideo } from "@/components/ui/background-video";
+
+// Egypt travel videos from Cloudinary
+const ABOUT_HERO_VIDEOS = [
+  "https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922572/This_is_Egypt_x6b0oo.mp4",
+  "https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922614/Egypt_Unmatched_Diversity_fbtjmf.mp4",
+];
 
 export default function AboutContent() {
   return (
     <div className="flex flex-col min-h-screen !w-full">
-      {/* Hero Section */}
+      {/* Hero Section with Background Video */}
       <section className="relative h-[50vh] overflow-hidden">
-        <OptimizedImage
-          src="/placeholder.svg?height=1080&width=1920"
-          alt="Egyptian Landscape"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white text-center p-4">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 font-display">
-            About Egypt Tourism
-          </h1>
-          <p className="text-xl md:text-2xl max-w-3xl">
-            Discover the wonders of ancient civilization and modern adventures
-          </p>
-        </div>
+        <BackgroundVideo
+          videos={ABOUT_HERO_VIDEOS}
+          priority
+          autoRotate
+          rotationInterval={25000}
+        >
+          <div className="flex flex-col items-center justify-center text-white text-center p-4 h-full">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 font-display drop-shadow-lg">
+              About Egypt Tourism
+            </h1>
+            <p className="text-xl md:text-2xl max-w-3xl drop-shadow-md">
+              Discover the wonders of ancient civilization and modern adventures
+            </p>
+          </div>
+        </BackgroundVideo>
       </section>
       <main className="flex-1 !w-full">
         {/* History and Culture Section */}
@@ -49,8 +58,8 @@ export default function AboutContent() {
             </div>
             <div className="relative h-[400px] rounded-lg overflow-hidden">
               <OptimizedImage
-                src="/placeholder.svg?height=800&width=600"
-                alt="Egyptian Artifacts"
+                src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1737648000/egyptian_pyramids_and_sphinx.jpg"
+                alt="Egyptian Pyramids and Sphinx at Giza"
                 className="object-cover"
               />
             </div>

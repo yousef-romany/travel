@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import AboutContent from "./AboutContent";
+import VideoSchema from "@/components/seo/VideoSchema";
 
 export const metadata: Metadata = {
   title: "About ZoeHoliday - Egypt Travel Experts",
@@ -28,5 +29,16 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  return <AboutContent />;
+  return (
+    <>
+      <VideoSchema
+        name="This is Egypt - Ancient Civilization and Modern Adventures"
+        description="Explore Egypt's rich heritage through cinematic video showcasing 5000+ years of history, iconic monuments, vibrant culture, and stunning landscapes. Experience the wonders of ancient civilization and modern Egyptian adventures."
+        thumbnailUrl="/og-about.jpg"
+        contentUrl="https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922572/This_is_Egypt_x6b0oo.mp4"
+        duration="PT40S"
+      />
+      <AboutContent />
+    </>
+  );
 }

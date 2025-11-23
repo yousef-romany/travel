@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { memo } from "react";
 import { Skeleton } from "../ui/skeleton";
+import Image from "next/image";
 import Link from "next/link";
 
 interface props {
@@ -14,11 +14,10 @@ const CardCategory = ({ categoryName, imageUrl, url }: props) => {
     <Link href={url}>
       <div className="w-[210px] h-[210px] flex flex-col rounded-xl bg-sidebar gap-6">
         {imageUrl ? (
-          <OptimizedImage
+          <Image
             src={imageUrl}
             alt="name"
             className="h-[140px] rounded-xl"
-            loading="lazy"
             height={140}
             width={200}
           />

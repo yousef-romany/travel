@@ -142,7 +142,7 @@ export const getUserTrips = async (userId: number, token: string): Promise<UserT
  */
 export const getUserWishlist = async (token: string): Promise<UserWishlistItem[]> => {
   try {
-    const url = `${API_URL}/api/wishlists?populate[program][populate]=images`;
+    const url = `${API_URL}/api/wishlists/me`;
 
     const response = await axios.get(url, {
       headers: {

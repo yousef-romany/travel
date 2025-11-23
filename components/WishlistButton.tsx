@@ -5,6 +5,7 @@ import { Heart, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/context/AuthContext"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"
 
@@ -37,6 +38,8 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
       if (response.ok) {
         const data = await response.json()
         setInWishlist(data.inWishlist)
+      } else {
+        console.error("Failed to check wishlist:", response.status, response.statusText)
       }
     } catch (error) {
       console.error("Error checking wishlist:", error)
@@ -52,9 +55,8 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
 
     // If not logged in, redirect to login
     if (!user?.token) {
-      if (confirm("Please login to add items to wishlist. Go to login page?")) {
-        router.push("/login")
-      }
+      toast.error("Please login to add items to wishlist")
+      router.push("/login")
       return
     }
 
@@ -72,11 +74,15 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
 
         if (response.ok) {
           setInWishlist(false)
+          toast.success("Removed from wishlist")
         } else {
-          throw new Error("Failed to remove from wishlist")
+          const errorData = await response.json().catch(() => ({}))
+          console.error("Remove failed:", response.status, errorData)
+          throw new Error(errorData.error?.message || "Failed to remove from wishlist")
         }
       } else {
         // Add to wishlist
+        console.log("Adding to wishlist, programId:", programId)
         const response = await fetch(`${API_URL}/api/wishlists/add`, {
           method: "POST",
           headers: {
@@ -86,16 +92,19 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
           body: JSON.stringify({ programId }),
         })
 
+        const responseData = await response.json()
+        console.log("Add wishlist response:", response.status, responseData)
+
         if (response.ok) {
           setInWishlist(true)
+          toast.success("Added to wishlist")
         } else {
-          const data = await response.json()
-          throw new Error(data.message || "Failed to add to wishlist")
+          throw new Error(responseData.error?.message || responseData.message || "Failed to add to wishlist")
         }
       }
     } catch (error) {
       console.error("Error toggling wishlist:", error)
-      alert(error instanceof Error ? error.message : "Failed to update wishlist")
+      toast.error(error instanceof Error ? error.message : "Failed to update wishlist")
     } finally {
       setLoading(false)
     }

@@ -155,14 +155,6 @@ export default function PersonalInfo() {
               { label: "Emergency Contact Name", value: profile.emergencyContactName },
               { label: "Emergency Contact Phone", value: profile.emergencyContactPhone },
               { label: "Date of Birth", value: profile.dateOfBirth },
-              {
-                label: "Profile Completed",
-                value: profile.isProfileCompleted ? (
-                  <Badge className="bg-green-600">Completed</Badge>
-                ) : (
-                  <Badge className="bg-red-600">Incomplete</Badge>
-                ),
-              },
             ].map((field, idx) => (
               <div key={idx}>
                 <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
@@ -173,6 +165,19 @@ export default function PersonalInfo() {
                 </p>
               </div>
             ))}
+            {/* Profile Completed Status */}
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                Profile Completed
+              </label>
+              <div className="mt-2">
+                {profile.isProfileCompleted ? (
+                  <Badge className="bg-green-600">Completed</Badge>
+                ) : (
+                  <Badge className="bg-red-600">Incomplete</Badge>
+                )}
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

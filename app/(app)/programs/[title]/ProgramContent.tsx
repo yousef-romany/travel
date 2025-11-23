@@ -13,13 +13,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import OptimizedImage from "@/components/OptimizedImage";
+import Image from "next/image";
 import TourPackageSchema from "@/components/seo/TourPackageSchema";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { trackProgramView, trackBookingClick } from "@/lib/analytics";
 import { getImageUrl } from "@/lib/utils";
+import BookingDialog from "@/components/booking-dialog";
 
 export default function ProgramContent({ title }: { title: string }) {
+  const [isBookingDialogOpen, setIsBookingDialogOpen] = useState(false);
   const { data, error, isLoading } = useQuery<
     { data: dataTypeCardTravel[]; meta: meta },
     Error
@@ -60,7 +62,8 @@ export default function ProgramContent({ title }: { title: string }) {
         Number(program.price)
       );
     }
-    // Add your booking logic here
+    // Open booking dialog
+    setIsBookingDialogOpen(true);
   };
 
   return (
@@ -101,13 +104,14 @@ export default function ProgramContent({ title }: { title: string }) {
           <div className="space-y-4">
             <div className="relative aspect-video rounded-lg overflow-hidden">
               {program.images && (
-                <OptimizedImage
+                <Image
                   src={
-                    getImageUrl(program.images?.at(activeImage) as Media) ||
+                    getImageUrl(program.images?.at(activeImage)?.imageUrl) ||
                     "/placeholder.svg"
                   }
                   alt={`${program.title} - Image ${activeImage + 1}`}
-                  className="transition-opacity duration-500"
+                  fill
+                  className="object-cover transition-opacity duration-500"
                 />
               )}
             </div>
@@ -120,9 +124,11 @@ export default function ProgramContent({ title }: { title: string }) {
                   }`}
                   onClick={() => setActiveImage(index)}
                 >
-                  <OptimizedImage
-                    src={getImageUrl(img) || "/placeholder.svg"}
+                  <Image
+                    src={getImageUrl(img.imageUrl) || "/placeholder.svg"}
                     alt={`${program.title} thumbnail ${index + 1}`}
+                    fill
+                    className="object-cover"
                   />
                 </div>
               ))}
@@ -178,11 +184,14 @@ export default function ProgramContent({ title }: { title: string }) {
                       <TooltipContent>
                         <p className="!text-secondary">{step.title}</p>
                         {step.imageUrl && (
-                          <OptimizedImage
-                            src={step.imageUrl}
-                            alt={step.title}
-                            className="max-w-[150px] rounded-xl"
-                          />
+                          <div className="relative w-[150px] h-[100px]">
+                            <Image
+                              src={step.imageUrl}
+                              alt={step.title}
+                              fill
+                              className="object-cover rounded-xl"
+                            />
+                          </div>
                         )}
                         {step.place_to_go_subcategories &&
                           step.place_to_go_subcategories.length > 0 && (
@@ -246,6 +255,20 @@ export default function ProgramContent({ title }: { title: string }) {
           </div>
         </div>
       </div>
+
+      {/* Booking Dialog */}
+      {program && program.documentId && program.title && (
+        <BookingDialog
+          isOpen={isBookingDialogOpen}
+          onClose={() => setIsBookingDialogOpen(false)}
+          program={{
+            documentId: program.documentId,
+            title: program.title,
+            price: Number(program.price) || 0,
+            duration: Number(program.duration) || 0,
+          }}
+        />
+      )}
     </>
   );
 }

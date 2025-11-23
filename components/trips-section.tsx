@@ -84,7 +84,7 @@ export default function TripsSection() {
   return (
     <div className="space-y-4">
       {trips.map((trip) => {
-        const imageUrl = getImageUrl(trip.program?.images?.[0]?.image);
+        const imageUrl = getImageUrl(trip.program?.images?.[0]?.imageUrl);
         const dateRange = `${formatDate(trip.tripDate)} - ${formatDate(trip.endDate)}`;
 
         return (
