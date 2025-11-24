@@ -33,10 +33,25 @@ import {
 } from "@/type/placesToGo";
 import { fetchPlanYourTrip } from "@/fetch/planYourTrip";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { MapPin, FileText, Send, Eye } from "lucide-react";
+import { toast } from "sonner";
 
 export default function PlanYourTripContent() {
   const [travelPlan, setTravelPlan] = useState<any[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [isFinishDialogOpen, setIsFinishDialogOpen] = useState(false);
+  const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
+  const { user } = useAuth();
+  const router = useRouter();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -109,6 +124,73 @@ export default function PlanYourTripContent() {
     (sum, place) => sum + Number(place.price),
     0
   );
+
+  // Estimate 1 day per place, with realistic trip duration
+  const estimatedDuration = travelPlan.length > 0 ? Math.max(travelPlan.length, 1) : 0;
+  const pricePerDay = estimatedDuration > 0 ? totalPrice / estimatedDuration : 0;
+
+  const handleFinishPlanning = () => {
+    if (travelPlan.length === 0) {
+      toast.error("Please add at least one place to your travel plan");
+      return;
+    }
+    setIsFinishDialogOpen(true);
+  };
+
+  const handleSaveCustomTrip = () => {
+    if (!user) {
+      toast.error("Please login to save your trip");
+      router.push("/login");
+      return;
+    }
+    // TODO: Implement save custom trip
+    toast.success("Feature coming soon: Save as custom trip!");
+    setIsFinishDialogOpen(false);
+  };
+
+  const handleCreateBooking = () => {
+    if (!user) {
+      toast.error("Please login to create a booking");
+      router.push("/login");
+      return;
+    }
+    // TODO: Implement create booking
+    toast.success("Feature coming soon: Create booking from plan!");
+    setIsFinishDialogOpen(false);
+  };
+
+  const handleRequestQuote = () => {
+    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201555100961";
+
+    const placesList = travelPlan.map((place, idx) => `Day ${idx + 1}: ${place.title} - $${place.price}`).join("\n");
+
+    const message = `🌍 *Custom Trip Quote Request*
+
+📍 *Itinerary:*
+${placesList}
+
+📊 *Trip Summary:*
+⏱️ Duration: ${estimatedDuration} ${estimatedDuration === 1 ? 'Day' : 'Days'}
+💰 Total Cost: $${totalPrice}
+📈 Price/Day: $${pricePerDay.toFixed(2)}
+🧳 Destinations: ${travelPlan.length}
+
+${user ? `👤 *Contact Info:*\n📛 Name: ${user.profile?.firstName} ${user.profile?.lastName}\n📧 Email: ${user.email}\n` : ""}
+I would like to get a personalized quote for this custom itinerary. Please contact me with more details.
+
+Thank you! 🙏`;
+
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
+
+    toast.success("Opening WhatsApp to request quote!");
+    setIsFinishDialogOpen(false);
+  };
+
+  const handleViewSummary = () => {
+    setIsFinishDialogOpen(false);
+    setIsSummaryDialogOpen(true);
+  };
 
   const { data, isLoading, error } = useQuery<PlacesToGoCategory>({
     queryKey: ["fetchPlanYourTrip"],
@@ -232,20 +314,212 @@ export default function PlanYourTripContent() {
                   Drag and drop places here to build your plan
                 </p>
               )}
-              <div className="mt-6 pt-4 border-t border-gray-200">
-                <p className="text-xl font-semibold text-primary">
-                  Total Price: ${totalPrice}
-                </p>
+              {travelPlan.length > 0 && (
+                <div className="mt-6 pt-4 border-t border-gray-200 space-y-3">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-muted-foreground">Estimated Duration</p>
+                      <p className="font-semibold text-primary">{estimatedDuration} {estimatedDuration === 1 ? 'Day' : 'Days'}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Price per Day</p>
+                      <p className="font-semibold text-primary">${pricePerDay.toFixed(2)}</p>
+                    </div>
+                  </div>
+                  <div className="pt-2 border-t border-gray-200">
+                    <p className="text-xl font-semibold text-primary">
+                      Total Price: ${totalPrice}
+                    </p>
+                  </div>
+                </div>
+              )}
+              <div className="mt-4 space-y-2">
+                <Button
+                  onClick={handleFinishPlanning}
+                  className="w-full py-2 px-4 rounded transition duration-200"
+                  disabled={travelPlan.length === 0}
+                >
+                  Finish Planning
+                </Button>
+                <Button
+                  onClick={() => setTravelPlan([])}
+                  variant="outline"
+                  className="w-full py-2 px-4 rounded transition duration-200"
+                >
+                  Clear Plan
+                </Button>
               </div>
-              <Button
-                onClick={() => setTravelPlan([])}
-                className="mt-4 w-full py-2 px-4 rounded transition duration-200"
-              >
-                Clear Plan
-              </Button>
             </div>
           </div>
         </div>
+
+        {/* Finish Planning Dialog */}
+        <Dialog open={isFinishDialogOpen} onOpenChange={setIsFinishDialogOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>What would you like to do with your trip plan?</DialogTitle>
+              <DialogDescription>
+                You have {travelPlan.length} place{travelPlan.length !== 1 ? 's' : ''} in your plan with a total of ${totalPrice}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-3 py-4">
+              <Button
+                onClick={handleSaveCustomTrip}
+                variant="outline"
+                className="w-full justify-start h-auto py-4"
+              >
+                <MapPin className="mr-3 h-5 w-5" />
+                <div className="text-left">
+                  <div className="font-semibold">Save as Custom Trip</div>
+                  <div className="text-xs text-muted-foreground">
+                    Save this itinerary to your account for later
+                  </div>
+                </div>
+              </Button>
+
+              <Button
+                onClick={handleCreateBooking}
+                variant="outline"
+                className="w-full justify-start h-auto py-4"
+              >
+                <FileText className="mr-3 h-5 w-5" />
+                <div className="text-left">
+                  <div className="font-semibold">Create Booking Now</div>
+                  <div className="text-xs text-muted-foreground">
+                    Book this trip and proceed to payment
+                  </div>
+                </div>
+              </Button>
+
+              <Button
+                onClick={handleRequestQuote}
+                variant="outline"
+                className="w-full justify-start h-auto py-4"
+              >
+                <Send className="mr-3 h-5 w-5" />
+                <div className="text-left">
+                  <div className="font-semibold">Request Quote</div>
+                  <div className="text-xs text-muted-foreground">
+                    Get a personalized quote for this itinerary
+                  </div>
+                </div>
+              </Button>
+
+              <Button
+                onClick={handleViewSummary}
+                variant="outline"
+                className="w-full justify-start h-auto py-4"
+              >
+                <Eye className="mr-3 h-5 w-5" />
+                <div className="text-left">
+                  <div className="font-semibold">View Summary</div>
+                  <div className="text-xs text-muted-foreground">
+                    See detailed summary of your planned trip
+                  </div>
+                </div>
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Trip Summary Dialog */}
+        <Dialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>
+          <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Your Custom Trip Summary</DialogTitle>
+              <DialogDescription>
+                Review your planned itinerary details
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-6">
+              {/* Trip Overview */}
+              <div className="bg-primary/10 p-4 rounded-lg">
+                <h3 className="font-semibold text-lg mb-3 text-primary">Trip Overview</h3>
+                <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <p className="text-muted-foreground">Total Places</p>
+                    <p className="font-semibold">{travelPlan.length} destinations</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Duration</p>
+                    <p className="font-semibold">{estimatedDuration} {estimatedDuration === 1 ? 'Day' : 'Days'}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Estimated Cost</p>
+                    <p className="font-semibold text-primary">${totalPrice}</p>
+                  </div>
+                </div>
+                <div className="mt-3 pt-3 border-t border-primary/20">
+                  <p className="text-muted-foreground text-sm">Average cost per day</p>
+                  <p className="font-semibold text-lg text-primary">${pricePerDay.toFixed(2)}/day</p>
+                </div>
+              </div>
+
+              {/* Itinerary */}
+              <div>
+                <h3 className="font-semibold text-lg mb-3 text-primary">Your Itinerary</h3>
+                <div className="space-y-3">
+                  {travelPlan.map((place, index) => (
+                    <div
+                      key={place.id}
+                      className="flex gap-4 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      <div className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold">{place.title}</h4>
+                        {place.description && (
+                          <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                            {place.description}
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-primary">${place.price}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Price Breakdown */}
+              <div className="border-t pt-4">
+                <div className="space-y-2">
+                  {travelPlan.map((place, index) => (
+                    <div key={place.id} className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        Day {index + 1}: {place.title}
+                      </span>
+                      <span>${place.price}</span>
+                    </div>
+                  ))}
+                  <div className="flex justify-between font-bold text-lg border-t pt-2 mt-2">
+                    <span>Total Estimated Cost</span>
+                    <span className="text-primary">${totalPrice}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleRequestQuote}
+                  className="flex-1"
+                >
+                  Request Quote via WhatsApp
+                </Button>
+                <Button
+                  onClick={() => setIsSummaryDialogOpen(false)}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
       <DragOverlay>
         {activeId ? (

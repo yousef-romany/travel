@@ -21,6 +21,12 @@ export interface BookingType {
     title: string;
     price: number;
     duration: number;
+    Location?: string;
+    images?: Array<{
+      id: number;
+      url: string;
+      name: string;
+    }>;
   };
   createdAt: string;
   updatedAt: string;
@@ -49,7 +55,7 @@ export const fetchUserBookings = async (
     const authToken =
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
-    let url = `${API_URL}/api/bookings?populate=program&sort=createdAt:desc`;
+    let url = `${API_URL}/api/bookings?populate[program][populate]=images&sort=createdAt:desc`;
 
     // If userId is provided, filter by user
     if (userId) {
@@ -79,26 +85,41 @@ export const createBooking = async (bookingData: {
   specialRequests?: string;
   programId: string;
   userId?: string;
+  totalAmount: number;
 }): Promise<{ data: BookingType }> => {
   try {
     // Get auth token from localStorage
     const authToken =
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
+    const payload: any = {
+      fullName: bookingData.fullName,
+      email: bookingData.email,
+      phone: bookingData.phone,
+      numberOfTravelers: bookingData.numberOfTravelers,
+      travelDate: bookingData.travelDate,
+      specialRequests: bookingData.specialRequests,
+      totalAmount: bookingData.totalAmount,
+      status: "pending",
+    };
+
+    // Add program relation if provided
+    if (bookingData.programId) {
+      payload.program = bookingData.programId;
+    }
+
+    // Add user relation if provided
+    if (bookingData.userId) {
+      payload.user = bookingData.userId;
+    }
+
+    console.log("Creating booking with payload:", payload);
+    console.log("Auth token present:", !!authToken);
+
     const response = await axios.post(
       `${API_URL}/api/bookings`,
       {
-        data: {
-          fullName: bookingData.fullName,
-          email: bookingData.email,
-          phone: bookingData.phone,
-          numberOfTravelers: bookingData.numberOfTravelers,
-          travelDate: bookingData.travelDate,
-          specialRequests: bookingData.specialRequests,
-          status: "pending",
-          program: bookingData.programId,
-          user: bookingData.userId,
-        },
+        data: payload,
       },
       {
         headers: {
@@ -109,8 +130,10 @@ export const createBooking = async (bookingData: {
     );
 
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating booking:", error);
+    console.error("Error response:", error.response?.data);
+    console.error("Error status:", error.response?.status);
     throw error;
   }
 };

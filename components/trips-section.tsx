@@ -5,21 +5,58 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar, Users, MapPin, ArrowRight, Loader2, AlertCircle } from "lucide-react"
 import { useAuth } from "@/context/AuthContext"
-import { useQuery } from "@tanstack/react-query"
-import { getUserTrips } from "@/fetch/user"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { fetchUserBookings, updateBookingStatus } from "@/fetch/bookings"
 import Image from "next/image"
 import { getImageUrl } from "@/lib/utils"
 import Link from "next/link"
+import { toast } from "sonner"
+import { useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 export default function TripsSection() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const [bookingToCancel, setBookingToCancel] = useState<string | null>(null);
 
-  const { data: trips, isLoading, isError, refetch } = useQuery({
-    queryKey: ["userTrips", user?.id],
-    queryFn: () => getUserTrips(user!.id, user!.token),
-    enabled: !!user?.id && !!user?.token,
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["userBookings", user?.documentId],
+    queryFn: () => fetchUserBookings(user?.documentId),
+    enabled: !!user?.documentId,
     staleTime: 2 * 60 * 1000,
   });
+
+  const trips = data?.data || [];
+
+  const cancelBookingMutation = useMutation({
+    mutationFn: (bookingId: string) => updateBookingStatus(bookingId, "cancelled"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userBookings"] });
+      toast.success("Booking cancelled successfully");
+      setBookingToCancel(null);
+    },
+    onError: (error) => {
+      console.error("Error cancelling booking:", error);
+      toast.error("Failed to cancel booking. Please try again.");
+    },
+  });
+
+  const handleCancelBooking = (bookingId: string) => {
+    setBookingToCancel(bookingId);
+  };
+
+  const confirmCancelBooking = () => {
+    if (bookingToCancel) {
+      cancelBookingMutation.mutate(bookingToCancel);
+    }
+  };
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "—";
@@ -33,17 +70,22 @@ export default function TripsSection() {
   const getStatusColor = (status: string) => {
     const normalizedStatus = status.toLowerCase();
     switch (normalizedStatus) {
-      case "completed":
-        return "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-      case "upcoming":
-        return "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
       case "confirmed":
+        return "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+      case "pending":
         return "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300"
       case "cancelled":
         return "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
       default:
         return "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300"
     }
+  }
+
+  const calculateEndDate = (startDate: string, duration: number) => {
+    const start = new Date(startDate);
+    const end = new Date(start);
+    end.setDate(end.getDate() + (duration - 1));
+    return end.toISOString();
   }
 
   if (isLoading) {
@@ -84,8 +126,11 @@ export default function TripsSection() {
   return (
     <div className="space-y-4">
       {trips.map((trip) => {
-        const imageUrl = getImageUrl(trip.program?.images?.[0]?.imageUrl);
-        const dateRange = `${formatDate(trip.tripDate)} - ${formatDate(trip.endDate)}`;
+        const imageUrl = getImageUrl(trip.program?.images?.[0]?.url);
+        const endDate = trip.program?.duration
+          ? calculateEndDate(trip.travelDate, trip.program.duration)
+          : trip.travelDate;
+        const dateRange = `${formatDate(trip.travelDate)} - ${formatDate(endDate)}`;
 
         return (
           <Card
@@ -139,9 +184,9 @@ export default function TripsSection() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs font-semibold text-muted-foreground uppercase">Price</p>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase">Total</p>
                       <p className="text-lg font-bold text-amber-600 dark:text-amber-500 mt-1">
-                        ${trip.totalPrice?.toLocaleString()}
+                        ${trip.totalAmount?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -152,9 +197,16 @@ export default function TripsSection() {
                         <ArrowRight className="w-4 h-4" />
                       </a>
                     </Button>
-                    {trip.status === "upcoming" && (
-                      <Button variant="outline" size="sm">
-                        Modify
+                    {trip.status === "pending" && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleCancelBooking(trip.documentId)}
+                        disabled={cancelBookingMutation.isPending}
+                      >
+                        {cancelBookingMutation.isPending && bookingToCancel === trip.documentId
+                          ? "Cancelling..."
+                          : "Cancel Booking"}
                       </Button>
                     )}
                   </div>
@@ -164,6 +216,30 @@ export default function TripsSection() {
           </Card>
         );
       })}
+
+      {/* Cancel Confirmation Dialog */}
+      <Dialog open={!!bookingToCancel} onOpenChange={() => setBookingToCancel(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cancel Booking?</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to cancel this booking? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBookingToCancel(null)}>
+              No, Keep Booking
+            </Button>
+            <Button
+              onClick={confirmCancelBooking}
+              variant="destructive"
+              disabled={cancelBookingMutation.isPending}
+            >
+              {cancelBookingMutation.isPending ? "Cancelling..." : "Yes, Cancel Booking"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

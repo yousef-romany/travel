@@ -102,8 +102,8 @@ export default function ProgramContent({ title }: { title: string }) {
 
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <div className="space-y-4">
-            <div className="relative aspect-video rounded-lg overflow-hidden">
-              {program.images && (
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
+              {program.images && program.images.length > 0 ? (
                 <Image
                   src={
                     getImageUrl(program.images?.at(activeImage)?.imageUrl) ||
@@ -112,15 +112,27 @@ export default function ProgramContent({ title }: { title: string }) {
                   alt={`${program.title} - Image ${activeImage + 1}`}
                   fill
                   className="object-cover transition-opacity duration-500"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "/placeholder.svg";
+                  }}
                 />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                  No image available
+                </div>
               )}
             </div>
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 overflow-x-auto pb-2">
               {program.images?.map((img, index) => (
                 <div
                   key={index}
-                  className={`relative w-20 h-20 rounded-md overflow-hidden cursor-pointer ${
-                    index === activeImage ? "ring-2 ring-blue-500" : ""
+                  className={`relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden cursor-pointer transition-all ${
+                    index === activeImage
+                      ? "ring-2 ring-primary scale-105"
+                      : "ring-1 ring-border hover:ring-primary/50"
                   }`}
                   onClick={() => setActiveImage(index)}
                 >
@@ -129,6 +141,11 @@ export default function ProgramContent({ title }: { title: string }) {
                     alt={`${program.title} thumbnail ${index + 1}`}
                     fill
                     className="object-cover"
+                    sizes="80px"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/placeholder.svg";
+                    }}
                   />
                 </div>
               ))}
