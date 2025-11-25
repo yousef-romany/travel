@@ -14,149 +14,221 @@ export interface InvoiceData {
   bookingDate: string;
 }
 
+// Helper to create a styled PDF matching the EgyptInvoice Card design
+const createStyledInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
+  // Colors matching the theme
+  const primaryColor = [217, 119, 6]; // #d97706 amber-600
+  const darkColor = [31, 41, 55]; // #1f2937 gray-800
+  const lightGray = [243, 244, 246]; // #f3f4f6
+  const white = [255, 255, 255];
+
+  // Header Background with gradient effect
+  doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.rect(0, 0, 210, 50, "F");
+
+  // Add decorative pattern (simulating hieroglyphs background)
+  // Using lighter color instead of opacity for compatibility
+  doc.setFillColor(230, 145, 56); // Lighter shade of amber
+  for (let i = 10; i < 200; i += 15) {
+    for (let j = 10; j < 40; j += 10) {
+      doc.rect(i, j, 8, 8, "F");
+    }
+  }
+
+  // Company Name - Centered
+  doc.setTextColor(white[0], white[1], white[2]);
+  doc.setFontSize(32);
+  doc.setFont("helvetica", "bold");
+  doc.text("Egypt Tourism Invoice", 105, 22, { align: "center" });
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "normal");
+  doc.text("Journey through the Land of Pharaohs", 105, 35, { align: "center" });
+
+  // Invoice Number Box (top right)
+  doc.setFillColor(lightGray[0], lightGray[1], lightGray[2]);
+  doc.roundedRect(150, 8, 50, 25, 3, 3, "F");
+  doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text("Invoice #", 152, 15);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.text(invoiceData.invoiceNumber, 152, 20, { maxWidth: 46 });
+  doc.text(`Date: ${new Date(invoiceData.bookingDate).toLocaleDateString()}`, 152, 28);
+
+  // Main Content Area
+  let yPos = 65;
+
+  // Trip Name Section
+  doc.setFontSize(18);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.text(invoiceData.tripName, 20, yPos);
+  yPos += 10;
+
+  // Description
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 100, 100);
+  const desc = "Experience the wonders of Egypt with our carefully curated tour package.";
+  doc.text(desc, 20, yPos, { maxWidth: 85 });
+  yPos += 15;
+
+  // Trip Details Icons & Info (Left Column)
+  doc.setFontSize(10);
+  doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+
+  // Calendar Icon (simulated)
+  doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setLineWidth(0.5);
+  doc.rect(20, yPos - 3, 4, 4);
+  doc.text(
+    new Date(invoiceData.tripDate).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    }),
+    27,
+    yPos
+  );
+  yPos += 7;
+
+  // Clock Icon (simulated)
+  doc.circle(22, yPos - 1.5, 2);
+  doc.text(`${invoiceData.tripDuration} Days`, 27, yPos);
+  yPos += 7;
+
+  // Users Icon (simulated)
+  doc.circle(21, yPos - 1.5, 1.5);
+  doc.circle(23, yPos - 1.5, 1.5);
+  doc.text(`${invoiceData.numberOfTravelers} Travelers`, 27, yPos);
+
+  // Customer Details Box (Right Column)
+  const boxX = 115;
+  const boxY = 65;
+  // Light amber background for customer details
+  doc.setFillColor(254, 243, 199); // Very light amber (#fef3c7)
+  doc.roundedRect(boxX, boxY, 80, 40, 5, 5, "F");
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.text("Customer Details", boxX + 5, boxY + 8);
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+  doc.setFont("helvetica", "bold");
+  doc.text("Name:", boxX + 5, boxY + 16);
+  doc.setFont("helvetica", "normal");
+  doc.text(invoiceData.customerName, boxX + 20, boxY + 16);
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Email:", boxX + 5, boxY + 23);
+  doc.setFont("helvetica", "normal");
+  doc.text(invoiceData.customerEmail, boxX + 20, boxY + 23, { maxWidth: 55 });
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Phone:", boxX + 5, boxY + 30);
+  doc.setFont("helvetica", "normal");
+  doc.text(invoiceData.customerPhone, boxX + 20, boxY + 30);
+
+  // Separator Line
+  yPos = 115;
+  doc.setDrawColor(217, 119, 6); // Amber color
+  doc.setLineWidth(0.5);
+  doc.line(20, yPos, 190, yPos);
+
+  // Itinerary Highlights Section
+  yPos += 10;
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.text("Itinerary Highlights", 20, yPos);
+  yPos += 8;
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+  const highlights = [
+    "Visit the iconic Pyramids of Giza",
+    "Explore the treasures of the Egyptian Museum",
+    "Cruise along the majestic Nile River",
+    "Discover ancient temples in Luxor",
+    "Professional tour guide included",
+  ];
+  highlights.forEach((item) => {
+    doc.text(`• ${item}`, 25, yPos);
+    yPos += 6;
+  });
+
+  // Payment Details Box
+  yPos += 10;
+  // Light amber background for payment details
+  doc.setFillColor(254, 243, 199); // Very light amber (#fef3c7)
+  doc.roundedRect(20, yPos, 170, 35, 5, 5, "F");
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.text("Payment Details", 25, yPos + 8);
+
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+  doc.text("Price per Person:", 25, yPos + 18);
+  doc.text(`$${invoiceData.pricePerPerson.toFixed(2)}`, 165, yPos + 18, {
+    align: "right",
+  });
+
+  doc.text("Number of Travelers:", 25, yPos + 25);
+  doc.text(`${invoiceData.numberOfTravelers}`, 165, yPos + 25, { align: "right" });
+
+  // Grand Total
+  doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.roundedRect(105, yPos + 28, 85, 12, 3, 3, "F");
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(white[0], white[1], white[2]);
+  doc.text("Total Amount:", 110, yPos + 36);
+  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 185, yPos + 36, { align: "right" });
+
+  // Footer
+  yPos = 270;
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 100, 100);
+  doc.text("Thank you for choosing Egypt Tourism for your adventure!", 105, yPos, {
+    align: "center",
+  });
+  doc.text("For any inquiries, please contact us at:", 105, yPos + 5, {
+    align: "center",
+  });
+  doc.text(
+    "Website: www.zoeholiday.com | Email: info@zoeholiday.com | Phone: +20 155 510 0961",
+    105,
+    yPos + 10,
+    { align: "center" }
+  );
+
+  // Bottom Border
+  doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.rect(0, 287, 210, 10, "F");
+
+  // Page Border
+  doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.setLineWidth(1);
+  doc.rect(5, 5, 200, 287);
+};
+
 export const generateInvoicePDF = async (
   invoiceData: InvoiceData
 ): Promise<Blob> => {
   const doc = new jsPDF();
 
-  // Set colors
-  const primaryColor = "#d97706"; // amber-600
-  const darkColor = "#1f2937"; // gray-800
-  const lightGray = "#f3f4f6"; // gray-100
-
-  // Header with company name
-  doc.setFillColor(primaryColor);
-  doc.rect(0, 0, 210, 40, "F");
-
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(28);
-  doc.setFont("helvetica", "bold");
-  doc.text("ZoeHoliday", 105, 20, { align: "center" });
-
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "normal");
-  doc.text("Egypt Tourism & Travel", 105, 30, { align: "center" });
-
-  // Invoice title
-  doc.setTextColor(darkColor);
-  doc.setFontSize(24);
-  doc.setFont("helvetica", "bold");
-  doc.text("INVOICE", 20, 55);
-
-  // Invoice details box
-  doc.setFillColor(lightGray);
-  doc.rect(140, 45, 50, 30, "F");
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-  doc.text(`Invoice #: ${invoiceData.invoiceNumber}`, 145, 52);
-  doc.text(`Date: ${new Date(invoiceData.bookingDate).toLocaleDateString()}`, 145, 58);
-  doc.text(`Status: Pending`, 145, 64);
-
-  // Customer information
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "bold");
-  doc.text("Bill To:", 20, 85);
-
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-  doc.text(invoiceData.customerName, 20, 92);
-  doc.text(invoiceData.customerEmail, 20, 98);
-  doc.text(invoiceData.customerPhone, 20, 104);
-
-  // Trip details section
-  doc.setFillColor(primaryColor);
-  doc.rect(20, 115, 170, 10, "F");
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "bold");
-  doc.text("Trip Details", 25, 122);
-
-  // Trip information
-  doc.setTextColor(darkColor);
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-
-  const tripDetailsY = 135;
-  doc.text("Trip Name:", 25, tripDetailsY);
-  doc.setFont("helvetica", "bold");
-  doc.text(invoiceData.tripName, 60, tripDetailsY);
-
-  doc.setFont("helvetica", "normal");
-  doc.text("Travel Date:", 25, tripDetailsY + 7);
-  doc.setFont("helvetica", "bold");
-  doc.text(new Date(invoiceData.tripDate).toLocaleDateString(), 60, tripDetailsY + 7);
-
-  doc.setFont("helvetica", "normal");
-  doc.text("Duration:", 25, tripDetailsY + 14);
-  doc.setFont("helvetica", "bold");
-  doc.text(`${invoiceData.tripDuration} days`, 60, tripDetailsY + 14);
-
-  doc.setFont("helvetica", "normal");
-  doc.text("Number of Travelers:", 25, tripDetailsY + 21);
-  doc.setFont("helvetica", "bold");
-  doc.text(invoiceData.numberOfTravelers.toString(), 60, tripDetailsY + 21);
-
-  // Pricing table header
-  const tableTop = 170;
-  doc.setFillColor(primaryColor);
-  doc.rect(20, tableTop, 170, 10, "F");
-
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(11);
-  doc.setFont("helvetica", "bold");
-  doc.text("Description", 25, tableTop + 7);
-  doc.text("Quantity", 110, tableTop + 7);
-  doc.text("Price", 140, tableTop + 7);
-  doc.text("Total", 170, tableTop + 7);
-
-  // Pricing table content
-  doc.setTextColor(darkColor);
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-
-  const rowY = tableTop + 17;
-  doc.text("Tour Package", 25, rowY);
-  doc.text(invoiceData.numberOfTravelers.toString(), 110, rowY);
-  doc.text(`$${invoiceData.pricePerPerson.toFixed(2)}`, 140, rowY);
-  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 170, rowY);
-
-  // Divider line
-  doc.setDrawColor(200, 200, 200);
-  doc.line(20, rowY + 5, 190, rowY + 5);
-
-  // Total section
-  const totalY = rowY + 15;
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "bold");
-  doc.text("Subtotal:", 130, totalY);
-  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 170, totalY);
-
-  doc.text("Tax (0%):", 130, totalY + 7);
-  doc.text("$0.00", 170, totalY + 7);
-
-  // Grand total box
-  doc.setFillColor(primaryColor);
-  doc.rect(120, totalY + 12, 70, 12, "F");
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(14);
-  doc.text("Total:", 130, totalY + 20);
-  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 170, totalY + 20);
-
-  // Footer
-  doc.setTextColor(100, 100, 100);
-  doc.setFontSize(9);
-  doc.setFont("helvetica", "normal");
-  const footerY = 270;
-  doc.text("Thank you for choosing ZoeHoliday!", 105, footerY, { align: "center" });
-  doc.text("For any inquiries, please contact us at:", 105, footerY + 5, { align: "center" });
-  doc.text("Email: info@zoeholiday.com | Phone: +20 155 510 0961", 105, footerY + 10, {
-    align: "center",
-  });
-
-  // Add border
-  doc.setDrawColor(primaryColor);
-  doc.setLineWidth(0.5);
-  doc.rect(10, 10, 190, 277);
+  // Use the new styled invoice function
+  createStyledInvoice(doc, invoiceData);
 
   // Return as Blob
   return doc.output("blob");
@@ -168,144 +240,8 @@ export const downloadInvoicePDF = async (
 ): Promise<void> => {
   const doc = new jsPDF();
 
-  // Set colors
-  const primaryColor = "#d97706"; // amber-600
-  const darkColor = "#1f2937"; // gray-800
-  const lightGray = "#f3f4f6"; // gray-100
-
-  // Header with company name
-  doc.setFillColor(primaryColor);
-  doc.rect(0, 0, 210, 40, "F");
-
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(28);
-  doc.setFont("helvetica", "bold");
-  doc.text("ZoeHoliday", 105, 20, { align: "center" });
-
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "normal");
-  doc.text("Egypt Tourism & Travel", 105, 30, { align: "center" });
-
-  // Invoice title
-  doc.setTextColor(darkColor);
-  doc.setFontSize(24);
-  doc.setFont("helvetica", "bold");
-  doc.text("INVOICE", 20, 55);
-
-  // Invoice details box
-  doc.setFillColor(lightGray);
-  doc.rect(140, 45, 50, 30, "F");
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-  doc.text(`Invoice #: ${invoiceData.invoiceNumber}`, 145, 52);
-  doc.text(`Date: ${new Date(invoiceData.bookingDate).toLocaleDateString()}`, 145, 58);
-  doc.text(`Status: Pending`, 145, 64);
-
-  // Customer information
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "bold");
-  doc.text("Bill To:", 20, 85);
-
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-  doc.text(invoiceData.customerName, 20, 92);
-  doc.text(invoiceData.customerEmail, 20, 98);
-  doc.text(invoiceData.customerPhone, 20, 104);
-
-  // Trip details section
-  doc.setFillColor(primaryColor);
-  doc.rect(20, 115, 170, 10, "F");
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "bold");
-  doc.text("Trip Details", 25, 122);
-
-  // Trip information
-  doc.setTextColor(darkColor);
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-
-  const tripDetailsY = 135;
-  doc.text("Trip Name:", 25, tripDetailsY);
-  doc.setFont("helvetica", "bold");
-  doc.text(invoiceData.tripName, 60, tripDetailsY);
-
-  doc.setFont("helvetica", "normal");
-  doc.text("Travel Date:", 25, tripDetailsY + 7);
-  doc.setFont("helvetica", "bold");
-  doc.text(new Date(invoiceData.tripDate).toLocaleDateString(), 60, tripDetailsY + 7);
-
-  doc.setFont("helvetica", "normal");
-  doc.text("Duration:", 25, tripDetailsY + 14);
-  doc.setFont("helvetica", "bold");
-  doc.text(`${invoiceData.tripDuration} days`, 60, tripDetailsY + 14);
-
-  doc.setFont("helvetica", "normal");
-  doc.text("Number of Travelers:", 25, tripDetailsY + 21);
-  doc.setFont("helvetica", "bold");
-  doc.text(invoiceData.numberOfTravelers.toString(), 60, tripDetailsY + 21);
-
-  // Pricing table header
-  const tableTop = 170;
-  doc.setFillColor(primaryColor);
-  doc.rect(20, tableTop, 170, 10, "F");
-
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(11);
-  doc.setFont("helvetica", "bold");
-  doc.text("Description", 25, tableTop + 7);
-  doc.text("Quantity", 110, tableTop + 7);
-  doc.text("Price", 140, tableTop + 7);
-  doc.text("Total", 170, tableTop + 7);
-
-  // Pricing table content
-  doc.setTextColor(darkColor);
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-
-  const rowY = tableTop + 17;
-  doc.text("Tour Package", 25, rowY);
-  doc.text(invoiceData.numberOfTravelers.toString(), 110, rowY);
-  doc.text(`$${invoiceData.pricePerPerson.toFixed(2)}`, 140, rowY);
-  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 170, rowY);
-
-  // Divider line
-  doc.setDrawColor(200, 200, 200);
-  doc.line(20, rowY + 5, 190, rowY + 5);
-
-  // Total section
-  const totalY = rowY + 15;
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "bold");
-  doc.text("Subtotal:", 130, totalY);
-  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 170, totalY);
-
-  doc.text("Tax (0%):", 130, totalY + 7);
-  doc.text("$0.00", 170, totalY + 7);
-
-  // Grand total box
-  doc.setFillColor(primaryColor);
-  doc.rect(120, totalY + 12, 70, 12, "F");
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(14);
-  doc.text("Total:", 130, totalY + 20);
-  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 170, totalY + 20);
-
-  // Footer
-  doc.setTextColor(100, 100, 100);
-  doc.setFontSize(9);
-  doc.setFont("helvetica", "normal");
-  const footerY = 270;
-  doc.text("Thank you for choosing ZoeHoliday!", 105, footerY, { align: "center" });
-  doc.text("For any inquiries, please contact us at:", 105, footerY + 5, { align: "center" });
-  doc.text("Email: info@zoeholiday.com | Phone: +20 155 510 0961", 105, footerY + 10, {
-    align: "center",
-  });
-
-  // Add border
-  doc.setDrawColor(primaryColor);
-  doc.setLineWidth(0.5);
-  doc.rect(10, 10, 190, 277);
+  // Use the new styled invoice function
+  createStyledInvoice(doc, invoiceData);
 
   // Download
   doc.save(filename);

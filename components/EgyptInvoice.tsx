@@ -1,8 +1,14 @@
+"use client"
+
 import type React from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { CalendarDays, Users, Clock, Phone, Globe } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { CalendarDays, Users, Clock, Phone, Globe, Download, Eye, Loader2 } from "lucide-react"
+import { generateInvoicePDF, downloadInvoicePDF, type InvoiceData } from "@/lib/pdf-generator"
+import { toast } from "sonner"
 import mainLogo from "@/public/mainLogo.png";
 import logo from "@/public/logo.png";
 
@@ -14,6 +20,7 @@ interface InvoiceProps {
   customerName: string
   customerNationality: string
   customerPhone: string
+  customerEmail?: string
   transactionNumber: string
   tripDate: string
   tripDuration: string
@@ -28,12 +35,59 @@ export const EgyptInvoice: React.FC<InvoiceProps> = ({
   customerName,
   customerNationality,
   customerPhone,
+  customerEmail,
   transactionNumber,
   tripDate,
   tripDuration,
   itinerary,
 }) => {
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
+  const [pdfPreviewUrl, setPdfPreviewUrl] = useState<string | null>(null)
+
+  const invoiceData: InvoiceData = {
+    invoiceNumber: transactionNumber,
+    customerName,
+    customerEmail: customerEmail || "N/A",
+    customerPhone,
+    tripName,
+    tripDate,
+    tripDuration: parseInt(tripDuration) || 1,
+    numberOfTravelers,
+    pricePerPerson: price,
+    totalAmount: price * numberOfTravelers,
+    bookingDate: new Date().toISOString(),
+  }
+
+  const handlePreviewPDF = async () => {
+    setIsGeneratingPDF(true)
+    try {
+      const pdfBlob = await generateInvoicePDF(invoiceData)
+      const url = URL.createObjectURL(pdfBlob)
+      setPdfPreviewUrl(url)
+      toast.success("PDF preview generated successfully!")
+    } catch (error) {
+      console.error("Error generating PDF preview:", error)
+      toast.error("Failed to generate PDF preview")
+    } finally {
+      setIsGeneratingPDF(false)
+    }
+  }
+
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true)
+    try {
+      await downloadInvoicePDF(invoiceData, `invoice-${transactionNumber}.pdf`)
+      toast.success("Invoice PDF downloaded successfully!")
+    } catch (error) {
+      console.error("Error downloading PDF:", error)
+      toast.error("Failed to download PDF")
+    } finally {
+      setIsGeneratingPDF(false)
+    }
+  }
+
   return (
+    <div className="space-y-6">
     <Card className="w-full max-w-4xl mx-auto my-8 bg-muted border-primary overflow-hidden">
       <CardHeader className="bg-primary text-primary-foreground py-6 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -134,9 +188,59 @@ export const EgyptInvoice: React.FC<InvoiceProps> = ({
             </div>
           </div>
         </div>
+
+        <Separator className="my-6 bg-primary/30" />
+
+        {/* PDF Actions */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <Button
+            onClick={handlePreviewPDF}
+            disabled={isGeneratingPDF}
+            variant="outline"
+            className="w-full sm:w-auto gap-2"
+          >
+            {isGeneratingPDF ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Eye className="w-4 h-4" />
+            )}
+            Preview PDF
+          </Button>
+          <Button
+            onClick={handleDownloadPDF}
+            disabled={isGeneratingPDF}
+            className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90"
+          >
+            {isGeneratingPDF ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            Download Invoice PDF
+          </Button>
+        </div>
       </CardContent>
       <div className="h-8 bg-primary" />
     </Card>
+
+    {/* PDF Preview */}
+    {pdfPreviewUrl && (
+      <Card className="w-full max-w-4xl mx-auto bg-muted border-primary">
+        <CardHeader>
+          <CardTitle className="text-center">PDF Preview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="w-full h-[600px] border border-primary/20 rounded-lg overflow-hidden">
+            <iframe
+              src={pdfPreviewUrl}
+              className="w-full h-full"
+              title="Invoice PDF Preview"
+            />
+          </div>
+        </CardContent>
+      </Card>
+    )}
+    </div>
   )
 }
 

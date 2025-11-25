@@ -1,6 +1,7 @@
 import "../app/globals.css"
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import NavBar from "@/components/layout/NavBar";
 import { ThemeProvider } from "@/components/Providers";
 import Script from "next/script";
@@ -84,7 +85,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <head>
-        <GoogleAnalytics />
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+        </Suspense>
         <OrganizationSchema />
         {/* Google Translate Script */}
         <Script

@@ -185,8 +185,34 @@ export const updateBookingStatus = async (
     );
 
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error updating booking:", error);
+    console.error("Error response:", error.response?.data);
+    throw error;
+  }
+};
+
+// Cancel booking with 24-hour policy check
+export const cancelBooking = async (
+  bookingId: string,
+  bookingCreatedAt: string
+): Promise<{ data: BookingType }> => {
+  try {
+    // Check 24-hour cancellation policy
+    const createdDate = new Date(bookingCreatedAt);
+    const now = new Date();
+    const hoursSinceCreation = (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60);
+
+    if (hoursSinceCreation > 24) {
+      throw new Error(
+        "Cancellation period has expired. Bookings can only be cancelled within 24 hours of creation."
+      );
+    }
+
+    // Update status to cancelled
+    return await updateBookingStatus(bookingId, "cancelled");
+  } catch (error: any) {
+    console.error("Error cancelling booking:", error);
     throw error;
   }
 };

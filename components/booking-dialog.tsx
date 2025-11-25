@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
   Dialog,
@@ -24,7 +24,8 @@ import { Loader2, ChevronDownIcon } from "lucide-react";
 import { format } from "date-fns";
 import { createBooking } from "@/fetch/bookings";
 import { createInvoice } from "@/fetch/invoices";
-import { downloadInvoicePDF } from "@/lib/pdf-generator";
+import { generateInvoicePDF, downloadInvoicePDF } from "@/lib/pdf-generator";
+import { uploadFileToStrapi } from "@/lib/upload-file";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -173,15 +174,27 @@ export default function BookingDialog({
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const [formData, setFormData] = useState<BookingFormData>({
-    fullName: user?.profile?.firstName && user?.profile?.lastName
-      ? `${user.profile.firstName} ${user.profile.lastName}`
-      : "",
-    email: user?.email || "",
-    phone: user?.profile?.phone || "",
+    fullName: "",
+    email: "",
+    phone: "",
     numberOfTravelers: 1,
     travelDate: new Date(),
     specialRequests: "",
   });
+
+  // Auto-fill user data when user profile loads
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: user?.profile?.firstName && user?.profile?.lastName
+          ? `${user.profile.firstName} ${user.profile.lastName}`
+          : prev.fullName,
+        email: user?.email || prev.email,
+        phone: user?.profile?.phone || prev.phone,
+      }));
+    }
+  }, [user]);
 
   const createBookingMutation = useMutation({
     mutationFn: createBooking,
@@ -196,7 +209,29 @@ export default function BookingDialog({
           user?.documentId
         );
 
-        await createInvoice(createData);
+        // Generate PDF blob
+        const pdfBlob = await generateInvoicePDF(pdfData);
+
+        // Upload PDF to Strapi and get URL
+        let pdfUrl: string | undefined;
+        try {
+          pdfUrl = await uploadFileToStrapi(
+            pdfBlob,
+            `invoice-${createData.invoiceNumber}.pdf`
+          );
+          console.log("PDF uploaded successfully:", pdfUrl);
+        } catch (uploadError) {
+          console.error("PDF upload failed:", uploadError);
+          // Continue without PDF URL if upload fails
+        }
+
+        // Create invoice with PDF URL
+        await createInvoice({
+          ...createData,
+          pdfUrl,
+        });
+
+        // Download PDF for user
         await downloadInvoicePDF(pdfData, `invoice-${createData.invoiceNumber}.pdf`);
 
         const whatsAppMessage = generateWhatsAppMessage(formData, program);

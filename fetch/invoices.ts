@@ -167,8 +167,39 @@ export const updateInvoiceStatus = async (
     );
 
     return response.data;
-  } catch (error) {
-    console.error("Error updating invoice:", error);
+  } catch (error: any) {
+    console.error("Error updating invoice status:", error);
+    console.error("Error response:", error.response?.data);
+    throw error;
+  }
+};
+
+// Update invoice PDF URL
+export const updateInvoicePdfUrl = async (
+  invoiceId: string,
+  pdfUrl: string
+): Promise<{ data: InvoiceType }> => {
+  try {
+    const authToken =
+      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+
+    const response = await axios.put(
+      `${API_URL}/api/invoices/${invoiceId}`,
+      {
+        data: { pdfUrl },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken || API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error updating invoice PDF URL:", error);
+    console.error("Error response:", error.response?.data);
     throw error;
   }
 };

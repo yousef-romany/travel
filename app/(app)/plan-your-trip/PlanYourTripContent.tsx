@@ -42,16 +42,22 @@ import {
 } from "@/components/ui/dialog";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { MapPin, FileText, Send, Eye } from "lucide-react";
+import { MapPin, FileText, Send, Eye, Save } from "lucide-react";
 import { toast } from "sonner";
+import { createPlanTrip, type PlanTripDestination } from "@/fetch/plan-trip";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function PlanYourTripContent() {
   const [travelPlan, setTravelPlan] = useState<any[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isFinishDialogOpen, setIsFinishDialogOpen] = useState(false);
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
+  const [tripName, setTripName] = useState("");
   const { user } = useAuth();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -137,15 +143,64 @@ export default function PlanYourTripContent() {
     setIsFinishDialogOpen(true);
   };
 
+  // Mutation for creating plan trip
+  const createPlanTripMutation = useMutation({
+    mutationFn: createPlanTrip,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["userPlanTrips"] });
+
+      // Show different message based on status
+      if (data?.data?.status === "quoted") {
+        toast.success("Booking request submitted! We'll contact you soon with a quote.");
+      } else {
+        toast.success("Trip plan saved successfully!");
+      }
+
+      setIsFinishDialogOpen(false);
+      setTripName("");
+    },
+    onError: (error: any) => {
+      console.error("Error saving trip plan:", error);
+      const errorMessage = error.response?.data?.error?.message || "Failed to save trip plan. Please try again.";
+      toast.error(errorMessage);
+    },
+  });
+
   const handleSaveCustomTrip = () => {
     if (!user) {
       toast.error("Please login to save your trip");
       router.push("/login");
       return;
     }
-    // TODO: Implement save custom trip
-    toast.success("Feature coming soon: Save as custom trip!");
-    setIsFinishDialogOpen(false);
+
+    if (!tripName.trim()) {
+      toast.error("Please enter a trip name");
+      return;
+    }
+
+    if (travelPlan.length === 0) {
+      toast.error("Please add at least one place to your travel plan");
+      return;
+    }
+
+    // Prepare destinations data
+    const destinations: PlanTripDestination[] = travelPlan.map((place) => ({
+      id: place.id,
+      title: place.title,
+      price: Number(place.price),
+      location: place.location || "",
+      description: place.description || "",
+    }));
+
+    // Create plan trip
+    createPlanTripMutation.mutate({
+      tripName,
+      destinations,
+      totalPrice,
+      estimatedDuration,
+      pricePerDay,
+      userId: user.documentId,
+    });
   };
 
   const handleCreateBooking = () => {
@@ -154,9 +209,36 @@ export default function PlanYourTripContent() {
       router.push("/login");
       return;
     }
-    // TODO: Implement create booking
-    toast.success("Feature coming soon: Create booking from plan!");
-    setIsFinishDialogOpen(false);
+
+    if (!tripName.trim()) {
+      toast.error("Please enter a trip name");
+      return;
+    }
+
+    if (travelPlan.length === 0) {
+      toast.error("Please add at least one place to your travel plan");
+      return;
+    }
+
+    // Prepare destinations data
+    const destinations: PlanTripDestination[] = travelPlan.map((place) => ({
+      id: place.id,
+      title: place.title,
+      price: Number(place.price),
+      location: place.location || "",
+      description: place.description || "",
+    }));
+
+    // Create plan trip with "quoted" status
+    createPlanTripMutation.mutate({
+      tripName,
+      destinations,
+      totalPrice,
+      estimatedDuration,
+      pricePerDay,
+      userId: user.documentId,
+      status: "quoted",
+    });
   };
 
   const handleRequestQuote = () => {
@@ -362,20 +444,36 @@ Thank you! 🙏`;
                 You have {travelPlan.length} place{travelPlan.length !== 1 ? 's' : ''} in your plan with a total of ${totalPrice}
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-3 py-4">
-              <Button
-                onClick={handleSaveCustomTrip}
-                variant="outline"
-                className="w-full justify-start h-auto py-4"
-              >
-                <MapPin className="mr-3 h-5 w-5" />
-                <div className="text-left">
-                  <div className="font-semibold">Save as Custom Trip</div>
-                  <div className="text-xs text-muted-foreground">
-                    Save this itinerary to your account for later
+            <div className="space-y-4 py-4">
+              {/* Trip Name Input */}
+              <div className="space-y-2">
+                <Label htmlFor="tripName">Trip Name (required for saving)</Label>
+                <Input
+                  id="tripName"
+                  placeholder="e.g., Egypt Adventure 2025"
+                  value={tripName}
+                  onChange={(e) => setTripName(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+
+              <div className="grid gap-3">
+                <Button
+                  onClick={handleSaveCustomTrip}
+                  variant="outline"
+                  className="w-full justify-start h-auto py-4"
+                  disabled={createPlanTripMutation.isPending}
+                >
+                  <Save className="mr-3 h-5 w-5" />
+                  <div className="text-left">
+                    <div className="font-semibold">
+                      {createPlanTripMutation.isPending ? "Saving..." : "Save as Custom Trip"}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Save this itinerary to your account for later
+                    </div>
                   </div>
-                </div>
-              </Button>
+                </Button>
 
               <Button
                 onClick={handleCreateBooking}
@@ -418,6 +516,7 @@ Thank you! 🙏`;
                   </div>
                 </div>
               </Button>
+              </div>
             </div>
           </DialogContent>
         </Dialog>

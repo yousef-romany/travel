@@ -228,3 +228,54 @@ export const removeFromWishlist = async (wishlistItemId: string, token: string):
     throw error;
   }
 };
+
+/**
+ * Update user profile
+ */
+export interface UpdateProfileData {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  nationality?: string;
+  passportNumber?: string;
+  passportExpiry?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  zipCode?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  dateOfBirth?: string;
+  avatar?: string;
+}
+
+export const updateUserProfile = async (
+  profileDocumentId: string,
+  data: UpdateProfileData,
+  token: string
+): Promise<UserProfile> => {
+  try {
+    const url = `${API_URL}/api/profiles/${profileDocumentId}`;
+
+    console.log("Updating profile with documentId:", profileDocumentId);
+    console.log("Update data:", data);
+
+    const response = await axios.put(
+      url,
+      { data },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data.data;
+  } catch (error: any) {
+    console.error("Error updating user profile:", error);
+    console.error("Error response:", error.response?.data);
+    console.error("Error status:", error.response?.status);
+    throw error;
+  }
+};
