@@ -68,6 +68,27 @@ export const fetchUserPlanTrips = async (
   }
 };
 
+// Fetch popular/best custom trips (excluding drafts and cancelled, sorted by total price or creation date)
+export const fetchBestCustomTrips = async (
+  limit: number = 6
+): Promise<PlanTripsResponse> => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/api/plan-trips?populate=user&filters[status][$ne]=cancelled&filters[status][$ne]=draft&sort=totalPrice:desc&pagination[limit]=${limit}`,
+      {
+        headers: {
+          Authorization: `Bearer ${API_TOKEN}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching best custom trips:", error);
+    throw error;
+  }
+};
+
 // Create a new plan trip
 export const createPlanTrip = async (planTripData: {
   tripName: string;

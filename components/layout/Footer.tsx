@@ -124,7 +124,7 @@ export default function Footer() {
           <ul className="space-y-2">
             <li>
               <Link
-                href="#"
+                href="/privacy-policy"
                 className="text-primary hover:text-secondary transition-colors"
               >
                 Privacy Policy
@@ -132,7 +132,7 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                href="#"
+                href="/terms-and-conditions"
                 className="text-primary hover:text-secondary transition-colors"
               >
                 Terms and Conditions
@@ -140,7 +140,7 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                href="#"
+                href="/sitemap.xml"
                 className="text-primary hover:text-secondary transition-colors"
               >
                 Sitemap
@@ -157,7 +157,7 @@ export default function Footer() {
           <ul className="space-y-2">
             <li>
               <Link
-                href="#"
+                href="/media-industry"
                 className="text-primary hover:text-secondary transition-colors"
               >
                 Media & Industry
@@ -165,7 +165,7 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                href="#"
+                href="/business-events"
                 className="text-primary hover:text-secondary transition-colors"
               >
                 Business Events
@@ -173,7 +173,7 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                href="#"
+                href="/tourism-investment"
                 className="text-primary hover:text-secondary transition-colors"
               >
                 Tourism Investment

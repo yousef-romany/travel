@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import ModeToggle from "./ModeToggle";
 import { NavigationMenuDemo } from "./NavigationMenuDemo";
 import Menu from "./Menu";
+import { UserMenu } from "./UserMenu";
 import { fetchInspirationCategories } from "@/fetch/category";
 import { useQuery } from "@tanstack/react-query";
 import { InspirationCategory } from "@/type/inspiration";
@@ -19,7 +20,7 @@ import { useAuth } from "@/context/AuthContext";
 
 const NavBar = () => {
   const { theme } = useTheme();
-  const { user, logout } = useAuth(); // ✅ هنا جبنا المستخدم
+  const { user } = useAuth();
 
   const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
     queryKey: ["InspirationCategories"],
@@ -36,70 +37,83 @@ const NavBar = () => {
     return <p>Error: {error.message}</p>;
 
   const handleWishlistClick = () => {
-    if (!user) return (window.location.href = "/login"); // ✅ لو مش داخل هنعمله redirect
+    if (!user) return (window.location.href = "/login");
     window.location.href = "/wishlist";
   };
 
   return (
-    <div className="z-50 w-full h-[76px] px-[2em] fixed top-0 left-0 border-b-2 border-primary bg-card flex justify-between items-center">
-      <Menu
-        categories={data?.data || []}
-        placesTogCategorie={
-          Array.isArray(placeToGo?.data?.data) ? placeToGo.data.data : []
-        }
-      />
-      <Link href={"/"}>
+    <nav className="z-50 w-full h-[76px] px-3 sm:px-4 md:px-6 lg:px-8 fixed top-0 left-0 border-b-2 border-primary bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 flex justify-between items-center shadow-sm">
+      {/* Mobile Menu */}
+      <div className="lg:hidden flex-shrink-0">
+        <Menu
+          categories={data?.data || []}
+          placesTogCategorie={
+            Array.isArray(placeToGo?.data?.data) ? placeToGo.data.data : []
+          }
+        />
+      </div>
+
+      {/* Logo */}
+      <Link href={"/"} className="flex-shrink-0 mx-auto lg:mx-0">
         {theme == "light" ? (
           <Image
             src={logoLight}
-            alt="logo"
-            className="!w-[200px] !max-w-[200px] h-auto"
+            alt="ZoeHoliday Logo"
+            className="!w-[120px] sm:!w-[150px] md:!w-[180px] lg:!w-[200px] !max-w-[200px] h-auto"
+            priority
           />
         ) : (
           <Image
             src={logo}
-            alt="logo"
-            className="!w-[200px] !max-w-[200px] h-auto"
+            alt="ZoeHoliday Logo"
+            className="!w-[120px] sm:!w-[150px] md:!w-[180px] lg:!w-[200px] !max-w-[200px] h-auto"
+            priority
           />
         )}
       </Link>
 
-      <NavigationMenuDemo
-        categories={data?.data || []}
-        placesTogCategorie={
-          Array.isArray(placeToGo?.data?.data) ? placeToGo.data.data : []
-        }
-      />
+      {/* Desktop Navigation */}
+      <div className="hidden lg:flex flex-1 justify-center">
+        <NavigationMenuDemo
+          categories={data?.data || []}
+          placesTogCategorie={
+            Array.isArray(placeToGo?.data?.data) ? placeToGo.data.data : []
+          }
+        />
+      </div>
 
-      <div className="flex items-center gap-3">
-        {/* Wishlist */}
-        <Button size="icon" variant="outline" onClick={handleWishlistClick}>
-          <FaRegHeart size={20} className="text-primary" />
-        </Button>
+      {/* Right Actions */}
+      <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-shrink-0">
+        {/* Wishlist - Hidden on mobile when logged in */}
+        {!user && (
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={handleWishlistClick}
+            className="hover:bg-primary/10 transition-colors h-9 w-9 sm:h-10 sm:w-10"
+            title="Wishlist"
+          >
+            <FaRegHeart size={18} className="text-primary sm:w-5 sm:h-5" />
+          </Button>
+        )}
 
-        <ModeToggle />
+        {/* Theme Toggle */}
+        <div className="flex-shrink-0">
+          <ModeToggle />
+        </div>
 
-        {/* Auth Buttons */}
+        {/* Auth Section */}
         {!user ? (
-          // ✅ لو مش داخل 
           <Link href="/login">
-            <Button className="px-4">Login</Button>
+            <Button className="px-3 sm:px-4 md:px-6 text-sm sm:text-base h-9 sm:h-10">
+              Login
+            </Button>
           </Link>
         ) : (
-          // ✅ لو داخل
-          <div className="flex gap-2 items-center">
-            <Link href="/me">
-              <Button variant="secondary" className="px-4">
-                {user.username}
-              </Button>
-            </Link>
-            <Button variant="destructive" className="px-4" onClick={logout}>
-              Logout
-            </Button>
-          </div>
+          <UserMenu />
         )}
       </div>
-    </div>
+    </nav>
   );
 };
 export default memo(NavBar);

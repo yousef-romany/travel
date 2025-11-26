@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { getUserProfile, getUserStats, type UserProfile, type UserStats } from "@/fetch/user";
+import { fetchUserPlanTrips } from "@/fetch/plan-trip";
 import {
   Card,
   CardContent,
@@ -14,7 +15,8 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit2, TrendingUp, Plane, Heart, Calendar, Loader2 } from "lucide-react";
+import { Edit2, TrendingUp, Plane, Heart, Calendar, Loader2, MapPin, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function PersonalInfo() {
   const router = useRouter();
@@ -34,6 +36,14 @@ export default function PersonalInfo() {
     queryFn: () => getUserStats(user!.id, user!.token),
     enabled: !!user?.id && !!user?.token,
     staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+
+  // Fetch user's plan trips
+  const { data: planTrips } = useQuery({
+    queryKey: ["userPlanTrips", user?.documentId],
+    queryFn: () => fetchUserPlanTrips(user?.documentId),
+    enabled: !!user?.documentId,
+    staleTime: 2 * 60 * 1000,
   });
 
   useEffect(() => {
@@ -89,6 +99,23 @@ export default function PersonalInfo() {
     },
   ];
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "draft":
+        return "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300";
+      case "quoted":
+        return "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300";
+      case "booked":
+        return "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300";
+      case "completed":
+        return "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300";
+      case "cancelled":
+        return "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300";
+      default:
+        return "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300";
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Stats */}
@@ -116,6 +143,81 @@ export default function PersonalInfo() {
           );
         })}
       </div>
+
+      {/* Custom Plan Trips Preview */}
+      {planTrips?.data && planTrips.data.length > 0 && (
+        <Card className="border border-border bg-card shadow-sm">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>My Custom Trips</CardTitle>
+                <CardDescription>
+                  Your personalized travel plans
+                </CardDescription>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                asChild
+              >
+                <Link href="/plan-your-trip">
+                  Create New
+                </Link>
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {planTrips.data.slice(0, 3).map((trip) => (
+                <div
+                  key={trip.id}
+                  className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold text-foreground">{trip.tripName}</h4>
+                      <Badge className={getStatusColor(trip.status)}>
+                        {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-4 h-4" />
+                        {trip.destinations?.length || 0} destinations
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        {trip.estimatedDuration} {trip.estimatedDuration === 1 ? 'day' : 'days'}
+                      </span>
+                      <span className="font-semibold text-primary">
+                        ${trip.totalPrice?.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                  >
+                    <Link href="/plan-your-trip">
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </Button>
+                </div>
+              ))}
+            </div>
+            {planTrips.data.length > 3 && (
+              <div className="mt-4 text-center">
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/plan-your-trip">
+                    View All {planTrips.data.length} Trips
+                  </Link>
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Personal Information */}
       <Card className="border border-border bg-card shadow-sm">

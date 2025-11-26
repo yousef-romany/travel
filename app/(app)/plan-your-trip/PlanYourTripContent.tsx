@@ -42,12 +42,13 @@ import {
 } from "@/components/ui/dialog";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { MapPin, FileText, Send, Eye, Save } from "lucide-react";
+import { MapPin, FileText, Send, Eye, Save, Users, TrendingUp, Calendar as CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
-import { createPlanTrip, type PlanTripDestination } from "@/fetch/plan-trip";
+import { createPlanTrip, type PlanTripDestination, fetchBestCustomTrips } from "@/fetch/plan-trip";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function PlanYourTripContent() {
   const [travelPlan, setTravelPlan] = useState<any[]>([]);
@@ -279,6 +280,13 @@ Thank you! 🙏`;
     queryFn: fetchPlanYourTrip,
   });
 
+  // Fetch best custom trips
+  const { data: bestTrips } = useQuery({
+    queryKey: ["bestCustomTrips"],
+    queryFn: () => fetchBestCustomTrips(6),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
   const [selectedCategory, setSelectedCategory] = useState(data?.data?.at(0));
   const [selectedSubcategory, setSelectedSubcategory] = useState(
     data?.data?.at(0)?.place_to_go_subcategories[0]
@@ -289,6 +297,19 @@ Thank you! 🙏`;
   }, [data]);
   if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "quoted":
+        return "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300";
+      case "booked":
+        return "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300";
+      case "completed":
+        return "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300";
+      default:
+        return "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300";
+    }
+  };
 
   return (
     <DndContext
@@ -302,6 +323,89 @@ Thank you! 🙏`;
         <h1 className="text-4xl font-bold mb-8 text-center text-primary">
           Plan Your Travel
         </h1>
+
+        {/* Best Custom Trips Section */}
+        {bestTrips?.data && bestTrips.data.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold text-primary flex items-center gap-2">
+                  <TrendingUp className="w-6 h-6" />
+                  Popular Custom Trips
+                </h2>
+                <p className="text-muted-foreground mt-1">
+                  Discover amazing itineraries created by our community
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {bestTrips.data.map((trip) => (
+                <Card key={trip.id} className="border-border hover:border-primary/50 transition-all">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <CardTitle className="text-lg">{trip.tripName}</CardTitle>
+                      <Badge className={getStatusColor(trip.status)}>
+                        {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                      </Badge>
+                    </div>
+                    {trip.user?.username && (
+                      <CardDescription className="flex items-center gap-1">
+                        <Users className="w-3 h-3" />
+                        Created by {trip.user.username}
+                      </CardDescription>
+                    )}
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <MapPin className="w-4 h-4" />
+                          {trip.destinations?.length || 0} stops
+                        </span>
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <CalendarIcon className="w-4 h-4" />
+                          {trip.estimatedDuration} {trip.estimatedDuration === 1 ? 'day' : 'days'}
+                        </span>
+                      </div>
+                      <div className="pt-2 border-t border-border">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">Total Cost</span>
+                          <span className="text-xl font-bold text-primary">
+                            ${trip.totalPrice?.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          ${trip.pricePerDay?.toFixed(0)} per day
+                        </div>
+                      </div>
+                      {trip.destinations && trip.destinations.length > 0 && (
+                        <div className="pt-2 border-t border-border">
+                          <p className="text-xs text-muted-foreground mb-1">Destinations:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {trip.destinations.slice(0, 3).map((dest, idx) => (
+                              <span
+                                key={idx}
+                                className="text-xs bg-muted px-2 py-1 rounded"
+                              >
+                                {dest.title}
+                              </span>
+                            ))}
+                            {trip.destinations.length > 3 && (
+                              <span className="text-xs bg-muted px-2 py-1 rounded">
+                                +{trip.destinations.length - 3} more
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-2">
             <div className="mb-6">
