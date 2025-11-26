@@ -68,10 +68,12 @@ export default function ProgramContent({ title }: { title: string }) {
 
   return (
     <>
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
-      </div>
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+        {/* Background Decoration */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+          <div className="absolute top-20 right-20 w-96 h-96 bg-primary rounded-full blur-[120px]"></div>
+          <div className="absolute bottom-20 left-20 w-96 h-96 bg-amber-500 rounded-full blur-[120px]"></div>
+        </div>
       <TourPackageSchema
         name={program.title || "Egypt Tour"}
         description={
@@ -95,14 +97,22 @@ export default function ProgramContent({ title }: { title: string }) {
         ]}
       />
 
-      <div className="container mx-auto px-4 py-8 max-w-6xl mb-[60px]">
-        <h1 className="text-4xl font-bold mb-6 text-primary">
-          {program.title}
-        </h1>
+      <div className="container mx-auto px-4 py-12 max-w-6xl mb-[60px] relative z-10">
+        {/* Hero Section */}
+        <div className="text-center mb-12 animate-slide-up">
+          <div className="inline-block mb-4">
+            <span className="px-4 py-2 bg-primary/10 text-primary text-sm font-semibold rounded-full border border-primary/20">
+              ✨ Curated Travel Experience
+            </span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+            {program.title}
+          </h1>
+        </div>
 
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 gap-8 mb-12 animate-slide-up animate-delay-200">
           <div className="space-y-4">
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
+            <div className="relative aspect-video rounded-2xl overflow-hidden bg-muted shadow-2xl border border-primary/20">
               {program.images && program.images.length > 0 ? (
                 <Image
                   src={
@@ -153,124 +163,172 @@ export default function ProgramContent({ title }: { title: string }) {
           </div>
 
           <div className="space-y-6">
-            <p className="text-primary">{program.descraption}</p>
-            <div className="flex items-center space-x-4 text-primary text-[1.4rem] font-bold">
-              <MapPin className="w-[1.4rem] h-[1.4rem]" aria-hidden="true" />
-              <span>{program.Location}</span>
+            <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-2xl p-6 shadow-xl">
+              <p className="text-muted-foreground text-lg leading-relaxed mb-6">{program.descraption}</p>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-primary/10 rounded-xl">
+                    <MapPin className="w-6 h-6 text-primary" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground font-semibold">Location</p>
+                    <span className="text-lg font-bold text-foreground">{program.Location}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-amber-500/10 rounded-xl">
+                    <Clock className="w-6 h-6 text-amber-600" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground font-semibold">Duration</p>
+                    <span className="text-lg font-bold text-foreground">{program.duration} {Number(program.duration) === 1 ? 'Day' : 'Days'}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-yellow-400/10 rounded-xl">
+                    <Star className="w-6 h-6 text-yellow-500 fill-current" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground font-semibold">Rating</p>
+                    <span className="text-lg font-bold text-foreground">{program.rating} / 5</span>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-primary/10">
+                  <p className="text-xs text-muted-foreground font-semibold mb-2">Total Price</p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                      ${Number(program.price).toFixed(2)}
+                    </span>
+                    <span className="text-sm text-muted-foreground">per person</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center space-x-4 text-primary text-[1.4rem] font-bold">
-              <Clock className="w-[1.4rem] h-[1.4rem]" aria-hidden="true" />
-              <span className="">{program.duration} days</span>
-            </div>
-            <div className="text-[1.4rem] font-bold text-primary">
-              $ {Number(program.price).toFixed(2)}
-            </div>
-            <div className="flex items-center space-x-2 text-[1.4rem]">
-              <Star
-                className="w-[1.4rem] h-[1.4rem] text-yellow-400 fill-current"
-                aria-hidden="true"
-              />
-              <span className="text-primary">{program.rating} / 5</span>
-            </div>
-            <Button size="lg" className="w-full" onClick={handleBookingClick}>
-              Book Now
+
+            <Button
+              size="lg"
+              className="w-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-2xl text-lg py-6 hover:scale-105 transition-transform font-semibold"
+              onClick={handleBookingClick}
+            >
+              Book This Experience
             </Button>
           </div>
         </div>
 
-        <div className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4 text-primary">
-            Travel Itinerary
-          </h2>
-          <ol className="space-y-4">
-            {program.content_steps &&
-              program.content_steps.map((step: ContentStep, index: number) => (
-                <li key={index} className="flex items-center justify-start">
-                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold mr-4">
-                    {index + 1}
-                  </span>
-                  <span className="text-primary font-bold">{step.title}</span>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="outline" size="icon" className="ml-2">
-                          <Info className="h-[1.4rem] w-[1.4rem] text-primary" />
-                          <span className="sr-only">More info</span>
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="!text-secondary">{step.title}</p>
-                        {step.imageUrl && (
-                          <div className="relative w-[150px] h-[100px]">
-                            <Image
-                              src={step.imageUrl}
-                              alt={step.title}
-                              fill
-                              className="object-cover rounded-xl"
-                            />
-                          </div>
-                        )}
-                        {step.place_to_go_subcategories &&
-                          step.place_to_go_subcategories.length > 0 && (
-                            <a
-                              href={`/placesTogo/${
-                                step.place_to_go_subcategories
-                                  .at(-1)
-                                  ?.place_to_go_categories?.at(-1)
-                                  ?.categoryName || ""
-                              }/${
-                                step.place_to_go_subcategories.at(-1)
-                                  ?.categoryName || ""
-                              }/${step.title}`}
-                              className="text-blue-500 hover:underline"
-                            >
-                              More Info
-                            </a>
-                          )}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </li>
-              ))}
-          </ol>
-        </div>
-
-        <div className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4 text-primary">Overview</h2>
-          <p className="text-primary">{program.overView}</p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          <div>
-            <h2 className="text-2xl font-semibold mb-4 text-primary">
-              What&apos;s Included
+        <div className="mb-12 animate-slide-up animate-delay-300">
+          <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-2xl p-8 shadow-xl">
+            <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+              Travel Itinerary
             </h2>
-            <ul className="space-y-2">
+            <ol className="space-y-4">
+              {program.content_steps &&
+                program.content_steps.map((step: ContentStep, index: number) => (
+                  <li key={index} className="flex items-center justify-start gap-4 p-4 bg-background/50 rounded-xl border border-primary/10 hover:border-primary/30 transition-all">
+                    <span className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-primary to-amber-600 text-white font-bold text-lg flex-shrink-0">
+                      {index + 1}
+                    </span>
+                    <span className="text-foreground font-semibold text-lg flex-1">{step.title}</span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="outline" size="icon" className="hover:bg-primary/10 hover:border-primary/50 transition-all">
+                            <Info className="h-5 w-5 text-primary" />
+                            <span className="sr-only">More info</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="!text-secondary">{step.title}</p>
+                          {step.imageUrl && (
+                            <div className="relative w-[150px] h-[100px]">
+                              <Image
+                                src={step.imageUrl}
+                                alt={step.title}
+                                fill
+                                className="object-cover rounded-xl"
+                              />
+                            </div>
+                          )}
+                          {step.place_to_go_subcategories &&
+                            step.place_to_go_subcategories.length > 0 && (
+                              <a
+                                href={`/placesTogo/${
+                                  step.place_to_go_subcategories
+                                    .at(-1)
+                                    ?.place_to_go_categories?.at(-1)
+                                    ?.categoryName || ""
+                                }/${
+                                  step.place_to_go_subcategories.at(-1)
+                                    ?.categoryName || ""
+                                }/${step.title}`}
+                                className="text-blue-500 hover:underline"
+                              >
+                                More Info
+                              </a>
+                            )}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </li>
+                ))}
+            </ol>
+          </div>
+        </div>
+
+        <div className="mb-12 animate-slide-up animate-delay-400">
+          <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-2xl p-8 shadow-xl">
+            <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+              Overview
+            </h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">{program.overView}</p>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8 animate-slide-up animate-delay-500">
+          <div className="bg-gradient-to-br from-green-500/5 to-card border border-green-500/20 rounded-2xl p-8 shadow-xl">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <div className="p-2 bg-green-500/10 rounded-lg">
+                <Check className="w-6 h-6 text-green-600" aria-hidden="true" />
+              </div>
+              <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                What&apos;s Included
+              </span>
+            </h2>
+            <ul className="space-y-3">
               {program.includes?.map((item: { id: number; title: string }) => (
-                <li key={item.id} className="flex items-center text-primary">
+                <li key={item.id} className="flex items-start gap-3 p-3 bg-background/50 rounded-lg border border-green-500/10">
                   <Check
-                    className="w-5 h-5 text-green-500 mr-2"
+                    className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0"
                     aria-hidden="true"
                   />
-                  <span>{item.title}</span>
+                  <span className="text-foreground font-medium">{item.title}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div>
-            <h2 className="text-2xl font-semibold mb-4 text-primary">
-              What&apos;s Excluded
+          <div className="bg-gradient-to-br from-red-500/5 to-card border border-red-500/20 rounded-2xl p-8 shadow-xl">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <div className="p-2 bg-red-500/10 rounded-lg">
+                <X className="w-6 h-6 text-red-600" aria-hidden="true" />
+              </div>
+              <span className="bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text text-transparent">
+                What&apos;s Excluded
+              </span>
             </h2>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {program.excludes?.map((item: { id: number; title: string }) => (
-                <li key={item.id} className="flex items-center text-primary">
-                  <X className="w-5 h-5 text-red-500 mr-2" aria-hidden="true" />
-                  <span>{item.title}</span>
+                <li key={item.id} className="flex items-start gap-3 p-3 bg-background/50 rounded-lg border border-red-500/10">
+                  <X className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                  <span className="text-foreground font-medium">{item.title}</span>
                 </li>
               ))}
             </ul>
           </div>
         </div>
+      </div>
       </div>
 
       {/* Booking Dialog */}

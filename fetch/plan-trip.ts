@@ -49,7 +49,7 @@ export const fetchUserPlanTrips = async (
     const authToken =
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
-    let url = `${API_URL}/api/plan-trips?populate=*&sort=createdAt:desc`;
+    let url = `${API_URL}/api/plan-trips?populate=user&sort=createdAt:desc`;
 
     if (userId) {
       url += `&filters[user][documentId][$eq]=${userId}`;
@@ -62,29 +62,37 @@ export const fetchUserPlanTrips = async (
     });
 
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching plan trips:", error);
+    console.error("Error details:", error.response?.data);
     throw error;
   }
 };
 
-// Fetch popular/best custom trips (excluding drafts and cancelled, sorted by total price or creation date)
+// Fetch popular/best custom trips (excluding cancelled, sorted by total price or creation date)
 export const fetchBestCustomTrips = async (
   limit: number = 6
 ): Promise<PlanTripsResponse> => {
   try {
+    // Try to get auth token from localStorage if available (for better permissions)
+    const authToken =
+      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+
     const response = await axios.get(
-      `${API_URL}/api/plan-trips?populate=user&filters[status][$ne]=cancelled&filters[status][$ne]=draft&sort=totalPrice:desc&pagination[limit]=${limit}`,
+      `${API_URL}/api/plan-trips?populate=user&filters[status][$ne]=cancelled&sort=createdAt:desc&pagination[limit]=${limit}`,
       {
         headers: {
-          Authorization: `Bearer ${API_TOKEN}`,
+          Authorization: `Bearer ${authToken || API_TOKEN}`,
         },
       }
     );
 
+    console.log("fetchBestCustomTrips response:", response.data);
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching best custom trips:", error);
+    console.error("Error response:", error.response?.data);
+    console.error("Error status:", error.response?.status);
     throw error;
   }
 };

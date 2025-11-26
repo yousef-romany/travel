@@ -1,302 +1,50 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragOverlay,
-  DragOverEvent,
-  DragStartEvent,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import PlaceCard from "./components/PlaceCard";
-import TravelPlanItem from "./components/TravelPlanItem";
-import { Button } from "@/components/ui/button";
-import Loading from "@/components/Loading";
 import { useQuery } from "@tanstack/react-query";
-import {
-  PlacesToGoBlogs,
-  PlacesToGoCategory,
-  PlacesToGoCategoryData,
-  PlacesToGoSubcategories,
-} from "@/type/placesToGo";
-import { fetchPlanYourTrip } from "@/fetch/planYourTrip";
+import { fetchBestCustomTrips } from "@/fetch/plan-trip";
+import Loading from "@/components/Loading";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
-import { MapPin, FileText, Send, Eye, Save, Users, TrendingUp, Calendar as CalendarIcon } from "lucide-react";
-import { toast } from "sonner";
-import { createPlanTrip, type PlanTripDestination, fetchBestCustomTrips } from "@/fetch/plan-trip";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+  MapPin,
+  Calendar as CalendarIcon,
+  Users,
+  TrendingUp,
+  Plus,
+  Sparkles,
+  ArrowRight,
+} from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function PlanYourTripContent() {
-  const [travelPlan, setTravelPlan] = useState<any[]>([]);
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const [isFinishDialogOpen, setIsFinishDialogOpen] = useState(false);
-  const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
-  const [tripName, setTripName] = useState("");
-  const { user } = useAuth();
   const router = useRouter();
-  const queryClient = useQueryClient();
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-    setActiveId(active?.id as string);
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (active?.id !== over?.id) {
-      setTravelPlan((items) => {
-        const oldIndex = items.findIndex(
-          (item) => item?.id.toString() === active?.id
-        );
-        const newIndex = items.findIndex(
-          (item) => item?.id.toString() === over?.id
-        );
-
-        if (oldIndex === -1) {
-          const newItem = selectedSubcategory?.place_to_go_blogs?.find(
-            (place) => place?.id.toString() === active?.id
-          );
-          if (newItem && !items.some((item) => item?.id === newItem?.id)) {
-            return [
-              ...items.slice(0, newIndex),
-              newItem,
-              ...items.slice(newIndex),
-            ];
-          }
-        } else if (newIndex !== -1) {
-          return arrayMove(items, oldIndex, newIndex);
-        }
-
-        return items;
-      });
-    }
-
-    setActiveId(null);
-  };
-
-  const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-    if (over && active?.id !== over?.id) {
-      const activePlace = selectedSubcategory?.place_to_go_blogs?.find(
-        (place) => place?.id.toString() === active?.id
-      );
-      if (
-        activePlace &&
-        !travelPlan.some((place) => place?.id === activePlace?.id)
-      ) {
-        setTravelPlan((prevPlan) => [...prevPlan, activePlace]);
-      }
-    }
-  };
-
-  const removeFromPlan = (placeId: number) => {
-    setTravelPlan((prevPlan) =>
-      prevPlan.filter((place) => place?.id !== placeId)
-    );
-  };
-
-  const totalPrice = travelPlan.reduce(
-    (sum, place) => sum + Number(place.price),
-    0
-  );
-
-  // Estimate 1 day per place, with realistic trip duration
-  const estimatedDuration = travelPlan.length > 0 ? Math.max(travelPlan.length, 1) : 0;
-  const pricePerDay = estimatedDuration > 0 ? totalPrice / estimatedDuration : 0;
-
-  const handleFinishPlanning = () => {
-    if (travelPlan.length === 0) {
-      toast.error("Please add at least one place to your travel plan");
-      return;
-    }
-    setIsFinishDialogOpen(true);
-  };
-
-  // Mutation for creating plan trip
-  const createPlanTripMutation = useMutation({
-    mutationFn: createPlanTrip,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["userPlanTrips"] });
-
-      // Show different message based on status
-      if (data?.data?.status === "quoted") {
-        toast.success("Booking request submitted! We'll contact you soon with a quote.");
-      } else {
-        toast.success("Trip plan saved successfully!");
-      }
-
-      setIsFinishDialogOpen(false);
-      setTripName("");
-    },
-    onError: (error: any) => {
-      console.error("Error saving trip plan:", error);
-      const errorMessage = error.response?.data?.error?.message || "Failed to save trip plan. Please try again.";
-      toast.error(errorMessage);
-    },
-  });
-
-  const handleSaveCustomTrip = () => {
-    if (!user) {
-      toast.error("Please login to save your trip");
-      router.push("/login");
-      return;
-    }
-
-    if (!tripName.trim()) {
-      toast.error("Please enter a trip name");
-      return;
-    }
-
-    if (travelPlan.length === 0) {
-      toast.error("Please add at least one place to your travel plan");
-      return;
-    }
-
-    // Prepare destinations data
-    const destinations: PlanTripDestination[] = travelPlan.map((place) => ({
-      id: place.id,
-      title: place.title,
-      price: Number(place.price),
-      location: place.location || "",
-      description: place.description || "",
-    }));
-
-    // Create plan trip
-    createPlanTripMutation.mutate({
-      tripName,
-      destinations,
-      totalPrice,
-      estimatedDuration,
-      pricePerDay,
-      userId: user.documentId,
-    });
-  };
-
-  const handleCreateBooking = () => {
-    if (!user) {
-      toast.error("Please login to create a booking");
-      router.push("/login");
-      return;
-    }
-
-    if (!tripName.trim()) {
-      toast.error("Please enter a trip name");
-      return;
-    }
-
-    if (travelPlan.length === 0) {
-      toast.error("Please add at least one place to your travel plan");
-      return;
-    }
-
-    // Prepare destinations data
-    const destinations: PlanTripDestination[] = travelPlan.map((place) => ({
-      id: place.id,
-      title: place.title,
-      price: Number(place.price),
-      location: place.location || "",
-      description: place.description || "",
-    }));
-
-    // Create plan trip with "quoted" status
-    createPlanTripMutation.mutate({
-      tripName,
-      destinations,
-      totalPrice,
-      estimatedDuration,
-      pricePerDay,
-      userId: user.documentId,
-      status: "quoted",
-    });
-  };
-
-  const handleRequestQuote = () => {
-    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201555100961";
-
-    const placesList = travelPlan.map((place, idx) => `Day ${idx + 1}: ${place.title} - $${place.price}`).join("\n");
-
-    const message = `🌍 *Custom Trip Quote Request*
-
-📍 *Itinerary:*
-${placesList}
-
-📊 *Trip Summary:*
-⏱️ Duration: ${estimatedDuration} ${estimatedDuration === 1 ? 'Day' : 'Days'}
-💰 Total Cost: $${totalPrice}
-📈 Price/Day: $${pricePerDay.toFixed(2)}
-🧳 Destinations: ${travelPlan.length}
-
-${user ? `👤 *Contact Info:*\n📛 Name: ${user.profile?.firstName} ${user.profile?.lastName}\n📧 Email: ${user.email}\n` : ""}
-I would like to get a personalized quote for this custom itinerary. Please contact me with more details.
-
-Thank you! 🙏`;
-
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
-
-    toast.success("Opening WhatsApp to request quote!");
-    setIsFinishDialogOpen(false);
-  };
-
-  const handleViewSummary = () => {
-    setIsFinishDialogOpen(false);
-    setIsSummaryDialogOpen(true);
-  };
-
-  const { data, isLoading, error } = useQuery<PlacesToGoCategory>({
-    queryKey: ["fetchPlanYourTrip"],
-    queryFn: fetchPlanYourTrip,
-  });
-
-  // Fetch best custom trips
-  const { data: bestTrips } = useQuery({
+  // Fetch all user-created custom trips (not just 6)
+  const { data: allTrips, isLoading, error, refetch } = useQuery({
     queryKey: ["bestCustomTrips"],
-    queryFn: () => fetchBestCustomTrips(6),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    queryFn: () => fetchBestCustomTrips(50), // Fetch more trips
+    retry: 2,
+    refetchOnMount: true,
   });
 
-  const [selectedCategory, setSelectedCategory] = useState(data?.data?.at(0));
-  const [selectedSubcategory, setSelectedSubcategory] = useState(
-    data?.data?.at(0)?.place_to_go_subcategories[0]
-  );
-  useEffect(() => {
-    setSelectedCategory(data?.data?.at(0));
-    setSelectedSubcategory(data?.data?.at(0)?.place_to_go_subcategories[0]);
-  }, [data]);
-  if (isLoading) return <Loading />;
-  if (error instanceof Error) return <p>Error: {error.message}</p>;
+  // Handle both response formats: { data: [...] } or directly [...]
+  const trips = Array.isArray(allTrips) ? allTrips : (allTrips?.data || []);
+
+  // Debug logging
+  console.log("Plan Your Trip - Loading:", isLoading);
+  console.log("Plan Your Trip - Error:", error);
+  console.log("Plan Your Trip - Raw Data:", allTrips);
+  console.log("Plan Your Trip - Is Array:", Array.isArray(allTrips));
+  console.log("Plan Your Trip - Has data property:", allTrips?.data);
+  console.log("Plan Your Trip - Trips array:", trips);
+  console.log("Plan Your Trip - Trips count:", trips.length);
+
+  if (error) {
+    console.error("Error fetching trips:", error);
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -311,431 +59,268 @@ Thank you! 🙏`;
     }
   };
 
-  return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onDragOver={handleDragOver}
-    >
-      <div className="!px-[2em] mx-auto p-4">
-        <h1 className="text-4xl font-bold mb-8 text-center text-primary animate-slide-up">
-          Plan Your Travel
-        </h1>
+  if (isLoading) return <Loading />;
 
-        {/* Best Custom Trips Section */}
-        {bestTrips?.data && bestTrips.data.length > 0 && (
-          <div className="mb-12 animate-slide-up animate-delay-200">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-semibold text-primary flex items-center gap-2">
-                  <TrendingUp className="w-6 h-6" />
-                  Popular Custom Trips
-                </h2>
-                <p className="text-muted-foreground mt-1">
-                  Discover amazing itineraries created by our community
-                </p>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {bestTrips.data.map((trip) => (
-                <Card key={trip.id} className="border-border hover:border-primary/50 transition-all">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-lg">{trip.tripName}</CardTitle>
-                      <Badge className={getStatusColor(trip.status)}>
-                        {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
-                      </Badge>
-                    </div>
-                    {trip.user?.username && (
-                      <CardDescription className="flex items-center gap-1">
-                        <Users className="w-3 h-3" />
-                        Created by {trip.user.username}
-                      </CardDescription>
-                    )}
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="flex items-center gap-1 text-muted-foreground">
-                          <MapPin className="w-4 h-4" />
-                          {trip.destinations?.length || 0} stops
-                        </span>
-                        <span className="flex items-center gap-1 text-muted-foreground">
-                          <CalendarIcon className="w-4 h-4" />
-                          {trip.estimatedDuration} {trip.estimatedDuration === 1 ? 'day' : 'days'}
-                        </span>
-                      </div>
-                      <div className="pt-2 border-t border-border">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-muted-foreground">Total Cost</span>
-                          <span className="text-xl font-bold text-primary">
-                            ${trip.totalPrice?.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          ${trip.pricePerDay?.toFixed(0)} per day
-                        </div>
-                      </div>
-                      {trip.destinations && trip.destinations.length > 0 && (
-                        <div className="pt-2 border-t border-border">
-                          <p className="text-xs text-muted-foreground mb-1">Destinations:</p>
-                          <div className="flex flex-wrap gap-1">
-                            {trip.destinations.slice(0, 3).map((dest, idx) => (
-                              <span
-                                key={idx}
-                                className="text-xs bg-muted px-2 py-1 rounded"
-                              >
-                                {dest.title}
-                              </span>
-                            ))}
-                            {trip.destinations.length > 3 && (
-                              <span className="text-xs bg-muted px-2 py-1 rounded">
-                                +{trip.destinations.length - 3} more
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardContent className="pt-6">
+            <h2 className="text-xl font-bold mb-4 text-destructive">Error Loading Trips</h2>
+            <p className="text-muted-foreground mb-4">
+              {error instanceof Error ? error.message : "Failed to load custom trips"}
+            </p>
+            <Button onClick={() => refetch()}>Try Again</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+      {/* Background Decoration */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-primary rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-amber-500 rounded-full blur-[120px]"></div>
+      </div>
+
+      <div className="container mx-auto px-4 py-12 max-w-7xl relative z-10">
+        {/* Hero Section */}
+        <div className="text-center mb-16 animate-slide-up">
+          <div className="inline-block mb-4">
+            <span className="px-4 py-2 bg-primary/10 text-primary text-sm font-semibold rounded-full border border-primary/20">
+              ✨ Custom Trip Planner
+            </span>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+            Plan Your Egypt Adventure
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
+            Browse custom itineraries created by fellow travelers or design your own unique journey through the land of pharaohs
+          </p>
+
+          <Alert className="max-w-3xl mx-auto bg-gradient-to-r from-primary/5 to-amber-500/5 border-primary/30 shadow-lg">
+            <Sparkles className="h-5 w-5 text-primary" />
+            <AlertDescription className="text-base">
+              Choose from ready-made itineraries below or create your own custom trip tailored to your preferences
+            </AlertDescription>
+          </Alert>
+        </div>
+
+        {/* Stats Bar */}
+        {trips.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 animate-slide-up animate-delay-200">
+            <Card className="text-center border-primary/20 bg-gradient-to-br from-card to-primary/5 hover:shadow-xl transition-all">
+              <CardContent className="pt-8 pb-6">
+                <div className="text-5xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent mb-3">
+                  {trips.length}
+                </div>
+                <p className="text-sm font-medium text-muted-foreground">Custom Itineraries Available</p>
+              </CardContent>
+            </Card>
+            <Card className="text-center border-amber-500/20 bg-gradient-to-br from-card to-amber-500/5 hover:shadow-xl transition-all">
+              <CardContent className="pt-8 pb-6">
+                <div className="text-5xl font-bold bg-gradient-to-r from-amber-600 to-primary bg-clip-text text-transparent mb-3">
+                  {trips.reduce((acc, trip) => acc + (trip.destinations?.length || 0), 0)}
+                </div>
+                <p className="text-sm font-medium text-muted-foreground">Total Destinations</p>
+              </CardContent>
+            </Card>
+            <Card className="text-center border-green-500/20 bg-gradient-to-br from-card to-green-500/5 hover:shadow-xl transition-all">
+              <CardContent className="pt-8 pb-6">
+                <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-3">
+                  ${Math.min(...trips.map(t => t.totalPrice || 0)).toLocaleString()} - $
+                  {Math.max(...trips.map(t => t.totalPrice || 0)).toLocaleString()}
+                </div>
+                <p className="text-sm font-medium text-muted-foreground">Price Range</p>
+              </CardContent>
+            </Card>
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2 animate-slide-up animate-delay-300">
-            <div className="mb-6">
-              <h2 className="text-2xl font-semibold mb-4 text-primary">
-                Categories
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {data?.data?.map((category: PlacesToGoCategoryData) => (
-                  <Badge
-                    key={category?.id}
-                    onClick={() => {
-                      setSelectedCategory(category);
-                      setSelectedSubcategory(
-                        category?.place_to_go_subcategories[0]
-                      );
-                    }}
-                    className={`px-4 py-2 rounded-full text-sm font-medium cursor-pointer`}
-                    variant={
-                      selectedCategory?.categoryName === category.categoryName
-                        ? "default"
-                        : "secondary"
-                    }
-                  >
-                    {category.categoryName}
-                  </Badge>
-                ))}
+        {/* User-Created Trips Section */}
+        <div className="mb-16 animate-slide-up animate-delay-300">
+          <div className="text-center mb-10">
+            <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <TrendingUp className="w-8 h-8 text-primary" />
               </div>
-            </div>
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-4 text-primary">
-                Subcategories
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {selectedCategory?.place_to_go_subcategories.map(
-                  (subcategory: PlacesToGoSubcategories) => (
-                    <Badge
-                      key={subcategory.categoryName}
-                      onClick={() => setSelectedSubcategory(subcategory)}
-                      className={`px-4 py-2 rounded-full text-sm font-medium cursor-pointer`}
-                      variant={
-                        selectedSubcategory?.categoryName ===
-                          subcategory?.categoryName
-                          ? "default"
-                          : "secondary"
-                      }
-                    >
-                      {subcategory.categoryName}
+              <span className="bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                Browse Custom Itineraries
+              </span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Explore trips designed by fellow travelers - click any trip to see full details and request a booking
+            </p>
+          </div>
+
+          {trips.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {trips.map((trip) => (
+                <Card
+                  key={trip.id}
+                  className="border-border hover:border-primary/50 transition-all duration-300 cursor-pointer group hover:shadow-2xl hover:scale-105 bg-gradient-to-br from-card to-card/50"
+                  onClick={() => router.push(`/plan-your-trip/${trip.documentId}`)}
+                >
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                      {trip.tripName}
+                    </CardTitle>
+                    <Badge className={getStatusColor(trip.status)}>
+                      {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
                     </Badge>
-                  )
-                )}
-              </div>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-4 text-primary">
-                Places
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {selectedSubcategory?.place_to_go_blogs?.map(
-                  (place: PlacesToGoBlogs) => (
-                    <PlaceCard
-                      key={place?.id}
-                      place={place}
-                      isInPlan={travelPlan.some((p) => p?.id === place?.id)}
-                    />
-                  )
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="animate-slide-up animate-delay-400">
-            <div className="bg-card shadow-lg rounded-lg p-6 sticky top-4">
-              <h2 className="text-2xl font-semibold mb-4 text-primary">
-                Your Travel Plan
-              </h2>
-              <SortableContext
-                items={travelPlan.map((item) => item?.id)}
-                strategy={verticalListSortingStrategy}
-                disabled
-              >
-                {travelPlan.map((place) => (
-                  <TravelPlanItem
-                    key={place?.id}
-                    place={place}
-                    onRemove={() => {
-                      removeFromPlan(place?.id);
-                    }}
-                  />
-                ))}
-              </SortableContext>
-              {travelPlan.length === 0 && (
-                <p className="text-primary text-center">
-                  Drag and drop places here to build your plan
-                </p>
-              )}
-              {travelPlan.length > 0 && (
-                <div className="mt-6 pt-4 border-t border-gray-200 space-y-3">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Estimated Duration</p>
-                      <p className="font-semibold text-primary">{estimatedDuration} {estimatedDuration === 1 ? 'Day' : 'Days'}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Price per Day</p>
-                      <p className="font-semibold text-primary">${pricePerDay.toFixed(2)}</p>
-                    </div>
                   </div>
-                  <div className="pt-2 border-t border-gray-200">
-                    <p className="text-xl font-semibold text-primary">
-                      Total Price: ${totalPrice}
-                    </p>
+                  {trip.user && (
+                    <CardDescription className="flex items-center gap-1">
+                      <Users className="w-3 h-3" />
+                      Created by {trip.user.username || trip.user.email?.split("@")[0] || "Traveler"}
+                    </CardDescription>
+                  )}
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="flex items-center gap-1 text-muted-foreground">
+                        <MapPin className="w-4 h-4" />
+                        {trip.destinations?.length || 0} destinations
+                      </span>
+                      <span className="flex items-center gap-1 text-muted-foreground">
+                        <CalendarIcon className="w-4 h-4" />
+                        {trip.estimatedDuration} {trip.estimatedDuration === 1 ? "day" : "days"}
+                      </span>
+                    </div>
+
+                    <div className="pt-2 border-t border-border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">Total Cost</span>
+                        <span className="text-xl font-bold text-primary">
+                          ${trip.totalPrice?.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="text-xs text-muted-foreground mt-1">
+                        ${trip.pricePerDay?.toFixed(0)} per day
+                      </div>
+                    </div>
+
+                    {trip.destinations && trip.destinations.length > 0 && (
+                      <div className="pt-2 border-t border-border">
+                        <p className="text-xs text-muted-foreground mb-1">Destinations:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {trip.destinations.slice(0, 3).map((dest: any, idx: number) => (
+                            <span
+                              key={idx}
+                              className="text-xs bg-muted px-2 py-1 rounded"
+                            >
+                              {dest.title}
+                            </span>
+                          ))}
+                          {trip.destinations.length > 3 && (
+                            <span className="text-xs bg-muted px-2 py-1 rounded">
+                              +{trip.destinations.length - 3} more
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    <Button
+                      className="w-full mt-2 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-lg"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/plan-your-trip/${trip.documentId}`);
+                      }}
+                    >
+                      View Details & Book
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </Button>
                   </div>
-                </div>
-              )}
-              <div className="mt-4 space-y-2">
-                <Button
-                  onClick={handleFinishPlanning}
-                  className="w-full py-2 px-4 rounded transition duration-200"
-                  disabled={travelPlan.length === 0}
-                >
-                  Finish Planning
-                </Button>
-                <Button
-                  onClick={() => setTravelPlan([])}
-                  variant="outline"
-                  className="w-full py-2 px-4 rounded transition duration-200"
-                >
-                  Clear Plan
-                </Button>
-              </div>
-            </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
+          ) : (
+            <div className="space-y-4">
+              <Card className="border-dashed border-2 border-primary/30 bg-gradient-to-br from-card to-primary/5">
+                <CardContent className="flex flex-col items-center justify-center py-16">
+                  <div className="p-4 bg-primary/10 rounded-full mb-6">
+                    <TrendingUp className="h-16 w-16 text-primary" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">No Custom Trips Yet</h3>
+                  <p className="text-muted-foreground text-center mb-8 max-w-md">
+                    Be the first to create a custom itinerary and share it with the community!
+                  </p>
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-lg"
+                    onClick={() => router.push("/plan-your-trip/create")}
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    Create First Trip
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Debug Info */}
+              <Card className="border-amber-500/50 bg-amber-500/5">
+                <CardContent className="pt-6">
+                  <h4 className="font-bold mb-2 text-amber-600">Debug Information</h4>
+                  <div className="text-xs space-y-1 font-mono">
+                    <p>Data object exists: {allTrips ? "Yes" : "No"}</p>
+                    <p>Data.data exists: {allTrips?.data ? "Yes" : "No"}</p>
+                    <p>Data.data is array: {Array.isArray(allTrips?.data) ? "Yes" : "No"}</p>
+                    <p>Trips count: {trips.length}</p>
+                    <p>Raw response: {JSON.stringify(allTrips).substring(0, 200)}...</p>
+                  </div>
+                  <Button
+                    onClick={() => refetch()}
+                    size="sm"
+                    variant="outline"
+                    className="mt-4"
+                  >
+                    Refetch Data
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
 
-        {/* Finish Planning Dialog */}
-        <Dialog open={isFinishDialogOpen} onOpenChange={setIsFinishDialogOpen}>
-          <DialogContent className="sm:max-w-[500px]">
-            <DialogHeader>
-              <DialogTitle>What would you like to do with your trip plan?</DialogTitle>
-              <DialogDescription>
-                You have {travelPlan.length} place{travelPlan.length !== 1 ? 's' : ''} in your plan with a total of ${totalPrice}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              {/* Trip Name Input */}
-              <div className="space-y-2">
-                <Label htmlFor="tripName">Trip Name (required for saving)</Label>
-                <Input
-                  id="tripName"
-                  placeholder="e.g., Egypt Adventure 2025"
-                  value={tripName}
-                  onChange={(e) => setTripName(e.target.value)}
-                  className="w-full"
-                />
-              </div>
+        {/* Create Your Own Section */}
+        <div className="animate-slide-up animate-delay-400">
+          <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-amber-500/10 to-primary/10 shadow-2xl overflow-hidden relative">
+            {/* Decorative Elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-amber-500/20 to-transparent rounded-full blur-3xl"></div>
 
-              <div className="grid gap-3">
-                <Button
-                  onClick={handleSaveCustomTrip}
-                  variant="outline"
-                  className="w-full justify-start h-auto py-4"
-                  disabled={createPlanTripMutation.isPending}
-                >
-                  <Save className="mr-3 h-5 w-5" />
-                  <div className="text-left">
-                    <div className="font-semibold">
-                      {createPlanTripMutation.isPending ? "Saving..." : "Save as Custom Trip"}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      Save this itinerary to your account for later
-                    </div>
-                  </div>
-                </Button>
-
-                <Button
-                  onClick={handleCreateBooking}
-                  variant="outline"
-                  className="w-full justify-start h-auto py-4"
-                >
-                  <FileText className="mr-3 h-5 w-5" />
-                  <div className="text-left">
-                    <div className="font-semibold">Create Booking Now</div>
-                    <div className="text-xs text-muted-foreground">
-                      Book this trip and proceed to payment
-                    </div>
-                  </div>
-                </Button>
-
-                <Button
-                  onClick={handleRequestQuote}
-                  variant="outline"
-                  className="w-full justify-start h-auto py-4"
-                >
-                  <Send className="mr-3 h-5 w-5" />
-                  <div className="text-left">
-                    <div className="font-semibold">Request Quote</div>
-                    <div className="text-xs text-muted-foreground">
-                      Get a personalized quote for this itinerary
-                    </div>
-                  </div>
-                </Button>
-
-                <Button
-                  onClick={handleViewSummary}
-                  variant="outline"
-                  className="w-full justify-start h-auto py-4"
-                >
-                  <Eye className="mr-3 h-5 w-5" />
-                  <div className="text-left">
-                    <div className="font-semibold">View Summary</div>
-                    <div className="text-xs text-muted-foreground">
-                      See detailed summary of your planned trip
-                    </div>
-                  </div>
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Trip Summary Dialog */}
-        <Dialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>
-          <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Your Custom Trip Summary</DialogTitle>
-              <DialogDescription>
-                Review your planned itinerary details
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-6">
-              {/* Trip Overview */}
-              <div className="bg-primary/10 p-4 rounded-lg">
-                <h3 className="font-semibold text-lg mb-3 text-primary">Trip Overview</h3>
-                <div className="grid grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <p className="text-muted-foreground">Total Places</p>
-                    <p className="font-semibold">{travelPlan.length} destinations</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Duration</p>
-                    <p className="font-semibold">{estimatedDuration} {estimatedDuration === 1 ? 'Day' : 'Days'}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Estimated Cost</p>
-                    <p className="font-semibold text-primary">${totalPrice}</p>
-                  </div>
-                </div>
-                <div className="mt-3 pt-3 border-t border-primary/20">
-                  <p className="text-muted-foreground text-sm">Average cost per day</p>
-                  <p className="font-semibold text-lg text-primary">${pricePerDay.toFixed(2)}/day</p>
+            <CardHeader className="text-center pb-6 relative z-10">
+              <div className="flex justify-center mb-6">
+                <div className="p-4 bg-gradient-to-br from-primary to-amber-600 rounded-2xl shadow-lg">
+                  <Plus className="w-10 h-10 text-white" />
                 </div>
               </div>
-
-              {/* Itinerary */}
-              <div>
-                <h3 className="font-semibold text-lg mb-3 text-primary">Your Itinerary</h3>
-                <div className="space-y-3">
-                  {travelPlan.map((place, index) => (
-                    <div
-                      key={place.id}
-                      className="flex gap-4 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
-                        {index + 1}
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold">{place.title}</h4>
-                        {place.description && (
-                          <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                            {place.description}
-                          </p>
-                        )}
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-primary">${place.price}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Price Breakdown */}
-              <div className="border-t pt-4">
-                <div className="space-y-2">
-                  {travelPlan.map((place, index) => (
-                    <div key={place.id} className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">
-                        Day {index + 1}: {place.title}
-                      </span>
-                      <span>${place.price}</span>
-                    </div>
-                  ))}
-                  <div className="flex justify-between font-bold text-lg border-t pt-2 mt-2">
-                    <span>Total Estimated Cost</span>
-                    <span className="text-primary">${totalPrice}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-2">
-                <Button
-                  onClick={handleRequestQuote}
-                  className="flex-1"
-                >
-                  Request Quote via WhatsApp
-                </Button>
-                <Button
-                  onClick={() => setIsSummaryDialogOpen(false)}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  Close
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+              <CardTitle className="text-3xl md:text-4xl font-bold mb-4">
+                Don't See What You Like?
+              </CardTitle>
+              <CardDescription className="text-lg mt-3 max-w-2xl mx-auto">
+                Create your own custom itinerary by selecting destinations and building your perfect Egypt adventure
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-center pb-8 relative z-10">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-2xl px-8 py-6 text-lg hover:scale-105 transition-transform"
+                onClick={() => router.push("/plan-your-trip/create")}
+              >
+                <Plus className="w-6 h-6 mr-3" />
+                Create Your Own Trip
+                <ArrowRight className="w-6 h-6 ml-3" />
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-      <DragOverlay>
-        {activeId ? (
-          <PlaceCard
-            place={
-              selectedSubcategory?.place_to_go_blogs?.find(
-                (place) => place?.id.toString() === activeId
-              ) || travelPlan.find((place) => place?.id.toString() === activeId)
-            }
-            isInPlan={travelPlan.some((p) => p?.id.toString() === activeId)}
-          />
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+    </div>
   );
 }

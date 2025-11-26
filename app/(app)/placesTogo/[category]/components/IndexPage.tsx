@@ -30,32 +30,41 @@ const IndexPage = ({ slug }: { slug: string }) => {
   if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
   return (
-    <div className="flex gap-4 flex-col h-fit justify-between">
-            <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
+    <div className="flex gap-4 flex-col h-fit justify-between bg-gradient-to-b from-background to-secondary/20 min-h-screen">
+      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-primary rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-amber-500 rounded-full blur-[120px]"></div>
       </div>
-      <div className="relative w-full h-[calc(100vh-80px)] !z-[-9999]">
+
+      <div className="relative w-full h-[calc(100vh-80px)] overflow-hidden">
         <OptimizedImage
           src={getImageUrl(data?.data?.at(-1)?.image) as string}
           alt={data?.data?.at(-1)?.categoryName as string}
-          className="w-full h-full object-cover !z-[-9999]"
+          className="w-full h-full object-cover opacity-40"
         />
-        <h1
-          role="heading"
-          className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-8xl text-primary font-extrabold text-primary-600 drop-shadow-xl shadow-black"
-        >
-          {data?.data?.at(-1)?.categoryName}
-        </h1>
-      </div>
-      <div className="w-full h-fit py-10 px-[2em] space-y-16">
-        {/* sub category text */}
-        <div className=" w-full flex justify-center items-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background"></div>
+        <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full px-4 text-center">
+          <div className="inline-block mb-4">
+            <span className="px-6 py-3 bg-primary/10 backdrop-blur-sm text-primary text-sm font-semibold rounded-full border border-primary/20 shadow-lg">
+              ✨ Discover
+            </span>
+          </div>
           <h1
             role="heading"
-            className="text-4xl text-primary border-b-4 text-bold"
+            className="text-5xl sm:text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-primary via-amber-600 to-primary bg-clip-text text-transparent drop-shadow-2xl mb-4"
           >
-            SubCategory
+            {data?.data?.at(-1)?.categoryName}
+          </h1>
+        </div>
+      </div>
+      <div className="w-full h-fit py-16 px-[2em] space-y-16 relative z-10">
+        {/* sub category text */}
+        <div className="w-full flex justify-center items-center">
+          <h1
+            role="heading"
+            className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent pb-2"
+          >
+            Subcategories
           </h1>
         </div>
         {/* grid system */}
@@ -73,13 +82,13 @@ const IndexPage = ({ slug }: { slug: string }) => {
                       {/* title subcategory */}
                       <Link
                         href={`/placesTogo/${slug}/${item?.categoryName}`}
-                        className="w-fit hover:border-b-2"
+                        className="w-fit group"
                       >
                         <h1
                           role="heading"
-                          className="text-[2rem] font-bold flex items-center gap-2 w-fit"
+                          className="text-[2rem] font-bold flex items-center gap-2 w-fit bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent group-hover:from-amber-600 group-hover:to-primary transition-all"
                         >
-                          {item?.categoryName} <MdArrowOutward />
+                          {item?.categoryName} <MdArrowOutward className="text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                         </h1>
                       </Link>
                       {/* slider */}
@@ -96,24 +105,24 @@ const IndexPage = ({ slug }: { slug: string }) => {
                                 <Link
                                   key={itemBlog?.id}
                                   href={`/placesTogo/${slug}/${item?.categoryName}/${itemBlog?.title}`}
-                                  className="md:basis-1/2 lg:basis-1/3 rounded-[1.3em] z-[-99999]"
+                                  className="md:basis-1/2 lg:basis-1/3"
                                 >
-                                  <CarouselItem
-                                    key={itemBlog?.id}
-                                    className="rounded-[1.3em] z-[-99999]"
-                                  >
-                                    <Card className="p-0 h-fit rounded-[1.3em] relative z-[-99999]">
-                                      <CardContent className="p-0 rounded-[1.3em]">
-                                        <OptimizedImage
-                                          src={getImageUrl(itemBlog?.image)}
-                                          alt={itemBlog?.title}
-                                          className="w-full h-[100px] object-content rounded-[1.3em] z-[-99999999] max-h-[370px]"
-                                        />
+                                  <CarouselItem className="group">
+                                    <Card className="p-0 h-fit rounded-2xl overflow-hidden border-primary/20 bg-gradient-to-br from-card to-card/50 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/50 transition-all duration-300">
+                                      <CardContent className="p-0">
+                                        <div className="relative overflow-hidden">
+                                          <OptimizedImage
+                                            src={getImageUrl(itemBlog?.image)}
+                                            alt={itemBlog?.title}
+                                            className="w-full h-[250px] object-cover group-hover:scale-110 transition-transform duration-500"
+                                          />
+                                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                        </div>
                                       </CardContent>
-                                      <CardFooter className="w-full rounded-[1.3em]">
+                                      <CardFooter className="p-6">
                                         <h1
                                           role="heading"
-                                          className="w-full text-[1.6rem] text-primary font-extrabold text-primary-600 drop-shadow-2xl shadow-primary"
+                                          className="w-full text-xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent group-hover:from-amber-600 group-hover:to-primary transition-all"
                                         >
                                           {itemBlog?.title}
                                         </h1>

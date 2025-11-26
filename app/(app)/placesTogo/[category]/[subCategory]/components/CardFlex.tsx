@@ -28,22 +28,29 @@ const CardFlex = ({
   imageUrl: Media;
 }) => {
   return (
-    <Card className="overflow-hidden lg:max-h-[15em] md:max-h-[15em] sm:max-h-fit">
-      <div className="flex sm:flex-row h-full justify-between !items-stretch">
-        <div className="relative lg:w-2/5 md:w-2/5 sm:w-full !h-full ">
-          <OptimizedImage src={getImageUrl(imageUrl)} alt={title} className="!h-full object-cover" />
+    <Card className="group overflow-hidden border-primary/20 bg-gradient-to-br from-card to-card/50 hover:shadow-2xl hover:border-primary/50 transition-all duration-300">
+      <div className="flex flex-col sm:flex-row h-full justify-between">
+        <div className="relative lg:w-2/5 md:w-2/5 sm:w-full h-[200px] sm:h-auto overflow-hidden">
+          <OptimizedImage
+            src={getImageUrl(imageUrl)}
+            alt={title}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent sm:block hidden"></div>
         </div>
-        <div className="flex flex-col justify-between h-full w-full sm:w-3/5 p-4 sm:p-6">
+        <div className="flex flex-col justify-between h-full w-full sm:w-3/5 p-6">
           <div>
             <CardHeader className="p-0">
-              <CardTitle className="text-2xl font-bold mb-2">{title}</CardTitle>
+              <CardTitle className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
+                {title}
+              </CardTitle>
             </CardHeader>
-            <CardContent className="p-0 overflow-hidden">
-              <MDXRenderer mdxString={details.slice(0, 15)} /> ...
+            <CardContent className="p-0 overflow-hidden text-muted-foreground">
+              <MDXRenderer mdxString={details.slice(0, 150)} /> ...
             </CardContent>
           </div>
-          <CardFooter className="p-0 mt-4">
-            <Button asChild variant="outline">
+          <CardFooter className="p-0 mt-6">
+            <Button asChild className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white">
               <Link href={link}>
                 Read More
               </Link>

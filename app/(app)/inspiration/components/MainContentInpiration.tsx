@@ -39,57 +39,68 @@ const MainContentInpiration = () => {
   if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
   return (
-    <div className="flex flex-col h-screen w-full">
-      <div className="bg-primary w-full p-2 px-[2em]">
+    <div className="flex flex-col min-h-screen w-full bg-gradient-to-b from-background to-secondary/20">
+      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-primary rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-amber-500 rounded-full blur-[120px]"></div>
+      </div>
+      <div className="bg-gradient-to-r from-primary to-amber-600 w-full p-4 px-[2em] shadow-lg relative z-10">
         <Breadcrumb>
           <BreadcrumbList>
-            <BreadcrumbItem className="text-secondary">
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            <BreadcrumbItem className="text-white">
+              <BreadcrumbLink href="/" className="hover:text-white/80 transition-colors">Home</BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem className="text-secondary">
-              <BreadcrumbPage className="text-secondary border-b-2">
-                {"Inspiration"}
+            <BreadcrumbSeparator className="text-white/60" />
+            <BreadcrumbItem className="text-white">
+              <BreadcrumbPage className="text-white font-semibold">
+                Inspiration
               </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
 
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full min-h-[80vh]">
         {/* Background Image */}
         <OptimizedImage
           src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1738236129/2639898_f1hvdj.jpg"
           alt="Hero background"
-          className="object-cover opacity-50 bg-black w-full h-full"
-
+          className="object-cover opacity-30 w-full h-full absolute inset-0"
         />
 
         {/* Content */}
-        <div className="absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] w-full h-fit z-20 flex flex-col items-center justify-center min-h-screen text-white px-4 sm:px-6 lg:px-8">
+        <div className="relative z-20 flex flex-col items-center justify-center min-h-[80vh] text-white px-4 sm:px-6 lg:px-8 py-20">
+          {/* Badge */}
+          <div className="inline-block mb-6 animate-slide-up">
+            <span className="px-6 py-3 bg-white/10 backdrop-blur-sm text-white text-sm font-semibold rounded-full border border-white/20 shadow-lg">
+              ✨ Get Inspired
+            </span>
+          </div>
+
           {/* Main Heading */}
           <h1
             role="heading"
-            className="text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-4 animate-slide-up"
+            className="text-4xl sm:text-5xl md:text-7xl font-bold text-center mb-6 animate-slide-up animate-delay-100 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent drop-shadow-2xl"
           >
-            Discover Amazing Content
+            Travel Inspiration
           </h1>
 
           {/* Subheading */}
-          <p className="text-xl sm:text-2xl text-center mb-8 max-w-2xl animate-slide-up animate-delay-200">
-            Explore our curated collection of articles, guides, and inspiration
-            across various categories.
+          <p className="text-xl sm:text-2xl text-center mb-12 max-w-3xl animate-slide-up animate-delay-200 text-white/90 leading-relaxed">
+            Explore our curated collection of travel stories, cultural insights, and expert guides
+            to help you discover the magic of Egypt.
           </p>
 
           {/* Categories */}
-          <div className="flex flex-wrap justify-center gap-2 mb-8 animate-slide-up animate-delay-400">
+          <div className="flex flex-wrap justify-center gap-3 mb-8 animate-slide-up animate-delay-300 max-w-5xl">
             {data?.data?.map((category: InspirationCategoryData) => (
               <Link
                 key={category.id}
                 href={`/inspiration/${category.categoryName}`}
-              // className="px-4 py-2 text-sm font-medium text-white bg-button/20 rounded-full hover:bg-button/30 transition-colors cursor-pointer"
               >
-                <Button className="hover-lift hover-glow transition-smooth">{category.categoryName}</Button>
+                <Button className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-xl hover:scale-105 transition-all duration-200 px-6 py-6 text-base font-semibold">
+                  {category.categoryName}
+                </Button>
               </Link>
             ))}
           </div>

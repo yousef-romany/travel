@@ -27,25 +27,26 @@ export default function CardGrid({
   link: string
 }) {
   return (
-    <Card className="overflow-hidden flex flex-col h-full">
-      <div className="relative w-full ">
+    <Card className="group overflow-hidden flex flex-col h-full border-primary/20 bg-gradient-to-br from-card to-card/50 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/50 transition-all duration-300">
+      <div className="relative w-full overflow-hidden">
         <OptimizedImage
           src={getImageUrl(imageUrl)}
           alt={title}
-          className="w-full max-h-[200px] object-cover"
+          className="w-full h-[200px] object-cover group-hover:scale-110 transition-transform duration-500"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
       </div>
-      <div className="flex flex-col flex-grow p-4">
+      <div className="flex flex-col flex-grow p-6">
         <CardHeader className="p-0">
-          <CardTitle className="text-xl font-bold mb-2 line-clamp-2">
+          <CardTitle className="text-xl font-bold mb-3 line-clamp-2 group-hover:text-primary transition-colors">
             {title}
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-0 flex-grow">
-          <MDXRenderer mdxString={details.slice(0,15)} /> ...
+        <CardContent className="p-0 flex-grow text-muted-foreground">
+          <MDXRenderer mdxString={details.slice(0,100)} /> ...
         </CardContent>
         <CardFooter className="p-0 mt-4">
-          <Button asChild variant="outline">
+          <Button asChild className="w-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white">
             <Link href={link}>Read More</Link>
           </Button>
         </CardFooter>

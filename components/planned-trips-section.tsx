@@ -84,10 +84,26 @@ export default function PlannedTripsSection() {
     }
   };
 
+  if (!user) {
+    return (
+      <Card className="border border-border bg-card">
+        <CardContent className="flex flex-col items-center justify-center py-12">
+          <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
+          <p className="text-lg font-semibold text-foreground mb-2">Please log in</p>
+          <p className="text-sm text-muted-foreground mb-4">You need to be logged in to view your planned trips</p>
+          <Button asChild>
+            <Link href="/login">Login</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex flex-col items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-sm text-muted-foreground">Loading your planned trips...</p>
       </div>
     );
   }
@@ -96,7 +112,8 @@ export default function PlannedTripsSection() {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
         <AlertCircle className="h-12 w-12 text-destructive" />
-        <p className="text-muted-foreground">Failed to load planned trips</p>
+        <p className="text-lg font-semibold">Failed to load planned trips</p>
+        <p className="text-sm text-muted-foreground">There was an error loading your trips. Please try again.</p>
         <Button onClick={() => refetch()} variant="outline">
           Try Again
         </Button>
@@ -110,7 +127,9 @@ export default function PlannedTripsSection() {
         <CardContent className="flex flex-col items-center justify-center py-12">
           <MapPin className="h-12 w-12 text-muted-foreground mb-4" />
           <p className="text-lg font-semibold text-foreground mb-2">No planned trips yet</p>
-          <p className="text-sm text-muted-foreground mb-4">Start planning your custom Egyptian adventure!</p>
+          <p className="text-sm text-muted-foreground mb-4">
+            You haven't created any custom trips yet. Start planning your Egyptian adventure!
+          </p>
           <Button asChild>
             <Link href="/plan-your-trip">Plan Your Trip</Link>
           </Button>
@@ -196,10 +215,19 @@ export default function PlannedTripsSection() {
                 <Button
                   className="bg-amber-600 hover:bg-amber-700 gap-2"
                   size="sm"
+                  asChild
+                >
+                  <Link href={`/plan-your-trip/${trip.documentId}`}>
+                    <Eye className="w-4 h-4" />
+                    View Details
+                  </Link>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => setSelectedTrip(trip)}
                 >
-                  <Eye className="w-4 h-4" />
-                  View Details
+                  Quick View
                 </Button>
                 {(trip.status === "draft" || trip.status === "cancelled") && (
                   <Button
