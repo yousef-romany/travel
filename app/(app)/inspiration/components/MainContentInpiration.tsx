@@ -21,15 +21,21 @@ import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { memo, useEffect } from "react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const MainContentInpiration = () => {
   useEffect(() => {
     applyHieroglyphEffect();
   }, []);
+
   const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
     queryKey: ["fetchInspirationCategories2"],
     queryFn: () => fetchInspirationCategories(),
   });
+
+  // Trigger scroll animations when data loads
+  useScrollAnimation([data]);
+
   if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
   return (

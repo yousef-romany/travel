@@ -7,6 +7,24 @@ import CardTravels from "./CardTravels";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProgramsList } from "@/fetch/programs";
 import Loading from "@/components/Loading";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
+// Helper function to get stagger delay class
+const getStaggerDelay = (index: number): string => {
+  const delay = Math.min(index * 100, 800);
+  const delayClasses = {
+    0: "animate-delay-0",
+    100: "animate-delay-100",
+    200: "animate-delay-200",
+    300: "animate-delay-300",
+    400: "animate-delay-400",
+    500: "animate-delay-500",
+    600: "animate-delay-600",
+    700: "animate-delay-700",
+    800: "animate-delay-800",
+  } as const;
+  return delayClasses[delay as keyof typeof delayClasses] || "animate-delay-0";
+};
 
 // Updated types for Media
 interface MediaFormat {
@@ -86,6 +104,9 @@ export default function PageContent() {
     }
   }, [searchTerm, priceRange, data]);
 
+  // Trigger scroll animations when filtered programs change
+  useScrollAnimation([filteredPrograms]);
+
   if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
 
@@ -130,7 +151,7 @@ export default function PageContent() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredPrograms.length > 0 ? (
           filteredPrograms.map((program: ProgramType, index: number) => (
-            <div key={program.id} className={`animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}>
+            <div key={program.id} className={`animate-on-scroll ${getStaggerDelay(index)}`}>
               <CardTravels
                 id={program.id}
                 documentId={program.documentId}

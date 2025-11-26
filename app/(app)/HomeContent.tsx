@@ -34,6 +34,24 @@ import {
 } from "@/lib/analytics";
 import { getImageUrl } from "@/lib/utils";
 import { BackgroundVideo } from "@/components/ui/background-video";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
+// Helper function to get stagger delay class
+const getStaggerDelay = (index: number): string => {
+  const delay = Math.min(index * 100, 800);
+  const delayClasses = {
+    0: "animate-delay-0",
+    100: "animate-delay-100",
+    200: "animate-delay-200",
+    300: "animate-delay-300",
+    400: "animate-delay-400",
+    500: "animate-delay-500",
+    600: "animate-delay-600",
+    700: "animate-delay-700",
+    800: "animate-delay-800",
+  } as const;
+  return delayClasses[delay as keyof typeof delayClasses] || "animate-delay-0";
+};
 
 // Egypt travel videos from Cloudinary
 const HERO_VIDEOS = [
@@ -45,6 +63,14 @@ const HERO_VIDEOS = [
 
 export default function HomeContent() {
   const sectionsRef = useRef<HTMLElement[]>([]);
+
+  // Fetch homepage data with React Query
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["homepageData"],
+    queryFn: fetchHomePageData,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2,
+  });
 
   useEffect(() => {
     applyHieroglyphEffect();
@@ -58,7 +84,7 @@ export default function HomeContent() {
           }
         });
       },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+      { threshold: 0.05, rootMargin: "0px 0px -20px 0px" }
     );
 
     const elements = document.querySelectorAll(".animate-on-scroll");
@@ -67,13 +93,8 @@ export default function HomeContent() {
     return () => observer.disconnect();
   }, []);
 
-  // Fetch homepage data with React Query
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["homepageData"],
-    queryFn: fetchHomePageData,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 2,
-  });
+  // Trigger scroll animations when data loads
+  useScrollAnimation([data]);
 
   // Program view tracking
   const handleProgramClick = useCallback((program: Program) => {
@@ -92,7 +113,7 @@ export default function HomeContent() {
         <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
       </div>
       {/* Hero Section with Background Video */}
-      <section className="relative h-[70vh] overflow-hidden !w-full">
+      <section className="relative h-[90vh] overflow-hidden !w-full">
         <BackgroundVideo
           videos={HERO_VIDEOS}
           priority
@@ -148,7 +169,7 @@ export default function HomeContent() {
               const image = blog.image;
 
               return (
-                <Card key={blog.id} className={`overflow-hidden group hover-lift animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}>
+                <Card key={blog.id} className={`overflow-hidden group hover-lift animate-on-scroll ${getStaggerDelay(index)}`}>
                   <div className="relative h-64 overflow-hidden">
                     <Image
                       src={getImageUrl(image)}
@@ -225,7 +246,7 @@ export default function HomeContent() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {data?.placeCategories.map((category, index) => (
-                <Card key={category.id} className={`overflow-hidden group hover-lift animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}>
+                <Card key={category.id} className={`overflow-hidden group hover-lift animate-on-scroll ${getStaggerDelay(index)}`}>
                   <div className="relative h-48 overflow-hidden">
                     <Image
                       src={getImageUrl(category.image)}
@@ -500,7 +521,7 @@ export default function HomeContent() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {data?.programs.map((program, index) => (
-                <Card key={program.id} className={`overflow-hidden group hover-lift animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}>
+                <Card key={program.id} className={`overflow-hidden group hover-lift animate-on-scroll ${getStaggerDelay(index)}`}>
                   <div className="relative">
                     <div className="relative h-56 overflow-hidden">
                       {program.images && (
@@ -600,7 +621,7 @@ export default function HomeContent() {
               return (
                 <div
                   key={post.id}
-                  className={`relative group rounded-lg overflow-hidden hover-lift animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}
+                  className={`relative group rounded-lg overflow-hidden hover-lift animate-on-scroll ${getStaggerDelay(index)}`}
                 >
                   <div className="relative aspect-square bg-muted">
                     <Image

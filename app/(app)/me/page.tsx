@@ -7,6 +7,7 @@ import PersonalInfo from "@/components/personal-info";
 import TripsSection from "@/components/trips-section";
 import InvoicesSection from "@/components/invoices-section";
 import WishlistSection from "@/components/wishlist-section";
+import PlannedTripsSection from "@/components/planned-trips-section";
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -23,7 +24,7 @@ export default function UserProfile() {
 
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full animate-slide-up animate-delay-200">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto mb-8 bg-card border border-border shadow-sm p-1 rounded-lg">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto mb-8 bg-card border border-border shadow-sm p-1 rounded-lg">
             <TabsTrigger
               value="overview"
               className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded transition-smooth"
@@ -34,7 +35,13 @@ export default function UserProfile() {
               value="trips"
               className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded transition-smooth"
             >
-              Trips
+              Bookings
+            </TabsTrigger>
+            <TabsTrigger
+              value="planned-trips"
+              className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded transition-smooth"
+            >
+              Planned Trips
             </TabsTrigger>
             <TabsTrigger
               value="invoices"
@@ -56,6 +63,10 @@ export default function UserProfile() {
 
           <TabsContent value="trips" className="space-y-6 tab-content-enter">
             <TripsSection />
+          </TabsContent>
+
+          <TabsContent value="planned-trips" className="space-y-6 tab-content-enter">
+            <PlannedTripsSection />
           </TabsContent>
 
           <TabsContent value="invoices" className="space-y-6 tab-content-enter">

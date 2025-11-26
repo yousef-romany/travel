@@ -60,20 +60,20 @@ const CardTravels = ({
   const router = useRouter();
 
   return (
-    <Card className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow">
+    <Card className="flex flex-col overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
       <CardHeader className="p-0 relative">
         {images && <ProgramCarousel images={images} />}
-        
+
         {/* Wishlist Button */}
         <div className="absolute top-3 right-3 z-10">
-          <WishlistButton 
-            programId={id} 
-            className="bg-background hover:text-primary dark:bg-background-800/90 hover:dark:bg-background-800"
+          <WishlistButton
+            programId={id}
+            className="bg-background/90 hover:bg-background hover:text-primary hover:scale-110 transition-all duration-200"
           />
         </div>
 
         {/* Rating Badge */}
-        <Badge className="absolute top-3 left-3 bg-primary/90 text-primary-foreground">
+        <Badge className="absolute top-3 left-3 bg-primary/90 text-primary-foreground backdrop-blur-sm">
           <Star className="w-3 h-3 mr-1 fill-current" />
           {Number(rating).toFixed(1)}
         </Badge>
@@ -105,7 +105,7 @@ const CardTravels = ({
 
       <CardFooter className="pt-0">
         <Button
-          className="w-full"
+          className="w-full transition-all duration-200 hover:scale-105"
           onClick={() => router.push(`/programs/${documentId}`)}
         >
           View Details

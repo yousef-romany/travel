@@ -26,42 +26,60 @@ export const metadata: Metadata = {
     default: "ZoeHoliday - Explore the Beauty of Egypt | Travel & Tour Packages",
     template: "%s | ZoeHoliday"
   },
-  description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure. Book your Egyptian journey today with our curated travel packages and tours.",
-  keywords: ["Egypt travel", "Egypt tours", "Egyptian vacation", "pyramids tour", "Nile cruise", "Cairo tours", "Luxor travel", "Egyptian holidays", "travel packages Egypt", "Egypt tourism"],
-  authors: [{ name: "ZoeHoliday" }],
+  description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure. Book your Egyptian journey today with our curated travel packages and tours. Expert local guides, secure booking, 24/7 support.",
+  keywords: [
+    "Egypt travel", "Egypt tours", "Egyptian vacation", "pyramids tour", "Nile cruise",
+    "Cairo tours", "Luxor travel", "Egyptian holidays", "travel packages Egypt", "Egypt tourism",
+    "Giza pyramids", "Valley of Kings", "Red Sea diving", "Aswan tours", "Alexandria travel",
+    "Egypt tour operator", "Egyptian adventure", "ancient Egypt tours", "Karnak Temple",
+    "Abu Simbel", "Egypt cultural tours", "Egypt family vacation", "Egypt honeymoon packages"
+  ],
+  authors: [{ name: "ZoeHoliday", url: "https://zoeholiday.com" }],
   creator: "ZoeHoliday",
   publisher: "ZoeHoliday",
+  category: "Travel & Tourism",
+  alternates: {
+    canonical: '/',
+    languages: {
+      'en-US': '/en-US',
+      'ar-EG': '/ar-EG',
+    },
+  },
   formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
+    email: true,
+    address: true,
+    telephone: true,
   },
   openGraph: {
     type: "website",
     locale: "en_US",
+    alternateLocale: ['ar_EG', 'fr_FR', 'de_DE'],
     url: "/",
-    siteName: "ZoeHoliday",
-    title: "ZoeHoliday - Explore the Beauty of Egypt",
-    description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure.",
+    siteName: "ZoeHoliday - Egypt Travel & Tours",
+    title: "ZoeHoliday - Explore the Beauty of Egypt | Expert Tour Packages",
+    description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure with our licensed tour operator. Book now!",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "ZoeHoliday - Egypt Travel",
+        alt: "ZoeHoliday - Egypt Travel & Tours - Explore Pyramids, Nile Cruises & Ancient Temples",
+        type: "image/jpeg",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ZoeHoliday - Explore the Beauty of Egypt",
-    description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure.",
-    images: ["/og-image.jpg"],
+    site: "@zoeholiday",
     creator: "@zoeholiday",
+    title: "ZoeHoliday - Explore the Beauty of Egypt | Tour Packages",
+    description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure. Expert guides, secure booking, 24/7 support.",
+    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,
     follow: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
@@ -74,6 +92,12 @@ export const metadata: Metadata = {
     google: 'your-google-verification-code',
     // yandex: 'your-yandex-verification-code',
     // bing: 'your-bing-verification-code',
+  },
+  other: {
+    'geo.region': 'EG',
+    'geo.placename': 'Cairo',
+    'geo.position': '30.0444;31.2357',
+    'ICBM': '30.0444, 31.2357',
   },
 };
 

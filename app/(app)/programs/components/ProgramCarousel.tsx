@@ -40,11 +40,11 @@ export function ProgramCarousel({ images }: ProgramCarouselProps) {
         <div className="flex">
           {images.map((image: Media, index: number) => (
             <div className="flex-[0_0_100%] min-w-0" key={image?.id}>
-              <div className="relative h-48 w-full">
+              <div className="relative h-48 w-full group">
                 <OptimizedImage
                   src={getImageUrl(image)}
                   alt={image?.name || `Travel destination ${index + 1}`}
-                  className="object-cover rounded-tl-xl rounded-tr-xl"
+                  className="object-cover rounded-tl-xl rounded-tr-xl transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
             </div>
@@ -56,14 +56,14 @@ export function ProgramCarousel({ images }: ProgramCarouselProps) {
       {images.length > 1 && (
         <>
           <button
-            className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full p-2 transition-colors"
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full p-2 transition-all duration-200 hover:scale-110 backdrop-blur-sm"
             onClick={() => emblaApi?.scrollPrev()}
             aria-label="Previous image"
           >
             <ChevronLeft className="w-6 h-6 text-primary" />
           </button>
           <button
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full p-2 transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full p-2 transition-all duration-200 hover:scale-110 backdrop-blur-sm"
             onClick={() => emblaApi?.scrollNext()}
             aria-label="Next image"
           >
@@ -71,12 +71,12 @@ export function ProgramCarousel({ images }: ProgramCarouselProps) {
           </button>
 
           {/* Dots Navigation */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
             {images.map((_, index) => (
               <button
                 key={index}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  index === selectedIndex ? "bg-background" : "bg-background/50"
+                className={`w-2 h-2 rounded-full transition-all duration-300 hover:scale-125 ${
+                  index === selectedIndex ? "bg-background w-6" : "bg-background/50"
                 }`}
                 onClick={() => emblaApi?.scrollTo(index)}
                 aria-label={`Go to image ${index + 1}`}

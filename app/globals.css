@@ -345,6 +345,10 @@ p {
 }
 
 /* Stagger Delays */
+.animate-delay-0 {
+  animation-delay: 0ms;
+}
+
 .animate-delay-100 {
   animation-delay: 100ms;
 }
@@ -380,10 +384,22 @@ p {
 /* Initial Hidden State for Animations */
 .animate-on-scroll {
   opacity: 0;
+  transform: translateY(20px);
 }
 
 .animate-on-scroll.animate-visible {
   animation: slideUp 0.6s ease-out forwards;
+}
+
+/* Fallback - if JS doesn't load, still show content after 1s */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-on-scroll {
+    animation: fadeIn 0.6s ease-out forwards 0.3s;
+  }
+
+  .animate-on-scroll.animate-visible {
+    animation: slideUp 0.6s ease-out forwards;
+  }
 }
 
 /* Enhanced Hover Effects */

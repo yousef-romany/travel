@@ -13,6 +13,23 @@ import { toast } from "sonner"
 import { getProgramImageUrl } from "@/lib/utils"
 import { trackWishlistAction } from "@/lib/analytics"
 
+// Helper function to get stagger delay class
+const getStaggerDelay = (index: number): string => {
+  const delay = Math.min(index * 100, 800);
+  const delayClasses = {
+    0: "animate-delay-0",
+    100: "animate-delay-100",
+    200: "animate-delay-200",
+    300: "animate-delay-300",
+    400: "animate-delay-400",
+    500: "animate-delay-500",
+    600: "animate-delay-600",
+    700: "animate-delay-700",
+    800: "animate-delay-800",
+  } as const;
+  return delayClasses[delay as keyof typeof delayClasses] || "animate-delay-0";
+};
+
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
 
 interface Media {
@@ -257,7 +274,7 @@ export default function WishlistPageContent() {
             {filteredItems.map((item, index) => (
               <Card
                 key={item.id}
-                className={`border border-border bg-card overflow-hidden hover:border-primary/50 transition-all shadow-sm hover:shadow-xl group relative hover-lift animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}
+                className={`border border-border bg-card overflow-hidden hover:border-primary/50 transition-all shadow-sm hover:shadow-xl group relative hover-lift animate-on-scroll ${getStaggerDelay(index)}`}
               >
                 {/* Featured Badge */}
                 {item.program.rating >= 4.8 && (

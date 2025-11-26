@@ -6,6 +6,23 @@ import OptimizedImage from "@/components/OptimizedImage";
 import { BackgroundVideo } from "@/components/ui/background-video";
 import { useEffect } from "react";
 
+// Helper function to get stagger delay class
+const getStaggerDelay = (index: number): string => {
+  const delay = Math.min(index * 100, 800);
+  const delayClasses = {
+    0: "animate-delay-0",
+    100: "animate-delay-100",
+    200: "animate-delay-200",
+    300: "animate-delay-300",
+    400: "animate-delay-400",
+    500: "animate-delay-500",
+    600: "animate-delay-600",
+    700: "animate-delay-700",
+    800: "animate-delay-800",
+  } as const;
+  return delayClasses[delay as keyof typeof delayClasses] || "animate-delay-0";
+};
+
 // Egypt travel videos from Cloudinary
 const ABOUT_HERO_VIDEOS = [
   "https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922572/This_is_Egypt_x6b0oo.mp4",
@@ -34,7 +51,7 @@ export default function AboutContent() {
   return (
     <div className="flex flex-col min-h-screen !w-full">
       {/* Hero Section with Background Video */}
-      <section className="relative h-[50vh] overflow-hidden">
+      <section className="relative h-[90vh] overflow-hidden">
         <BackgroundVideo
           videos={ABOUT_HERO_VIDEOS}
           priority
@@ -147,7 +164,7 @@ export default function AboutContent() {
               { name: "Laila Zaki", role: "Chief Experience Officer" },
               { name: "Ahmed Nour", role: "Marketing Director" },
             ].map((member, index) => (
-              <Card key={index} className={`hover-lift animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}>
+              <Card key={index} className={`hover-lift animate-on-scroll ${getStaggerDelay(index)}`}>
                 <CardContent className="pt-6 text-center">
                   <div className="w-24 h-24 rounded-full bg-muted mx-auto mb-4"></div>
                   <h3 className="font-semibold font-display">{member.name}</h3>
