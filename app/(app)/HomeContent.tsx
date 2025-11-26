@@ -1,6 +1,6 @@
 "use client";
 import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -44,8 +44,27 @@ const HERO_VIDEOS = [
 ];
 
 export default function HomeContent() {
+  const sectionsRef = useRef<HTMLElement[]>([]);
+
   useEffect(() => {
     applyHieroglyphEffect();
+
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-visible");
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+    );
+
+    const elements = document.querySelectorAll(".animate-on-scroll");
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
   }, []);
 
   // Fetch homepage data with React Query
@@ -81,13 +100,13 @@ export default function HomeContent() {
           rotationInterval={30000}
         >
           <div className="flex flex-col items-center justify-center text-white text-center p-4 h-full">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg animate-slide-up">
               Discover the Magic of Egypt
             </h1>
-            <p className="text-xl md:text-2xl max-w-3xl mb-8 drop-shadow-md">
+            <p className="text-xl md:text-2xl max-w-3xl mb-8 drop-shadow-md animate-slide-up animate-delay-200">
               Experience 7,000 years of history, culture, and adventure
             </p>
-            <Link href="/programs">
+            <Link href="/programs" className="animate-slide-up animate-delay-400">
               <Button
                 size="lg"
                 className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-shadow"
@@ -101,7 +120,7 @@ export default function HomeContent() {
 
       {/* Be Inspired Section */}
       <section id="be-inspired" className="py-16 !w-full px-[2em]">
-        <div className="flex flex-col items-center mb-12 text-center">
+        <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
           <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
             <Heart className="h-6 w-6 text-primary" aria-hidden="true" />
           </div>
@@ -125,17 +144,17 @@ export default function HomeContent() {
           </div>
         ) : (
           <div className="!w-full grid grid-cols-1 md:grid-cols-3 gap-8">
-            {data?.inspireBlogs.map((blog) => {
+            {data?.inspireBlogs.map((blog, index) => {
               const image = blog.image;
 
               return (
-                <Card key={blog.id} className="overflow-hidden group">
+                <Card key={blog.id} className={`overflow-hidden group hover-lift animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}>
                   <div className="relative h-64 overflow-hidden">
                     <Image
                       src={getImageUrl(image)}
                       alt={`${blog.title} - Egypt travel inspiration`}
                       fill
-                      className="object-cover transition-transform group-hover:scale-105"
+                      className="object-cover transition-transform group-hover:scale-110 duration-500"
                     />
                     {image?.formats?.large?.url}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
@@ -151,7 +170,7 @@ export default function HomeContent() {
                     </p>
                     <Link
                       href={`/inspiration/${blog.documentId}`}
-                      className="text-primary font-medium hover:underline inline-flex items-center"
+                      className="text-primary font-medium hover:underline inline-flex items-center transition-smooth"
                     >
                       Learn more{" "}
                       <Compass className="ml-2 h-4 w-4" aria-hidden="true" />
@@ -179,7 +198,7 @@ export default function HomeContent() {
         className="py-16 bg-secondary/50 !w-full px-[2em]"
       >
         <div className="">
-          <div className="flex flex-col items-center mb-12 text-center">
+          <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
             <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
               <MapPin className="h-6 w-6 text-primary" aria-hidden="true" />
             </div>
@@ -205,14 +224,14 @@ export default function HomeContent() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {data?.placeCategories.map((category) => (
-                <Card key={category.id} className="overflow-hidden group">
+              {data?.placeCategories.map((category, index) => (
+                <Card key={category.id} className={`overflow-hidden group hover-lift animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}>
                   <div className="relative h-48 overflow-hidden">
                     <Image
                       src={getImageUrl(category.image)}
                       alt={`${category.categoryName} - Egypt destination`}
                       fill
-                      className="object-cover transition-transform group-hover:scale-105"
+                      className="object-cover transition-transform group-hover:scale-110 duration-500"
                     />
                   </div>
                   <CardContent className="p-4 text-center">
@@ -223,7 +242,7 @@ export default function HomeContent() {
                       {category.description || "Discover amazing places"}
                     </p>
                     <Link href={`/placesTogo/${category.categoryName}`}>
-                      <Button variant="outline" size="sm" className="!w-full">
+                      <Button variant="outline" size="sm" className="!w-full transition-smooth hover-glow">
                         Explore
                       </Button>
                     </Link>
@@ -246,7 +265,7 @@ export default function HomeContent() {
 
       {/* Plan Your Trip Section */}
       <section id="plan-your-trip" className="py-16 !w-full px-[2em]">
-        <div className="flex flex-col items-center mb-12 text-center">
+        <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
           <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
             <Calendar className="h-6 w-6 text-primary" aria-hidden="true" />
           </div>
@@ -458,7 +477,7 @@ export default function HomeContent() {
       {/* Programs Section */}
       <section id="programs" className="py-16 bg-secondary/50 !w-full px-[2em]">
         <div className="">
-          <div className="flex flex-col items-center mb-12 text-center">
+          <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
             <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
               <Ticket className="h-6 w-6 text-primary" aria-hidden="true" />
             </div>
@@ -481,7 +500,7 @@ export default function HomeContent() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {data?.programs.map((program, index) => (
-                <Card key={program.id} className="overflow-hidden">
+                <Card key={program.id} className={`overflow-hidden group hover-lift animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}>
                   <div className="relative">
                     <div className="relative h-56 overflow-hidden">
                       {program.images && (
@@ -489,12 +508,12 @@ export default function HomeContent() {
                       )}
                     </div>
                     {index === 0 && (
-                      <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
+                      <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium animate-pulse">
                         Best Seller
                       </div>
                     )}
                     {index === 2 && (
-                      <div className="absolute top-4 right-4 bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-sm font-medium">
+                      <div className="absolute top-4 right-4 bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-sm font-medium animate-pulse">
                         New
                       </div>
                     )}
@@ -529,7 +548,7 @@ export default function HomeContent() {
                         href={`/programs/${encodeURIComponent(program.title)}`}
                         onClick={() => handleProgramClick(program)}
                       >
-                        <Button>View Details</Button>
+                        <Button className="transition-smooth hover-glow">View Details</Button>
                       </Link>
                     </div>
                   </CardContent>
@@ -551,7 +570,7 @@ export default function HomeContent() {
 
       {/* Instagram Videos Section */}
       <section id="instagram" className="py-16 !w-full px-[2em]">
-        <div className="flex flex-col items-center mb-12 text-center">
+        <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
           <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
             <Instagram className="h-6 w-6 text-primary" aria-hidden="true" />
           </div>
@@ -576,12 +595,12 @@ export default function HomeContent() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data?.instagramPosts.map((post) => {
+            {data?.instagramPosts.map((post, index) => {
               const blog = post.place_to_go_blogs?.[0];
               return (
                 <div
                   key={post.id}
-                  className="relative group rounded-lg overflow-hidden"
+                  className={`relative group rounded-lg overflow-hidden hover-lift animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}
                 >
                   <div className="relative aspect-square bg-muted">
                     <Image
@@ -591,9 +610,9 @@ export default function HomeContent() {
                         `Instagram post from ZoeHoliday Egypt travel`
                       }
                       fill
-                      className="object-cover"
+                      className="object-cover transition-transform group-hover:scale-110 duration-500"
                     />
-                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
                       <a
                         href={`https://www.instagram.com/p/${post.idPost}`}
                         target="_blank"
@@ -603,7 +622,7 @@ export default function HomeContent() {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="rounded-full bg-white/20 backdrop-blur-sm border-white/40 text-white hover:bg-white/30 hover:text-white"
+                          className="rounded-full bg-white/20 backdrop-blur-sm border-white/40 text-white hover:bg-white/30 hover:text-white hover-scale"
                         >
                           <Play className="h-6 w-6 fill-white" />
                           <span className="sr-only">Play Instagram video</span>

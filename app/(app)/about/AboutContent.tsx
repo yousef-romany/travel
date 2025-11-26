@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Globe, MapPin, Users } from "lucide-react";
 import OptimizedImage from "@/components/OptimizedImage";
 import { BackgroundVideo } from "@/components/ui/background-video";
+import { useEffect } from "react";
 
 // Egypt travel videos from Cloudinary
 const ABOUT_HERO_VIDEOS = [
@@ -12,6 +13,24 @@ const ABOUT_HERO_VIDEOS = [
 ];
 
 export default function AboutContent() {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-visible");
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+    );
+
+    const elements = document.querySelectorAll(".animate-on-scroll");
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen !w-full">
       {/* Hero Section with Background Video */}
@@ -23,10 +42,10 @@ export default function AboutContent() {
           rotationInterval={25000}
         >
           <div className="flex flex-col items-center justify-center text-white text-center p-4 h-full">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 font-display drop-shadow-lg">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 font-display drop-shadow-lg animate-slide-up">
               About Egypt Tourism
             </h1>
-            <p className="text-xl md:text-2xl max-w-3xl drop-shadow-md">
+            <p className="text-xl md:text-2xl max-w-3xl drop-shadow-md animate-slide-up animate-delay-200">
               Discover the wonders of ancient civilization and modern adventures
             </p>
           </div>
@@ -36,7 +55,7 @@ export default function AboutContent() {
         {/* History and Culture Section */}
         <section className="py-16  px-[2em] !w-full">
           <div className="!w-full grid lg:!grid-cols-2 md:!grid-cols-2 sm:!grid-cols-1 gap-12 items-center">
-            <div>
+            <div className="animate-on-scroll">
               <h2 className="text-3xl font-bold mb-6 font-display">
                 A Land of Rich History and Culture
               </h2>
@@ -54,13 +73,13 @@ export default function AboutContent() {
                 beaches of the Red Sea, Egypt offers a diverse range of
                 experiences for every traveler.
               </p>
-              <Button className="mt-4">Explore Our Tours</Button>
+              <Button className="mt-4 transition-smooth hover-glow">Explore Our Tours</Button>
             </div>
-            <div className="relative h-[400px] rounded-lg overflow-hidden">
+            <div className="relative h-[400px] rounded-lg overflow-hidden animate-on-scroll animate-delay-200">
               <OptimizedImage
                 src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1737648000/egyptian_pyramids_and_sphinx.jpg"
                 alt="Egyptian Pyramids and Sphinx at Giza"
-                className="object-cover"
+                className="object-cover hover-scale"
               />
             </div>
           </div>
@@ -69,11 +88,11 @@ export default function AboutContent() {
         {/* Mission and Values Section */}
         <section className="!w-full py-16 bg-secondary/50 flex items-center justify-center">
           <div className="!w-full container">
-            <h2 className="text-3xl font-bold mb-12 text-center font-display">
+            <h2 className="text-3xl font-bold mb-12 text-center font-display animate-on-scroll">
               Our Mission and Values
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
-              <Card>
+              <Card className="hover-lift animate-on-scroll">
                 <CardContent className="pt-6">
                   <Globe className="h-12 w-12 text-primary mb-4" />
                   <h3 className="text-xl font-semibold mb-2 font-display">
@@ -86,7 +105,7 @@ export default function AboutContent() {
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="hover-lift animate-on-scroll animate-delay-200">
                 <CardContent className="pt-6">
                   <Users className="h-12 w-12 text-primary mb-4" />
                   <h3 className="text-xl font-semibold mb-2 font-display">
@@ -99,7 +118,7 @@ export default function AboutContent() {
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="hover-lift animate-on-scroll animate-delay-400">
                 <CardContent className="pt-6">
                   <MapPin className="h-12 w-12 text-primary mb-4" />
                   <h3 className="text-xl font-semibold mb-2 font-display">
@@ -118,7 +137,7 @@ export default function AboutContent() {
 
         {/* Team Section */}
         <section className="!w-full py-16 px-[2em]">
-          <h2 className="text-3xl font-bold mb-12 text-center font-display">
+          <h2 className="text-3xl font-bold mb-12 text-center font-display animate-on-scroll">
             Meet Our Team
           </h2>
           <div className="grid lg:!grid-cols-4 md:!grid-cols-4 sm:!grid-cols-1 gap-8">
@@ -128,7 +147,7 @@ export default function AboutContent() {
               { name: "Laila Zaki", role: "Chief Experience Officer" },
               { name: "Ahmed Nour", role: "Marketing Director" },
             ].map((member, index) => (
-              <Card key={index}>
+              <Card key={index} className={`hover-lift animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}>
                 <CardContent className="pt-6 text-center">
                   <div className="w-24 h-24 rounded-full bg-muted mx-auto mb-4"></div>
                   <h3 className="font-semibold font-display">{member.name}</h3>
@@ -141,7 +160,7 @@ export default function AboutContent() {
       </main>
       {/* CTA Section */}
       <section className="py-16 bg-secondary text-primary-foreground">
-        <div className="text-center">
+        <div className="text-center animate-on-scroll">
           <h2 className="text-3xl font-bold mb-4 font-display">
             Ready to Explore Egypt?
           </h2>
@@ -152,7 +171,7 @@ export default function AboutContent() {
           <Button
             variant="secondary"
             size="lg"
-            className="bg-background text-primary hover:bg-background/90"
+            className="bg-background text-primary hover:bg-background/90 transition-smooth hover-glow"
           >
             Book Your Tour Now
           </Button>

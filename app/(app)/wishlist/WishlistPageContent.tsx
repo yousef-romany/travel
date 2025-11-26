@@ -177,7 +177,7 @@ export default function WishlistPageContent() {
       {/* Header Section */}
       <div className="relative border-b border-border bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-8 max-w-6xl">
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-4 mb-4 animate-slide-up">
             <Link href="/">
               <Button variant="ghost" size="icon" className="hover:bg-accent">
                 <ArrowLeft className="w-5 h-5" />
@@ -202,7 +202,7 @@ export default function WishlistPageContent() {
         {wishlistItems.length > 0 && (
           <>
             {/* Filters & Sort */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 animate-slide-up animate-delay-200">
               <div className="md:col-span-2">
                 <label className="text-sm font-medium text-muted-foreground mb-2 block">
                   Filter by Category
@@ -212,7 +212,7 @@ export default function WishlistPageContent() {
                     variant={filterCategory === null ? "default" : "outline"}
                     onClick={() => setFilterCategory(null)}
                     size="sm"
-                    className="rounded-full"
+                    className="rounded-full transition-smooth"
                   >
                     All ({wishlistItems.length})
                   </Button>
@@ -224,7 +224,7 @@ export default function WishlistPageContent() {
                         variant={filterCategory === category ? "default" : "outline"}
                         onClick={() => setFilterCategory(category)}
                         size="sm"
-                        className="rounded-full"
+                        className="rounded-full transition-smooth"
                       >
                         {category} ({count})
                       </Button>
@@ -240,7 +240,7 @@ export default function WishlistPageContent() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as "price-low" | "price-high" | "rating")}
-                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                  className="w-full px-4 py-2.5 rounded-lg border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-sm transition-smooth"
                 >
                   <option value="rating">Highest Rated</option>
                   <option value="price-low">Price: Low to High</option>
@@ -254,10 +254,10 @@ export default function WishlistPageContent() {
         {/* Wishlist Items Grid */}
         {filteredItems.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredItems.map((item) => (
+            {filteredItems.map((item, index) => (
               <Card
                 key={item.id}
-                className="border border-border bg-card overflow-hidden hover:border-primary/50 transition-all shadow-sm hover:shadow-xl group relative"
+                className={`border border-border bg-card overflow-hidden hover:border-primary/50 transition-all shadow-sm hover:shadow-xl group relative hover-lift animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}
               >
                 {/* Featured Badge */}
                 {item.program.rating >= 4.8 && (
@@ -272,7 +272,7 @@ export default function WishlistPageContent() {
                     src={getProgramImageUrl(item.program, 0, "/placeholder.svg?height=224&width=400")}
                     alt={`${item.program.title} - Egypt travel program`}
                     fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500 hover-scale"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -329,7 +329,7 @@ export default function WishlistPageContent() {
                       </div>
                     </div>
                     <Link href={`/programs/${item.program.title}`} className="block">
-                      <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all shadow-md hover:shadow-lg">
+                      <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-smooth shadow-md hover:shadow-lg hover-glow">
                         View Details
                       </Button>
                     </Link>
@@ -339,7 +339,7 @@ export default function WishlistPageContent() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20">
+          <div className="text-center py-20 animate-fade-in">
             <div className="relative inline-block mb-6">
               <Heart className="w-20 h-20 text-muted-foreground mx-auto opacity-20" />
               <div className="absolute inset-0 animate-ping">
@@ -356,7 +356,7 @@ export default function WishlistPageContent() {
             </p>
             {wishlistItems.length === 0 && (
               <Link href="/programs">
-                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg">
+                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover-glow">
                   <Heart className="w-5 h-5 mr-2" />
                   Browse Programs
                 </Button>
@@ -366,7 +366,7 @@ export default function WishlistPageContent() {
               <Button
                 variant="outline"
                 onClick={() => setFilterCategory(null)}
-                className="shadow-sm"
+                className="shadow-sm transition-smooth"
               >
                 Clear Filters
               </Button>

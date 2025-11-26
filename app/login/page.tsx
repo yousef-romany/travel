@@ -69,7 +69,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background-950 to-muted-950 flex items-center justify-center px-4 relative overflow-hidden">
-      
+
       {/* Glow background */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
@@ -77,10 +77,10 @@ export default function LoginPage() {
       </div>
 
       <div className="relative w-full max-w-md">
-        <div className="backdrop-blur-xl bg-background-900/60 border border-amber-500/20 shadow-2xl rounded-2xl p-8">
-          
+        <div className="backdrop-blur-xl bg-background-900/60 border border-amber-500/20 shadow-2xl rounded-2xl p-8 animate-slide-up">
+
           {/* Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 animate-fade-in">
             <div className="inline-block mb-4 px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full">
               <span className="text-amber-400 text-sm font-semibold">NILE TRAVEL</span>
             </div>
@@ -89,23 +89,23 @@ export default function LoginPage() {
           </div>
 
           {/* Error */}
-          {error && <p className="text-red-400 text-center text-sm mb-4">{error}</p>}
+          {error && <p className="text-red-400 text-center text-sm mb-4 animate-slide-down">{error}</p>}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            
-            <div>
+
+            <div className="animate-slide-up animate-delay-200">
               <label className="block mb-2">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 rounded-lg bg-background text-forground outline-none border border-slate-700 focus:border-amber-500"
+                className="w-full px-4 py-3 rounded-lg bg-background text-forground outline-none border border-slate-700 focus:border-amber-500 transition-smooth"
                 required
               />
             </div>
 
-            <div>
+            <div className="animate-slide-up animate-delay-300">
               <label className="block mb-2">Password</label>
               <div className="relative">
                 <input
@@ -113,7 +113,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-lg bg-background text-forground outline-none border border-slate-700 focus:border-amber-500"
+                  className="w-full px-4 py-3 rounded-lg bg-background text-forground outline-none border border-slate-700 focus:border-amber-500 transition-smooth"
                   required
                 />
 
@@ -122,12 +122,12 @@ export default function LoginPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-3 text-slate-400 hover:text-amber-400 transition"
                 >
-                  {showPassword ? <EyeOff size={20}/> : <Eye size={20}/>}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
 
-            <div className="flex justify-end text-sm">
+            <div className="flex justify-end text-sm animate-slide-up animate-delay-400">
               <Link href="/forgot-password" className="text-amber-400 hover:text-amber-300 transition">
                 Forgot password?
               </Link>
@@ -136,7 +136,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:brightness-110 disabled:opacity-50 text-slate-900 font-semibold rounded-lg transition flex justify-center items-center gap-2"
+              className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:brightness-110 disabled:opacity-50 text-slate-900 font-semibold rounded-lg transition-smooth flex justify-center items-center gap-2 animate-slide-up animate-delay-500 hover-glow"
             >
               {loading && <Loader2 size={18} className="animate-spin" />}
               {loading ? "Signing in..." : "Sign In"}
@@ -145,9 +145,9 @@ export default function LoginPage() {
 
           {/* Resend verification */}
           {showResend && (
-            <div className="mt-6 bg-slate-800 p-4 rounded-lg text-center space-y-3">
+            <div className="mt-6 bg-slate-800 p-4 rounded-lg text-center space-y-3 animate-slide-down">
               <p className="text-slate-300 text-sm">
-                Didn’t receive the verification email?
+                Didn't receive the verification email?
               </p>
 
               <button
@@ -163,7 +163,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          <p className="text-center text-slate-400 mt-6">
+          <p className="text-center text-slate-400 mt-6 animate-fade-in animate-delay-600">
             Don't have an account?
             <Link href="/signup" className="text-amber-400 hover:text-amber-300 font-semibold"> Create one</Link>
           </p>

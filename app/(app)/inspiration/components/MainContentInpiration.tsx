@@ -1,4 +1,4 @@
- 
+
 "use client";
 
 import Loading from "@/components/Loading";
@@ -56,7 +56,7 @@ const MainContentInpiration = () => {
           src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1738236129/2639898_f1hvdj.jpg"
           alt="Hero background"
           className="object-cover opacity-50 bg-black w-full h-full"
- 
+
         />
 
         {/* Content */}
@@ -64,26 +64,26 @@ const MainContentInpiration = () => {
           {/* Main Heading */}
           <h1
             role="heading"
-            className="text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-4"
+            className="text-4xl sm:text-5xl md:text-6xl font-bold text-center mb-4 animate-slide-up"
           >
             Discover Amazing Content
           </h1>
 
           {/* Subheading */}
-          <p className="text-xl sm:text-2xl text-center mb-8 max-w-2xl">
+          <p className="text-xl sm:text-2xl text-center mb-8 max-w-2xl animate-slide-up animate-delay-200">
             Explore our curated collection of articles, guides, and inspiration
             across various categories.
           </p>
 
           {/* Categories */}
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
+          <div className="flex flex-wrap justify-center gap-2 mb-8 animate-slide-up animate-delay-400">
             {data?.data?.map((category: InspirationCategoryData) => (
               <Link
                 key={category.id}
                 href={`/inspiration/${category.categoryName}`}
-                // className="px-4 py-2 text-sm font-medium text-white bg-button/20 rounded-full hover:bg-button/30 transition-colors cursor-pointer"
+              // className="px-4 py-2 text-sm font-medium text-white bg-button/20 rounded-full hover:bg-button/30 transition-colors cursor-pointer"
               >
-                <Button>{category.categoryName}</Button>
+                <Button className="hover-lift hover-glow transition-smooth">{category.categoryName}</Button>
               </Link>
             ))}
           </div>

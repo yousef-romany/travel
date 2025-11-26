@@ -95,14 +95,14 @@ export default function PageContent() {
         <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
         <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
       </div>
-      <h1 className="text-4xl font-bold mb-4 text-center">Travel Programs</h1>
-      <p className="text-xl text-center mb-8">
+      <h1 className="text-4xl font-bold mb-4 text-center animate-slide-up">Travel Programs</h1>
+      <p className="text-xl text-center mb-8 animate-slide-up animate-delay-100">
         Discover our exciting travel programs and embark on your next adventure!
       </p>
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 animate-slide-up animate-delay-200">
         <Input
-          className="max-w-xs"
+          className="max-w-xs transition-smooth"
           placeholder="Search by location or title"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -113,7 +113,7 @@ export default function PageContent() {
         </p>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-8 animate-slide-up animate-delay-300">
         <label className="block text-sm font-medium mb-2">
           Price Range: ${priceRange[0]} - ${priceRange[1]}
         </label>
@@ -129,23 +129,24 @@ export default function PageContent() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredPrograms.length > 0 ? (
-          filteredPrograms.map((program: ProgramType) => (
-            <CardTravels
-              key={program.id}
-              id={program.id}
-              documentId={program.documentId}
-              title={program.title}
-              rating={program.rating}
-              duration={program.duration}
-              Location={program.Location}
-              descraption={program.descraption}
-              price={program.price}
-              images={program.images}
-              overView={program.overView}
-            />
+          filteredPrograms.map((program: ProgramType, index: number) => (
+            <div key={program.id} className={`animate-on-scroll animate-delay-${Math.min(index * 100, 800)}`}>
+              <CardTravels
+                id={program.id}
+                documentId={program.documentId}
+                title={program.title}
+                rating={program.rating}
+                duration={program.duration}
+                Location={program.Location}
+                descraption={program.descraption}
+                price={program.price}
+                images={program.images}
+                overView={program.overView}
+              />
+            </div>
           ))
         ) : (
-          <div className="col-span-full text-center py-12">
+          <div className="col-span-full text-center py-12 animate-fade-in">
             <p className="text-lg text-muted-foreground">
               No programs found matching your criteria.
             </p>
