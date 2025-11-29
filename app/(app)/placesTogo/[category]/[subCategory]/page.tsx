@@ -12,39 +12,41 @@ import IndexPageInspireSubCategory from "./components/IndexPageInspireSubCategor
 import { useParams } from "next/navigation";
 import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 
-const InspirationDynamic = () => {
+const PlacesToGoDynamic = () => {
   useEffect(() => {
     applyHieroglyphEffect();
   }, []);
-  const params: { category: string; subCategory: string } = useParams(); // Get params dynamically
-  return (
-    <div className="flex flex-col h-fit">
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
-      </div>
 
-      <div className="bg-primary w-full p-2 px-[2em]">
+  const params: { category: string; subCategory: string } = useParams();
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <div className="bg-gradient-to-r from-primary to-amber-600 w-full p-3 px-[2em] shadow-lg">
         <Breadcrumb>
           <BreadcrumbList>
-            <BreadcrumbItem className="text-secondary">
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            <BreadcrumbItem className="text-white">
+              <BreadcrumbLink href="/" className="hover:text-white/80 transition-colors">
+                Home
+              </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem className="text-secondary">
-              <BreadcrumbLink href="/placesTogo">Places To Go</BreadcrumbLink>
+            <BreadcrumbSeparator className="text-white/60" />
+            <BreadcrumbItem className="text-white">
+              <BreadcrumbLink href="/placesToGo" className="hover:text-white/80 transition-colors">
+                Places To Go
+              </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem className="text-secondary">
+            <BreadcrumbSeparator className="text-white/60" />
+            <BreadcrumbItem className="text-white">
               <BreadcrumbLink
                 href={`/placesTogo/${decodeURIComponent(params?.category)}`}
+                className="hover:text-white/80 transition-colors"
               >
                 {decodeURIComponent(params?.category)}
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem className="text-secondary">
-              <BreadcrumbPage className="text-secondary border-b-2">
+            <BreadcrumbSeparator className="text-white/60" />
+            <BreadcrumbItem className="text-white">
+              <BreadcrumbPage className="text-white font-semibold border-b-2 border-white/40">
                 {decodeURIComponent(params?.subCategory)}
               </BreadcrumbPage>
             </BreadcrumbItem>
@@ -59,4 +61,4 @@ const InspirationDynamic = () => {
     </div>
   );
 };
-export default memo(InspirationDynamic);
+export default memo(PlacesToGoDynamic);

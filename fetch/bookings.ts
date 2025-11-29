@@ -83,7 +83,10 @@ export const createBooking = async (bookingData: {
   numberOfTravelers: number;
   travelDate: string;
   specialRequests?: string;
-  programId: string;
+  programId?: string;
+  planTripId?: string;
+  customTripName?: string;
+  bookingType?: "program" | "custom-trip" | "event";
   userId?: string;
   totalAmount: number;
 }): Promise<{ data: BookingType }> => {
@@ -101,11 +104,22 @@ export const createBooking = async (bookingData: {
       specialRequests: bookingData.specialRequests,
       totalAmount: bookingData.totalAmount,
       status: "pending",
+      bookingType: bookingData.bookingType || "program",
     };
+
+    // Add custom trip name if provided
+    if (bookingData.customTripName) {
+      payload.customTripName = bookingData.customTripName;
+    }
 
     // Add program relation if provided
     if (bookingData.programId) {
       payload.program = bookingData.programId;
+    }
+
+    // Add plan trip relation if provided
+    if (bookingData.planTripId) {
+      payload.plan_trip = bookingData.planTripId;
     }
 
     // Add user relation if provided

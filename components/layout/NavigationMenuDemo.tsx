@@ -117,6 +117,18 @@ export function NavigationMenuDemo({
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link href="/events" legacyBehavior passHref>
+            <NavigationMenuLink
+              className={cn(
+                "!text-[1.2rem] text-primary",
+                navigationMenuTriggerStyle()
+              )}
+            >
+              Events
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );

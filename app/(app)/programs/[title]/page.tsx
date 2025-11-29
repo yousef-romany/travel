@@ -20,7 +20,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       };
     }
 
-    const imageUrl = program.images?.[0]?.image || "/og-programs.jpg";
+    // Handle both old format (images[].image) and new Strapi v5 media format
+    const firstImage = program.images?.[0];
+    const imageUrl = firstImage?.image || firstImage?.url || "/og-programs.jpg";
     const fullImageUrl = imageUrl.startsWith("http")
       ? imageUrl
       : `${process.env.NEXT_PUBLIC_STRAPI_URL}${imageUrl}`;

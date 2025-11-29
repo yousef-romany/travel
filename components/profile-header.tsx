@@ -51,20 +51,20 @@ export default function ProfileHeader() {
               <div className="flex flex-col gap-3 text-sm text-slate-300">
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-amber-500" />
-                  <span>{user.email}</span>
+                  <span className="text-primary">{user.email}</span>
                 </div>
 
                 {user.profile?.phone && (
                   <div className="flex items-center gap-2">
                     <Phone className="w-4 h-4 text-amber-500" />
-                    <span>{user.profile.phone}</span>
+                    <span className="text-primary">{user.profile.phone}</span>
                   </div>
                 )}
 
                 {user.profile?.city && (
                   <div className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-amber-500" />
-                    <span>{user.profile.city}</span>
+                    <span className="text-primary">{user.profile.city}</span>
                   </div>
                 )}
               </div>

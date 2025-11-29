@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Footer from "@/components/layout/Footer";
-import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 export const metadata: Metadata = {
   title: {
@@ -21,7 +20,6 @@ export default function RootLayout({
         {children}
       </main>
       <Footer />
-      <ScrollToTopButton />
     </div>
   );
 }

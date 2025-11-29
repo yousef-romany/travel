@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,32 +14,39 @@ import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 
 const InspirationDynamic = () => {
   useEffect(() => {
-    applyHieroglyphEffect()
-  }, [])
-  const params: { category: string; subCategory: string } = useParams(); // Get params dynamically
+    applyHieroglyphEffect();
+  }, []);
+
+  const params: { category: string; subCategory: string } = useParams();
+
   return (
-    <div className="flex flex-col h-fit">
-      <div className="bg-primary w-full p-2 px-[2em]">
+    <div className="flex flex-col min-h-screen">
+      <div className="bg-gradient-to-r from-primary to-amber-600 w-full p-3 px-[2em] shadow-lg">
         <Breadcrumb>
           <BreadcrumbList>
-            <BreadcrumbItem className="text-secondary">
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            <BreadcrumbItem className="text-white">
+              <BreadcrumbLink href="/" className="hover:text-white/80 transition-colors">
+                Home
+              </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem className="text-secondary">
-              <BreadcrumbLink href="/inspiration">Inspiration</BreadcrumbLink>
+            <BreadcrumbSeparator className="text-white/60" />
+            <BreadcrumbItem className="text-white">
+              <BreadcrumbLink href="/inspiration" className="hover:text-white/80 transition-colors">
+                Inspiration
+              </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem className="text-secondary">
+            <BreadcrumbSeparator className="text-white/60" />
+            <BreadcrumbItem className="text-white">
               <BreadcrumbLink
                 href={`/inspiration/${decodeURIComponent(params?.category)}`}
+                className="hover:text-white/80 transition-colors"
               >
                 {decodeURIComponent(params?.category)}
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem className="text-secondary">
-              <BreadcrumbPage className="text-secondary border-b-2">
+            <BreadcrumbSeparator className="text-white/60" />
+            <BreadcrumbItem className="text-white">
+              <BreadcrumbPage className="text-white font-semibold border-b-2 border-white/40">
                 {decodeURIComponent(params?.subCategory)}
               </BreadcrumbPage>
             </BreadcrumbItem>

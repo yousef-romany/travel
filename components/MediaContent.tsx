@@ -2,7 +2,8 @@
 
 import { instaGramVedios } from "@/type/placesToGo";
 import Image from "next/image";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
+import { Play, Pause } from "lucide-react";
 
 export default function MediaContent({
   media_type,
@@ -10,28 +11,56 @@ export default function MediaContent({
   thumbnail_url,
 }: instaGramVedios) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     // Pause video when component unmounts
     return () => {
       if (videoRef.current) {
-        videoRef.current.play();
+        videoRef.current.pause();
       }
     };
   }, []);
 
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
   if (media_type === "VIDEO") {
     return (
-      <div className={`relative`}>
+      <div className={`relative group cursor-pointer`} onClick={togglePlay}>
         <video
           ref={videoRef}
           className="w-full h-full object-cover"
-          controls
           poster={thumbnail_url}
+          playsInline
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
         >
           <source src={imageUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
+
+        {/* Custom play/pause overlay - no sound control */}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity group-hover:bg-black/30">
+          {!isPlaying && (
+            <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center transition-transform hover:scale-110">
+              <Play className="w-8 h-8 text-black ml-1" fill="currentColor" />
+            </div>
+          )}
+          {isPlaying && (
+            <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Pause className="w-8 h-8 text-black" fill="currentColor" />
+            </div>
+          )}
+        </div>
       </div>
     );
   }

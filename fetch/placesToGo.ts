@@ -46,12 +46,7 @@ const url =
 export const fetchPlaceToOneSubCategory = async (name: string) => {
   // http://localhost:1337/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
-    const url =
-  `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/place-to-go-subcategories` +
-  `?filters[categoryName][$eq]=${encodeURIComponent(name)}` +
-  `&populate[image]=true` +
-  `&populate[place-to-go-blogs][populate][image]=true`;
-
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/place-to-go-subcategories?filters[categoryName][$eq]=${encodeURIComponent(name)}&populate=*`;
 
     const response = await axios.get(String(url), {
       headers: {
@@ -61,7 +56,7 @@ export const fetchPlaceToOneSubCategory = async (name: string) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching inspiration categories:", error || error);
+    console.error("Error fetching place to go subcategory:", error || error);
     throw error; // Re-throw for higher-level error handling if needed
   }
 };

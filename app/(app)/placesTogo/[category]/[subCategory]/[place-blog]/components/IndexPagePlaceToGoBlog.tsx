@@ -6,103 +6,152 @@ import YouTubeEmbed from "@/components/YouTubeEmbed";
 import { fetchPlaceToGoOneBlog } from "@/fetch/placesToGo";
 import MapComponent from "@/components/Map";
 import { instagramPostsType, meta, PlacesToGoBlogs } from "@/type/placesToGo";
-import { FaArrowTurnDown } from "react-icons/fa6";
+import { FaMapMarkerAlt, FaInstagram, FaYoutube } from "react-icons/fa";
 import InstagramModal from "@/components/InstagramModal";
 import { Separator } from "@/components/ui/separator";
 import Loading from "@/components/Loading";
 import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card";
 
 const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
   useEffect(() => {
     applyHieroglyphEffect();
   }, []);
+
   const { data, error, isLoading } = useQuery<
     { data: PlacesToGoBlogs[]; meta: meta },
     Error
   >({
-    queryKey: ["fetchPlaceToGoOneBlog"],
+    queryKey: ["fetchPlaceToGoOneBlog", slug],
     queryFn: () => fetchPlaceToGoOneBlog(decodeURIComponent(slug)),
   });
+
   if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
+
+  const place = data?.data?.at(-1);
+  if (!place) return <p>Place not found</p>;
+
   return (
-    <div className="flex gap-4 flex-col h-fit justify-between">
-      <div className="relative w-full h-[calc(100vh-80px)] !z-[-9999]">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-background to-secondary/20">
+      {/* Hero Image Section */}
+      <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden">
         <OptimizedImage
-          src={getImageUrl(data?.data?.at(-1)?.image) as string}
-          alt={data?.data?.at(-1)?.title as string}
-          className="w-full h-full object-cover !z-[-9999]"
- 
+          src={getImageUrl(place.image) as string}
+          alt={place.title as string}
+          className="w-full h-full object-cover"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+
+        {/* Title Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
+          <div className="container mx-auto max-w-5xl">
+            <div className="inline-block mb-4">
+              <span className="px-4 py-2 bg-primary/90 backdrop-blur-sm text-white text-sm font-semibold rounded-full shadow-lg">
+                ✨ Discover
+              </span>
+            </div>
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-2xl">
+              {place.title}
+            </h1>
+            {place.price && (
+              <div className="flex items-center gap-3 text-white">
+                <span className="text-sm md:text-base">Starting from</span>
+                <span className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent px-4 py-2 bg-white rounded-full">
+                  ${place.price}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      {(data?.data?.at(-1)?.instagram_posts?.length || 0) > 0 ? (
-        <div className="w-full flex justify-center items-center flex-col mt-4 gap-[2em] px-[2em]">
-          <div className="flex flex-col w-full items-start">
-            <h1
-              role="heading"
-              className="text-primary text-[2.4rem] font-extrabold flex items-center gap-2"
-            >
-              Instagram Feeds <FaArrowTurnDown />
-            </h1>
-            <p className="font-medium text-[1.2rem] text-center mb-12 px-4">
-              Discover and preview top-notch content from across the Instagram
-              universe.
-            </p>
-          </div>
-          <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-10 px-[2em]">
-            {data?.data?.at(-1)?.instagram_posts &&
-              (data?.data?.at(-1)?.instagram_posts as instagramPostsType[]).map(
-                (itemPost) => (
-                  <InstagramModal
-                    key={itemPost?.id}
-                    idPost={itemPost?.idPost}
-                  />
-                )
-              )}
-          </div>
-        </div>
-      ) : null}
+      {/* Main Content Container */}
+      <div className="container mx-auto max-w-5xl px-4 md:px-6 py-8 md:py-12 relative z-10">
 
-      <div className=" px-[2em] flex flex-col gap-6 py-6">
-        <Separator />
-        <MDXRenderer mdxString={data?.data?.at(-1)?.details as string} />
-
-        <Separator />
-        {data?.data?.at(-1)?.youtubeUrl && (
-          <div className="w-full flex justify-center items-center flex-col gap-[2em]">
-            <div className="flex flex-col">
-              <h1
-                role="heading"
-                className="text-primary w-full text-[2.4rem] font-extrabold"
-              >
-                Curated Video Showcase
-              </h1>
-              <p className="text-[1.2rem] text-center mb-12  font-thin">
-                Discover and preview top-notch content from across the YouTube
-                universe
-              </p>
+        {/* Content Section */}
+        <Card className="mb-8 border-primary/20 bg-gradient-to-br from-card to-card/50 shadow-xl">
+          <CardContent className="p-6 md:p-10">
+            <div className="prose prose-lg md:prose-xl max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-a:text-primary">
+              <MDXRenderer mdxString={place.details as string} />
             </div>
-            <YouTubeEmbed videoUrl={data?.data?.at(-1)?.youtubeUrl as string} />
-          </div>
+          </CardContent>
+        </Card>
+
+        {/* Instagram Section */}
+        {(place.instagram_posts?.length || 0) > 0 && (
+          <section className="mb-12">
+            <div className="flex items-center gap-3 mb-6">
+              <FaInstagram className="text-4xl text-pink-500" />
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                Instagram Highlights
+              </h2>
+            </div>
+            <p className="text-muted-foreground text-lg mb-8">
+              See what travelers are sharing about {place.title}
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {(place.instagram_posts as instagramPostsType[] | undefined)?.map((itemPost: instagramPostsType) => (
+                <div
+                  key={itemPost.id}
+                  className="transform transition-all duration-300 hover:scale-105"
+                >
+                  <InstagramModal idPost={itemPost.idPost} />
+                </div>
+              ))}
+            </div>
+          </section>
         )}
-        <div className="w-full flex justify-center items-center flex-col gap-[2em]">
-          <h1
-            role="heading"
-            className="text-primary w-full text-[2.4rem] font-extrabold flex items-center gap-2 "
-          >
-            Location Preview Map <FaArrowTurnDown className="" />
-          </h1>
-          <MapComponent
-            title={data?.data?.at(-1)?.title as string}
-            lat={data?.data?.at(-1)?.lat as number}
-            lng={data?.data?.at(-1)?.lng as number}
-          />
-        </div>
+
+        {/* YouTube Section */}
+        {place.youtubeUrl && (
+          <section className="mb-12">
+            <Separator className="mb-8" />
+            <div className="flex items-center gap-3 mb-6">
+              <FaYoutube className="text-4xl text-red-600" />
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                Video Tour
+              </h2>
+            </div>
+            <p className="text-muted-foreground text-lg mb-8">
+              Experience {place.title} through our curated video content
+            </p>
+
+            <div className="rounded-2xl overflow-hidden shadow-2xl border border-primary/20">
+              <YouTubeEmbed videoUrl={place.youtubeUrl as string} />
+            </div>
+          </section>
+        )}
+
+        {/* Map Section */}
+        {place.lat && place.lng && (
+          <section className="mb-8">
+            <Separator className="mb-8" />
+            <div className="flex items-center gap-3 mb-6">
+              <FaMapMarkerAlt className="text-4xl text-primary" />
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                Location
+              </h2>
+            </div>
+            <p className="text-muted-foreground text-lg mb-8">
+              Find {place.title} on the map
+            </p>
+
+            <div className="rounded-2xl overflow-hidden shadow-2xl border border-primary/20 h-[400px] md:h-[500px]">
+              <MapComponent
+                title={place.title as string}
+                lat={place.lat as number}
+                lng={place.lng as number}
+              />
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
 };
+
 export default memo(IndexPagePlaceToGoBlog);

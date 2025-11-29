@@ -220,6 +220,15 @@ export default function Footer() {
                   About Egypt Tourism
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/events"
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm flex items-center gap-2 group"
+                >
+                  <span className="w-1 h-1 bg-primary rounded-full group-hover:w-2 transition-all"></span>
+                  Events
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -461,7 +470,7 @@ export default function Footer() {
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Globe className="w-4 h-4" />
-              <span>Made with ♥ for Egypt Tourism</span>
+              <span>Made with ♥ for Yousefx00</span>
             </div>
           </div>
         </div>

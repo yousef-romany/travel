@@ -1,6 +1,8 @@
 export interface ContentStep {
   title: string;
   imageUrl?: string;
+  image?: Media;
+  price?: number;
   place_to_go_subcategories?: {
     categoryName: string;
     place_to_go_categories?: { categoryName: string }[];
@@ -14,6 +16,12 @@ export interface dataTypeCardTravel {
   descraption?: string;
   documentId?: string;
   duration?: string;
+  tripType?: "single-day" | "multi-day";
+  startTime?: string;
+  endTime?: string;
+  meetingPoint?: string;
+  departureLocation?: string;
+  returnLocation?: string;
   excludes?: { id: number; title: string }[];
   id?: number;
   images?: { id: number; title: string; imageUrl: string }[];

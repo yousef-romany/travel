@@ -92,10 +92,12 @@ export interface UserStats {
 
 /**
  * Get user profile by user ID
+ * Note: Strapi v5 uses integer id for user relations, not documentId
  */
 export const getUserProfile = async (userId: number, token: string): Promise<UserProfile | null> => {
   try {
-    const url = `${API_URL}/api/profiles?filters[user][id]=${userId}&populate=user`;
+    // For Strapi v5, we can use the /me endpoint to get current user's profile
+    const url = `${API_URL}/api/profiles?populate=user`;
 
     const response = await axios.get(url, {
       headers: {
@@ -108,7 +110,9 @@ export const getUserProfile = async (userId: number, token: string): Promise<Use
       return null;
     }
 
-    return response.data.data[0];
+    // Return the profile that matches the userId
+    const userProfile = response.data.data.find((profile: any) => profile.user?.id === userId);
+    return userProfile || response.data.data[0];
   } catch (error) {
     console.error("Error fetching user profile:", error);
     throw error;
@@ -117,10 +121,13 @@ export const getUserProfile = async (userId: number, token: string): Promise<Use
 
 /**
  * Get user trips/bookings
+ * For Strapi v5, fetch all bookings and filter client-side
+ * Or use custom API endpoint if available
  */
 export const getUserTrips = async (userId: number, token: string): Promise<UserTrip[]> => {
   try {
-    const url = `${API_URL}/api/bookings?filters[user][id]=${userId}&populate[program][populate]=images&sort=tripDate:desc`;
+    // Fetch all bookings for authenticated user - use populate=* for simplicity
+    const url = `${API_URL}/api/bookings?populate=*&sort=tripDate:desc`;
 
     const response = await axios.get(url, {
       headers: {
@@ -129,7 +136,9 @@ export const getUserTrips = async (userId: number, token: string): Promise<UserT
       },
     });
 
-    return response.data.data || [];
+    // Filter client-side to get only this user's bookings
+    const allBookings = response.data.data || [];
+    return allBookings.filter((booking: any) => booking.user?.id === userId);
   } catch (error) {
     console.error("Error fetching user trips:", error);
     // Return empty array if bookings collection doesn't exist yet
@@ -160,10 +169,11 @@ export const getUserWishlist = async (token: string): Promise<UserWishlistItem[]
 
 /**
  * Get user invoices
+ * For Strapi v5, fetch all invoices and filter client-side
  */
 export const getUserInvoices = async (userId: number, token: string): Promise<UserInvoice[]> => {
   try {
-    const url = `${API_URL}/api/invoices?filters[user][id]=${userId}&populate=booking.program&sort=issueDate:desc`;
+    const url = `${API_URL}/api/invoices?populate=booking.program&populate=user&sort=issueDate:desc`;
 
     const response = await axios.get(url, {
       headers: {
@@ -172,7 +182,9 @@ export const getUserInvoices = async (userId: number, token: string): Promise<Us
       },
     });
 
-    return response.data.data || [];
+    // Filter client-side to get only this user's invoices
+    const allInvoices = response.data.data || [];
+    return allInvoices.filter((invoice: any) => invoice.user?.id === userId);
   } catch (error) {
     console.error("Error fetching user invoices:", error);
     // Return empty array if invoices collection doesn't exist yet

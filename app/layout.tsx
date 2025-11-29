@@ -9,6 +9,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "@/components/ui/sonner";
 import OrganizationSchema from "@/components/seo/OrganizationSchema";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
+import BackgroundAudio from "@/components/BackgroundAudio";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,19 @@ export const metadata: Metadata = {
   creator: "ZoeHoliday",
   publisher: "ZoeHoliday",
   category: "Travel & Tourism",
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'ZoeHoliday',
+    startupImage: [
+      {
+        url: '/icons/icon-512x512.png',
+        media: '(device-width: 768px) and (device-height: 1024px)',
+      },
+    ],
+  },
+  applicationName: 'ZoeHoliday',
   alternates: {
     canonical: '/',
     languages: {
@@ -113,6 +127,30 @@ export default function RootLayout({
           <GoogleAnalytics />
         </Suspense>
         <OrganizationSchema />
+
+        {/* PWA Meta Tags */}
+        <meta name="application-name" content="ZoeHoliday" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="ZoeHoliday" />
+        <meta name="theme-color" content="#d4af37" />
+        <meta name="msapplication-TileColor" content="#d4af37" />
+        <meta name="msapplication-tap-highlight" content="no" />
+
+        {/* Apple Touch Icons */}
+        <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
+        <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-192x192.png" />
+
+        {/* Favicons */}
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-72x72.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72x72.png" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+
+        {/* Apple Splash Screens */}
+        <link rel="apple-touch-startup-image" href="/icons/icon-512x512.png" />
+
         {/* Google Translate Script */}
         <Script
           src="/assets/scripts/lang-config.js"
@@ -148,10 +186,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
       >
         <AuthProvider>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <NavBar />
           <div className="pt-[76px]">{children}</div>
           <div id="google_translate_element"></div>
+          <BackgroundAudio />
           <Toaster />
         </ThemeProvider>
         </AuthProvider>

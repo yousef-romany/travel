@@ -163,40 +163,55 @@ Thank you! 🙏`;
       </Button>
 
       {/* Hero Section */}
-      <div className="mb-8">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-          <div className="flex-1">
-            <h1 className="text-4xl font-bold mb-2 text-primary">{trip.tripName}</h1>
-            <div className="flex flex-wrap items-center gap-3">
-              <Badge className={getStatusColor(trip.status)}>
-                {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
-              </Badge>
-              {trip.user && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <User className="w-4 h-4" />
-                  <span>
-                    Created by{" "}
-                    <span className="font-semibold">
-                      {trip.user.username || trip.user.email?.split("@")[0] || "Anonymous"}
+      <div className="mb-8 relative">
+        {/* Background decoration */}
+        <div className="absolute inset-0 -z-10 opacity-20 pointer-events-none overflow-hidden rounded-3xl">
+          <div className="absolute top-10 right-10 w-72 h-72 bg-primary rounded-full blur-[120px]"></div>
+          <div className="absolute bottom-10 left-10 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
+        </div>
+
+        <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-3xl p-8 shadow-2xl">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-6">
+            <div className="flex-1">
+              <div className="inline-block mb-4">
+                <span className="px-4 py-2 bg-primary/10 text-primary text-sm font-semibold rounded-full border border-primary/20">
+                  ✨ Custom Travel Plan
+                </span>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                {trip.tripName}
+              </h1>
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge className={getStatusColor(trip.status)}>
+                  {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                </Badge>
+                {trip.user && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <User className="w-4 h-4" />
+                    <span>
+                      Created by{" "}
+                      <span className="font-semibold text-foreground">
+                        {trip.user.username || trip.user.email?.split("@")[0] || "Anonymous"}
+                      </span>
                     </span>
-                  </span>
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={handleShare}>
-              <Share2 className="w-4 h-4 mr-2" />
-              Share
-            </Button>
-            <Button onClick={handleBookNow} className="bg-green-600 hover:bg-green-700">
-              <CheckCircle className="w-4 h-4 mr-2" />
-              Book This Trip
-            </Button>
-            <Button onClick={handleRequestQuote} className="bg-primary">
-              <Send className="w-4 h-4 mr-2" />
-              Request Quote
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" onClick={handleShare} className="hover-lift">
+                <Share2 className="w-4 h-4 mr-2" />
+                Share
+              </Button>
+              <Button onClick={handleBookNow} className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 shadow-lg hover-lift">
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Book This Trip
+              </Button>
+              <Button onClick={handleRequestQuote} className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 shadow-lg hover-lift">
+                <Send className="w-4 h-4 mr-2" />
+                Request Quote
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -298,70 +313,156 @@ Thank you! 🙏`;
           </Card>
 
           {/* Itinerary */}
-          <Card>
+          <Card className="border-primary/20 shadow-xl">
             <CardHeader>
-              <CardTitle>Complete Itinerary</CardTitle>
-              <CardDescription>
-                Day-by-day breakdown of your Egyptian adventure
-              </CardDescription>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2.5 bg-gradient-to-r from-primary to-amber-600 rounded-xl">
+                  <MapPin className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-2xl bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                    Complete Itinerary
+                  </CardTitle>
+                  <CardDescription className="text-sm mt-1">
+                    Day-by-day breakdown of your Egyptian adventure
+                  </CardDescription>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {trip.destinations?.map((dest: any, index: number) => (
-                  <div
-                    key={index}
-                    className="flex gap-4 p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="flex-shrink-0 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-lg">
-                      {index + 1}
+              <div className="relative">
+                {/* Vertical timeline line */}
+                <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-gradient-to-b from-primary via-amber-500 to-primary/20" />
+
+                <div className="space-y-6 md:space-y-8">
+                  {trip.destinations?.map((dest: any, index: number) => (
+                    <div
+                      key={index}
+                      className="relative pl-12 md:pl-16 group animate-slide-up"
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      {/* Timeline dot */}
+                      <div className="absolute left-0 w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-primary to-amber-600 text-white rounded-full flex items-center justify-center font-bold text-base md:text-lg shadow-lg z-10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                        {index + 1}
+                      </div>
+
+                      <div className="bg-gradient-to-br from-background via-background/90 to-primary/5 border border-primary/10 rounded-xl overflow-hidden hover:border-primary/30 hover:shadow-2xl transition-all duration-500 group-hover:translate-x-2">
+                        {/* Image header if image exists */}
+                        {dest.image && (
+                          <div className="relative w-full h-48 md:h-64 overflow-hidden bg-gradient-to-br from-primary/5 to-amber-500/5">
+                            <OptimizedImage
+                              src={dest.image}
+                              alt={dest.title}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent opacity-80" />
+
+                            {/* Day badge on image */}
+                            <div className="absolute top-4 right-4 bg-gradient-to-r from-primary to-amber-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                              Day {index + 1}
+                            </div>
+
+                            {/* Price badge */}
+                            <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm text-primary px-4 py-2 rounded-full text-sm font-bold shadow-lg border border-primary/20">
+                              ${dest.price}
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="p-5 md:p-6">
+                          <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            {/* Day badge if no image */}
+                            {!dest.image && (
+                              <span className="inline-block px-3 py-1 bg-gradient-to-r from-primary/10 to-amber-600/10 text-primary text-xs font-semibold rounded-full border border-primary/20 mb-2">
+                                Day {index + 1}
+                              </span>
+                            )}
+
+                            <h4 className="font-bold text-xl md:text-2xl mb-3 group-hover:text-primary transition-colors leading-tight">
+                              {dest.title}
+                            </h4>
+                            {dest.location && (
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3 bg-muted/30 px-3 py-2 rounded-lg w-fit">
+                                <MapPin className="w-4 h-4 text-primary" />
+                                <span className="font-medium">{dest.location}</span>
+                              </div>
+                            )}
+                            {dest.description && (
+                              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                                {dest.description}
+                              </p>
+                            )}
+                          </div>
+                          {!dest.image && (
+                            <div className="text-right flex-shrink-0">
+                              <p className="text-xs text-muted-foreground mb-1 font-medium">Day Cost</p>
+                              <div className="px-3 py-2 bg-gradient-to-br from-primary/10 to-amber-600/10 rounded-lg border border-primary/20 shadow-sm">
+                                <p className="font-bold text-xl md:text-2xl bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">${dest.price}</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-lg mb-1">{dest.title}</h4>
-                      {dest.location && (
-                        <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
-                          <MapPin className="w-3 h-3" />
-                          {dest.location}
-                        </p>
-                      )}
-                      {dest.description && (
-                        <p className="text-sm text-muted-foreground">{dest.description}</p>
-                      )}
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs text-muted-foreground mb-1">Cost</p>
-                      <p className="font-bold text-lg text-primary">${dest.price}</p>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+
+              {/* Summary footer */}
+              <div className="mt-8 pt-6 border-t border-primary/10 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Clock className="h-5 w-5" />
+                  <span className="text-sm">
+                    Total duration: <span className="font-bold text-foreground">{trip.estimatedDuration} {trip.estimatedDuration === 1 ? 'Day' : 'Days'}</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <MapPin className="h-5 w-5" />
+                  <span className="text-sm">
+                    <span className="font-bold text-foreground">{trip.destinations?.length}</span> destinations
+                  </span>
+                </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Price Breakdown */}
-          <Card>
+          <Card className="border-primary/20 shadow-xl bg-gradient-to-br from-card to-card/50">
             <CardHeader>
-              <CardTitle>Price Breakdown</CardTitle>
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl">
+                  <DollarSign className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-2xl bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  Price Breakdown
+                </CardTitle>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 {trip.destinations?.map((dest: any, index: number) => (
-                  <div key={index} className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      Day {index + 1}: {dest.title}
+                  <div key={index} className="flex justify-between items-center p-3 bg-background/50 rounded-lg border border-primary/10 hover:border-primary/20 transition-colors">
+                    <span className="text-sm font-medium text-muted-foreground">
+                      <span className="font-bold text-foreground">Day {index + 1}:</span> {dest.title}
                     </span>
-                    <span className="font-medium">${dest.price}</span>
+                    <span className="font-bold text-lg text-primary">${dest.price}</span>
                   </div>
                 ))}
-                <div className="border-t pt-3 mt-3">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-lg">Total Estimated Cost</span>
-                    <span className="font-bold text-2xl text-primary">
-                      ${trip.totalPrice?.toLocaleString()}
-                    </span>
+                <div className="border-t border-primary/20 pt-4 mt-4">
+                  <div className="bg-gradient-to-r from-primary/5 to-amber-500/5 rounded-xl p-5 border border-primary/20">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-bold text-lg">Total Estimated Cost</span>
+                      <span className="font-bold text-3xl bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                        ${trip.totalPrice?.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <span>Average per day</span>
+                      <span className="font-semibold text-foreground">${trip.pricePerDay?.toFixed(2)}</span>
+                    </div>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Average: ${trip.pricePerDay?.toFixed(2)} per day
-                  </p>
                 </div>
               </div>
             </CardContent>

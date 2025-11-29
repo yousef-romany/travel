@@ -75,8 +75,8 @@ export const fetchProgramsList = async (): Promise<ProgramsResponse> => {
  */
 export const fetchProgramOne = async (titleOrId: string) => {
   try {
-    // First try to fetch by title
-    const urlByTitle = `${API_URL}/api/programs?populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true&filters[title][$eq]=${titleOrId}`;
+    // First try to fetch by title with full population including content_steps images
+    const urlByTitle = `${API_URL}/api/programs?populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true&filters[title][$eq]=${titleOrId}`;
 
     const responseByTitle = await axios.get(String(urlByTitle), {
       headers: {
@@ -91,7 +91,7 @@ export const fetchProgramOne = async (titleOrId: string) => {
     }
 
     // Otherwise, try to fetch by documentId
-    const urlById = `${API_URL}/api/programs/${titleOrId}?populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true`;
+    const urlById = `${API_URL}/api/programs/${titleOrId}?populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true`;
 
     const responseById = await axios.get(String(urlById), {
       headers: {
