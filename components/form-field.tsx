@@ -3,7 +3,7 @@
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 
-export function FormField({ label, name, value, onChange, type = "text", required, placeholder }: any) {
+export function FormField({ label, name, value, onChange, type = "text", required, placeholder, error }: any) {
   return (
     <div className="space-y-1">
       <Label htmlFor={name} className="text-sm font-medium text-primary">
@@ -17,9 +17,13 @@ export function FormField({ label, name, value, onChange, type = "text", require
         onChange={onChange}
         required={required}
         placeholder={placeholder}
-        className="border-primary/30 text-primary
-        focus-visible:ring-gold focus-visible:border-gold transition rounded-xl"
+        className={`border-primary/30 text-primary focus-visible:ring-gold focus-visible:border-gold transition rounded-xl ${
+          error ? "border-destructive focus-visible:ring-destructive" : ""
+        }`}
       />
+      {error && (
+        <p className="text-xs text-destructive mt-1">{error}</p>
+      )}
     </div>
   )
 }

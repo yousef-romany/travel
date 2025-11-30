@@ -25,6 +25,7 @@ import { Input } from "../ui/input";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
+import TrustBadges from "@/components/trust-badges";
 
 export default function Footer() {
   const { theme } = useTheme();
@@ -155,17 +156,6 @@ export default function Footer() {
               </form>
             </div>
 
-            {/* Trust Badges */}
-            <div className="flex items-center gap-3 pt-4">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Shield className="w-4 h-4 text-primary" />
-                <span>Secure Booking</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Award className="w-4 h-4 text-primary" />
-                <span>Licensed Tour Operator</span>
-              </div>
-            </div>
           </div>
 
           {/* Quick Links */}
@@ -397,6 +387,11 @@ export default function Footer() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Trust Badges */}
+        <div className="border-t border-border pt-8 mb-8">
+          <TrustBadges />
         </div>
 
         {/* Popular Destinations - SEO Enhancement */}

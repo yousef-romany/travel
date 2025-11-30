@@ -6,25 +6,22 @@ import { Button } from "@/components/ui/button"
 import { Calendar, Users, MapPin, ArrowRight, Loader2, AlertCircle } from "lucide-react"
 import { useAuth } from "@/context/AuthContext"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { fetchUserBookings, updateBookingStatus } from "@/fetch/bookings"
+import { fetchUserBookings, type BookingType } from "@/fetch/bookings"
 import Image from "next/image"
 import { getImageUrl } from "@/lib/utils"
 import Link from "next/link"
 import { toast } from "sonner"
 import { useState } from "react"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import BookingCancelDialog from "@/components/booking-cancel-dialog"
 
 export default function TripsSection() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [bookingToCancel, setBookingToCancel] = useState<string | null>(null);
+  const [cancelDialogData, setCancelDialogData] = useState<{
+    bookingId: string;
+    bookingCreatedAt: string;
+    tripName: string;
+  } | null>(null);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["userBookings", user?.documentId],
@@ -35,27 +32,12 @@ export default function TripsSection() {
 
   const trips = data?.data || [];
 
-  const cancelBookingMutation = useMutation({
-    mutationFn: (bookingId: string) => updateBookingStatus(bookingId, "cancelled"),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["userBookings"] });
-      toast.success("Booking cancelled successfully");
-      setBookingToCancel(null);
-    },
-    onError: (error) => {
-      console.error("Error cancelling booking:", error);
-      toast.error("Failed to cancel booking. Please try again.");
-    },
-  });
-
-  const handleCancelBooking = (bookingId: string) => {
-    setBookingToCancel(bookingId);
-  };
-
-  const confirmCancelBooking = () => {
-    if (bookingToCancel) {
-      cancelBookingMutation.mutate(bookingToCancel);
-    }
+  const handleCancelBooking = (bookingId: string, createdAt: string, tripName: string) => {
+    setCancelDialogData({
+      bookingId,
+      bookingCreatedAt: createdAt,
+      tripName,
+    });
   };
 
   const formatDate = (dateString: string) => {
@@ -123,14 +105,45 @@ export default function TripsSection() {
     );
   }
 
+  // Helper to get trip details based on booking type
+  const getTripDetails = (trip: BookingType) => {
+    const bookingType = trip.bookingType || "program";
+
+    switch (bookingType) {
+      case "custom-trip":
+        return {
+          title: trip.customTripName || trip.plan_trip?.tripName || "Custom Trip",
+          location: `${trip.plan_trip?.destinations?.length || 0} destinations`,
+          duration: trip.plan_trip?.estimatedDuration || 1,
+          imageUrl: "/placeholder.jpg", // Default image for custom trips
+          detailsLink: trip.plan_trip?.documentId ? `/plan-your-trip/${trip.plan_trip.documentId}` : "#",
+        };
+      case "event":
+        return {
+          title: trip.event?.title || "Event",
+          location: trip.event?.location || "Egypt",
+          duration: trip.event?.duration || 1,
+          imageUrl: getImageUrl(trip.event?.images?.[0]?.url),
+          detailsLink: trip.event?.documentId ? `/business-events/${trip.event.documentId}` : "#",
+        };
+      default: // program
+        return {
+          title: trip.program?.title || "Egypt Tour",
+          location: trip.program?.Location || "Egypt",
+          duration: trip.program?.duration || 1,
+          imageUrl: getImageUrl(trip.program?.images?.[0]?.url),
+          detailsLink: trip.program?.title ? `/programs/${encodeURIComponent(trip.program.title)}` : "#",
+        };
+    }
+  };
+
   return (
     <div className="space-y-4">
       {trips.map((trip) => {
-        const imageUrl = getImageUrl(trip.program?.images?.[0]?.url);
-        const endDate = trip.program?.duration
-          ? calculateEndDate(trip.travelDate, trip.program.duration)
-          : trip.travelDate;
+        const details = getTripDetails(trip);
+        const endDate = calculateEndDate(trip.travelDate, details.duration);
         const dateRange = `${formatDate(trip.travelDate)} - ${formatDate(endDate)}`;
+        const bookingTypeBadge = trip.bookingType || "program";
 
         return (
           <Card
@@ -140,20 +153,26 @@ export default function TripsSection() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-0">
               <div className="md:col-span-1 h-48 md:h-auto relative bg-slate-200 dark:bg-slate-800 overflow-hidden">
                 <Image
-                  src={imageUrl}
-                  alt={trip.program?.title || "Trip image"}
+                  src={details.imageUrl}
+                  alt={details.title}
                   fill
                   className="object-cover"
                 />
+                {/* Booking Type Badge */}
+                <div className="absolute top-2 left-2">
+                  <Badge className="bg-black/60 text-white border-none">
+                    {bookingTypeBadge === "custom-trip" ? "Custom Trip" : bookingTypeBadge === "event" ? "Event" : "Program"}
+                  </Badge>
+                </div>
               </div>
               <div className="md:col-span-3">
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <CardTitle className="text-xl">{trip.program?.title || "Egypt Tour"}</CardTitle>
+                      <CardTitle className="text-xl">{details.title}</CardTitle>
                       <CardDescription className="flex items-center gap-2 mt-2">
                         <MapPin className="w-4 h-4" />
-                        {trip.program?.Location || "Egypt"}
+                        {details.location}
                       </CardDescription>
                     </div>
                     <Badge className={getStatusColor(trip.status)}>
@@ -173,7 +192,7 @@ export default function TripsSection() {
                     <div>
                       <p className="text-xs font-semibold text-muted-foreground uppercase">Duration</p>
                       <p className="text-foreground font-semibold mt-1">
-                        {trip.program?.duration || 1} Days
+                        {details.duration} Days
                       </p>
                     </div>
                     <div>
@@ -192,21 +211,18 @@ export default function TripsSection() {
                   </div>
                   <div className="flex gap-2">
                     <Button className="bg-amber-600 hover:bg-amber-700 gap-2" size="sm" asChild>
-                      <a href={`/programs/${encodeURIComponent(trip.program?.title || "")}`}>
+                      <Link href={details.detailsLink}>
                         View Details
                         <ArrowRight className="w-4 h-4" />
-                      </a>
+                      </Link>
                     </Button>
                     {trip.status === "pending" && (
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleCancelBooking(trip.documentId)}
-                        disabled={cancelBookingMutation.isPending}
+                        onClick={() => handleCancelBooking(trip.documentId, trip.createdAt, details.title)}
                       >
-                        {cancelBookingMutation.isPending && bookingToCancel === trip.documentId
-                          ? "Cancelling..."
-                          : "Cancel Booking"}
+                        Cancel Booking
                       </Button>
                     )}
                   </div>
@@ -217,29 +233,16 @@ export default function TripsSection() {
         );
       })}
 
-      {/* Cancel Confirmation Dialog */}
-      <Dialog open={!!bookingToCancel} onOpenChange={() => setBookingToCancel(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Cancel Booking?</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to cancel this booking? This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setBookingToCancel(null)}>
-              No, Keep Booking
-            </Button>
-            <Button
-              onClick={confirmCancelBooking}
-              variant="destructive"
-              disabled={cancelBookingMutation.isPending}
-            >
-              {cancelBookingMutation.isPending ? "Cancelling..." : "Yes, Cancel Booking"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Cancel Booking Dialog with 24-hour policy */}
+      {cancelDialogData && (
+        <BookingCancelDialog
+          isOpen={!!cancelDialogData}
+          onClose={() => setCancelDialogData(null)}
+          bookingId={cancelDialogData.bookingId}
+          bookingCreatedAt={cancelDialogData.bookingCreatedAt}
+          tripName={cancelDialogData.tripName}
+        />
+      )}
     </div>
   )
 }

@@ -35,6 +35,10 @@ import {
 import { getImageUrl } from "@/lib/utils";
 import { BackgroundVideo } from "@/components/ui/background-video";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import Testimonials from "@/components/testimonials";
+import { fetchApprovedTestimonials } from "@/fetch/testimonials";
+import { MessageSquare } from "lucide-react";
+import { InstagramPostItem } from "@/components/instagram-post-item";
 
 // Helper function to get stagger delay class
 const getStaggerDelay = (index: number): string => {
@@ -69,6 +73,14 @@ export default function HomeContent() {
     queryKey: ["homepageData"],
     queryFn: fetchHomePageData,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2,
+  });
+
+  // Fetch testimonials
+  const { data: testimonialsData, isLoading: testimonialsLoading } = useQuery({
+    queryKey: ["approvedTestimonials"],
+    queryFn: () => fetchApprovedTestimonials(6), // Get 6 latest testimonials
+    staleTime: 10 * 60 * 1000, // 10 minutes
     retry: 2,
   });
 
@@ -589,16 +601,80 @@ export default function HomeContent() {
         </div>
       </section>
 
-      {/* Instagram Videos Section */}
-      <section id="instagram" className="py-16 !w-full px-[2em]">
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-16 !w-full px-[2em] bg-secondary/20">
         <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
           <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
-            <Instagram className="h-6 w-6 text-primary" aria-hidden="true" />
+            <MessageSquare className="h-6 w-6 text-primary" aria-hidden="true" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Instagram</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Travelers Say</h2>
           <p className="text-muted-foreground max-w-3xl">
-            Follow our adventures and get inspired by our latest Instagram
-            videos
+            Discover the experiences of our happy travelers who explored Egypt with us
+          </p>
+        </div>
+
+        {testimonialsLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, idx) => (
+              <Card key={idx} className="animate-pulse">
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-muted rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-muted rounded w-3/4" />
+                      <div className="h-3 bg-muted rounded w-1/2" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-3 bg-muted rounded" />
+                    <div className="h-3 bg-muted rounded" />
+                    <div className="h-3 bg-muted rounded w-5/6" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : testimonialsData?.data && testimonialsData.data.length > 0 ? (
+          <>
+            <Testimonials
+              testimonials={testimonialsData.data}
+              showRelatedContent={true}
+              className="animate-on-scroll"
+            />
+            <div className="flex justify-center mt-10">
+              <Link href="/programs">
+                <Button size="lg" variant="outline" className="hover-scale">
+                  Book Your Journey & Share Your Experience
+                  <Star className="ml-2 h-5 w-5 fill-amber-400 text-amber-400" />
+                </Button>
+              </Link>
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground mb-4">
+              Be the first to share your experience!
+            </p>
+            <Link href="/programs">
+              <Button size="lg" className="bg-primary hover:bg-primary/90">
+                Explore Our Programs
+              </Button>
+            </Link>
+          </div>
+        )}
+      </section>
+
+      {/* Instagram Section - Redesigned */}
+      <section id="instagram" className="py-16 !w-full px-[2em] bg-gradient-to-br from-purple-50/50 via-pink-50/30 to-orange-50/50 dark:from-purple-950/10 dark:via-pink-950/10 dark:to-orange-950/10">
+        <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
+          <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 dark:from-purple-900/30 dark:via-pink-900/30 dark:to-orange-900/30 rounded-full mb-4 shadow-lg">
+            <Instagram className="h-7 w-7 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600" aria-hidden="true" />
+          </div>
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
+            Follow Our Journey
+          </h2>
+          <p className="text-muted-foreground max-w-3xl text-lg">
+            Get inspired by our latest Instagram content and join our community of Egypt explorers
           </p>
         </div>
 
@@ -606,70 +682,41 @@ export default function HomeContent() {
           <InstagramSectionSkeleton />
         ) : isError ? (
           <div className="flex flex-col items-center justify-center py-12 space-y-4">
-            <AlertCircle className="h-12 w-12 text-destructive" />
-            <p className="text-muted-foreground">
+            <div className="relative">
+              <div className="absolute inset-0 bg-destructive/20 rounded-full blur-2xl" />
+              <AlertCircle className="relative h-16 w-16 text-destructive" />
+            </div>
+            <p className="text-muted-foreground text-lg">
               Failed to load Instagram posts
             </p>
-            <Button onClick={() => refetch()} variant="outline">
+            <Button onClick={() => refetch()} variant="outline" size="lg" className="hover-scale">
               Try Again
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data?.instagramPosts.map((post, index) => {
-              const blog = post.place_to_go_blogs?.[0];
-              return (
-                <div
-                  key={post.id}
-                  className={`relative group rounded-lg overflow-hidden hover-lift animate-on-scroll ${getStaggerDelay(index)}`}
-                >
-                  <div className="relative aspect-square bg-muted">
-                    <Image
-                      src={getImageUrl(blog?.imageUrl, "/placeholder.svg?height=600&width=800")}
-                      alt={
-                        blog?.title ||
-                        `Instagram post from ZoeHoliday Egypt travel`
-                      }
-                      fill
-                      className="object-cover transition-transform group-hover:scale-110 duration-500"
-                    />
-                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
-                      <a
-                        href={`https://www.instagram.com/p/${post.idPost}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => handleInstagramClick(post.idPost)}
-                      >
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="rounded-full bg-white/20 backdrop-blur-sm border-white/40 text-white hover:bg-white/30 hover:text-white hover-scale"
-                        >
-                          <Play className="h-6 w-6 fill-white" />
-                          <span className="sr-only">Play Instagram video</span>
-                        </Button>
-                      </a>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent text-white">
-                    <p className="font-medium text-sm line-clamp-1">
-                      {blog?.title || "Exploring Egypt #EgyptTravel"}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {data?.instagramPosts.map((item: any, index: number) => (
+              <InstagramPostItem
+                key={item.id}
+                postId={item.idPost}
+                index={index}
+                onPostClick={handleInstagramClick}
+              />
+            ))}
           </div>
         )}
 
-        <div className="flex justify-center mt-10">
+        <div className="flex justify-center mt-12">
           <a
             href="https://www.instagram.com/yourprofile"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button variant="outline" size={"lg"} className="gap-2 text-primary">
-              <Instagram className="h-4 w-4" aria-hidden="true" />
+            <Button
+              size="lg"
+              className="gap-3 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 px-8 py-6 text-lg"
+            >
+              <Instagram className="h-5 w-5" aria-hidden="true" />
               Follow Us on Instagram
             </Button>
           </a>

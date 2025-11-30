@@ -103,6 +103,7 @@ export default function InvoicesSection() {
                 <TableRow className="hover:bg-transparent border-b border-border">
                   <TableHead>Invoice ID</TableHead>
                   <TableHead>Trip Name</TableHead>
+                  <TableHead>Type</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Due Date</TableHead>
@@ -113,64 +114,79 @@ export default function InvoicesSection() {
               <TableBody>
                 {invoices.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                       No invoices found. Start by booking a tour!
                     </TableCell>
                   </TableRow>
                 ) : (
-                  invoices.map((invoice) => (
-                    <TableRow key={invoice.id} className="hover:bg-muted/50 border-b border-border">
-                      <TableCell className="font-semibold text-foreground">
-                        {invoice.invoiceNumber}
-                      </TableCell>
-                      <TableCell className="text-foreground">
-                        {invoice.tripName || "N/A"}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {formatDate(invoice.createdAt)}
-                      </TableCell>
-                      <TableCell className="font-semibold text-foreground">
-                        ${invoice.totalAmount?.toFixed(2)}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {formatDate(invoice.tripDate)}
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={getStatusBadgeClass(invoice.status)}>
-                          {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex gap-2 justify-end">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="gap-2 h-8"
-                            onClick={() => handleViewInvoice(invoice.documentId)}
-                          >
-                            <Eye className="w-4 h-4" />
-                            <span className="hidden sm:inline">View</span>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="gap-2 h-8"
-                            onClick={() => handleDownloadInvoice(invoice)}
-                            disabled={downloadingInvoiceId === invoice.id}
-                          >
-                            {downloadingInvoiceId === invoice.id ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                              <Download className="w-4 h-4" />
-                            )}
-                            <span className="hidden sm:inline">
-                              {downloadingInvoiceId === invoice.id ? "Downloading..." : "Download"}
-                            </span>
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                  invoices.map((invoice) => {
+                    const bookingType = invoice.bookingType || "program";
+                    const typeBadgeClass =
+                      bookingType === "custom-trip"
+                        ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                        : bookingType === "event"
+                        ? "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+                        : "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300";
+
+                    return (
+                      <TableRow key={invoice.id} className="hover:bg-muted/50 border-b border-border">
+                        <TableCell className="font-semibold text-foreground">
+                          {invoice.invoiceNumber}
+                        </TableCell>
+                        <TableCell className="text-foreground">
+                          {invoice.tripName || "N/A"}
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={typeBadgeClass}>
+                            {bookingType === "custom-trip" ? "Custom" : bookingType === "event" ? "Event" : "Program"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {formatDate(invoice.createdAt)}
+                        </TableCell>
+                        <TableCell className="font-semibold text-foreground">
+                          ${invoice.totalAmount?.toFixed(2)}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {formatDate(invoice.tripDate)}
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={getStatusBadgeClass(invoice.status)}>
+                            {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex gap-2 justify-end">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="gap-2 h-8"
+                              onClick={() => handleViewInvoice(invoice.documentId)}
+                            >
+                              <Eye className="w-4 h-4" />
+                              <span className="hidden sm:inline">View</span>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="gap-2 h-8"
+                              onClick={() => handleDownloadInvoice(invoice)}
+                              disabled={downloadingInvoiceId === invoice.id}
+                            >
+                              {downloadingInvoiceId === invoice.id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <Download className="w-4 h-4" />
+                              )}
+                              <span className="hidden sm:inline">
+                                {downloadingInvoiceId === invoice.id ? "Downloading..." : "Download"}
+                              </span>
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
                 )}
               </TableBody>
             </Table>

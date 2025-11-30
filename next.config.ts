@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "th.bing.com" },
       { protocol: "https", hostname: "scontent.cdninstagram.com" },
       { protocol: "https", hostname: "instagram.fcai21-3.fna.fbcdn.net" },
+      {protocol: "https", hostname: "scontent-hbe1-1.cdninstagram.com"},
        {
         protocol: 'http',
         hostname: 'localhost',

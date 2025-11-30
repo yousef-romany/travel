@@ -37,6 +37,7 @@ import Image from "next/image";
 import { getImageUrl } from "@/lib/utils";
 import Link from "next/link";
 import Loading from "@/components/Loading";
+import PaymentComingSoonBanner from "@/components/payment-coming-soon-banner";
 
 interface BookingPageContentProps {
   program: {
@@ -125,6 +126,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
           numberOfTravelers: formData.numberOfTravelers,
           pricePerPerson: program.price,
           totalAmount,
+          bookingType: "program" as const,
           userId: user?.documentId,
           bookingDate: new Date().toISOString(),
         };
@@ -245,7 +247,9 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
         <div className="grid md:grid-cols-3 gap-8">
           {/* Left Column - Form */}
           <div className="md:col-span-2">
-            <Card className="border-primary/20 shadow-xl">
+            <PaymentComingSoonBanner />
+
+            <Card className="border-primary/20 shadow-xl mt-6">
               <CardHeader>
                 <CardTitle>Booking Information</CardTitle>
               </CardHeader>

@@ -8,6 +8,7 @@ import TripsSection from "@/components/trips-section";
 import InvoicesSection from "@/components/invoices-section";
 import WishlistSection from "@/components/wishlist-section";
 import PlannedTripsSection from "@/components/planned-trips-section";
+import TestimonialsSection from "@/components/testimonials-section";
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -24,7 +25,7 @@ export default function UserProfile() {
 
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full animate-slide-up animate-delay-200">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto mb-8 bg-card border border-border shadow-sm p-1 rounded-lg">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 lg:w-auto mb-8 bg-card border border-border shadow-sm p-1 rounded-lg">
             <TabsTrigger
               value="overview"
               className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded transition-smooth"
@@ -55,6 +56,12 @@ export default function UserProfile() {
             >
               Wishlist
             </TabsTrigger>
+            <TabsTrigger
+              value="reviews"
+              className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded transition-smooth"
+            >
+              My Reviews
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6 tab-content-enter">
@@ -75,6 +82,10 @@ export default function UserProfile() {
 
           <TabsContent value="wishlist" className="space-y-6 tab-content-enter">
             <WishlistSection />
+          </TabsContent>
+
+          <TabsContent value="reviews" className="space-y-6 tab-content-enter">
+            {/*<TestimonialsSection />*/}
           </TabsContent>
         </Tabs>
       </div>

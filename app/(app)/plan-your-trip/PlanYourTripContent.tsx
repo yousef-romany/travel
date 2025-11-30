@@ -24,6 +24,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import { getImageUrl } from "@/lib/utils";
+import PlanTripHero from "@/components/plan-trip-hero";
 
 export default function PlanYourTripContent() {
   const router = useRouter();
@@ -115,23 +116,15 @@ export default function PlanYourTripContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
-      {/* Background Decoration */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-primary rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-amber-500 rounded-full blur-[120px]"></div>
-      </div>
+      {/* Hero Section */}
+      <PlanTripHero />
 
       <div className="container mx-auto px-4 py-12 max-w-7xl relative z-10">
-        {/* Hero Section */}
-        <div className="text-center mb-16 animate-slide-up">
-          <div className="inline-block mb-4">
-            <span className="px-4 py-2 bg-primary/10 text-primary text-sm font-semibold rounded-full border border-primary/20">
-              ✨ Custom Trip Planner
-            </span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent px-4">
-            Plan Your Egypt Adventure
-          </h1>
+        {/* Trips Section */}
+        <div className="text-center mb-12 animate-slide-up">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent px-4">
+            Your Custom Itineraries
+          </h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 md:mb-8 leading-relaxed px-4">
             Browse custom itineraries created by fellow travelers or design your own unique journey through the land of pharaohs
           </p>

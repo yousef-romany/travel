@@ -27,7 +27,7 @@ const MapComponent = ({
       zoomControl={false}    
       touchZoom={false}      
       // style={{ height: "0px", width: "350px" }}
-      className="rounded-lg z-[-1] lg:w-[750px] lg:h-[500px] md:w-[550px] md:h-[300px] sm:w-[300px] sm:h-[450]" 
+      className="rounded-lg z-[-1] w-full lg:h-[500px] md:h-[300px] sm:h-[450]" 
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

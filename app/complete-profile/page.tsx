@@ -20,6 +20,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useAuth } from "@/context/AuthContext";
+import { validateCompleteProfile } from "@/lib/validation";
+import { toast } from "sonner";
 
 const MotionButton = motion(Button);
 
@@ -226,6 +228,7 @@ export default function CompleteProfilePage() {
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [countryOpen, setCountryOpen] = useState(false);
   const [countryQuery, setCountryQuery] = useState("");
@@ -256,6 +259,16 @@ export default function CompleteProfilePage() {
   // ---------------- Submit ----------------
   const handleSubmit = async (e: any) => {
   e.preventDefault();
+  setErrors({});
+
+  // Validate form data
+  const validation = validateCompleteProfile(formData);
+  if (!validation.isValid) {
+    setErrors(validation.errors);
+    toast.error("Please fix the errors in the form");
+    return;
+  }
+
   setLoading(true);
 
   try {
@@ -360,6 +373,7 @@ export default function CompleteProfilePage() {
                 value={formData.firstName}
                 onChange={handleChange}
                 required
+                error={errors.firstName}
               />
               <FormField
                 label="Last Name"
@@ -368,6 +382,7 @@ export default function CompleteProfilePage() {
                 value={formData.lastName}
                 onChange={handleChange}
                 required
+                error={errors.lastName}
               />
               <FormField
                 label="Phone Number"
@@ -376,6 +391,7 @@ export default function CompleteProfilePage() {
                 value={formData.phone}
                 onChange={handleChange}
                 required
+                error={errors.phone}
               />
               <FormField
                 type="date"
@@ -384,6 +400,7 @@ export default function CompleteProfilePage() {
                 value={formData.dateOfBirth}
                 onChange={handleChange}
                 required
+                error={errors.dateOfBirth}
               />
               <FormField
                 label="Nationality"
@@ -392,6 +409,7 @@ export default function CompleteProfilePage() {
                 value={formData.nationality}
                 onChange={handleChange}
                 required
+                error={errors.nationality}
               />
             </div>
 
@@ -404,6 +422,7 @@ export default function CompleteProfilePage() {
                 value={formData.passportNumber}
                 onChange={handleChange}
                 required
+                error={errors.passportNumber}
               />
               <FormField
                 type="date"
@@ -412,6 +431,7 @@ export default function CompleteProfilePage() {
                 value={formData.passportExpiry}
                 onChange={handleChange}
                 required
+                error={errors.passportExpiry}
               />
             </div>
 
@@ -424,6 +444,7 @@ export default function CompleteProfilePage() {
                 value={formData.address}
                 onChange={handleChange}
                 required
+                error={errors.address}
               />
               <FormField
                 label="City"
@@ -432,6 +453,7 @@ export default function CompleteProfilePage() {
                 value={formData.city}
                 onChange={handleChange}
                 required
+                error={errors.city}
               />
 
               {/* COUNTRY DROPDOWN */}
@@ -439,7 +461,9 @@ export default function CompleteProfilePage() {
                 <label className="text-sm text-primary">Country</label>
                 <Popover open={countryOpen} onOpenChange={setCountryOpen}>
                   <PopoverTrigger asChild>
-                    <button className="w-full px-4 py-3 rounded-xl text-primary border border-primary/20 text-left">
+                    <button className={`w-full px-4 py-3 rounded-xl text-primary border border-primary/20 text-left ${
+                      errors.country ? "border-destructive" : ""
+                    }`}>
                       {formData.country || "Select country..."}
                     </button>
                   </PopoverTrigger>
@@ -466,6 +490,9 @@ export default function CompleteProfilePage() {
                     </Command>
                   </PopoverContent>
                 </Popover>
+                {errors.country && (
+                  <p className="text-xs text-destructive mt-1">{errors.country}</p>
+                )}
               </div>
 
               <FormField
@@ -475,6 +502,7 @@ export default function CompleteProfilePage() {
                 value={formData.zipCode}
                 onChange={handleChange}
                 required
+                error={errors.zipCode}
               />
             </div>
 
@@ -487,6 +515,7 @@ export default function CompleteProfilePage() {
                 value={formData.emergencyContactName}
                 onChange={handleChange}
                 required
+                error={errors.emergencyContactName}
               />
               <FormField
                 label="Emergency Contact Phone"
@@ -495,6 +524,7 @@ export default function CompleteProfilePage() {
                 value={formData.emergencyContactPhone}
                 onChange={handleChange}
                 required
+                error={errors.emergencyContactPhone}
               />
             </div>
 

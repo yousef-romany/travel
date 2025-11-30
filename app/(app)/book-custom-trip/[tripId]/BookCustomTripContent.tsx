@@ -17,6 +17,7 @@ import { createBooking } from "@/fetch/bookings";
 import { createInvoice } from "@/fetch/invoices";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import PaymentComingSoonBanner from "@/components/payment-coming-soon-banner";
 
 interface BookCustomTripContentProps {
   trip: PlanTripType;
@@ -76,6 +77,7 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
         numberOfTravelers: formData.numberOfTravelers,
         pricePerPerson: trip.totalPrice,
         totalAmount: trip.totalPrice * formData.numberOfTravelers,
+        bookingType: "custom-trip" as const,
         userId: user?.documentId,
       };
 
@@ -124,7 +126,9 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Booking Form - Left Side */}
         <div className="lg:col-span-2">
-          <Card className="border-primary/20 shadow-xl">
+          <PaymentComingSoonBanner />
+
+          <Card className="border-primary/20 shadow-xl mt-6">
             <CardHeader>
               <CardTitle className="text-3xl bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
                 Book Your Custom Trip

@@ -20,6 +20,7 @@ export interface InvoiceType {
   totalAmount: number;
   pdfUrl?: string;
   status: "pending" | "paid" | "cancelled";
+  bookingType?: "program" | "custom-trip" | "event";
   createdAt: string;
   updatedAt: string;
 }
@@ -79,6 +80,7 @@ export const createInvoice = async (invoiceData: {
   pricePerPerson: number;
   totalAmount: number;
   pdfUrl?: string;
+  bookingType?: "program" | "custom-trip" | "event";
   userId?: string;
 }): Promise<{ data: InvoiceType }> => {
   try {
@@ -101,6 +103,7 @@ export const createInvoice = async (invoiceData: {
           pricePerPerson: invoiceData.pricePerPerson,
           totalAmount: invoiceData.totalAmount,
           pdfUrl: invoiceData.pdfUrl,
+          bookingType: invoiceData.bookingType || "program",
           status: "pending",
           user: invoiceData.userId,
         },
@@ -199,6 +202,53 @@ export const updateInvoicePdfUrl = async (
     return response.data;
   } catch (error: any) {
     console.error("Error updating invoice PDF URL:", error);
+    console.error("Error response:", error.response?.data);
+    throw error;
+  }
+};
+
+// Update invoice status by booking ID
+export const updateInvoiceStatusByBookingId = async (
+  bookingId: string,
+  status: "pending" | "paid" | "cancelled"
+): Promise<{ data: InvoiceType }> => {
+  try {
+    const authToken =
+      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+
+    // First, find the invoice by bookingId
+    const findResponse = await axios.get(
+      `${API_URL}/api/invoices?filters[bookingId][$eq]=${bookingId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken || API_TOKEN}`,
+        },
+      }
+    );
+
+    if (!findResponse.data.data || findResponse.data.data.length === 0) {
+      throw new Error("Invoice not found for this booking");
+    }
+
+    const invoice = findResponse.data.data[0];
+
+    // Update the invoice status
+    const response = await axios.put(
+      `${API_URL}/api/invoices/${invoice.documentId}`,
+      {
+        data: { status },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken || API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error updating invoice status by booking ID:", error);
     console.error("Error response:", error.response?.data);
     throw error;
   }

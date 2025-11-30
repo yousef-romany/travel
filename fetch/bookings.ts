@@ -15,6 +15,8 @@ export interface BookingType {
   specialRequests?: string;
   status: "pending" | "confirmed" | "cancelled";
   totalAmount: number;
+  bookingType?: "program" | "custom-trip" | "event";
+  customTripName?: string;
   program?: {
     id: number;
     documentId: string;
@@ -22,6 +24,31 @@ export interface BookingType {
     price: number;
     duration: number;
     Location?: string;
+    images?: Array<{
+      id: number;
+      url: string;
+      name: string;
+    }>;
+  };
+  plan_trip?: {
+    id: number;
+    documentId: string;
+    tripName: string;
+    estimatedDuration: number;
+    totalPrice: number;
+    destinations?: Array<{
+      title: string;
+      location?: string;
+      price: number;
+    }>;
+  };
+  event?: {
+    id: number;
+    documentId: string;
+    title: string;
+    price: number;
+    duration: number;
+    location?: string;
     images?: Array<{
       id: number;
       url: string;
@@ -55,7 +82,7 @@ export const fetchUserBookings = async (
     const authToken =
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
-    let url = `${API_URL}/api/bookings?populate[program][populate]=images&sort=createdAt:desc`;
+    let url = `${API_URL}/api/bookings?populate=*&sort=createdAt:desc`;
 
     // If userId is provided, filter by user
     if (userId) {
@@ -223,8 +250,19 @@ export const cancelBooking = async (
       );
     }
 
-    // Update status to cancelled
-    return await updateBookingStatus(bookingId, "cancelled");
+    // Update booking status to cancelled
+    const bookingResponse = await updateBookingStatus(bookingId, "cancelled");
+
+    // Also update related invoice status to cancelled
+    try {
+      const { updateInvoiceStatusByBookingId } = await import("@/fetch/invoices");
+      await updateInvoiceStatusByBookingId(bookingId, "cancelled");
+    } catch (invoiceError) {
+      console.error("Error updating invoice status:", invoiceError);
+      // Don't throw error here - booking cancellation should succeed even if invoice update fails
+    }
+
+    return bookingResponse;
   } catch (error: any) {
     console.error("Error cancelling booking:", error);
     throw error;

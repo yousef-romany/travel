@@ -28,6 +28,7 @@ import { generateInvoicePDF, downloadInvoicePDF } from "@/lib/pdf-generator";
 import { uploadFileToStrapi } from "@/lib/upload-file";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import PaymentComingSoonBanner from "@/components/payment-coming-soon-banner";
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -61,6 +62,7 @@ interface CreateInvoiceData {
   numberOfTravelers: number;
   pricePerPerson: number;
   totalAmount: number;
+  bookingType?: "program" | "custom-trip" | "event";
   userId?: string;
 }
 
@@ -91,6 +93,7 @@ const generateInvoiceData = (
     numberOfTravelers: formData.numberOfTravelers,
     pricePerPerson: program.price,
     totalAmount,
+    bookingType: "program" as const,
     userId,
   };
 
@@ -327,6 +330,8 @@ export default function BookingDialog({
             Complete the form below to book <strong>{program.title}</strong>
           </DialogDescription>
         </DialogHeader>
+
+        <PaymentComingSoonBanner />
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <FormField id="fullName" label="Full Name" required>
