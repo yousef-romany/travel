@@ -85,7 +85,7 @@ export default function UserProfile() {
           </TabsContent>
 
           <TabsContent value="reviews" className="space-y-6 tab-content-enter">
-            {/*<TestimonialsSection />*/}
+            <TestimonialsSection />
           </TabsContent>
         </Tabs>
       </div>

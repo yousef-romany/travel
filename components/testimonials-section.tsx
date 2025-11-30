@@ -39,10 +39,11 @@ export default function TestimonialsSection() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [testimonialToDelete, setTestimonialToDelete] = useState<string | null>(null);
 
-  const { data: testimonialsData, isLoading } = useQuery({
+  const { data: testimonialsData, isLoading, isError, error } = useQuery({
     queryKey: ["userTestimonials", user?.documentId],
     queryFn: () => fetchUserTestimonials(user?.documentId),
     enabled: !!user?.documentId,
+    retry: 2,
   });
 
   const deleteMutation = useMutation({
@@ -140,6 +141,28 @@ export default function TestimonialsSection() {
     );
   }
 
+  if (isError) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>My Reviews</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-12">
+            <XCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
+            <p className="text-lg font-semibold text-foreground mb-2">Failed to Load Reviews</p>
+            <p className="text-sm text-muted-foreground mb-6">
+              We couldn't fetch your reviews. Please check your connection and try again.
+            </p>
+            <Button onClick={() => window.location.reload()} variant="outline">
+              Retry
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <>
       <Card>
@@ -172,19 +195,24 @@ export default function TestimonialsSection() {
             </div>
           )}
 
-          {testimonials.length === 0 ? (
+          {testimonials.length === 0 && !showAddForm && (
             <div className="text-center py-12">
-              <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground mb-4">You haven't written any reviews yet</p>
+              <MessageSquare className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+              <p className="text-lg font-semibold text-foreground mb-2">No Reviews Yet</p>
+              <p className="text-sm text-muted-foreground mb-2">
+                You haven't written any reviews or testimonials.
+              </p>
               <p className="text-sm text-muted-foreground mb-6">
-                Share your travel experiences to help other travelers!
+                Share your travel experiences to help other travelers plan their trips!
               </p>
               <Button onClick={() => setShowAddForm(true)} className="bg-primary hover:bg-primary/90">
                 <Plus className="w-4 h-4 mr-2" />
                 Write Your First Review
               </Button>
             </div>
-          ) : (
+          )}
+
+          {testimonials.length > 0 && (
             <div className="space-y-4">
               {testimonials.map((testimonial) => (
                 <div

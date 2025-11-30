@@ -12,27 +12,34 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState<instaGramType>({} as instaGramType);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetched, setIsFetched] = useState(false);
 
   useEffect(() => {
-    try {
-      setIsLoading(true);
-      fetch(
-        `https://graph.instagram.com/${idPost}?fields=id,media_type,media_url,caption,permalink,thumbnail_url,timestamp&access_token=${process.env.NEXT_PUBLIC_INSTAGRAM_TOKEN}`
-      )
-        .then((res) => res.json())
-        .then((resData) => {
-          setData(resData);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching Instagram data:", error);
-          setIsLoading(false);
-        });
-    } catch (error) {
-      console.log(error);
-      setIsLoading(false);
+    // Only fetch when component mounts
+    if (!isFetched) {
+      try {
+        setIsLoading(true);
+        fetch(
+          `https://graph.instagram.com/${idPost}?fields=id,media_type,media_url,caption,permalink,thumbnail_url,timestamp&access_token=${process.env.NEXT_PUBLIC_INSTAGRAM_TOKEN}`
+        )
+          .then((res) => res.json())
+          .then((resData) => {
+            setData(resData);
+            setIsLoading(false);
+            setIsFetched(true);
+          })
+          .catch((error) => {
+            console.error("Error fetching Instagram data:", error);
+            setIsLoading(false);
+            setIsFetched(true);
+          });
+      } catch (error) {
+        console.log(error);
+        setIsLoading(false);
+        setIsFetched(true);
+      }
     }
-  }, [idPost]);
+  }, [idPost, isFetched]);
 
   const formattedDate = data?.timestamp ? new Date(data.timestamp as string).toLocaleDateString(
     "en-US",
@@ -121,11 +128,11 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
       {/* Modal */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-300"
+          className="fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center z-[9999] p-2 sm:p-4 animate-in fade-in duration-300"
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="relative max-w-6xl w-full bg-card rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300"
+            className="relative w-full max-w-[95vw] lg:max-w-[85vw] h-[95vh] bg-card rounded-xl lg:rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -153,10 +160,10 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
             </div>
 
             {/* Content */}
-            <div className="flex flex-col lg:flex-row max-h-[calc(100vh-200px)]">
+            <div className="flex flex-col lg:flex-row h-[calc(95vh-73px)]">
               {/* Media */}
-              <div className="relative flex-1 bg-black flex items-center justify-center">
-                <div className="w-full h-full max-h-[600px] lg:max-h-[700px]">
+              <div className="relative flex-1 bg-black w-full flex items-center justify-center overflow-hidden">
+                <div className="w-full h-full max-w-full max-h-full flex items-center justify-center p-2">
                   <MediaContent
                     media_type={data?.media_type}
                     imageUrl={data?.media_url}
@@ -166,7 +173,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
               </div>
 
               {/* Sidebar */}
-              <div className="w-full lg:w-[400px] flex flex-col bg-card">
+              <div className="w-full lg:w-[350px] xl:w-[400px] flex flex-col bg-card flex-shrink-0 border-l border-border">
                 {/* Caption and Info */}
                 <div className="flex-1 overflow-y-auto p-6">
                   <div className="space-y-4">

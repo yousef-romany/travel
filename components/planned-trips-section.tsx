@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Calendar as CalendarIcon, MapPin, Loader2, AlertCircle, Trash2, Eye } from "lucide-react"
 import { useAuth } from "@/context/AuthContext"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { fetchUserPlanTrips, deletePlanTrip, type PlanTripType } from "@/fetch/plan-trip"
+import { fetchUserPlanTrips, deletePlanTrip, type PlanTripType, PlanTripDestination } from "@/fetch/plan-trip"
 import Link from "next/link"
 import { toast } from "sonner"
 import { useState } from "react"
@@ -32,7 +32,7 @@ export default function PlannedTripsSection() {
     staleTime: 2 * 60 * 1000,
   });
 
-  const trips = data?.data || [];
+  const trips: any = data  || [];
 
   const deleteTripMutation = useMutation({
     mutationFn: (tripId: string) => deletePlanTrip(tripId),
@@ -140,7 +140,7 @@ export default function PlannedTripsSection() {
 
   return (
     <div className="space-y-4">
-      {trips.map((trip) => {
+      {trips.map((trip: any) => {
         return (
           <Card
             key={trip.id}
@@ -194,7 +194,7 @@ export default function PlannedTripsSection() {
                 <div className="mb-4 pb-4 border-b border-border">
                   <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">Itinerary:</p>
                   <div className="flex flex-wrap gap-2">
-                    {trip.destinations.slice(0, 4).map((dest, idx) => (
+                    {trip.destinations.slice(0, 4).map((dest: any, idx: any) => (
                       <span
                         key={idx}
                         className="text-xs bg-muted px-2 py-1 rounded"

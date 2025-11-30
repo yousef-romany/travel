@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 import { Volume2, VolumeX } from "lucide-react";
 import { FaArrowUp } from "react-icons/fa6";
@@ -8,10 +9,12 @@ import { FaArrowUp } from "react-icons/fa6";
 export default function BackgroundAudio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const initRef = useRef(false);
+  const hasPlayedRef = useRef(false); // Track if audio has played
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const pathname = usePathname();
 
   // Show scroll button when user scrolls down
   useEffect(() => {
@@ -27,6 +30,7 @@ export default function BackgroundAudio() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
   useEffect(() => {
     // Prevent double initialization in strict mode
     if (initRef.current) return;
@@ -42,37 +46,42 @@ export default function BackgroundAudio() {
     // Show controls after 2 seconds
     setTimeout(() => setShowControls(true), 2000);
 
-    // Attempt to play immediately
-    const playAudio = async () => {
-      try {
-        await audio.play();
-        setIsPlaying(true);
-        console.log("Background audio started automatically");
-      } catch (error) {
-        console.log("Autoplay blocked, will play on first user interaction");
+    // Only autoplay on home page and only once
+    if (pathname === "/" && !hasPlayedRef.current) {
+      hasPlayedRef.current = true;
 
-        // If autoplay is blocked, play on first user interaction
-        const handleFirstInteraction = async () => {
-          try {
-            await audio.play();
-            setIsPlaying(true);
-            console.log("Background audio started after user interaction");
-            // Remove listeners after successful play
-            document.removeEventListener("click", handleFirstInteraction);
-            document.removeEventListener("touchstart", handleFirstInteraction);
-            document.removeEventListener("keydown", handleFirstInteraction);
-          } catch (err) {
-            console.error("Error playing audio:", err);
-          }
-        };
+      // Attempt to play immediately
+      const playAudio = async () => {
+        try {
+          await audio.play();
+          setIsPlaying(true);
+          console.log("Background audio started automatically on home page");
+        } catch (error) {
+          console.log("Autoplay blocked, will play on first user interaction");
 
-        document.addEventListener("click", handleFirstInteraction);
-        document.addEventListener("touchstart", handleFirstInteraction);
-        document.addEventListener("keydown", handleFirstInteraction);
-      }
-    };
+          // If autoplay is blocked, play on first user interaction
+          const handleFirstInteraction = async () => {
+            try {
+              await audio.play();
+              setIsPlaying(true);
+              console.log("Background audio started after user interaction");
+              // Remove listeners after successful play
+              document.removeEventListener("click", handleFirstInteraction);
+              document.removeEventListener("touchstart", handleFirstInteraction);
+              document.removeEventListener("keydown", handleFirstInteraction);
+            } catch (err) {
+              console.error("Error playing audio:", err);
+            }
+          };
 
-    playAudio();
+          document.addEventListener("click", handleFirstInteraction);
+          document.addEventListener("touchstart", handleFirstInteraction);
+          document.addEventListener("keydown", handleFirstInteraction);
+        }
+      };
+
+      playAudio();
+    }
 
     // Cleanup on unmount
     return () => {
@@ -81,7 +90,7 @@ export default function BackgroundAudio() {
         audioRef.current.src = "";
       }
     };
-  }, []);
+  }, [pathname]);
 
   const toggleAudio = () => {
     if (!audioRef.current) return;

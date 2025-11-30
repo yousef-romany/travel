@@ -9,7 +9,7 @@ export default function TrustBadges() {
     <div className="flex flex-wrap items-center justify-center gap-6 py-4">
       {/* TripAdvisor */}
       <Link
-        href="https://www.tripadvisor.com"
+        href="https://www.tripadvisor.com/Attraction_Review-g294205-d33951827-Reviews-ZoeHolidays-Luxor_Nile_River_Valley.html"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-3 px-4 py-3 bg-background border border-border rounded-lg hover:border-primary/50 hover:shadow-md transition-all group"

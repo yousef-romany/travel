@@ -39,6 +39,7 @@ import Testimonials from "@/components/testimonials";
 import { fetchApprovedTestimonials } from "@/fetch/testimonials";
 import { MessageSquare } from "lucide-react";
 import { InstagramPostItem } from "@/components/instagram-post-item";
+import InstagramModal from "@/components/InstagramModal";
 
 // Helper function to get stagger delay class
 const getStaggerDelay = (index: number): string => {
@@ -696,12 +697,9 @@ export default function HomeContent() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {data?.instagramPosts.map((item: any, index: number) => (
-              <InstagramPostItem
-                key={item.id}
-                postId={item.idPost}
-                index={index}
-                onPostClick={handleInstagramClick}
-              />
+              <div key={item.id} className={`animate-on-scroll ${getStaggerDelay(index)}`}>
+                <InstagramModal idPost={item.idPost} />
+              </div>
             ))}
           </div>
         )}

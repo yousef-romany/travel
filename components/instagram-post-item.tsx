@@ -86,83 +86,77 @@ export function InstagramPostItem({ postId, index, onPostClick }: InstagramPostI
 
   return (
     <div
-      className={`relative group rounded-2xl overflow-hidden hover-lift animate-on-scroll ${getStaggerDelay(index)} bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 shadow-lg hover:shadow-2xl transition-all duration-500`}
+      className={`relative group rounded-lg overflow-hidden animate-on-scroll ${getStaggerDelay(index)} bg-white dark:bg-gray-900 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-800`}
     >
+      {/* Instagram Header */}
+      <div className="flex items-center gap-3 p-3 border-b border-gray-200 dark:border-gray-800">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center">
+          <span className="text-white text-xs font-bold">ZH</span>
+        </div>
+        <div className="flex-1">
+          <p className="font-semibold text-sm">ZoeHolidays</p>
+        </div>
+        {postData.media_type === "VIDEO" && (
+          <div className="px-2 py-0.5 rounded bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white text-xs font-semibold">
+            Reel
+          </div>
+        )}
+      </div>
+
       {/* Instagram Post Image/Thumbnail */}
-      <div className="relative aspect-square overflow-hidden">
+      <div className="relative aspect-square overflow-hidden bg-black">
         <Image
           src={getImageUrl(thumbnailUrl, "/placeholder.svg?height=600&width=600")}
           alt={shortCaption}
           fill
-          className="object-cover transition-all duration-700 group-hover:scale-110"
+          className="object-contain"
         />
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300" />
-
-        {/* Play Button Overlay for Videos */}
+        {/* Play Button Overlay for Videos - Always visible */}
         {postData.media_type === "VIDEO" && (
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl animate-pulse" />
-              <Button
-                variant="outline"
-                size="icon"
-                className="relative w-16 h-16 rounded-full bg-white/90 backdrop-blur-md border-2 border-white/60 text-primary hover:bg-white hover:scale-110 hover:border-primary shadow-2xl transition-all duration-300"
-              >
-                <Play className="h-8 w-8 fill-current" />
-              </Button>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm border-2 border-white flex items-center justify-center">
+              <Play className="h-7 w-7 fill-white text-white ml-0.5" />
             </div>
           </div>
         )}
-
-        {/* Top Badge - Media Type */}
-        <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
-          <div className="px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white text-xs font-semibold shadow-lg backdrop-blur-sm flex items-center gap-1.5">
-            {postData.media_type === "VIDEO" ? (
-              <>
-                <Play className="h-3 w-3 fill-white" />
-                <span>Reel</span>
-              </>
-            ) : (
-              <>
-                <Heart className="h-3 w-3 fill-white" />
-                <span>Post</span>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Bottom Content */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-          {/* Caption */}
-          <p className="text-white font-medium text-sm mb-3 line-clamp-2 drop-shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-            {shortCaption}
-          </p>
-
-          {/* Action Buttons */}
-          <div className="flex items-center justify-between gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200">
-            <a
-              href={postData.permalink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => onPostClick(postData.id)}
-              className="flex-1"
-            >
-              <Button
-                size="sm"
-                className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-              >
-                <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
-                View on Instagram
-              </Button>
-            </a>
-          </div>
-        </div>
       </div>
 
-      {/* Decorative Corner Gradient */}
-      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/20 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      {/* Instagram Actions */}
+      <div className="p-3 space-y-3">
+        {/* Action Icons */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Heart className="h-6 w-6 hover:text-red-500 cursor-pointer transition-colors" />
+            <MessageCircle className="h-6 w-6 hover:text-blue-500 cursor-pointer transition-colors" />
+          </div>
+        </div>
+
+        {/* Caption */}
+        <div>
+          <p className="text-sm line-clamp-2">
+            <span className="font-semibold">ZoeHolidays</span>{" "}
+            <span className="text-gray-700 dark:text-gray-300">{shortCaption}</span>
+          </p>
+        </div>
+
+        {/* View on Instagram Button */}
+        <a
+          href={postData.permalink}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => onPostClick(postData.id)}
+          className="block"
+        >
+          <Button
+            size="sm"
+            className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white border-0 shadow-md hover:shadow-lg transition-all"
+          >
+            <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
+            View on Instagram
+          </Button>
+        </a>
+      </div>
     </div>
   );
 }

@@ -243,6 +243,32 @@ export default function ProgramContent({ title }: { title: string }) {
                   </div>
                 )}
 
+                {/* Departure Location */}
+                {program.departureLocation && (
+                  <div className="flex items-start gap-3">
+                    <div className="p-2.5 bg-indigo-500/10 rounded-xl">
+                      <MapPin className="w-6 h-6 text-indigo-600" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground font-semibold">Departure Location</p>
+                      <span className="text-sm font-medium text-foreground">{program.departureLocation}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Return Location */}
+                {program.returnLocation && (
+                  <div className="flex items-start gap-3">
+                    <div className="p-2.5 bg-purple-500/10 rounded-xl">
+                      <MapPin className="w-6 h-6 text-purple-600" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground font-semibold">Return Location</p>
+                      <span className="text-sm font-medium text-foreground">{program.returnLocation}</span>
+                    </div>
+                  </div>
+                )}
+
                 <div className="pt-4 border-t border-primary/10">
                   <p className="text-xs text-muted-foreground font-semibold mb-2">Total Price</p>
                   <div className="flex items-baseline gap-2">

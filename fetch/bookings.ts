@@ -82,7 +82,8 @@ export const fetchUserBookings = async (
     const authToken =
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
-    let url = `${API_URL}/api/bookings?populate=*&sort=createdAt:desc`;
+    // Build URL with simple populate - just the relations
+    let url = `${API_URL}/api/bookings?populate[0]=program&populate[1]=plan_trip&populate[2]=event&populate[3]=user&sort=createdAt:desc`;
 
     // If userId is provided, filter by user
     if (userId) {

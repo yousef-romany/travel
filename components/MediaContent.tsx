@@ -35,28 +35,30 @@ export default function MediaContent({
 
   if (media_type === "VIDEO") {
     return (
-      <div className={`relative group cursor-pointer`} onClick={togglePlay}>
+      <div className={`relative group cursor-pointer w-full h-full max-w-full max-h-full`} onClick={togglePlay}>
         <video
           ref={videoRef}
-          className="w-full h-full object-cover"
+          className="w-full h-full max-w-full max-h-full object-contain"
           poster={thumbnail_url}
           playsInline
+          controls={false}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
+          src={imageUrl}
         >
           <source src={imageUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
         {/* Custom play/pause overlay - no sound control */}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity group-hover:bg-black/30">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity group-hover:bg-black/30 pointer-events-none">
           {!isPlaying && (
-            <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center transition-transform hover:scale-110">
+            <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center transition-transform hover:scale-110 shadow-xl">
               <Play className="w-8 h-8 text-black ml-1" fill="currentColor" />
             </div>
           )}
           {isPlaying && (
-            <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">
               <Pause className="w-8 h-8 text-black" fill="currentColor" />
             </div>
           )}
@@ -66,12 +68,14 @@ export default function MediaContent({
   }
 
   return (
-    <Image
-      src={imageUrl || "/placeholder.svg"}
-      alt="Instagram content"
-      width={800}
-      height={600}
-      className={`object-cover`}
-    />
+    <div className="relative w-full h-full max-w-full max-h-full flex items-center justify-center">
+      <Image
+        src={imageUrl || "/placeholder.svg"}
+        alt="Instagram content"
+        width={1200}
+        height={1200}
+        className="object-contain max-w-full max-h-full"
+      />
+    </div>
   );
 }

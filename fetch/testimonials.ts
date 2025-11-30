@@ -66,7 +66,7 @@ export const fetchProgramTestimonials = async (
   programId: string
 ): Promise<TestimonialsResponse> => {
   try {
-    const url = `${API_URL}/api/testimonials?filters[program][documentId][$eq]=${programId}&filters[isApproved][$eq]=true&populate[user][populate]=profile&sort=createdAt:desc`;
+    const url = `${API_URL}/api/testimonials?filters[program][documentId][$eq]=${programId}&filters[isApproved][$eq]=true&populate[user][populate][0]=profile&sort=createdAt:desc`;
 
     const response = await axios.get(url, {
       headers: {
@@ -86,7 +86,7 @@ export const fetchEventTestimonials = async (
   eventId: string
 ): Promise<TestimonialsResponse> => {
   try {
-    const url = `${API_URL}/api/testimonials?filters[event][documentId][$eq]=${eventId}&filters[isApproved][$eq]=true&populate[user][populate]=profile&sort=createdAt:desc`;
+    const url = `${API_URL}/api/testimonials?filters[event][documentId][$eq]=${eventId}&filters[isApproved][$eq]=true&populate[user][populate][0]=profile&sort=createdAt:desc`;
 
     const response = await axios.get(url, {
       headers: {
@@ -106,7 +106,7 @@ export const fetchCustomTripTestimonials = async (
   tripId: string
 ): Promise<TestimonialsResponse> => {
   try {
-    const url = `${API_URL}/api/testimonials?filters[plan_trip][documentId][$eq]=${tripId}&filters[isApproved][$eq]=true&populate[user][populate]=profile&sort=createdAt:desc`;
+    const url = `${API_URL}/api/testimonials?filters[plan_trip][documentId][$eq]=${tripId}&filters[isApproved][$eq]=true&populate[user][populate][0]=profile&sort=createdAt:desc`;
 
     const response = await axios.get(url, {
       headers: {
@@ -126,7 +126,7 @@ export const fetchPlaceTestimonials = async (
   placeId: string
 ): Promise<TestimonialsResponse> => {
   try {
-    const url = `${API_URL}/api/testimonials?filters[place][documentId][$eq]=${placeId}&filters[isApproved][$eq]=true&populate[user][populate]=profile&sort=createdAt:desc`;
+    const url = `${API_URL}/api/testimonials?filters[place][documentId][$eq]=${placeId}&filters[isApproved][$eq]=true&populate[user][populate][0]=profile&sort=createdAt:desc`;
 
     const response = await axios.get(url, {
       headers: {
@@ -146,7 +146,7 @@ export const fetchApprovedTestimonials = async (
   limit: number = 10
 ): Promise<TestimonialsResponse> => {
   try {
-    const url = `${API_URL}/api/testimonials?filters[isApproved][$eq]=true&populate[user][populate]=profile&populate=program&populate=event&populate=plan_trip&populate=place&sort=createdAt:desc&pagination[pageSize]=${limit}`;
+    const url = `${API_URL}/api/testimonials?filters[isApproved][$eq]=true&populate[user][populate][0]=profile&populate[program][fields][0]=title&populate[event][fields][0]=title&populate[plan_trip][fields][0]=tripName&populate[place][fields][0]=title&sort=createdAt:desc&pagination[pageSize]=${limit}`;
 
     const response = await axios.get(url, {
       headers: {
@@ -169,7 +169,7 @@ export const fetchUserTestimonials = async (
     const authToken =
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
-    let url = `${API_URL}/api/testimonials?populate[user][populate]=profile&populate=program&populate=event&populate=plan_trip&populate=place&sort=createdAt:desc`;
+    let url = `${API_URL}/api/testimonials?populate[user][populate][0]=profile&populate[program][fields][0]=title&populate[event][fields][0]=title&populate[plan_trip][fields][0]=tripName&populate[place][fields][0]=title&sort=createdAt:desc`;
 
     if (userId) {
       url += `&filters[user][documentId][$eq]=${userId}`;
