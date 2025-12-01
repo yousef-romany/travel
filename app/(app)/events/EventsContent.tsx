@@ -13,6 +13,7 @@ import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
 import Link from "next/link";
 import { format } from "date-fns";
+import { trackCardClick, trackTabChange, trackButtonClick } from "@/lib/analytics";
 
 const eventTypeIcons: Record<string, any> = {
   live_blog: Sparkles,
@@ -46,6 +47,20 @@ export default function EventsContent() {
         pageSize: 50,
       }),
   });
+
+  const handleTabChange = (tab: string) => {
+    trackTabChange(tab, "Events Page");
+    setActiveTab(tab);
+  };
+
+  const handleEventClick = (event: Event) => {
+    trackCardClick("Event", event.title, event.documentId || event.id.toString());
+  };
+
+  const handleViewAllClick = () => {
+    trackButtonClick("View All Events", "Events Page - Empty State", "/events");
+    setActiveTab("all");
+  };
 
   if (isLoading) return <Loading />;
 
@@ -108,7 +123,7 @@ export default function EventsContent() {
             <p className="text-sm text-muted-foreground mb-4">
               There are no {activeTab !== "all" ? activeTab : ""} events available at the moment
             </p>
-            <Button onClick={() => setActiveTab("all")}>View All Events</Button>
+            <Button onClick={handleViewAllClick}>View All Events</Button>
           </CardContent>
         </Card>
       ) : (
@@ -200,7 +215,7 @@ export default function EventsContent() {
                   )}
 
                   {/* Action Button */}
-                  <Link href={`/events/${event.slug || event.documentId}`}>
+                  <Link href={`/events/${event.slug || event.documentId}`} onClick={() => handleEventClick(event)}>
                     <Button className="w-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 mt-4">
                       <Eye className="w-4 h-4 mr-2" />
                       View Details

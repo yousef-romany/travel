@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Star, Clock, MapPin, Check, X, Info } from "lucide-react";
+import { Star, Clock, MapPin, Check, X, Info, MessageSquare } from "lucide-react";
 import { fetchProgramOne } from "@/fetch/programs";
 import { dataTypeCardTravel, ContentStep, Media } from "@/type/programs";
 import { useQuery } from "@tanstack/react-query";
@@ -18,6 +18,14 @@ import TourPackageSchema from "@/components/seo/TourPackageSchema";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { trackProgramView, trackBookingClick } from "@/lib/analytics";
 import { getImageUrl } from "@/lib/utils";
+import ReviewDialog from "@/components/review/ReviewDialog";
+import { fetchProgramTestimonials } from "@/fetch/testimonials";
+import AverageRating from "@/components/review/AverageRating";
+import TestimonialsWithFilters from "@/components/review/TestimonialsWithFilters";
+import ReviewStatistics from "@/components/review/ReviewStatistics";
+import FeaturedReviews from "@/components/review/FeaturedReviews";
+import ReviewAnalytics from "@/components/review/ReviewAnalytics";
+import ExportReviews from "@/components/review/ExportReviews";
 
 export default function ProgramContent({ title }: { title: string }) {
   const { data, error, isLoading } = useQuery<
@@ -29,6 +37,14 @@ export default function ProgramContent({ title }: { title: string }) {
   });
 
   const [activeImage, setActiveImage] = useState(0);
+
+  // Fetch testimonials for this program
+  const { data: testimonialsData, refetch: refetchTestimonials } = useQuery({
+    queryKey: ["programTestimonials", data?.data?.at(0)?.documentId],
+    queryFn: () => fetchProgramTestimonials(data?.data?.at(0)?.documentId || ""),
+    enabled: !!data?.data?.at(0)?.documentId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   // Track program view when data loads
   useEffect(() => {
@@ -515,6 +531,93 @@ export default function ProgramContent({ title }: { title: string }) {
                 </li>
               ))}
             </ul>
+          </div>
+        </div>
+
+        {/* Testimonials & Reviews Section */}
+        <div className="mt-12 animate-slide-up animate-delay-600">
+          <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-2xl p-8 shadow-xl">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-gradient-to-r from-primary to-amber-600 rounded-xl">
+                  <MessageSquare className="h-7 w-7 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                    Reviews & Testimonials
+                  </h2>
+                  <p className="text-muted-foreground text-sm">
+                    {testimonialsData?.data && testimonialsData.data.length > 0
+                      ? `${testimonialsData.data.length} ${testimonialsData.data.length === 1 ? 'review' : 'reviews'} from our travelers`
+                      : "Be the first to share your experience"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                {testimonialsData?.data && testimonialsData.data.length > 0 && (
+                  <ExportReviews
+                    testimonials={testimonialsData.data}
+                    programTitle={program?.title}
+                  />
+                )}
+                <ReviewDialog
+                  type="program"
+                  relatedId={program?.documentId}
+                  relatedTitle={program?.title}
+                  onSuccess={() => refetchTestimonials()}
+                  triggerButton={
+                    <Button className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 gap-2">
+                      <MessageSquare className="w-4 h-4" />
+                      Write a Review
+                    </Button>
+                  }
+                />
+              </div>
+            </div>
+
+            {testimonialsData?.data && testimonialsData.data.length > 0 ? (
+              <>
+                {/* Statistics */}
+                <ReviewStatistics testimonials={testimonialsData.data} className="mb-8" />
+
+                {/* Average Rating & Distribution */}
+                <AverageRating testimonials={testimonialsData.data} className="mb-8" />
+
+                {/* Featured Reviews */}
+                {testimonialsData.data.length >= 3 && (
+                  <FeaturedReviews testimonials={testimonialsData.data} className="mb-8" />
+                )}
+
+                {/* All Reviews with Filters */}
+                <div className="pt-6 border-t border-primary/10">
+                  <h3 className="text-xl font-bold mb-6">All Reviews</h3>
+                  <TestimonialsWithFilters
+                    testimonials={testimonialsData.data}
+                    showRelatedContent={false}
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-12 border-2 border-dashed border-primary/20 rounded-xl bg-muted/20">
+                <MessageSquare className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">No reviews yet</h3>
+                <p className="text-muted-foreground mb-6">
+                  Be the first to share your experience with this amazing program!
+                </p>
+                <ReviewDialog
+                  type="program"
+                  relatedId={program?.documentId}
+                  relatedTitle={program?.title}
+                  onSuccess={() => refetchTestimonials()}
+                  triggerButton={
+                    <Button size="lg" className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 gap-2">
+                      <Star className="w-5 h-5" />
+                      Write the First Review
+                    </Button>
+                  }
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

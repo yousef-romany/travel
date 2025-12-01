@@ -40,7 +40,7 @@ export default function TrustBadges() {
 
       {/* Viator */}
       <Link
-        href="https://www.viator.com"
+        href="https://www.viator.com/tours/Luxor/Explore-Luxor-Ultimate-Day-Tour-of-East-and-West-Bank-Highlights/d826-5610207P1"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-3 px-4 py-3 bg-background border border-border rounded-lg hover:border-primary/50 hover:shadow-md transition-all group"

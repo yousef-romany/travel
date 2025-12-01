@@ -92,7 +92,7 @@ export const fetchUserBookings = async (
 
     const response = await axios.get(url, {
       headers: {
-        Authorization: `Bearer ${authToken || API_TOKEN}`,
+        Authorization: `Bearer ${API_TOKEN || authToken}`,
       },
     });
 

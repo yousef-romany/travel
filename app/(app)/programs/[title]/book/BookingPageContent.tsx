@@ -38,6 +38,7 @@ import { getImageUrl } from "@/lib/utils";
 import Link from "next/link";
 import Loading from "@/components/Loading";
 import PaymentComingSoonBanner from "@/components/payment-coming-soon-banner";
+import { trackWhatsAppBooking } from "@/lib/analytics";
 
 interface BookingPageContentProps {
   program: {
@@ -152,6 +153,10 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
         const whatsAppMessage = `🎉 *New Booking Request*\n\n📋 *Booking Details:*\n• Tour: ${program.title}\n• Customer: ${formData.fullName}\n• Email: ${formData.email}\n• Phone: ${formData.phone}\n• Number of Travelers: ${formData.numberOfTravelers}\n• Travel Date: ${format(formData.travelDate!, "PPP")}\n• Total Amount: $${totalAmount.toFixed(2)}\n\n${formData.specialRequests ? `📝 *Special Requests:*\n${formData.specialRequests}\n` : ""}Please confirm this booking as soon as possible.\n\nThank you! 🙏`;
 
         const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsAppMessage)}`;
+
+        // Track WhatsApp booking
+        trackWhatsAppBooking(program.title, program.documentId, totalAmount);
+
         window.open(whatsappUrl, "_blank");
 
         toast.success("Booking submitted successfully! Invoice PDF downloaded.");

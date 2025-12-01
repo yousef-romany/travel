@@ -124,7 +124,7 @@ export default function TripsSection() {
           location: trip.event?.location || "Egypt",
           duration: trip.event?.duration || 1,
           imageUrl: getImageUrl(trip.event?.images?.[0]?.url),
-          detailsLink: trip.event?.documentId ? `/business-events/${trip.event.documentId}` : "#",
+          detailsLink: trip.event?.documentId ? `/events/${trip.event.documentId}` : "#",
         };
       default: // program
         return {

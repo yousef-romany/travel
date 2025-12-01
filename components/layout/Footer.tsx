@@ -26,6 +26,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
 import TrustBadges from "@/components/trust-badges";
+import { trackNewsletterSignup, trackFooterLink, trackSocialShare, trackExternalLink } from "@/lib/analytics";
 
 export default function Footer() {
   const { theme } = useTheme();
@@ -81,6 +82,7 @@ export default function Footer() {
       const data = await response.json();
 
       if (response.ok) {
+        trackNewsletterSignup(email);
         toast.success(data.message || "Successfully subscribed to our newsletter!");
         setEmail("");
       } else {
@@ -92,6 +94,14 @@ export default function Footer() {
     } finally {
       setIsSubscribing(false);
     }
+  };
+
+  const handleFooterLinkClick = (linkText: string, destination: string) => {
+    trackFooterLink(linkText, destination);
+  };
+
+  const handleSocialClick = (platform: string) => {
+    trackSocialShare(platform, "footer_social", platform);
   };
 
   const currentYear = new Date().getFullYear();
@@ -349,40 +359,34 @@ export default function Footer() {
               <h4 className="text-sm font-semibold mb-3">Follow Our Journey</h4>
               <div className="flex gap-3">
                 <Link
-                  href="https://facebook.com/zoeholiday"
+                  href="https://www.facebook.com/profile.php?id=61584281130159"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 bg-primary/10 hover:bg-primary hover:text-primary-foreground rounded-full transition-all duration-300 hover:scale-110"
                   aria-label="Follow us on Facebook"
+                  onClick={() => handleSocialClick("Facebook")}
                 >
                   <Facebook className="w-5 h-5" />
                 </Link>
                 <Link
-                  href="https://instagram.com/zoeholiday"
+                  href="https://www.instagram.com/zoeholidayss1/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 bg-primary/10 hover:bg-primary hover:text-primary-foreground rounded-full transition-all duration-300 hover:scale-110"
                   aria-label="Follow us on Instagram"
+                  onClick={() => handleSocialClick("Instagram")}
                 >
                   <Instagram className="w-5 h-5" />
                 </Link>
                 <Link
-                  href="https://youtube.com/@zoeholiday"
+                  href="https://www.youtube.com/@ZoeHolidays"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 bg-primary/10 hover:bg-primary hover:text-primary-foreground rounded-full transition-all duration-300 hover:scale-110"
                   aria-label="Subscribe to our YouTube channel"
+                  onClick={() => handleSocialClick("YouTube")}
                 >
                   <Youtube className="w-5 h-5" />
-                </Link>
-                <Link
-                  href="https://twitter.com/zoeholiday"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 bg-primary/10 hover:bg-primary hover:text-primary-foreground rounded-full transition-all duration-300 hover:scale-110"
-                  aria-label="Follow us on Twitter"
-                >
-                  <Twitter className="w-5 h-5" />
                 </Link>
               </div>
             </div>
@@ -419,7 +423,7 @@ export default function Footer() {
         </div>
 
         {/* Payment & Security */}
-        <div className="border-t border-border pt-8 mb-8">
+        {/* <div className="border-t border-border pt-8 mb-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
               <h4 className="text-sm font-semibold mb-2">Secure Payment Methods</h4>
@@ -442,7 +446,7 @@ export default function Footer() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Bottom Bar */}

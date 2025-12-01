@@ -14,6 +14,7 @@ import { ProgramCarousel } from "./ProgramCarousel";
 import { memo } from "react";
 import { useRouter } from "next/navigation";
 import WishlistButton from "@/components/WishlistButton";
+import { trackCardClick, trackExploreClick } from "@/lib/analytics";
 
 interface MediaFormat {
   url: string;
@@ -58,6 +59,12 @@ const CardTravels = ({
   rating,
 }: CardTravelsProps) => {
   const router = useRouter();
+
+  const handleViewDetails = () => {
+    trackCardClick("Travel Program", title, documentId);
+    trackExploreClick("Program", title, documentId);
+    router.push(`/programs/${documentId}`);
+  };
 
   return (
     <Card className="group flex flex-col overflow-hidden border-primary/20 bg-gradient-to-br from-card to-card/50 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/50 transition-all duration-300">
@@ -118,7 +125,7 @@ const CardTravels = ({
       <CardFooter className="pt-0 pb-5">
         <Button
           className="w-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-lg transition-all duration-200 hover:scale-105 font-semibold"
-          onClick={() => router.push(`/programs/${documentId}`)}
+          onClick={handleViewDetails}
         >
           View Details
         </Button>

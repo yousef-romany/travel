@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { trackAuth } from "@/lib/analytics";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -42,6 +43,7 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
+      trackAuth("login");
       // 🚀 AuthContext بالفعل بيعمل redirect
     } catch (err: any) {
       const msg = err.message || "Invalid email or password";

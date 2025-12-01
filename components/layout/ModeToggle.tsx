@@ -13,9 +13,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Moon, Sun } from "lucide-react";
 import { memo } from "react";
+import { trackThemeToggle } from "@/lib/analytics";
 
 const ModeToggle = () => {
   const { setTheme } = useTheme();
+
+  const handleThemeChange = (theme: "light" | "dark" | "system") => {
+    setTheme(theme);
+    if (theme !== "system") {
+      trackThemeToggle(theme);
+    }
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,19 +36,19 @@ const ModeToggle = () => {
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           className="!text-primary"
-          onClick={() => setTheme("light")}
+          onClick={() => handleThemeChange("light")}
         >
           Light
         </DropdownMenuItem>
         <DropdownMenuItem
           className="!text-primary"
-          onClick={() => setTheme("dark")}
+          onClick={() => handleThemeChange("dark")}
         >
           Dark
         </DropdownMenuItem>
         <DropdownMenuItem
           className="!text-primary"
-          onClick={() => setTheme("system")}
+          onClick={() => handleThemeChange("system")}
         >
           System
         </DropdownMenuItem>

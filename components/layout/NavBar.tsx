@@ -17,6 +17,7 @@ import logo from "@/public/logo.png";
 import logoLight from "@/public/logoLight.png";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/context/AuthContext";
+import { trackButtonClick, trackNavigation } from "@/lib/analytics";
 
 const NavBar = () => {
   const { theme } = useTheme();
@@ -37,8 +38,17 @@ const NavBar = () => {
     return <p>Error: {error.message}</p>;
 
   const handleWishlistClick = () => {
+    trackButtonClick("Wishlist", "NavBar", user ? "/wishlist" : "/login");
     if (!user) return (window.location.href = "/login");
     window.location.href = "/wishlist";
+  };
+
+  const handleLogoClick = () => {
+    trackNavigation("Logo", "/");
+  };
+
+  const handleLoginClick = () => {
+    trackButtonClick("Login", "NavBar", "/login");
   };
 
   return (
@@ -54,7 +64,7 @@ const NavBar = () => {
       </div>
 
       {/* Logo */}
-      <Link href={"/"} className="flex-shrink-0 mx-auto lg:mx-0">
+      <Link href={"/"} className="flex-shrink-0 mx-auto lg:mx-0" onClick={handleLogoClick}>
         {theme == "light" ? (
           <Image
             src={logoLight}
@@ -104,7 +114,7 @@ const NavBar = () => {
 
         {/* Auth Section */}
         {!user ? (
-          <Link href="/login">
+          <Link href="/login" onClick={handleLoginClick}>
             <Button className="px-3 sm:px-4 md:px-6 text-sm sm:text-base h-9 sm:h-10">
               Login
             </Button>

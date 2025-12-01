@@ -31,6 +31,9 @@ import {
 import {
   trackProgramView,
   trackSocialShare,
+  trackHeroCTA,
+  trackButtonClick,
+  trackCardClick,
 } from "@/lib/analytics";
 import { getImageUrl } from "@/lib/utils";
 import { BackgroundVideo } from "@/components/ui/background-video";
@@ -126,24 +129,28 @@ export default function HomeContent() {
         <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
       </div>
       {/* Hero Section with Background Video */}
-      <section className="relative h-[90vh] overflow-hidden !w-full">
+      <section className="relative h-[95.5vh] sm:h-[95.5vh] overflow-hidden !w-full">
         <BackgroundVideo
           videos={HERO_VIDEOS}
           priority
           autoRotate
           rotationInterval={30000}
         >
-          <div className="flex flex-col items-center justify-center text-white text-center p-4 h-full">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg animate-slide-up">
+          <div className="flex flex-col items-center justify-center text-white text-center px-4 sm:px-6 md:px-8 h-full">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 drop-shadow-lg animate-slide-up max-w-4xl">
               Discover the Magic of Egypt
             </h1>
-            <p className="text-xl md:text-2xl max-w-3xl mb-8 drop-shadow-md animate-slide-up animate-delay-200">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl mb-6 sm:mb-8 drop-shadow-md animate-slide-up animate-delay-200 px-2">
               Experience 7,000 years of history, culture, and adventure
             </p>
-            <Link href="/programs" className="animate-slide-up animate-delay-400">
+            <Link
+              href="/programs"
+              className="animate-slide-up animate-delay-400"
+              onClick={() => trackHeroCTA("Start Your Journey", "/programs")}
+            >
               <Button
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-shadow"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all hover:scale-105 text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6"
               >
                 Start Your Journey
               </Button>
@@ -153,13 +160,13 @@ export default function HomeContent() {
       </section>
 
       {/* Be Inspired Section */}
-      <section id="be-inspired" className="py-16 !w-full px-[2em]">
-        <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
-          <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
-            <Heart className="h-6 w-6 text-primary" aria-hidden="true" />
+      <section id="be-inspired" className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12">
+        <div className="flex flex-col items-center mb-8 sm:mb-12 text-center animate-on-scroll">
+          <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-3 sm:mb-4">
+            <Heart className="h-5 w-5 sm:h-6 sm:w-6 text-primary" aria-hidden="true" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Be Inspired</h2>
-          <p className="text-muted-foreground max-w-3xl">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 px-4">Be Inspired</h2>
+          <p className="text-sm sm:text-base text-muted-foreground max-w-xs sm:max-w-2xl md:max-w-3xl px-4">
             Discover the wonders that await you in the land of the pharaohs
           </p>
         </div>
@@ -177,13 +184,13 @@ export default function HomeContent() {
             </Button>
           </div>
         ) : (
-          <div className="!w-full grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="!w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {data?.inspireBlogs.map((blog, index) => {
               const image = blog.image;
 
               return (
                 <Card key={blog.id} className={`overflow-hidden group hover-lift animate-on-scroll ${getStaggerDelay(index)}`}>
-                  <div className="relative h-64 overflow-hidden">
+                  <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden">
                     <Image
                       src={getImageUrl(image)}
                       alt={`${blog.title} - Egypt travel inspiration`}
@@ -191,23 +198,24 @@ export default function HomeContent() {
                       className="object-cover transition-transform group-hover:scale-110 duration-500"
                     />
                     {image?.formats?.large?.url}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                      <h3 className="text-xl font-bold text-white">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4 sm:p-6">
+                      <h3 className="text-base sm:text-lg md:text-xl font-bold text-white line-clamp-2">
                         {blog.title}
                       </h3>
                     </div>
                   </div>
-                  <CardContent className="p-6">
-                    <p className="text-muted-foreground mb-4 line-clamp-2">
+                  <CardContent className="p-4 sm:p-6">
+                    <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4 line-clamp-2">
                       {blog.details?.replace(/<[^>]*>/g, "") ||
                         "Explore amazing destinations"}
                     </p>
                     <Link
                       href={`/inspiration/${blog.documentId}`}
-                      className="text-primary font-medium hover:underline inline-flex items-center transition-smooth"
+                      className="text-primary font-medium hover:underline inline-flex items-center transition-smooth text-sm sm:text-base"
+                      onClick={() => trackCardClick("Inspiration Blog", blog.title, blog.documentId, index)}
                     >
                       Learn more{" "}
-                      <Compass className="ml-2 h-4 w-4" aria-hidden="true" />
+                      <Compass className="ml-2 h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                     </Link>
                   </CardContent>
                 </Card>
@@ -216,9 +224,9 @@ export default function HomeContent() {
           </div>
         )}
 
-        <div className="flex justify-center mt-10">
-          <Link href="/inspiration">
-            <Button variant="outline" size={"lg"} className="gap-2 text-primary">
+        <div className="flex justify-center mt-8 sm:mt-10">
+          <Link href="/inspiration" onClick={() => trackButtonClick("View All Stories", "Home Page - Be Inspired", "/inspiration")}>
+            <Button variant="outline" size={"lg"} className="gap-2 text-sm sm:text-base">
               View All Stories
               <Heart className="h-4 w-4" aria-hidden="true" />
             </Button>
@@ -229,17 +237,17 @@ export default function HomeContent() {
       {/* Places to Go Section */}
       <section
         id="places-to-go"
-        className="py-16 bg-secondary/50 !w-full px-[2em]"
+        className="py-12 sm:py-16 lg:py-20 bg-secondary/50 !w-full px-4 sm:px-6 md:px-8 lg:px-12"
       >
         <div className="">
-          <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
-            <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
-              <MapPin className="h-6 w-6 text-primary" aria-hidden="true" />
+          <div className="flex flex-col items-center mb-8 sm:mb-12 text-center animate-on-scroll">
+            <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-3 sm:mb-4">
+              <MapPin className="h-5 w-5 sm:h-6 sm:w-6 text-primary" aria-hidden="true" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 px-4">
               Places to Go
             </h2>
-            <p className="text-muted-foreground max-w-3xl">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xs sm:max-w-2xl md:max-w-3xl px-4">
               Explore the most iconic destinations across Egypt
             </p>
           </div>
@@ -257,10 +265,10 @@ export default function HomeContent() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {data?.placeCategories.map((category, index) => (
                 <Card key={category.id} className={`overflow-hidden group hover-lift animate-on-scroll ${getStaggerDelay(index)}`}>
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative h-48 sm:h-52 md:h-56 overflow-hidden">
                     <Image
                       src={getImageUrl(category.image)}
                       alt={`${category.categoryName} - Egypt destination`}
@@ -268,15 +276,18 @@ export default function HomeContent() {
                       className="object-cover transition-transform group-hover:scale-110 duration-500"
                     />
                   </div>
-                  <CardContent className="p-4 text-center">
-                    <h3 className="font-bold text-lg mb-1">
+                  <CardContent className="p-4 sm:p-5 text-center">
+                    <h3 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">
                       {category.categoryName}
                     </h3>
-                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-3 line-clamp-2">
                       {category.description || "Discover amazing places"}
                     </p>
-                    <Link href={`/placesTogo/${category.categoryName}`}>
-                      <Button variant="outline" size="sm" className="!w-full transition-smooth hover-glow">
+                    <Link
+                      href={`/placesTogo/${category.categoryName}`}
+                      onClick={() => trackCardClick("Place Category", category.categoryName, category.documentId || category.id.toString(), index)}
+                    >
+                      <Button variant="outline" size="sm" className="!w-full transition-smooth hover-glow text-xs sm:text-sm">
                         Explore
                       </Button>
                     </Link>
@@ -286,9 +297,9 @@ export default function HomeContent() {
             </div>
           )}
 
-          <div className="flex justify-center mt-10">
-            <Link href="/placesTogo">
-              <Button variant="outline" size={"lg"} className="gap-2 text-primary">
+          <div className="flex justify-center mt-8 sm:mt-10">
+            <Link href="/placesTogo" onClick={() => trackButtonClick("View All Destinations", "Home Page - Places to Go", "/placesTogo")}>
+              <Button variant="outline" size={"lg"} className="gap-2 text-sm sm:text-base">
                 View All Destinations
                 <Compass className="h-4 w-4" aria-hidden="true" />
               </Button>
@@ -298,41 +309,41 @@ export default function HomeContent() {
       </section>
 
       {/* Plan Your Trip Section */}
-      <section id="plan-your-trip" className="py-16 !w-full px-[2em]">
-        <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
-          <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
-            <Calendar className="h-6 w-6 text-primary" aria-hidden="true" />
+      <section id="plan-your-trip" className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12">
+        <div className="flex flex-col items-center mb-8 sm:mb-12 text-center animate-on-scroll">
+          <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-3 sm:mb-4">
+            <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-primary" aria-hidden="true" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 px-4">
             Plan Your Trip
           </h2>
-          <p className="text-muted-foreground max-w-3xl">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-xs sm:max-w-2xl md:max-w-3xl px-4">
             Everything you need to create your perfect Egyptian adventure
           </p>
         </div>
 
         <Tabs defaultValue="when-to-go" className="!w-full max-w-4xl mx-auto">
-          <TabsList className="grid grid-cols-1 sm:grid-cols-4 h-auto">
-            <TabsTrigger value="when-to-go" className="py-3 text-primary">
+          <TabsList className="grid grid-cols-2 sm:grid-cols-4 h-auto gap-1 sm:gap-0">
+            <TabsTrigger value="when-to-go" className="py-2 sm:py-3 text-xs sm:text-sm">
               When to Go
             </TabsTrigger>
-            <TabsTrigger value="getting-around" className="py-3">
+            <TabsTrigger value="getting-around" className="py-2 sm:py-3 text-xs sm:text-sm">
               Getting Around
             </TabsTrigger>
-            <TabsTrigger value="accommodation" className="py-3">
+            <TabsTrigger value="accommodation" className="py-2 sm:py-3 text-xs sm:text-sm">
               Accommodation
             </TabsTrigger>
-            <TabsTrigger value="travel-tips" className="py-3">
+            <TabsTrigger value="travel-tips" className="py-2 sm:py-3 text-xs sm:text-sm">
               Travel Tips
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="when-to-go" className="mt-6">
-            <div className="grid md:grid-cols-2 gap-8">
+          <TabsContent value="when-to-go" className="mt-4 sm:mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
               <div>
-                <h3 className="text-xl font-bold mb-4">
+                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">
                   Best Time to Visit Egypt
                 </h3>
-                <p className="text-muted-foreground mb-4">
+                <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4">
                   The best time to visit Egypt is from October to April, when
                   temperatures are cooler. December and January are peak tourist
                   months.
@@ -340,31 +351,31 @@ export default function HomeContent() {
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
                     <div className="bg-accent p-1.5 rounded-full text-primary mt-0.5">
-                      <Star className="h-4 w-4" aria-hidden="true" />
+                      <Star className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                     </div>
                     <div>
-                      <h4 className="font-medium">October to April</h4>
-                      <p className="text-sm text-muted-foreground">
+                      <h4 className="font-medium text-sm sm:text-base">October to April</h4>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         Ideal weather for sightseeing
                       </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="bg-accent p-1.5 rounded-full text-primary mt-0.5">
-                      <Star className="h-4 w-4" aria-hidden="true" />
+                      <Star className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                     </div>
                     <div>
-                      <h4 className="font-medium">May to September</h4>
-                      <p className="text-sm text-muted-foreground">
+                      <h4 className="font-medium text-sm sm:text-base">May to September</h4>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         Hot weather, good for beach destinations
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="relative h-64 rounded-lg overflow-hidden">
+              <div className="relative h-48 sm:h-56 md:h-64 rounded-lg overflow-hidden">
                 <Image
-                  src="/placeholder.svg?height=600&width=800"
+                  src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1764619947/Pyramids_Egypt_wobalm.jpg"
                   alt="Best seasons to visit Egypt"
                   fill
                   className="object-cover"
@@ -409,7 +420,7 @@ export default function HomeContent() {
               </div>
               <div className="relative h-64 rounded-lg overflow-hidden">
                 <Image
-                  src="/placeholder.svg?height=600&width=800"
+                  src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1738112213/young-tourist-wearing-blue-turban-standing-near-great-sphinx-giza-cairo-egypt_1_sjvfoh.jpg"
                   alt="Transportation options in Egypt"
                   fill
                   className="object-cover"
@@ -452,7 +463,7 @@ export default function HomeContent() {
               </div>
               <div className="relative h-64 rounded-lg overflow-hidden">
                 <Image
-                  src="/placeholder.svg?height=600&width=800"
+                  src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1764620275/dsasad_cujjah.jpg"
                   alt="Egypt accommodation options"
                   fill
                   className="object-cover"
@@ -497,7 +508,7 @@ export default function HomeContent() {
               </div>
               <div className="relative h-64 rounded-lg overflow-hidden">
                 <Image
-                  src="/placeholder.svg?height=600&width=800"
+                  src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1764620401/__jduupn.jpg"
                   alt="Egypt travel tips and advice"
                   fill
                   className="object-cover"
@@ -509,14 +520,14 @@ export default function HomeContent() {
       </section>
 
       {/* Programs Section */}
-      <section id="programs" className="py-16 bg-secondary/50 !w-full px-[2em]">
+      <section id="programs" className="py-12 sm:py-16 lg:py-20 bg-secondary/50 !w-full px-4 sm:px-6 md:px-8 lg:px-12">
         <div className="">
-          <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
-            <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
-              <Ticket className="h-6 w-6 text-primary" aria-hidden="true" />
+          <div className="flex flex-col items-center mb-8 sm:mb-12 text-center animate-on-scroll">
+            <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-3 sm:mb-4">
+              <Ticket className="h-5 w-5 sm:h-6 sm:w-6 text-primary" aria-hidden="true" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Programs</h2>
-            <p className="text-muted-foreground max-w-3xl">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 px-4">Programs</h2>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xs sm:max-w-2xl md:max-w-3xl px-4">
               Curated experiences to make your Egyptian journey unforgettable
             </p>
           </div>
@@ -532,48 +543,48 @@ export default function HomeContent() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               {data?.programs.map((program, index) => (
                 <Card key={program.id} className={`overflow-hidden group hover-lift animate-on-scroll ${getStaggerDelay(index)}`}>
                   <div className="relative">
-                    <div className="relative h-56 overflow-hidden">
+                    <div className="relative h-48 sm:h-52 md:h-56 overflow-hidden">
                       {program.images && (
                         <ProgramCarousel images={program.images as []} />
                       )}
                     </div>
                     {index === 0 && (
-                      <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium animate-pulse">
+                      <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-primary text-primary-foreground px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium animate-pulse">
                         Best Seller
                       </div>
                     )}
                     {index === 2 && (
-                      <div className="absolute top-4 right-4 bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-sm font-medium animate-pulse">
+                      <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-destructive text-destructive-foreground px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium animate-pulse">
                         New
                       </div>
                     )}
                   </div>
-                  <CardContent className="p-6">
-                    <div className="flex justify-between items-center mb-3">
-                      <h3 className="font-bold text-lg line-clamp-1">
+                  <CardContent className="p-4 sm:p-5 md:p-6">
+                    <div className="flex justify-between items-center mb-2 sm:mb-3">
+                      <h3 className="font-bold text-base sm:text-lg line-clamp-1">
                         {program.title}
                       </h3>
                       <div className="flex items-center gap-1">
                         <Star
-                          className="h-4 w-4 fill-primary text-primary"
+                          className="h-3 w-3 sm:h-4 sm:w-4 fill-primary text-primary"
                           aria-hidden="true"
                         />
-                        <span className="font-medium">{program.rating}</span>
+                        <span className="font-medium text-sm sm:text-base">{program.rating}</span>
                       </div>
                     </div>
-                    <p className="text-muted-foreground mb-4 line-clamp-2">
+                    <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4 line-clamp-2">
                       {program.descraption || program.overView}
                     </p>
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
                       <div>
-                        <span className="text-lg font-bold">
+                        <span className="text-base sm:text-lg font-bold">
                           ${program.price}
                         </span>
-                        <span className="text-muted-foreground text-sm">
+                        <span className="text-muted-foreground text-xs sm:text-sm">
                           {" "}
                           / person
                         </span>
@@ -582,7 +593,7 @@ export default function HomeContent() {
                         href={`/programs/${encodeURIComponent(program.title)}`}
                         onClick={() => handleProgramClick(program)}
                       >
-                        <Button className="transition-smooth hover-glow">View Details</Button>
+                        <Button className="transition-smooth hover-glow text-sm sm:text-base w-full sm:w-auto">View Details</Button>
                       </Link>
                     </div>
                   </CardContent>
@@ -591,9 +602,9 @@ export default function HomeContent() {
             </div>
           )}
 
-          <div className="flex justify-center mt-10">
-            <Link href="/programs">
-              <Button variant="outline" size={"lg"} className="gap-2 text-primary">
+          <div className="flex justify-center mt-8 sm:mt-10">
+            <Link href="/programs" onClick={() => trackButtonClick("View All Programs", "Home Page - Programs", "/programs")}>
+              <Button variant="outline" size={"lg"} className="gap-2 text-sm sm:text-base">
                 View All Programs
                 <Ticket className="h-4 w-4" aria-hidden="true" />
               </Button>
@@ -603,78 +614,99 @@ export default function HomeContent() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-16 !w-full px-[2em] bg-secondary/20">
-        <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
-          <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
-            <MessageSquare className="h-6 w-6 text-primary" aria-hidden="true" />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Travelers Say</h2>
-          <p className="text-muted-foreground max-w-3xl">
-            Discover the experiences of our happy travelers who explored Egypt with us
-          </p>
+      <section id="testimonials" className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12 relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-30 pointer-events-none">
+          <div className="absolute top-1/4 right-10 w-64 h-64 bg-amber-400 rounded-full blur-[100px]"></div>
+          <div className="absolute bottom-1/4 left-10 w-64 h-64 bg-primary rounded-full blur-[100px]"></div>
         </div>
 
-        {testimonialsLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, idx) => (
-              <Card key={idx} className="animate-pulse">
-                <CardContent className="p-6 space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-muted rounded-full" />
-                    <div className="flex-1 space-y-2">
-                      <div className="h-4 bg-muted rounded w-3/4" />
-                      <div className="h-3 bg-muted rounded w-1/2" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="h-3 bg-muted rounded" />
-                    <div className="h-3 bg-muted rounded" />
-                    <div className="h-3 bg-muted rounded w-5/6" />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+        <div className="relative z-10">
+          <div className="flex flex-col items-center mb-8 sm:mb-12 text-center animate-on-scroll">
+            <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-amber-100 via-primary/10 to-amber-100 dark:from-amber-900/30 dark:via-primary/20 dark:to-amber-900/30 rounded-full mb-4 shadow-lg border border-primary/20">
+              <MessageSquare className="h-6 w-6 sm:h-7 sm:w-7 text-primary" aria-hidden="true" />
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 px-4 bg-gradient-to-r from-primary via-amber-600 to-primary bg-clip-text text-transparent">
+              What Our Travelers Say
+            </h2>
+            <p className="text-base sm:text-lg text-muted-foreground max-w-xs sm:max-w-2xl md:max-w-3xl px-4 leading-relaxed">
+              Real stories from real travelers who experienced the magic of Egypt with us.
+              Your journey could be next!
+            </p>
           </div>
-        ) : testimonialsData?.data && testimonialsData.data.length > 0 ? (
-          <>
-            <Testimonials
-              testimonials={testimonialsData.data}
-              showRelatedContent={true}
-              className="animate-on-scroll"
-            />
-            <div className="flex justify-center mt-10">
-              <Link href="/programs">
-                <Button size="lg" variant="outline" className="hover-scale">
-                  Book Your Journey & Share Your Experience
-                  <Star className="ml-2 h-5 w-5 fill-amber-400 text-amber-400" />
+        </div>
+
+        <div className="relative z-10">
+          {testimonialsLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <Card key={idx} className="animate-pulse border-primary/20">
+                  <CardContent className="p-4 sm:p-6 space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-muted rounded-full" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-3 sm:h-4 bg-muted rounded w-3/4" />
+                        <div className="h-2 sm:h-3 bg-muted rounded w-1/2" />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-2 sm:h-3 bg-muted rounded" />
+                      <div className="h-2 sm:h-3 bg-muted rounded" />
+                      <div className="h-2 sm:h-3 bg-muted rounded w-5/6" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : testimonialsData?.data && testimonialsData.data.length > 0 ? (
+            <>
+              <Testimonials
+                testimonials={testimonialsData.data}
+                showRelatedContent={true}
+                className="animate-on-scroll"
+              />
+              <div className="flex flex-col items-center gap-4 mt-10 sm:mt-12 animate-on-scroll">
+                <div className="text-center max-w-2xl">
+                  <p className="text-base sm:text-lg text-muted-foreground mb-6">
+                    Have you experienced one of our programs? Share your story and help others discover the magic of Egypt!
+                  </p>
+                </div>
+                <Link href="/programs" onClick={() => trackButtonClick("Book Your Journey", "Home Page - Testimonials", "/programs")}>
+                  <Button size="lg" className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 gap-2 text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6">
+                    Book Your Journey & Share Your Experience
+                    <Star className="h-4 w-4 sm:h-5 sm:w-5 fill-white" />
+                  </Button>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-12 sm:py-16 border-2 border-dashed border-primary/20 rounded-2xl bg-gradient-to-br from-muted/30 to-muted/10">
+              <MessageSquare className="w-16 h-16 sm:w-20 sm:h-20 text-muted-foreground/30 mx-auto mb-6" />
+              <h3 className="text-xl sm:text-2xl font-bold mb-3">No reviews yet</h3>
+              <p className="text-sm sm:text-base text-muted-foreground mb-8 max-w-md mx-auto px-4">
+                Be the first to share your experience! Book one of our amazing programs and tell the world about your Egyptian adventure.
+              </p>
+              <Link href="/programs" onClick={() => trackButtonClick("Explore Our Programs", "Home Page - Testimonials Empty", "/programs")}>
+                <Button size="lg" className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-xl text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6">
+                  Explore Our Programs
+                  <Star className="ml-2 h-4 w-4 sm:h-5 sm:w-5 fill-white" />
                 </Button>
               </Link>
             </div>
-          </>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4">
-              Be the first to share your experience!
-            </p>
-            <Link href="/programs">
-              <Button size="lg" className="bg-primary hover:bg-primary/90">
-                Explore Our Programs
-              </Button>
-            </Link>
-          </div>
-        )}
+          )}
+        </div>
       </section>
 
       {/* Instagram Section - Redesigned */}
-      <section id="instagram" className="py-16 !w-full px-[2em] bg-gradient-to-br from-purple-50/50 via-pink-50/30 to-orange-50/50 dark:from-purple-950/10 dark:via-pink-950/10 dark:to-orange-950/10">
-        <div className="flex flex-col items-center mb-12 text-center animate-on-scroll">
-          <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 dark:from-purple-900/30 dark:via-pink-900/30 dark:to-orange-900/30 rounded-full mb-4 shadow-lg">
-            <Instagram className="h-7 w-7 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600" aria-hidden="true" />
+      <section id="instagram" className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12 bg-gradient-to-br from-purple-50/50 via-pink-50/30 to-orange-50/50 dark:from-purple-950/10 dark:via-pink-950/10 dark:to-orange-950/10">
+        <div className="flex flex-col items-center mb-8 sm:mb-12 text-center animate-on-scroll">
+          <div className="inline-flex items-center justify-center p-2 sm:p-3 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 dark:from-purple-900/30 dark:via-pink-900/30 dark:to-orange-900/30 rounded-full mb-3 sm:mb-4 shadow-lg">
+            <Instagram className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600" aria-hidden="true" />
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent px-4">
             Follow Our Journey
           </h2>
-          <p className="text-muted-foreground max-w-3xl text-lg">
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-xs sm:max-w-2xl md:max-w-3xl px-4">
             Get inspired by our latest Instagram content and join our community of Egypt explorers
           </p>
         </div>
@@ -695,7 +727,7 @@ export default function HomeContent() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-7xl mx-auto">
             {data?.instagramPosts.map((item: any, index: number) => (
               <div key={item.id} className={`animate-on-scroll ${getStaggerDelay(index)}`}>
                 <InstagramModal idPost={item.idPost} />
@@ -704,17 +736,18 @@ export default function HomeContent() {
           </div>
         )}
 
-        <div className="flex justify-center mt-12">
+        <div className="flex justify-center mt-8 sm:mt-10 md:mt-12">
           <a
             href="https://www.instagram.com/yourprofile"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackSocialShare("instagram", "instagram_follow", "home_page")}
           >
             <Button
               size="lg"
-              className="gap-3 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 px-8 py-6 text-lg"
+              className="gap-2 sm:gap-3 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 px-6 sm:px-8 py-4 sm:py-5 md:py-6 text-sm sm:text-base md:text-lg"
             >
-              <Instagram className="h-5 w-5" aria-hidden="true" />
+              <Instagram className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
               Follow Us on Instagram
             </Button>
           </a>

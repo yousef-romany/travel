@@ -51,7 +51,7 @@ export default function AboutContent() {
   return (
     <div className="flex flex-col min-h-screen !w-full">
       {/* Hero Section with Background Video */}
-      <section className="relative h-[90vh] overflow-hidden">
+      <section className="relative h-[95.5vh] sm:h-[95.5vh] overflow-hidden">
         <BackgroundVideo
           videos={ABOUT_HERO_VIDEOS}
           priority
@@ -94,7 +94,7 @@ export default function AboutContent() {
             </div>
             <div className="relative h-[400px] rounded-lg overflow-hidden animate-on-scroll animate-delay-200">
               <OptimizedImage
-                src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1737648000/egyptian_pyramids_and_sphinx.jpg"
+                src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1764621217/21_Beautiful_Places_to_Travel_in_Egypt_You_Must__f6bw1r.jpg"
                 alt="Egyptian Pyramids and Sphinx at Giza"
                 className="object-cover hover-scale"
               />
@@ -153,7 +153,7 @@ export default function AboutContent() {
         </section>
 
         {/* Team Section */}
-        <section className="!w-full py-16 px-[2em]">
+        {/* <section className="!w-full py-16 px-[2em]">
           <h2 className="text-3xl font-bold mb-12 text-center font-display animate-on-scroll">
             Meet Our Team
           </h2>
@@ -173,7 +173,7 @@ export default function AboutContent() {
               </Card>
             ))}
           </div>
-        </section>
+        </section> */}
       </main>
       {/* CTA Section */}
       <section className="py-16 bg-secondary text-primary-foreground">

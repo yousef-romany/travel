@@ -1,5 +1,471 @@
-TODO:  ☐ Create Testimonials collection type in Strapi
-TODO:  ☐ Update Booking schema with bookingType field
-TODO:  ☐ Update Invoice schema with bookingType and pdfUrl
-TODO:  ☐ Update User model with testimonials relation
-TODO:  ☐ Set up Testimonials API permissions
+solve this problem please :
+[2025-12-01 20:42:25.459] http: GET /api/bookings?populate%5Bprogram%5D%5Bpopulate%5D%5Bimages%5D=true&populate%5Bplan_trip%5D%5Bpopulate%5D%5Bdestinations%5D=true&populate%5Bevent%5D%5Bpopulate%5D%5Bimages%5D=true&populate%5Buser%5D=true&sort=createdAt%3Adesc&filters%5Buser%5D%5BdocumentId%5D%5B%24eq%5D=hix5tvqparu75pw2iqnwym24 (15 ms) 400
+[2025-12-01 20:42:27.480] http: GET /api/bookings?populate%5Bprogram%5D%5Bpopulate%5D%5Bimages%5D=true&populate%5Bplan_trip%5D%5Bpopulate%5D%5Bdestinations%5D=true&populate%5Bevent%5D%5Bpopulate%5D%5Bimages%5D=true&populate%5Buser%5D=true&sort=createdAt%3Adesc&filters%5Buser%5D%5BdocumentId%5D%5B%24eq%5D=hix5tvqparu75pw2iqnwym24 (13 ms) 400
+
+slove this also mobile :
+"42
+Performance
+92
+Accessibility
+57
+Best Practices
+92
+SEO
+There were issues affecting this run of Lighthouse:
+
+Chrome extensions negatively affected this page's load performance. Try auditing the page in incognito mode or from a Chrome profile without extensions.
+42
+FCP
++4
+LCP
++0
+TBT
++12
+CLS
++25
+SI
++1
+Performance
+Values are estimated and may vary. The performance score is calculated directly from these metrics.See calculator.
+0–49
+50–89
+90–100
+Final Screenshot
+
+Metrics
+Expand view
+First Contentful Paint
+3.4 s
+Largest Contentful Paint
+30.0 s
+Total Blocking Time
+730 ms
+Cumulative Layout Shift
+0
+Speed Index
+10.5 s
+View Treemap
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Later this year, insights will replace performance audits. Learn more and provide feedback here.
+Go back to audits
+Show audits relevant to:
+
+All
+
+FCP
+
+LCP
+
+TBT
+Insights
+Render blocking requests Est savings of 760 ms
+Network dependency tree
+Use efficient cache lifetimes Est savings of 29 KiB
+Improve image delivery Est savings of 99 KiB
+Legacy JavaScript Est savings of 11 KiB
+LCP breakdown
+3rd parties
+These insights are also available in the Chrome DevTools Performance Panel - record a trace to view more detailed information.
+Diagnostics
+Minimize main-thread work 8.6 s
+Reduce JavaScript execution time 2.5 s
+Reduce unused CSS Est savings of 15 KiB
+Reduce unused JavaScript Est savings of 222 KiB
+Avoid serving legacy JavaScript to modern browsers Est savings of 11 KiB
+Defer offscreen images Est savings of 3 KiB
+Avoid enormous network payloads Total size was 17,680 KiB
+Avoid long main-thread tasks 19 long tasks found
+User Timing marks and measures 14 user timings
+More information about the performance of your application. These numbers don't directly affect the Performance score.
+Passed audits (17)
+Show
+92
+Accessibility
+These checks highlight opportunities to improve the accessibility of your web app. Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so manual testing is also encouraged.
+Names and labels
+Buttons do not have an accessible name
+These are opportunities to improve the semantics of the controls in your application. This may enhance the experience for users of assistive technology, like a screen reader.
+Best practices
+Touch targets do not have sufficient size or spacing.
+These items highlight common accessibility best practices.
+Additional items to manually check (10)
+Show
+These items address areas which an automated testing tool cannot cover. Learn more in our guide on conducting an accessibility review.
+Passed audits (27)
+Show
+Not applicable (28)
+Show
+57
+Best Practices
+Trust and Safety
+Does not use HTTPS 1 insecure request found
+Ensure CSP is effective against XSS attacks
+Use a strong HSTS policy
+Ensure proper origin isolation with COOP
+Mitigate clickjacking with XFO or CSP
+Mitigate DOM-based XSS with Trusted Types
+General
+Uses third-party cookies 22 cookies found
+Browser errors were logged to the console
+Issues were logged in the Issues panel in Chrome Devtools
+Passed audits (11)
+Show
+Not applicable (2)
+Show
+92
+SEO
+These checks ensure that your page is following basic search engine optimization advice. There are many additional factors Lighthouse does not score here that may affect your search ranking, including performance on Core Web Vitals. Learn more about Google Search Essentials.
+Content Best Practices
+Links do not have descriptive text 3 links found
+Format your HTML in a way that enables crawlers to better understand your app’s content.
+Additional items to manually check (1)
+Show
+Run these additional validators on your site to check additional SEO best practices.
+Passed audits (9)
+Show
+Captured at Dec 1, 2025, 8:48 PM GMT+2
+Emulated Moto G Power with Lighthouse 12.8.2
+Single page session"
+
+
+desktop "snapshot:
+
+3/4
+Performance
+27/29
+Accessibility
+5/5
+Best Practices
+5/6
+SEO
+0–49
+50–89
+90–100
+3/4
+Performance
+Later this year, insights will replace performance audits. Learn more and provide feedback here.
+Go back to audits
+Diagnostics
+Images were larger than their displayed size
+More information about the performance of your application. These numbers don't directly affect the Performance score.
+Passed audits (3)
+Show
+27/29
+Accessibility
+These checks highlight opportunities to improve the accessibility of your web app. Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so manual testing is also encouraged.
+Names and labels
+Buttons do not have an accessible name
+These are opportunities to improve the semantics of the controls in your application. This may enhance the experience for users of assistive technology, like a screen reader.
+Best practices
+Touch targets do not have sufficient size or spacing.
+These items highlight common accessibility best practices.
+Additional items to manually check (10)
+Show
+These items address areas which an automated testing tool cannot cover. Learn more in our guide on conducting an accessibility review.
+Passed audits (27)
+Show
+Not applicable (28)
+Show
+5/5
+Best Practices
+Passed audits (5)
+Show
+Not applicable (2)
+Show
+5/6
+SEO
+These checks ensure that your page is following basic search engine optimization advice. There are many additional factors Lighthouse does not score here that may affect your search ranking, including performance on Core Web Vitals. Learn more about Google Search Essentials.
+Content Best Practices
+Links do not have descriptive text 3 links found
+Descriptive link text helps search engines understand your content. Learn how to make links more accessible.
+Link destination
+Link Text
+/inspiration/vjml1ub4vrrmm5jeg677m7p9(localhost)
+Learn more
+/inspiration/dg2dcuwub1c2bjn4kjercs8v(localhost)
+Learn more
+/inspiration/k7frjqufhrso7ulb12pswef8(localhost)
+Learn more
+
+"
+
+desktop timespane "
+
+17/22
+Performance
+4/8
+Best Practices
+17/22
+Performance
+0–49
+50–89
+90–100
+Final Screenshot
+
+Metrics
+Expand view
+Total Blocking Time
+50 ms
+Cumulative Layout Shift
+0.004
+Interaction to Next Paint
+80 ms
+View Treemap
+View Trace
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Later this year, insights will replace performance audits. Learn more and provide feedback here.
+Go back to audits
+Show audits relevant to:
+
+All
+
+TBT
+
+CLS
+
+INP
+Insights
+Layout shift culprits
+INP breakdown
+3rd parties
+These insights are also available in the Chrome DevTools Performance Panel - record a trace to view more detailed information.
+Diagnostics
+Reduce JavaScript execution time 1.7 s
+Consider reducing the time spent parsing, compiling, and executing JS. You may find delivering smaller JS payloads helps with this. Learn how to reduce Javascript execution time.TBT
+URL
+Total CPU Time
+Script Evaluation
+Script Parse
+localhost 1st party
+10,258 ms	1,700 ms	0 ms
+http://localhost:3000
+6,552 ms
+333 ms
+0 ms
+…chunks/2576-b2c6b0680395b4ac.js(localhost)
+1,844 ms
+244 ms
+0 ms
+…chunks/4bd1b696-229181a8e3825ed5.js(localhost)
+1,220 ms
+634 ms
+0 ms
+…chunks/1517-0a200dc39ffc834c.js(localhost)
+588 ms
+449 ms
+0 ms
+…chunks/webpack-8487c1ad93b8f0fa.js(localhost)
+54 ms
+40 ms
+0 ms
+Unattributable
+768 ms	22 ms	0 ms
+Unattributable
+768 ms
+22 ms
+0 ms
+Minimize main-thread work 11.4 s
+Consider reducing the time spent parsing, compiling and executing JS. You may find delivering smaller JS payloads helps with this. Learn how to minimize main-thread workTBT
+Category
+Time Spent
+Other
+5,696 ms
+Script Evaluation
+1,976 ms
+Style & Layout
+1,967 ms
+Rendering
+1,656 ms
+Garbage Collection
+88 ms
+Script Parsing & Compilation
+40 ms
+Parse HTML & CSS
+7 ms
+Reduce unused JavaScript Est savings of 223 KiB
+Avoid long main-thread tasks 1 long task found
+More information about the performance of your application. These numbers don't directly affect the Performance score.
+Passed audits (23)
+Show
+4/8
+Best Practices
+General
+Uses third-party cookies 1 cookie found
+Third-party cookies may be blocked in some contexts. Learn more about preparing for third-party cookie restrictions.
+Name
+URL
+Google Analytics analytics 
+ar_debug
+/g/collect?v=…(www.google-analytics.com)
+Browser errors were logged to the console
+Errors logged to the console indicate unresolved problems. They can come from network request failures and other browser concerns. Learn more about this errors in console diagnostic audit
+Source
+Description
+Unattributable
+/build/installHook.js:1:174821
+(fmkadmapgofadopljbjfkapdkoienihi)
+Error fetching bookings: [object $]
+/build/installHook.js:1:174821
+(fmkadmapgofadopljbjfkapdkoienihi)
+Error fetching user testimonials: [object $]
+/build/installHook.js:1:174821
+(fmkadmapgofadopljbjfkapdkoienihi)
+Error fetching user trips: [object $]
+localhost 1st party
+/api/bookings?populate=*&sort=tripDate:desc:1:0(localhost)
+Failed to load resource: the server responded with a status of 400 (Bad Request)
+/api/bookings?populate[0]=…:1:0(localhost)
+Failed to load resource: the server responded with a status of 400 (Bad Request)
+/api/testimonials?populate[user][populate][0]=…:1:0(localhost)
+Failed to load resource: the server responded with a status of 403 (Forbidden)
+/default-avatar.png:1:0(localhost)
+Failed to load resource: the server responded with a status of 404 (Not Found)
+Issues were logged in the Issues panel in Chrome Devtools
+Issues logged to the Issues panel in Chrome Devtools indicate unresolved problems. They can come from network request failures, insufficient security controls, and other browser concerns. Open up the Issues panel in Chrome DevTools for more details on each issue.
+Issue type
+Cookie
+/g/collect?v=…(www.google-analytics.com)
+/g/collect?v=…(www.google-analytics.com)
+Missing source maps for large first-party JavaScript
+Source maps translate minified code to the original source code. This helps developers debug in production. In addition, Lighthouse is able to provide further insights. Consider deploying source maps to take advantage of these benefits. Learn more about source maps.
+URL
+Map URL
+localhost 1st party
+…chunks/7506-978e2d38d713ea94.js(localhost)
+Large JavaScript file is missing a source map
+"
+
+
+desktop
+"65
+Performance
+92
+Accessibility
+59
+Best Practices
+92
+SEO
+65
+FCP
++5
+LCP
++4
+TBT
++30
+CLS
++25
+SI
++2
+Performance
+Values are estimated and may vary. The performance score is calculated directly from these metrics.See calculator.
+0–49
+50–89
+90–100
+Final Screenshot
+
+Metrics
+Expand view
+First Contentful Paint
+1.7 s
+Largest Contentful Paint
+4.2 s
+Total Blocking Time
+0 ms
+Cumulative Layout Shift
+0
+Speed Index
+3.5 s
+View Treemap
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Later this year, insights will replace performance audits. Learn more and provide feedback here.
+Go back to audits
+Show audits relevant to:
+
+All
+
+FCP
+
+LCP
+
+TBT
+Insights
+Render blocking requests Est savings of 1,150 ms
+Forced reflow
+Network dependency tree
+Use efficient cache lifetimes Est savings of 28 KiB
+Improve image delivery Est savings of 138 KiB
+Legacy JavaScript Est savings of 11 KiB
+LCP breakdown
+3rd parties
+These insights are also available in the Chrome DevTools Performance Panel - record a trace to view more detailed information.
+Diagnostics
+Avoid serving legacy JavaScript to modern browsers Est savings of 11 KiB
+Reduce unused CSS Est savings of 14 KiB
+Reduce unused JavaScript Est savings of 220 KiB
+Avoid enormous network payloads Total size was 11,348 KiB
+User Timing marks and measures 4 user timings
+Avoid long main-thread tasks 1 long task found
+More information about the performance of your application. These numbers don't directly affect the Performance score.
+Passed audits (19)
+Show
+92
+Accessibility
+These checks highlight opportunities to improve the accessibility of your web app. Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so manual testing is also encouraged.
+Names and labels
+Buttons do not have an accessible name
+These are opportunities to improve the semantics of the controls in your application. This may enhance the experience for users of assistive technology, like a screen reader.
+Best practices
+Touch targets do not have sufficient size or spacing.
+These items highlight common accessibility best practices.
+Additional items to manually check (10)
+Show
+These items address areas which an automated testing tool cannot cover. Learn more in our guide on conducting an accessibility review.
+Passed audits (27)
+Show
+Not applicable (28)
+Show
+59
+Best Practices
+Trust and Safety
+Does not use HTTPS 1 insecure request found
+Ensure CSP is effective against XSS attacks
+Use a strong HSTS policy
+Ensure proper origin isolation with COOP
+Mitigate clickjacking with XFO or CSP
+Mitigate DOM-based XSS with Trusted Types
+General
+Uses third-party cookies 22 cookies found
+Issues were logged in the Issues panel in Chrome Devtools
+Passed audits (11)
+Show
+Not applicable (3)
+Show
+92
+SEO
+These checks ensure that your page is following basic search engine optimization advice. There are many additional factors Lighthouse does not score here that may affect your search ranking, including performance on Core Web Vitals. Learn more about Google Search Essentials.
+Content Best Practices
+Links do not have descriptive text 3 links found
+"
+
+sound background not work accurate

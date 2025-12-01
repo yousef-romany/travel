@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Testimonial } from "@/fetch/testimonials";
 import { format } from "date-fns";
+import ShareTestimonial from "@/components/review/ShareTestimonial";
+import HelpfulVotes from "@/components/review/HelpfulVotes";
 
 interface TestimonialsProps {
   testimonials: Testimonial[];
@@ -62,6 +64,17 @@ function TestimonialCard({ testimonial, showRelatedContent = true }: Testimonial
     return testimonial.user?.username || "Anonymous";
   };
 
+  const getRatingText = (rating: number) => {
+    switch (rating) {
+      case 5: return "Excellent";
+      case 4: return "Very Good";
+      case 3: return "Good";
+      case 2: return "Fair";
+      case 1: return "Poor";
+      default: return "Not Rated";
+    }
+  };
+
   const getRelatedContent = () => {
     switch (testimonial.testimonialType) {
       case "program":
@@ -100,14 +113,14 @@ function TestimonialCard({ testimonial, showRelatedContent = true }: Testimonial
   const relatedContent = getRelatedContent();
 
   return (
-    <Card className="border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-lg">
+    <Card className="border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-xl group">
       <CardContent className="p-6 space-y-4">
         {/* Header: User Info */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Avatar className="w-12 h-12 border-2 border-primary/20">
+            <Avatar className="w-12 h-12 border-2 border-primary/20 group-hover:border-primary/40 transition-colors">
               <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${testimonial.user?.username}`} />
-              <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+              <AvatarFallback className="bg-gradient-to-br from-primary/10 to-amber-500/10 text-primary font-semibold">
                 {getInitials(
                   testimonial.user?.profile?.firstName,
                   testimonial.user?.profile?.lastName,
@@ -130,18 +143,22 @@ function TestimonialCard({ testimonial, showRelatedContent = true }: Testimonial
         </div>
 
         {/* Star Rating */}
-        <div className="flex items-center gap-1">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Star
-              key={index}
-              className={`w-4 h-4 ${
-                index < testimonial.rating
-                  ? "fill-amber-400 text-amber-400"
-                  : "fill-gray-200 text-gray-200 dark:fill-gray-700 dark:text-gray-700"
-              }`}
-            />
-          ))}
-          <span className="text-sm font-semibold ml-2">{testimonial.rating}.0</span>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Star
+                key={index}
+                className={`w-4 h-4 transition-transform group-hover:scale-110 ${
+                  index < testimonial.rating
+                    ? "fill-amber-400 text-amber-400"
+                    : "fill-gray-200 text-gray-200 dark:fill-gray-700 dark:text-gray-700"
+                }`}
+              />
+            ))}
+          </div>
+          <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">
+            {getRatingText(testimonial.rating)}
+          </span>
         </div>
 
         {/* Comment */}
@@ -162,10 +179,24 @@ function TestimonialCard({ testimonial, showRelatedContent = true }: Testimonial
           </div>
         )}
 
-        {/* Date */}
-        <p className="text-xs text-muted-foreground">
-          {format(new Date(testimonial.createdAt), "MMM dd, yyyy")}
-        </p>
+        {/* Helpful Votes */}
+        <div className="pt-3 border-t border-border/50">
+          <HelpfulVotes testimonialId={testimonial.documentId} />
+        </div>
+
+        {/* Footer: Date and Share */}
+        <div className="flex items-center justify-between pt-3">
+          <p className="text-xs text-muted-foreground">
+            {format(new Date(testimonial.createdAt), "MMM dd, yyyy")}
+          </p>
+          {relatedContent && relatedContent.name && (
+            <ShareTestimonial
+              testimonial={testimonial}
+              contentType={testimonial.testimonialType as "program" | "event" | "custom-trip"}
+              contentTitle={relatedContent.name}
+            />
+          )}
+        </div>
       </CardContent>
     </Card>
   );

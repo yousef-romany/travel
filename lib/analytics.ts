@@ -204,6 +204,233 @@ export const trackTimeOnPage = (seconds: number, pagePath: string) => {
   });
 };
 
+// Track button clicks
+export const trackButtonClick = (buttonName: string, location: string, destination?: string) => {
+  trackEvent({
+    action: "button_click",
+    category: "Navigation",
+    label: `${buttonName} - ${location}`,
+  });
+
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", "click", {
+      event_category: "Navigation",
+      event_label: buttonName,
+      page_location: location,
+      link_destination: destination,
+    });
+  }
+};
+
+// Track navigation menu clicks
+export const trackNavigation = (menuItem: string, destination: string) => {
+  trackEvent({
+    action: "navigate",
+    category: "Navigation",
+    label: `${menuItem} -> ${destination}`,
+  });
+};
+
+// Track "Explore More" or "View Details" clicks
+export const trackExploreClick = (contentType: string, contentTitle: string, contentId: string) => {
+  trackEvent({
+    action: "explore_content",
+    category: contentType,
+    label: contentTitle,
+  });
+
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", "select_content", {
+      content_type: contentType,
+      content_id: contentId,
+      item_id: contentId,
+    });
+  }
+};
+
+// Track "Book Now" clicks (WhatsApp)
+export const trackWhatsAppBooking = (programTitle: string, programId: string, price?: number) => {
+  trackEvent({
+    action: "whatsapp_booking",
+    category: "Booking",
+    label: programTitle,
+    value: price,
+  });
+
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", "contact", {
+      method: "WhatsApp",
+      content_type: "Program",
+      content_id: programId,
+      value: price,
+    });
+  }
+};
+
+// Track card/program clicks in listings
+export const trackCardClick = (cardType: string, cardTitle: string, cardId: string, position?: number) => {
+  trackEvent({
+    action: "card_click",
+    category: cardType,
+    label: cardTitle,
+    value: position,
+  });
+
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", "select_item", {
+      item_list_name: cardType,
+      items: [
+        {
+          item_id: cardId,
+          item_name: cardTitle,
+          item_category: cardType,
+          index: position,
+        },
+      ],
+    });
+  }
+};
+
+// Track CTA (Call-to-Action) button clicks
+export const trackCTA = (ctaName: string, ctaLocation: string, ctaDestination: string) => {
+  trackEvent({
+    action: "cta_click",
+    category: "CTA",
+    label: `${ctaName} - ${ctaLocation}`,
+  });
+
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", "click", {
+      event_category: "CTA",
+      event_label: ctaName,
+      page_location: ctaLocation,
+      link_destination: ctaDestination,
+    });
+  }
+};
+
+// Track footer link clicks
+export const trackFooterLink = (linkText: string, destination: string) => {
+  trackEvent({
+    action: "footer_link_click",
+    category: "Footer",
+    label: linkText,
+  });
+};
+
+// Track "Read More" blog clicks
+export const trackReadMore = (blogType: string, blogTitle: string, blogId: string) => {
+  trackEvent({
+    action: "read_more",
+    category: blogType,
+    label: blogTitle,
+  });
+
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", "select_content", {
+      content_type: blogType,
+      content_id: blogId,
+    });
+  }
+};
+
+// Track destination/place clicks
+export const trackPlaceClick = (placeTitle: string, placeId: string, category?: string) => {
+  trackEvent({
+    action: "place_click",
+    category: "Destinations",
+    label: placeTitle,
+  });
+
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", "select_content", {
+      content_type: "Destination",
+      content_id: placeId,
+      item_category: category,
+    });
+  }
+};
+
+// Track hero section CTA clicks
+export const trackHeroCTA = (ctaText: string, destination: string) => {
+  trackEvent({
+    action: "hero_cta_click",
+    category: "Hero Section",
+    label: ctaText,
+  });
+
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", "click", {
+      event_category: "Hero CTA",
+      event_label: ctaText,
+      link_destination: destination,
+    });
+  }
+};
+
+// Track carousel/slider interactions
+export const trackCarouselInteraction = (action: "next" | "previous" | "dot", carouselName: string, slideIndex: number) => {
+  trackEvent({
+    action: `carousel_${action}`,
+    category: "Carousel",
+    label: carouselName,
+    value: slideIndex,
+  });
+};
+
+// Track tab changes
+export const trackTabChange = (tabName: string, tabGroup: string) => {
+  trackEvent({
+    action: "tab_change",
+    category: "Tabs",
+    label: `${tabGroup} - ${tabName}`,
+  });
+};
+
+// Track accordion/dropdown opens
+export const trackAccordionToggle = (accordionTitle: string, isOpen: boolean) => {
+  trackEvent({
+    action: isOpen ? "accordion_open" : "accordion_close",
+    category: "Accordion",
+    label: accordionTitle,
+  });
+};
+
+// Track image gallery interactions
+export const trackGalleryView = (imageIndex: number, totalImages: number, galleryName: string) => {
+  trackEvent({
+    action: "gallery_view",
+    category: "Gallery",
+    label: galleryName,
+    value: imageIndex,
+  });
+};
+
+// Track language change
+export const trackLanguageChange = (fromLanguage: string, toLanguage: string) => {
+  trackEvent({
+    action: "language_change",
+    category: "Localization",
+    label: `${fromLanguage} -> ${toLanguage}`,
+  });
+
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", "select_content", {
+      content_type: "Language",
+      content_id: toLanguage,
+    });
+  }
+};
+
+// Track theme toggle (dark/light mode)
+export const trackThemeToggle = (theme: "light" | "dark") => {
+  trackEvent({
+    action: "theme_toggle",
+    category: "UI Preferences",
+    label: theme,
+  });
+};
+
 // Extend Window interface
 declare global {
   interface Window {

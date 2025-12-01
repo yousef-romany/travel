@@ -4,10 +4,16 @@ import { Event } from "@/fetch/events";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Clock, DollarSign, Users, Mail, Phone, Sparkles, ExternalLink, Music } from "lucide-react";
+import { Calendar, MapPin, Clock, DollarSign, Users, Mail, Phone, Sparkles, ExternalLink, Music, MessageSquare, Star } from "lucide-react";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
 import { format } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+import Testimonials from "@/components/testimonials";
+import ReviewDialog from "@/components/review/ReviewDialog";
+import { fetchEventTestimonials } from "@/fetch/testimonials";
+import AverageRating from "@/components/review/AverageRating";
+import ExportReviews from "@/components/review/ExportReviews";
 
 interface EventDetailContentProps {
   event: Event;
@@ -28,6 +34,14 @@ export default function EventDetailContent({ event }: EventDetailContentProps) {
   const startDate = new Date(event.startDate);
   const endDate = event.endDate ? new Date(event.endDate) : null;
   const isUpcoming = startDate > new Date();
+
+  // Fetch testimonials for this event
+  const { data: testimonialsData, refetch: refetchTestimonials } = useQuery({
+    queryKey: ["eventTestimonials", event.documentId],
+    queryFn: () => fetchEventTestimonials(event.documentId),
+    enabled: !!event.documentId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-6xl">
@@ -248,6 +262,81 @@ export default function EventDetailContent({ event }: EventDetailContentProps) {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      {/* Testimonials & Reviews Section */}
+      <div className="mt-12">
+        <Card className="border-primary/20 shadow-xl">
+          <CardContent className="p-6 md:p-8">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-gradient-to-r from-primary to-amber-600 rounded-xl">
+                  <MessageSquare className="h-6 w-6 md:h-7 md:w-7 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                    Event Reviews
+                  </h2>
+                  <p className="text-muted-foreground text-sm">
+                    {testimonialsData?.data && testimonialsData.data.length > 0
+                      ? `${testimonialsData.data.length} ${testimonialsData.data.length === 1 ? 'review' : 'reviews'} from attendees`
+                      : "Be the first to review this event"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                {testimonialsData?.data && testimonialsData.data.length > 0 && (
+                  <ExportReviews
+                    testimonials={testimonialsData.data}
+                    programTitle={event.title}
+                  />
+                )}
+                <ReviewDialog
+                  type="event"
+                  relatedId={event.documentId}
+                  relatedTitle={event.title}
+                  onSuccess={() => refetchTestimonials()}
+                  triggerButton={
+                    <Button className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 gap-2">
+                      <MessageSquare className="w-4 h-4" />
+                      Write a Review
+                    </Button>
+                  }
+                />
+              </div>
+            </div>
+
+            {testimonialsData?.data && testimonialsData.data.length > 0 ? (
+              <>
+                <AverageRating testimonials={testimonialsData.data} className="mb-8" />
+                <Testimonials
+                  testimonials={testimonialsData.data}
+                  showRelatedContent={false}
+                />
+              </>
+            ) : (
+              <div className="text-center py-12 border-2 border-dashed border-primary/20 rounded-xl bg-muted/20">
+                <MessageSquare className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">No reviews yet</h3>
+                <p className="text-muted-foreground mb-6">
+                  Be the first to share your experience with this event!
+                </p>
+                <ReviewDialog
+                  type="event"
+                  relatedId={event.documentId}
+                  relatedTitle={event.title}
+                  onSuccess={() => refetchTestimonials()}
+                  triggerButton={
+                    <Button size="lg" className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 gap-2">
+                      <Star className="w-5 h-5" />
+                      Write the First Review
+                    </Button>
+                  }
+                />
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

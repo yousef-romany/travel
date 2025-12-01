@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { trackAuth } from "@/lib/analytics";
 
 export default function SignupPage() {
   const { signup } = useAuth();
@@ -35,6 +36,7 @@ export default function SignupPage() {
 
     try {
       await signup(formData.email, formData.password);
+      trackAuth("signup");
       // Signup function handles redirect internally
       setLoading(false);
     } catch (error) {

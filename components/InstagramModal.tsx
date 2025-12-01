@@ -3,7 +3,6 @@
 import { X, Heart, MessageCircle, Send, Bookmark, Play, Instagram, ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
 import MediaContent from "./MediaContent";
-import OptimizedImage from "./OptimizedImage";
 import { instagramPostsType, instaGramType } from "@/type/placesToGo";
 import { Button } from "./ui/button";
 import Image from "next/image";
@@ -58,7 +57,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
       {/* Thumbnail Card */}
       <div
         onClick={() => setIsModalOpen(true)}
-        className="group relative w-full h-full rounded-2xl cursor-pointer overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 shadow-lg hover:shadow-2xl transition-all duration-500"
+        className="group relative w-full h-full rounded-2xl cursor-pointer overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 shadow-lg hover:shadow-2xl transition-all duration-500 w-fit"
       >
         {isLoading ? (
           <div className="w-full h-full aspect-square bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-orange-900/20 animate-pulse flex items-center justify-center">
@@ -67,7 +66,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
         ) : (
           <>
             {/* Image */}
-            <div className="relative w-full h-full aspect-square overflow-hidden">
+            <div className="relative !w-full !h-full aspect-square overflow-hidden">
               {thumbnailUrl && (
                 <Image
                   src={thumbnailUrl}
@@ -128,11 +127,11 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
       {/* Modal */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center z-[9999] p-2 sm:p-4 animate-in fade-in duration-300"
+          className="!w-fit fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center z-[9999] p-2 sm:p-4 animate-in fade-in duration-300"
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="relative w-full max-w-[95vw] lg:max-w-[85vw] h-[95vh] bg-card rounded-xl lg:rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300"
+            className="relative w-full max-w-[160vw] lg:max-w-[160vw] h-[95vh] bg-card rounded-xl lg:rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -160,7 +159,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
             </div>
 
             {/* Content */}
-            <div className="flex flex-col lg:flex-row h-[calc(95vh-73px)]">
+            <div className="flex flex-col lg:flex-row h-[calc(95vh-73px)] w-full">
               {/* Media */}
               <div className="relative flex-1 bg-black w-full flex items-center justify-center overflow-hidden">
                 <div className="w-full h-full max-w-full max-h-full flex items-center justify-center p-2">

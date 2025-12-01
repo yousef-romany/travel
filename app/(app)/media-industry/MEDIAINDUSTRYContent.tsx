@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Newspaper, Camera, FileText, Mail, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default function MediaindustryContent() {
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function MediaindustryContent() {
               <p className="text-sm text-muted-foreground mb-4">
                 Stay informed about our new destinations, partnerships, special events, and company milestones.
               </p>
-              <Button variant="outline" className="w-full">View Press Releases</Button>
+              <Button variant="outline" className="w-full" disabled>View Press Releases <Badge>(Soon)</Badge></Button>
             </CardContent>
           </Card>
 
@@ -67,7 +68,7 @@ export default function MediaindustryContent() {
               <p className="text-sm text-muted-foreground mb-4">
                 Download our official media kit containing logos, photos, fact sheets, and branding materials.
               </p>
-              <Button variant="outline" className="w-full">Download Media Kit</Button>
+              <Button variant="outline" className="w-full" disabled>Download Media Kit <Badge>(Soon)</Badge></Button>
             </CardContent>
           </Card>
 
@@ -85,7 +86,7 @@ export default function MediaindustryContent() {
               <p className="text-sm text-muted-foreground mb-4">
                 Access comprehensive reports on Egypt's tourism industry, travel trends, and market analysis.
               </p>
-              <Button variant="outline" className="w-full">View Reports</Button>
+              <Button variant="outline" className="w-full" disabled>View Reports <Badge>(Soon)</Badge></Button>
             </CardContent>
           </Card>
 
@@ -103,7 +104,7 @@ export default function MediaindustryContent() {
               <p className="text-sm text-muted-foreground mb-4">
                 For press inquiries, interview requests, or media collaborations, reach out to our team.
               </p>
-              <Button variant="outline" className="w-full">Contact Media Team</Button>
+              <Button variant="outline" className="w-full" disabled>Contact Media Team <Badge>(Soon)</Badge></Button>
             </CardContent>
           </Card>
         </div>
@@ -136,7 +137,7 @@ export default function MediaindustryContent() {
               </div>
             </div>
             <div className="mt-6">
-              <Button>Become a Partner</Button>
+              <Button disabled>Become a Partner <Badge variant={"secondary"}>(Soon)</Badge></Button>
             </div>
           </div>
         </section>
@@ -190,7 +191,7 @@ export default function MediaindustryContent() {
           </div>
         </section>
 
-        <section className="animate-on-scroll">
+        {/* <section className="animate-on-scroll">
           <h2 className="text-3xl font-bold mb-6 text-primary">Featured in Media</h2>
           <div className="bg-card border border-border rounded-lg p-8">
             <p className="text-center text-muted-foreground mb-6">
@@ -203,7 +204,7 @@ export default function MediaindustryContent() {
               <div className="text-2xl font-bold">Global Tours</div>
             </div>
           </div>
-        </section>
+        </section> */}
       </div>
     </div>
   );
