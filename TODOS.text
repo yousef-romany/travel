@@ -1,6 +1,6 @@
-solve this problem please :
-[2025-12-01 20:42:25.459] http: GET /api/bookings?populate%5Bprogram%5D%5Bpopulate%5D%5Bimages%5D=true&populate%5Bplan_trip%5D%5Bpopulate%5D%5Bdestinations%5D=true&populate%5Bevent%5D%5Bpopulate%5D%5Bimages%5D=true&populate%5Buser%5D=true&sort=createdAt%3Adesc&filters%5Buser%5D%5BdocumentId%5D%5B%24eq%5D=hix5tvqparu75pw2iqnwym24 (15 ms) 400
-[2025-12-01 20:42:27.480] http: GET /api/bookings?populate%5Bprogram%5D%5Bpopulate%5D%5Bimages%5D=true&populate%5Bplan_trip%5D%5Bpopulate%5D%5Bdestinations%5D=true&populate%5Bevent%5D%5Bpopulate%5D%5Bimages%5D=true&populate%5Buser%5D=true&sort=createdAt%3Adesc&filters%5Buser%5D%5BdocumentId%5D%5B%24eq%5D=hix5tvqparu75pw2iqnwym24 (13 ms) 400
+the "Was this helpful?" in review not create please handle this function
+
+please handle fetching the review in planned trip and program and user can update it!
 
 slove this also mobile :
 "42

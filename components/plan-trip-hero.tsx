@@ -126,7 +126,7 @@ export default function PlanTripHero() {
           <div className="relative animate-slide-up animate-delay-200">
             <div className="relative aspect-[4/5] md:aspect-square rounded-3xl overflow-hidden shadow-2xl">
               <Image
-                src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1734534726/Egypt_2_p6dnhq.jpg"
+                src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1764631854/__1_l2obyo.jpg"
                 alt="Plan your custom Egypt trip"
                 fill
                 className="object-cover"
