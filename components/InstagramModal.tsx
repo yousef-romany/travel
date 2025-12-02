@@ -63,8 +63,8 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
       {/* Thumbnail Card - Reduced Size */}
       <div
         onClick={() => setIsModalOpen(true)}
-        className={cn("w-full rounded-2xl cursor-pointer overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50", 
-          isModalOpen ?  "!w-fit": "")}
+        className={cn("w-full rounded-2xl cursor-pointer overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50",
+          isModalOpen ? "!w-fit" : "")}
       >
         {isLoading ? (
           <div className="w-fit aspect-square bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-orange-900/20 animate-pulse flex items-center justify-center">
@@ -177,6 +177,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors"
+                aria-label="Close Instagram post modal"
               >
                 <X className="w-5 h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
               </button>
@@ -254,10 +255,10 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
 
                   {/* Secondary Actions */}
                   <div className="flex gap-2 justify-center">
-                    <Button variant="ghost" size="icon" className="hover:text-red-500 dark:hover:text-red-400 text-gray-600 dark:text-gray-400">
+                    <Button variant="ghost" size="icon" className="hover:text-red-500 dark:hover:text-red-400 text-gray-600 dark:text-gray-400" aria-label="Like post">
                       <Heart className="w-5 h-5" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="hover:text-blue-500 dark:hover:text-blue-400 text-gray-600 dark:text-gray-400">
+                    <Button variant="ghost" size="icon" className="hover:text-blue-500 dark:hover:text-blue-400 text-gray-600 dark:text-gray-400" aria-label="Comment on post">
                       <MessageCircle className="w-5 h-5" />
                     </Button>
                   </div>

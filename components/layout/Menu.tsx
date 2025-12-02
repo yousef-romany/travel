@@ -1,4 +1,5 @@
 import { memo } from "react";
+import Image from "next/image";
 import {
   Sheet,
   SheetContent,
@@ -70,10 +71,12 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                           className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/5 transition-colors group"
                         >
                           <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
-                            <img
+                            <Image
                               src={getImageUrl(category.image)}
                               alt={category.categoryName}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                              fill
+                              sizes="48px"
+                              className="object-cover group-hover:scale-110 transition-transform"
                             />
                           </div>
                           <span className="text-sm font-medium group-hover:text-primary transition-colors">
@@ -108,10 +111,12 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                           className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/5 transition-colors group"
                         >
                           <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
-                            <img
+                            <Image
                               src={getImageUrl(category.image)}
                               alt={category.categoryName}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                              fill
+                              sizes="48px"
+                              className="object-cover group-hover:scale-110 transition-transform"
                             />
                           </div>
                           <span className="text-sm font-medium group-hover:text-primary transition-colors">

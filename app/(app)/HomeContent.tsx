@@ -214,7 +214,7 @@ export default function HomeContent() {
                       className="text-primary font-medium hover:underline inline-flex items-center transition-smooth text-sm sm:text-base"
                       onClick={() => trackCardClick("Inspiration Blog", blog.title, blog.documentId, index)}
                     >
-                      Learn more{" "}
+                      Read more about {blog.title}{" "}
                       <Compass className="ml-2 h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                     </Link>
                   </CardContent>

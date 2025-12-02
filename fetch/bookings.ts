@@ -82,8 +82,8 @@ export const fetchUserBookings = async (
     const authToken =
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
-    // Build URL with simple populate - just the relations
-    let url = `${API_URL}/api/bookings?populate[0]=program&populate[1]=plan_trip&populate[2]=event&populate[3]=user&sort=createdAt:desc`;
+    // Build URL with proper deep population syntax for Strapi v5
+    let url = `${API_URL}/api/bookings?populate[program][populate]=images&populate[plan_trip][populate]=destinations&populate[event][populate]=images&populate[user]=*&sort[0]=createdAt:desc`;
 
     // If userId is provided, filter by user
     if (userId) {

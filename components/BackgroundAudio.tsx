@@ -93,7 +93,13 @@ export default function BackgroundAudio() {
         }
       };
 
-      playAudio();
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        playAudio();
+      }, 100);
+    } else {
+      // On other pages, don't autoplay but keep audio ready
+      console.log("Background audio ready (not autoplaying on non-home pages)");
     }
 
     // Cleanup on unmount

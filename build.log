@@ -1,0 +1,80 @@
+
+> travel@0.1.0 build
+> next build
+
+   ▲ Next.js 15.1.6
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/32) ...
+   Generating static pages (8/32) 
+Plan Your Trip - User: null
+Plan Your Trip - User Trips Loading: false
+Plan Your Trip - User Trips Data: undefined
+Plan Your Trip - User Trips Array: []
+Plan Your Trip - User Trips Count: 0
+Plan Your Trip - All Trips Loading: true
+Plan Your Trip - All Trips Data: undefined
+Plan Your Trip - All Trips Array: []
+Plan Your Trip - All Trips Count: 0
+   Generating static pages (16/32) 
+   Generating static pages (24/32) 
+ ✓ Generating static pages (32/32)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                               Size     First Load JS
+┌ ○ /                                                     12.5 kB         239 kB
+├ ○ /_not-found                                           990 B           107 kB
+├ ○ /about                                                4.59 kB         124 kB
+├ ƒ /api/confirm-email                                    148 B           106 kB
+├ ƒ /api/resend-confirmation                              148 B           106 kB
+├ ƒ /book-custom-trip/[tripId]                            4.91 kB         206 kB
+├ ○ /business-events                                      4.19 kB         118 kB
+├ ○ /complete-profile                                     4.47 kB         204 kB
+├ ○ /edit-profile                                         5.95 kB         230 kB
+├ ○ /email-confirmation                                   2.67 kB         112 kB
+├ ○ /events                                               7.63 kB         169 kB
+├ ƒ /events/[slug]                                        9.99 kB         218 kB
+├ ○ /forgot-password                                      3.09 kB         112 kB
+├ ○ /inspiration                                          4.19 kB         155 kB
+├ ƒ /inspiration/[category]                               2.51 kB         165 kB
+├ ƒ /inspiration/[category]/[subCategory]                 2.74 kB         388 kB
+├ ƒ /inspiration/[category]/[subCategory]/[inspire-blog]  2.09 kB         389 kB
+├ ○ /invoice-demo                                         5.19 kB         266 kB
+├ ƒ /invoices/[id]                                        6.1 kB          298 kB
+├ ○ /login                                                4.55 kB         114 kB
+├ ○ /me                                                   21.3 kB         342 kB
+├ ○ /media-industry                                       4.05 kB         118 kB
+├ ○ /placesTogo                                           4.25 kB         155 kB
+├ ƒ /placesTogo/[category]                                2.82 kB         166 kB
+├ ƒ /placesTogo/[category]/[subCategory]                  3.04 kB         388 kB
+├ ƒ /placesTogo/[category]/[subCategory]/[place-blog]     4.99 kB         391 kB
+├ ○ /plan-your-trip                                       10.4 kB         162 kB
+├ ƒ /plan-your-trip/[tripId]                              6.81 kB         223 kB
+├ ○ /plan-your-trip/create                                28.5 kB         197 kB
+├ ○ /privacy-policy                                       2.38 kB         108 kB
+├ ○ /programs                                             12.4 kB         179 kB
+├ ƒ /programs/[title]                                     15.1 kB         231 kB
+├ ƒ /programs/[title]/book                                6.81 kB         349 kB
+├ ○ /reset-password                                       2.95 kB         112 kB
+├ ○ /robots.txt                                           0 B                0 B
+├ ○ /signup                                               4.15 kB         114 kB
+├ ○ /sitemap.xml                                          0 B                0 B
+├ ○ /terms                                                148 B           106 kB
+├ ○ /terms-and-conditions                                 3.06 kB         109 kB
+├ ○ /tourism-investment                                   5.23 kB         119 kB
+└ ○ /wishlist                                             6.71 kB         139 kB
++ First Load JS shared by all                             106 kB
+  ├ chunks/1517-0a200dc39ffc834c.js                       50.7 kB
+  ├ chunks/4bd1b696-229181a8e3825ed5.js                   53 kB
+  └ other shared chunks (total)                           2.13 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
