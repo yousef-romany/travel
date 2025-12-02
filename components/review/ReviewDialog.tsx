@@ -82,10 +82,7 @@ export default function ReviewDialog({
           if (relatedId) testimonialData.placeId = relatedId;
           break;
         case "custom-trip":
-          if (relatedId)
-            testimonialData.plan_trip = {
-              connect: [relatedId],
-            };
+          if (relatedId) testimonialData.planTripId = relatedId;
           break;
       }
 
@@ -109,7 +106,7 @@ export default function ReviewDialog({
       console.error("Error submitting review:", error);
       toast.error(
         error.response?.data?.error?.message ||
-          "Failed to submit review. Please try again."
+        "Failed to submit review. Please try again."
       );
     } finally {
       setIsSubmitting(false);
@@ -174,11 +171,10 @@ export default function ReviewDialog({
                     aria-label={`Rate ${starValue} stars`}
                   >
                     <Star
-                      className={`w-8 h-8 transition-colors ${
-                        starValue <= (hoveredRating || rating)
+                      className={`w-8 h-8 transition-colors ${starValue <= (hoveredRating || rating)
                           ? "fill-amber-400 text-amber-400"
                           : "fill-gray-200 text-gray-200 dark:fill-gray-700 dark:text-gray-700"
-                      }`}
+                        }`}
                     />
                   </button>
                 );
