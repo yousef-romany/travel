@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { voteOnTestimonial, getUserVote } from "@/fetch/testimonial-votes";
+import { toast } from "sonner";
 
 interface HelpfulVotesProps {
   testimonialId: string;
@@ -21,45 +23,94 @@ export default function HelpfulVotes({
   const [helpful, setHelpful] = useState(initialHelpful);
   const [unhelpful, setUnhelpful] = useState(initialUnhelpful);
   const [userVote, setUserVote] = useState<"helpful" | "unhelpful" | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleHelpful = () => {
-    if (userVote === "helpful") {
-      // Remove vote
-      setHelpful(helpful - 1);
-      setUserVote(null);
-    } else if (userVote === "unhelpful") {
-      // Switch vote
-      setUnhelpful(unhelpful - 1);
-      setHelpful(helpful + 1);
-      setUserVote("helpful");
-    } else {
-      // New vote
-      setHelpful(helpful + 1);
-      setUserVote("helpful");
+  // Load user's existing vote on mount
+  useEffect(() => {
+    const loadUserVote = async () => {
+      try {
+        const { data } = await getUserVote(testimonialId);
+        if (data) {
+          setUserVote(data.voteType);
+        }
+      } catch (error) {
+        console.error("Error loading user vote:", error);
+      }
+    };
+
+    loadUserVote();
+  }, [testimonialId]);
+
+  const handleHelpful = async () => {
+    if (loading) return;
+    setLoading(true);
+
+    try {
+      const previousVote = userVote;
+      const previousHelpful = helpful;
+      const previousUnhelpful = unhelpful;
+
+      // Optimistic update
+      if (userVote === "helpful") {
+        setHelpful(helpful - 1);
+        setUserVote(null);
+      } else if (userVote === "unhelpful") {
+        setUnhelpful(unhelpful - 1);
+        setHelpful(helpful + 1);
+        setUserVote("helpful");
+      } else {
+        setHelpful(helpful + 1);
+        setUserVote("helpful");
+      }
+
+      // Save to backend
+      await voteOnTestimonial(testimonialId, "helpful");
+    } catch (error) {
+      console.error("Error voting:", error);
+      toast.error("Failed to save your vote. Please try again.");
+
+      // Revert on error
+      setUserVote(userVote);
+      setHelpful(helpful);
+    } finally {
+      setLoading(false);
     }
-
-    // TODO: Save to backend
-    // saveVote(testimonialId, "helpful");
   };
 
-  const handleUnhelpful = () => {
-    if (userVote === "unhelpful") {
-      // Remove vote
-      setUnhelpful(unhelpful - 1);
-      setUserVote(null);
-    } else if (userVote === "helpful") {
-      // Switch vote
-      setHelpful(helpful - 1);
-      setUnhelpful(unhelpful + 1);
-      setUserVote("unhelpful");
-    } else {
-      // New vote
-      setUnhelpful(unhelpful + 1);
-      setUserVote("unhelpful");
-    }
+  const handleUnhelpful = async () => {
+    if (loading) return;
+    setLoading(true);
 
-    // TODO: Save to backend
-    // saveVote(testimonialId, "unhelpful");
+    try {
+      const previousVote = userVote;
+      const previousHelpful = helpful;
+      const previousUnhelpful = unhelpful;
+
+      // Optimistic update
+      if (userVote === "unhelpful") {
+        setUnhelpful(unhelpful - 1);
+        setUserVote(null);
+      } else if (userVote === "helpful") {
+        setHelpful(helpful - 1);
+        setUnhelpful(unhelpful + 1);
+        setUserVote("unhelpful");
+      } else {
+        setUnhelpful(unhelpful + 1);
+        setUserVote("unhelpful");
+      }
+
+      // Save to backend
+      await voteOnTestimonial(testimonialId, "unhelpful");
+    } catch (error) {
+      console.error("Error voting:", error);
+      toast.error("Failed to save your vote. Please try again.");
+
+      // Revert on error
+      setUserVote(userVote);
+      setUnhelpful(unhelpful);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const total = helpful + unhelpful;

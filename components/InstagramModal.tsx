@@ -1,20 +1,21 @@
 "use client";
 
-import { X, Heart, MessageCircle, Send, Bookmark, Play, Instagram, ExternalLink } from "lucide-react";
+import { X, Heart, MessageCircle, Play, Instagram, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import MediaContent from "./MediaContent";
 import { instagramPostsType, instaGramType } from "@/type/placesToGo";
 import { Button } from "./ui/button";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export default function InstagramModal({ idPost }: instagramPostsType) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState<instaGramType>({} as instaGramType);
   const [isLoading, setIsLoading] = useState(true);
   const [isFetched, setIsFetched] = useState(false);
+  const [showFullCaption, setShowFullCaption] = useState(false);
 
   useEffect(() => {
-    // Only fetch when component mounts
     if (!isFetched) {
       try {
         setIsLoading(true);
@@ -50,119 +51,142 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
   ) : "";
 
   const thumbnailUrl = data?.thumbnail_url || data?.media_url;
-  const shortCaption = data?.caption ? (data.caption.length > 100 ? data.caption.substring(0, 100) + "..." : data.caption) : "Exploring Egypt with ZoeHoliday";
+  const caption = data?.caption || "Exploring Egypt with ZoeHoliday ✨";
+  const shortCaption = caption.length > 80 ? caption.substring(0, 80) + "..." : caption;
+
+  // Split caption into lines for better readability (max 4 lines when collapsed)
+  const captionLines = caption.split('\n').filter(line => line.trim());
+  const displayCaption = showFullCaption ? caption : (caption.length > 150 ? caption.substring(0, 150) + "..." : caption);
 
   return (
     <>
-      {/* Thumbnail Card */}
+      {/* Thumbnail Card - Reduced Size */}
       <div
         onClick={() => setIsModalOpen(true)}
-        className="group relative w-full h-full rounded-2xl cursor-pointer overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 shadow-lg hover:shadow-2xl transition-all duration-500 w-fit"
+        className={cn("w-full rounded-2xl cursor-pointer overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50", 
+          isModalOpen ?  "!w-fit": "")}
       >
         {isLoading ? (
-          <div className="w-full h-full aspect-square bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-orange-900/20 animate-pulse flex items-center justify-center">
+          <div className="w-fit aspect-square bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-orange-900/20 animate-pulse flex items-center justify-center">
             <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
           </div>
         ) : (
           <>
-            {/* Image */}
-            <div className="relative !w-full !h-full aspect-square overflow-hidden">
+            {/* Header with Avatar */}
+            <div className=" flex items-center gap-3 p-4 bg-white/50 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4AF37] to-amber-600 flex items-center justify-center shadow-md">
+                <span className="text-white text-sm font-bold">ZH</span>
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-sm text-gray-900 dark:text-white">ZoeHolidays</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{formattedDate}</p>
+              </div>
+              {data?.media_type === "VIDEO" && (
+                <div className="px-2.5 py-1 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white text-xs font-semibold shadow-sm">
+                  Reel
+                </div>
+              )}
+            </div>
+
+            {/* Image with Better Overlay */}
+            <div className="relative w-full aspect-square overflow-hidden">
               {thumbnailUrl && (
                 <Image
                   src={thumbnailUrl}
                   alt={shortCaption}
                   fill
-                  className="object-cover transition-all duration-700 group-hover:scale-110"
+                  className="object-cover transition-all duration-700 group-hover:scale-105"
                 />
               )}
 
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300" />
+              {/* Subtle Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70 group-hover:opacity-50 transition-opacity duration-300" />
 
               {/* Play Button for Videos */}
               {data?.media_type === "VIDEO" && (
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl animate-pulse" />
-                    <div className="relative w-16 h-16 rounded-full bg-white/90 backdrop-blur-md border-2 border-white/60 flex items-center justify-center shadow-2xl">
-                      <Play className="h-8 w-8 fill-primary text-primary ml-1" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative group-hover:scale-110 transition-transform duration-300">
+                    <div className="absolute inset-0 bg-[#D4AF37]/30 rounded-full blur-xl animate-pulse" />
+                    <div className="relative w-16 h-16 rounded-full bg-white/95 backdrop-blur-md border-2 border-white/80 flex items-center justify-center shadow-2xl">
+                      <Play className="h-8 w-8 fill-[#D4AF37] text-[#D4AF37] ml-1" />
                     </div>
                   </div>
                 </div>
               )}
+            </div>
 
-              {/* Top Badge */}
-              <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                <div className="px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white text-xs font-semibold shadow-lg backdrop-blur-sm flex items-center gap-1.5">
-                  <Instagram className="h-3 w-3" />
-                  <span>{data?.media_type === "VIDEO" ? "Reel" : "Post"}</span>
-                </div>
+            {/* Actions with Improved Spacing */}
+            <div className="p-4 space-y-3 bg-white/80 dark:bg-gray-900/90 backdrop-blur-sm">
+              {/* Action Icons */}
+              <div className="flex items-center gap-5">
+                <Heart className="h-6 w-6 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 cursor-pointer transition-colors" />
+                <MessageCircle className="h-6 w-6 text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer transition-colors" />
               </div>
 
-              {/* Bottom Info */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                <p className="text-white font-medium text-sm mb-2 line-clamp-2 drop-shadow-lg">
-                  {shortCaption}
+              {/* Caption with Better Typography */}
+              <div className="space-y-1">
+                <p className="text-sm leading-relaxed line-clamp-3">
+                  <span className="font-bold text-gray-900 dark:text-white">ZoeHolidays</span>{" "}
+                  <span className="text-gray-700 dark:text-gray-200">{shortCaption}</span>
                 </p>
-                <p className="text-white/80 text-xs mb-3 drop-shadow-md">
-                  {formattedDate}
-                </p>
-                <Button
-                  size="sm"
-                  className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white border-0 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsModalOpen(true);
-                  }}
-                >
-                  <Play className="h-3.5 w-3.5 mr-1.5" />
-                  View Full Post
-                </Button>
               </div>
+
+              {/* Branded Button */}
+              <Button
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsModalOpen(true);
+                }}
+                className="w-full bg-gradient-to-r from-[#D4AF37] to-amber-600 hover:from-[#C49F2F] hover:to-amber-700 text-white border-0 shadow-md hover:shadow-lg transition-all font-semibold"
+              >
+                <Play className="h-4 w-4 mr-2" />
+                View Full Post
+              </Button>
             </div>
           </>
         )}
       </div>
 
-      {/* Modal */}
+      {/* Modal with Improved Layout */}
       {isModalOpen && (
         <div
-          className="!w-fit fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center z-[9999] p-2 sm:p-4 animate-in fade-in duration-300"
+          className="lg:w-[calc(100vw-350px)] md:w-[calc(100vw-350px)] sm:w-[calc(100vw-100px)] fixed bg-transparent inset-0 bg-black/95 backdrop-blur-md  z-[999999999999999999999999999999] animate-in fade-in duration-300"
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="relative w-full max-w-[160vw] lg:max-w-[160vw] h-[95vh] bg-card rounded-xl lg:rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300"
+            className="relative w-full max-w-6xl h-[92vh] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-border bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-orange-500/10">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center">
-                  <Instagram className="w-5 h-5 text-white" />
+                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#D4AF37] to-amber-600 flex items-center justify-center shadow-md">
+                  <span className="text-white font-bold">ZH</span>
                 </div>
                 <div>
-                  <span className="font-semibold text-foreground flex items-center gap-1">
+                  <span className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                     @ZoeHolidays
-                    <span className="text-xs bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
-                      • Official
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-medium">
+                      Official
                     </span>
                   </span>
-                  <p className="text-xs text-muted-foreground">{formattedDate}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{formattedDate}</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="w-10 h-10 rounded-full hover:bg-muted flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors"
               >
-                <X className="w-5 h-5 text-muted-foreground hover:text-foreground" />
+                <X className="w-5 h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
               </button>
             </div>
 
-            {/* Content */}
-            <div className="flex flex-col lg:flex-row h-[calc(95vh-73px)] w-full">
-              {/* Media */}
-              <div className="relative flex-1 bg-black w-full flex items-center justify-center overflow-hidden">
-                <div className="w-full h-full max-w-full max-h-full flex items-center justify-center p-2">
+            {/* Content with Better Balance */}
+            <div className="flex flex-col lg:flex-row h-[calc(92vh-73px)] w-full">
+              {/* Media - Takes 60% on desktop */}
+              <div className="relative flex-[6] bg-black w-full flex items-center justify-center overflow-hidden min-h-[400px] lg:min-h-0">
+                <div className="w-full h-full flex items-center justify-center">
                   <MediaContent
                     media_type={data?.media_type}
                     imageUrl={data?.media_url}
@@ -171,75 +195,71 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                 </div>
               </div>
 
-              {/* Sidebar */}
-              <div className="w-full lg:w-[350px] xl:w-[400px] flex flex-col bg-card flex-shrink-0 border-l border-border">
-                {/* Caption and Info */}
-                <div className="flex-1 overflow-y-auto p-6">
-                  <div className="space-y-4">
-                    {/* Caption */}
-                    <div>
-                      <p className="text-sm leading-relaxed">
-                        <span className="font-semibold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
-                          @ZoeHolidays
-                        </span>{" "}
-                        <span className="text-foreground">{data?.caption}</span>
-                      </p>
+              {/* Sidebar - Takes 40% on desktop, balanced layout */}
+              <div className="flex-[4] w-full lg:max-w-md flex flex-col bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800">
+                {/* Caption and Info with Better Spacing */}
+                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+                  {/* Caption with Read More */}
+                  <div className="space-y-2">
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                      <span className="font-bold text-[#D4AF37]">@ZoeHolidays</span>{" "}
+                      <span className="text-gray-800 dark:text-gray-100">{displayCaption}</span>
+                    </p>
+                    {caption.length > 150 && (
+                      <button
+                        onClick={() => setShowFullCaption(!showFullCaption)}
+                        className="text-xs font-medium text-[#D4AF37] hover:text-amber-600 transition-colors"
+                      >
+                        {showFullCaption ? "Show less" : "Read more"}
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-gray-200 dark:border-gray-800"></div>
+
+                  {/* Media Info with Better Contrast */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600 dark:text-gray-400 font-medium">Type</span>
+                      <span className="font-semibold px-3 py-1.5 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20">
+                        {data?.media_type}
+                      </span>
                     </div>
-
-                    {/* Divider */}
-                    <div className="border-t border-border"></div>
-
-                    {/* Media Info */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Type</span>
-                        <span className="font-medium px-3 py-1 rounded-full bg-gradient-to-r from-purple-100 via-pink-100 to-orange-100 dark:from-purple-900/30 dark:via-pink-900/30 dark:to-orange-900/30">
-                          {data?.media_type}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Posted</span>
-                        <span className="font-medium">{formattedDate}</span>
-                      </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600 dark:text-gray-400 font-medium">Posted</span>
+                      <span className="font-semibold text-gray-900 dark:text-white">{formattedDate}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Actions */}
-                <div className="p-4 border-t border-border bg-muted/30">
-                  <div className="space-y-3">
-                    {/* Instagram Link */}
-                    <a
-                      href={data?.permalink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block"
+                {/* Actions with Branded Button */}
+                <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 space-y-3">
+                  {/* Instagram Link with Branded Colors */}
+                  <a
+                    href={data?.permalink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <Button
+                      className="w-full bg-gradient-to-r from-[#D4AF37] to-amber-600 hover:from-[#C49F2F] hover:to-amber-700 text-white shadow-lg hover:shadow-xl transition-all font-semibold"
+                      size="lg"
                     >
-                      <Button
-                        className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white shadow-lg hover:shadow-xl transition-all"
-                        size="lg"
-                      >
-                        <Instagram className="w-4 h-4 mr-2" />
-                        View on Instagram
-                        <ExternalLink className="w-4 h-4 ml-2" />
-                      </Button>
-                    </a>
+                      <Instagram className="w-5 h-5 mr-2" />
+                      View on Instagram
+                      <ExternalLink className="w-4 h-4 ml-2" />
+                    </Button>
+                  </a>
 
-                    {/* Secondary Actions */}
-                    <div className="flex gap-2 justify-center text-muted-foreground">
-                      <Button variant="ghost" size="icon" className="hover:text-red-500">
-                        <Heart className="w-5 h-5" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="hover:text-blue-500">
-                        <MessageCircle className="w-5 h-5" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="hover:text-green-500">
-                        <Send className="w-5 h-5" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="hover:text-yellow-500">
-                        <Bookmark className="w-5 h-5" />
-                      </Button>
-                    </div>
+                  {/* Secondary Actions */}
+                  <div className="flex gap-2 justify-center">
+                    <Button variant="ghost" size="icon" className="hover:text-red-500 dark:hover:text-red-400 text-gray-600 dark:text-gray-400">
+                      <Heart className="w-5 h-5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="hover:text-blue-500 dark:hover:text-blue-400 text-gray-600 dark:text-gray-400">
+                      <MessageCircle className="w-5 h-5" />
+                    </Button>
                   </div>
                 </div>
               </div>

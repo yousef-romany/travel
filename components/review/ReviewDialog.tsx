@@ -81,6 +81,12 @@ export default function ReviewDialog({
         case "place":
           if (relatedId) testimonialData.placeId = relatedId;
           break;
+        case "custom-trip":
+          if (relatedId)
+            testimonialData.plan_trip = {
+              connect: [relatedId],
+            };
+          break;
       }
 
       await createTestimonial(testimonialData);
@@ -102,7 +108,8 @@ export default function ReviewDialog({
     } catch (error: any) {
       console.error("Error submitting review:", error);
       toast.error(
-        error.response?.data?.error?.message || "Failed to submit review. Please try again."
+        error.response?.data?.error?.message ||
+          "Failed to submit review. Please try again."
       );
     } finally {
       setIsSubmitting(false);
@@ -206,9 +213,9 @@ export default function ReviewDialog({
           {/* Notice */}
           <div className="bg-muted/50 p-4 rounded-lg border border-border">
             <p className="text-sm text-muted-foreground">
-              <strong className="text-foreground">Note:</strong> Your review will be
-              visible after admin approval. We review all submissions to ensure quality
-              and authenticity.
+              <strong className="text-foreground">Note:</strong> Your review
+              will be visible after admin approval. We review all submissions to
+              ensure quality and authenticity.
             </p>
           </div>
 

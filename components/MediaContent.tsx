@@ -35,10 +35,16 @@ export default function MediaContent({
 
   if (media_type === "VIDEO") {
     return (
-      <div className={`relative group cursor-pointer w-full h-full max-w-full max-h-full`} onClick={togglePlay}>
+      <div className="relative group cursor-pointer w-full h-full flex items-center justify-center" onClick={togglePlay}>
         <video
           ref={videoRef}
-          className="w-full h-full max-w-full max-h-full object-contain"
+          className="object-contain"
+          style={{
+            width: 'auto',
+            height: 'auto',
+            maxWidth: '100%',
+            maxHeight: '100%'
+          }}
           poster={thumbnail_url}
           playsInline
           controls={false}
@@ -53,13 +59,13 @@ export default function MediaContent({
         {/* Custom play/pause overlay - no sound control */}
         <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity group-hover:bg-black/30 pointer-events-none">
           {!isPlaying && (
-            <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center transition-transform hover:scale-110 shadow-xl">
-              <Play className="w-8 h-8 text-black ml-1" fill="currentColor" />
+            <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center transition-transform hover:scale-110 shadow-xl">
+              <Play className="w-10 h-10 text-black ml-1" fill="currentColor" />
             </div>
           )}
           {isPlaying && (
-            <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">
-              <Pause className="w-8 h-8 text-black" fill="currentColor" />
+            <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">
+              <Pause className="w-10 h-10 text-black" fill="currentColor" />
             </div>
           )}
         </div>
@@ -68,14 +74,17 @@ export default function MediaContent({
   }
 
   return (
-    <div className="relative w-full h-full max-w-full max-h-full flex items-center justify-center">
-      <Image
-        src={imageUrl || "/placeholder.svg"}
-        alt="Instagram content"
-        width={1200}
-        height={1200}
-        className="object-contain max-w-full max-h-full"
-      />
+    <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative max-w-full max-h-full" style={{ maxHeight: '85vh' }}>
+        <Image
+          src={imageUrl || "/placeholder.svg"}
+          alt="Instagram content"
+          width={1200}
+          height={1200}
+          className="object-contain w-auto h-auto max-w-full max-h-full"
+          style={{ maxHeight: '85vh' }}
+        />
+      </div>
     </div>
   );
 }

@@ -56,10 +56,8 @@ export default function TripDetailsContent({ tripId }: TripDetailsContentProps) 
     staleTime: 5 * 60 * 1000,
   });
 
-  // Mock booking count - In production, you would fetch this from the backend
-  // You would need to create an endpoint that counts bookings for this trip
-  const bookingCount = Math.floor(Math.random() * 50) + 5; // Placeholder
-
+  console.log("Testimonials Data:", testimonialsData);
+  
   const getStatusColor = (status: string) => {
     switch (status) {
       case "quoted":
@@ -271,9 +269,9 @@ Thank you! 🙏`;
           <CardHeader className="pb-3">
             <CardDescription className="flex items-center gap-2 text-xs">
               <Users className="w-4 h-4" />
-              Interested Users
+              Created By
             </CardDescription>
-            <CardTitle className="text-2xl">{bookingCount}</CardTitle>
+            <CardTitle className="text-lg truncate">{trip.user?.username || trip.user?.email?.split("@")[0] || "User"}</CardTitle>
           </CardHeader>
         </Card>
       </div>
@@ -513,20 +511,32 @@ Thank you! 🙏`;
             </Card>
           )}
 
-          {/* Booking Stats */}
+          {/* Trip Stats */}
           <Card className="bg-gradient-to-br from-primary/5 to-primary/10">
             <CardHeader>
-              <CardTitle className="text-lg">Popularity</CardTitle>
-              <CardDescription>See how many users are interested</CardDescription>
+              <CardTitle className="text-lg">Trip Statistics</CardTitle>
+              <CardDescription>Overview of your custom trip</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-primary mb-2">
-                  {bookingCount}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Total Days</span>
+                  <span className="font-bold text-primary">{trip.estimatedDuration}</span>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  users have shown interest in this trip
-                </p>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Destinations</span>
+                  <span className="font-bold text-primary">{trip.destinations?.length}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Avg. Cost/Day</span>
+                  <span className="font-bold text-primary">${trip.pricePerDay?.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center pt-2 border-t">
+                  <span className="text-sm text-muted-foreground">Status</span>
+                  <Badge className={getStatusColor(trip.status)}>
+                    {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                  </Badge>
+                </div>
               </div>
             </CardContent>
           </Card>

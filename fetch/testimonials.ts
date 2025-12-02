@@ -13,6 +13,13 @@ export interface Testimonial {
   testimonialType: "program" | "event" | "custom-trip" | "place" | "general";
   createdAt: string;
   updatedAt: string;
+  helpfulVotes?: number;
+  unhelpfulVotes?: number;
+  reviewSource?: "user" | "viator" | "tripadvisor" | "getyourguide" | "tourhq";
+  externalReviewId?: string;
+  externalReviewUrl?: string;
+  reviewerName?: string;
+  reviewDate?: string;
   user?: {
     id: number;
     documentId: string;

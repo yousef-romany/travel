@@ -46,7 +46,20 @@ export default function BackgroundAudio() {
     // Show controls after 2 seconds
     setTimeout(() => setShowControls(true), 2000);
 
-    // Only autoplay on home page and only once
+    // Listen for audio state changes
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleEnded = () => {
+      if (audio.loop) {
+        audio.play().catch(console.error);
+      }
+    };
+
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
+    audio.addEventListener("ended", handleEnded);
+
+    // Only autoplay on home page and only once per session
     if (pathname === "/" && !hasPlayedRef.current) {
       hasPlayedRef.current = true;
 
@@ -54,7 +67,6 @@ export default function BackgroundAudio() {
       const playAudio = async () => {
         try {
           await audio.play();
-          setIsPlaying(true);
           console.log("Background audio started automatically on home page");
         } catch (error) {
           console.log("Autoplay blocked, will play on first user interaction");
@@ -63,20 +75,21 @@ export default function BackgroundAudio() {
           const handleFirstInteraction = async () => {
             try {
               await audio.play();
-              setIsPlaying(true);
               console.log("Background audio started after user interaction");
               // Remove listeners after successful play
               document.removeEventListener("click", handleFirstInteraction);
               document.removeEventListener("touchstart", handleFirstInteraction);
               document.removeEventListener("keydown", handleFirstInteraction);
+              document.removeEventListener("scroll", handleFirstInteraction);
             } catch (err) {
               console.error("Error playing audio:", err);
             }
           };
 
-          document.addEventListener("click", handleFirstInteraction);
-          document.addEventListener("touchstart", handleFirstInteraction);
-          document.addEventListener("keydown", handleFirstInteraction);
+          document.addEventListener("click", handleFirstInteraction, { once: true });
+          document.addEventListener("touchstart", handleFirstInteraction, { once: true });
+          document.addEventListener("keydown", handleFirstInteraction, { once: true });
+          document.addEventListener("scroll", handleFirstInteraction, { once: true });
         }
       };
 
@@ -86,21 +99,26 @@ export default function BackgroundAudio() {
     // Cleanup on unmount
     return () => {
       if (audioRef.current) {
+        audioRef.current.removeEventListener("play", handlePlay);
+        audioRef.current.removeEventListener("pause", handlePause);
+        audioRef.current.removeEventListener("ended", handleEnded);
         audioRef.current.pause();
         audioRef.current.src = "";
       }
     };
   }, [pathname]);
 
-  const toggleAudio = () => {
+  const toggleAudio = async () => {
     if (!audioRef.current) return;
 
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play().catch(console.error);
-      setIsPlaying(true);
+    try {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        await audioRef.current.play();
+      }
+    } catch (error) {
+      console.error("Error toggling audio:", error);
     }
   };
 

@@ -8,17 +8,21 @@ import { Testimonial } from "@/fetch/testimonials";
 import { format } from "date-fns";
 import ShareTestimonial from "@/components/review/ShareTestimonial";
 import HelpfulVotes from "@/components/review/HelpfulVotes";
+import EditReviewDialog from "@/components/review/EditReviewDialog";
+import { useAuth } from "@/context/AuthContext";
 
 interface TestimonialsProps {
   testimonials: Testimonial[];
   showRelatedContent?: boolean;
   className?: string;
+  onReviewUpdate?: () => void;
 }
 
 export default function Testimonials({
   testimonials,
   showRelatedContent = true,
   className = "",
+  onReviewUpdate,
 }: TestimonialsProps) {
   if (!testimonials || testimonials.length === 0) {
     return (
@@ -35,6 +39,7 @@ export default function Testimonials({
           key={testimonial.id}
           testimonial={testimonial}
           showRelatedContent={showRelatedContent}
+          onReviewUpdate={onReviewUpdate}
         />
       ))}
     </div>
@@ -44,9 +49,11 @@ export default function Testimonials({
 interface TestimonialCardProps {
   testimonial: Testimonial;
   showRelatedContent?: boolean;
+  onReviewUpdate?: () => void;
 }
 
-function TestimonialCard({ testimonial, showRelatedContent = true }: TestimonialCardProps) {
+function TestimonialCard({ testimonial, showRelatedContent = true, onReviewUpdate }: TestimonialCardProps) {
+  const { user } = useAuth();
   const getInitials = (firstName?: string, lastName?: string, username?: string) => {
     if (firstName && lastName) {
       return `${firstName[0]}${lastName[0]}`.toUpperCase();
@@ -140,6 +147,15 @@ function TestimonialCard({ testimonial, showRelatedContent = true }: Testimonial
               )}
             </div>
           </div>
+          {/* Edit button for own reviews */}
+          {user && testimonial.user && user.documentId === testimonial.user.documentId && (
+            <EditReviewDialog
+              testimonialId={testimonial.documentId}
+              currentRating={testimonial.rating}
+              currentComment={testimonial.comment}
+              onSuccess={onReviewUpdate}
+            />
+          )}
         </div>
 
         {/* Star Rating */}
@@ -181,7 +197,11 @@ function TestimonialCard({ testimonial, showRelatedContent = true }: Testimonial
 
         {/* Helpful Votes */}
         <div className="pt-3 border-t border-border/50">
-          <HelpfulVotes testimonialId={testimonial.documentId} />
+          <HelpfulVotes
+            testimonialId={testimonial.documentId}
+            initialHelpful={testimonial.helpfulVotes || 0}
+            initialUnhelpful={testimonial.unhelpfulVotes || 0}
+          />
         </div>
 
         {/* Footer: Date and Share */}

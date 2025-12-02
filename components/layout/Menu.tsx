@@ -8,17 +8,19 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "../ui/button";
 import { RiMenu2Fill } from "react-icons/ri";
-// import Link from "next/link";
+import { Sparkles, MapPin, Calendar, Compass } from "lucide-react";
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "../ui/hover-card";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import CardCategory from "./CardCategory";
 import { InspirationCategoryData } from "@/type/inspiration";
 import { ScrollArea } from "../ui/scroll-area";
 import Link from "next/link";
 import { getImageUrl } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 interface MenuProps {
   categories: InspirationCategoryData[];
@@ -29,68 +31,144 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="lg:hidden md:block sm:block">
-          <RiMenu2Fill className="text-primary" />
+        <Button
+          variant="outline"
+          size="icon"
+          className="lg:hidden md:flex sm:flex border-primary/20 hover:bg-primary/5 hover:border-primary/40 transition-all"
+        >
+          <RiMenu2Fill className="text-primary h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left">
-        <SheetHeader>
-          <SheetTitle>Menu</SheetTitle>
+      <SheetContent side="left" className="w-[320px] sm:w-[380px]">
+        <SheetHeader className="mb-6">
+          <SheetTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+            Explore
+          </SheetTitle>
         </SheetHeader>
-        <div className="grid gap-8 py-6 w-[350px]">
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <Button variant="link" className="text-[1.4rem]">
-                Be Inspired
-              </Button>
-            </HoverCardTrigger>
-            <HoverCardContent className="!w-full">
-              <ScrollArea className="h-full w-full rounded-md border">
-                <div className="w-full h-[250px] flex flex-wrap gap-4 p-4 items-stretch justify-start">
-                  {categories.length > 0
-                    ? categories?.map((category: InspirationCategoryData) => (
-                        <CardCategory
-                          key={category.id}
-                          categoryName={category.categoryName}
-                          imageUrl={getImageUrl(category.image)}
-                          url={`/inspiration/${category.categoryName}`}
-                        />
-                      ))
-                    : "<NoDataPlaceholder /> found ."}
-                </div>
-              </ScrollArea>
-            </HoverCardContent>
-          </HoverCard>
 
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <Button variant="link" className="text-[1.4rem]">
-                Places To Go
-              </Button>
-            </HoverCardTrigger>
-            <HoverCardContent className="!w-full">
-              <ScrollArea className="h-full w-full rounded-md border">
-                <div className="w-full h-[250px] flex flex-wrap gap-4 p-4 items-stretch justify-start">
-                  {placesTogCategorie.length > 0
-                    ? placesTogCategorie?.map(
-                        (category: InspirationCategoryData) => (
-                          <CardCategory
-                            key={category.id}
-                            categoryName={category.categoryName}
-                            imageUrl={getImageUrl(category.image)}
-                            url={`/placesTogo/${category.categoryName}`}
-                          />
-                        )
-                      )
-                    : "<NoDataPlaceholder /> found ."}
+        <ScrollArea className="h-[calc(100vh-100px)] pr-4">
+          <div className="space-y-2">
+            {/* Accordion Menu */}
+            <Accordion type="single" collapsible className="w-full">
+              {/* Be Inspired Section */}
+              <AccordionItem value="inspired" className="border-primary/10">
+                <AccordionTrigger className="hover:no-underline py-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                    </div>
+                    <span className="text-base font-semibold">Be Inspired</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="pl-4 pt-2 space-y-2">
+                    {categories.length > 0 ? (
+                      categories.map((category: InspirationCategoryData) => (
+                        <Link
+                          key={category.id}
+                          href={`/inspiration/${category.categoryName}`}
+                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/5 transition-colors group"
+                        >
+                          <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
+                            <img
+                              src={getImageUrl(category.image)}
+                              alt={category.categoryName}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                            />
+                          </div>
+                          <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                            {category.categoryName}
+                          </span>
+                        </Link>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground pl-3">No categories available</p>
+                    )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Places To Go Section */}
+              <AccordionItem value="places" className="border-primary/10">
+                <AccordionTrigger className="hover:no-underline py-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-amber-500/10 rounded-lg">
+                      <MapPin className="h-4 w-4 text-amber-600" />
+                    </div>
+                    <span className="text-base font-semibold">Places To Go</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="pl-4 pt-2 space-y-2">
+                    {placesTogCategorie.length > 0 ? (
+                      placesTogCategorie.map((category: InspirationCategoryData) => (
+                        <Link
+                          key={category.id}
+                          href={`/placesTogo/${category.categoryName}`}
+                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/5 transition-colors group"
+                        >
+                          <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
+                            <img
+                              src={getImageUrl(category.image)}
+                              alt={category.categoryName}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                            />
+                          </div>
+                          <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                            {category.categoryName}
+                          </span>
+                        </Link>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground pl-3">No places available</p>
+                    )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+
+            <Separator className="my-4" />
+
+            {/* Direct Links */}
+            <div className="space-y-1">
+              <Link
+                href="/plan-your-trip"
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/5 transition-all group"
+              >
+                <div className="p-2 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors">
+                  <Compass className="h-4 w-4 text-blue-600" />
                 </div>
-              </ScrollArea>
-            </HoverCardContent>
-          </HoverCard>
-          <Link href={"/plan-your-trip"} className="w-full text-primary text-center text-[1.4rem]">Plan your trip</Link>
-          <Link href={"/programs"} className="w-full text-primary text-center text-[1.4rem]">Programs</Link>
-          <Link href={"/events"} className="w-full text-primary text-center text-[1.4rem]">Events</Link>
-        </div>
+                <span className="text-base font-medium group-hover:text-primary transition-colors">
+                  Plan Your Trip
+                </span>
+              </Link>
+
+              <Link
+                href="/programs"
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/5 transition-all group"
+              >
+                <div className="p-2 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors">
+                  <Calendar className="h-4 w-4 text-green-600" />
+                </div>
+                <span className="text-base font-medium group-hover:text-primary transition-colors">
+                  Programs
+                </span>
+              </Link>
+
+              <Link
+                href="/events"
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/5 transition-all group"
+              >
+                <div className="p-2 bg-purple-500/10 rounded-lg group-hover:bg-purple-500/20 transition-colors">
+                  <Calendar className="h-4 w-4 text-purple-600" />
+                </div>
+                <span className="text-base font-medium group-hover:text-primary transition-colors">
+                  Events
+                </span>
+              </Link>
+            </div>
+          </div>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   );
