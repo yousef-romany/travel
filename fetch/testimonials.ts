@@ -213,7 +213,7 @@ export const createTestimonial = async (testimonialData: {
     const data: any = {
       rating: testimonialData.rating,
       comment: testimonialData.comment,
-      testimonialType: testimonialData.testimonialType,
+      testimonialType: testimonialData.testimonialType === "custom-trip" ? "custom_trip" : testimonialData.testimonialType,
       isVerified: false,
       isApproved: false,
       user: testimonialData.userId,
@@ -297,5 +297,46 @@ export const deleteTestimonial = async (
   } catch (error) {
     console.error("Error deleting testimonial:", error);
     throw error;
+  }
+};
+// Check if user has already reviewed a specific item
+// Get user's existing testimonial for a specific item
+export const getUserTestimonial = async (
+  userId: string,
+  type: "program" | "event" | "custom-trip" | "place",
+  relatedId: string
+): Promise<Testimonial | null> => {
+  try {
+    const authToken =
+      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+
+    let filterField = "";
+    switch (type) {
+      case "program":
+        filterField = "program";
+        break;
+      case "event":
+        filterField = "event";
+        break;
+      case "custom-trip":
+        filterField = "plan_trip";
+        break;
+      case "place":
+        filterField = "place";
+        break;
+    }
+
+    const url = `${API_URL}/api/testimonials?filters[user][documentId][$eq]=${userId}&filters[${filterField}][documentId][$eq]=${relatedId}&populate=*`;
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${authToken || API_TOKEN}`,
+      },
+    });
+
+    return response.data.data.length > 0 ? response.data.data[0] : null;
+  } catch (error) {
+    console.error("Error checking existing testimonial:", error);
+    return null;
   }
 };

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPlanTripById } from "@/fetch/plan-trip";
 import Loading from "@/components/Loading";
@@ -27,8 +28,8 @@ import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import OptimizedImage from "@/components/OptimizedImage";
 import Testimonials from "@/components/testimonials";
-import ReviewDialog from "@/components/review/ReviewDialog";
-import { fetchCustomTripTestimonials } from "@/fetch/testimonials";
+import AddTestimonialDialog from "@/components/add-testimonial-dialog";
+import { fetchCustomTripTestimonials, getUserTestimonial } from "@/fetch/testimonials";
 import AverageRating from "@/components/review/AverageRating";
 import ExportReviews from "@/components/review/ExportReviews";
 
@@ -39,6 +40,7 @@ interface TripDetailsContentProps {
 export default function TripDetailsContent({ tripId }: TripDetailsContentProps) {
   const router = useRouter();
   const { user } = useAuth();
+  const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["planTrip", tripId],
@@ -56,8 +58,15 @@ export default function TripDetailsContent({ tripId }: TripDetailsContentProps) 
     staleTime: 5 * 60 * 1000,
   });
 
+  // Fetch user's existing review
+  const { data: userReview } = useQuery({
+    queryKey: ["userReview", tripId, user?.documentId],
+    queryFn: () => getUserTestimonial(user!.documentId || "", "custom-trip", tripId),
+    enabled: !!user && !!tripId,
+  });
+
   console.log("Testimonials Data:", testimonialsData);
-  
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "quoted":
@@ -384,39 +393,39 @@ Thank you! 🙏`;
 
                         <div className="p-5 md:p-6">
                           <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            {/* Day badge if no image */}
-                            {!dest.image && (
-                              <span className="inline-block px-3 py-1 bg-gradient-to-r from-primary/10 to-amber-600/10 text-primary text-xs font-semibold rounded-full border border-primary/20 mb-2">
-                                Day {index + 1}
-                              </span>
-                            )}
+                            <div className="flex-1">
+                              {/* Day badge if no image */}
+                              {!dest.image && (
+                                <span className="inline-block px-3 py-1 bg-gradient-to-r from-primary/10 to-amber-600/10 text-primary text-xs font-semibold rounded-full border border-primary/20 mb-2">
+                                  Day {index + 1}
+                                </span>
+                              )}
 
-                            <h4 className="font-bold text-xl md:text-2xl mb-3 group-hover:text-primary transition-colors leading-tight">
-                              {dest.title}
-                            </h4>
-                            {dest.location && (
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3 bg-muted/30 px-3 py-2 rounded-lg w-fit">
-                                <MapPin className="w-4 h-4 text-primary" />
-                                <span className="font-medium">{dest.location}</span>
+                              <h4 className="font-bold text-xl md:text-2xl mb-3 group-hover:text-primary transition-colors leading-tight">
+                                {dest.title}
+                              </h4>
+                              {dest.location && (
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3 bg-muted/30 px-3 py-2 rounded-lg w-fit">
+                                  <MapPin className="w-4 h-4 text-primary" />
+                                  <span className="font-medium">{dest.location}</span>
+                                </div>
+                              )}
+                              {dest.description && (
+                                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                                  {dest.description}
+                                </p>
+                              )}
+                            </div>
+                            {!dest.image && (
+                              <div className="text-right flex-shrink-0">
+                                <p className="text-xs text-muted-foreground mb-1 font-medium">Day Cost</p>
+                                <div className="px-3 py-2 bg-gradient-to-br from-primary/10 to-amber-600/10 rounded-lg border border-primary/20 shadow-sm">
+                                  <p className="font-bold text-xl md:text-2xl bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">${dest.price}</p>
+                                </div>
                               </div>
-                            )}
-                            {dest.description && (
-                              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                                {dest.description}
-                              </p>
                             )}
                           </div>
-                          {!dest.image && (
-                            <div className="text-right flex-shrink-0">
-                              <p className="text-xs text-muted-foreground mb-1 font-medium">Day Cost</p>
-                              <div className="px-3 py-2 bg-gradient-to-br from-primary/10 to-amber-600/10 rounded-lg border border-primary/20 shadow-sm">
-                                <p className="font-bold text-xl md:text-2xl bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">${dest.price}</p>
-                              </div>
-                            </div>
-                          )}
                         </div>
-                      </div>
                       </div>
                     </div>
                   ))}
@@ -598,18 +607,22 @@ Thank you! 🙏`;
                     programTitle={trip?.tripName || "Custom Trip"}
                   />
                 )}
-                <ReviewDialog
-                  type="custom-trip"
+                <AddTestimonialDialog
+                  isOpen={isReviewDialogOpen}
+                  onClose={() => setIsReviewDialogOpen(false)}
+                  testimonialType="custom-trip"
                   relatedId={tripId}
-                  relatedTitle={trip?.tripName || "Custom Trip"}
-                  onSuccess={() => refetchTestimonials()}
-                  triggerButton={
-                    <Button className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 gap-2">
-                      <MessageSquare className="w-4 h-4" />
-                      Write a Review
-                    </Button>
-                  }
+                  relatedName={trip?.tripName || "Custom Trip"}
+                  existingTestimonial={userReview || undefined}
+                  queryKey={["customTripTestimonials", tripId]}
                 />
+                <Button
+                  onClick={() => setIsReviewDialogOpen(true)}
+                  className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 gap-2"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  {userReview ? "Edit Review" : "Write a Review"}
+                </Button>
               </div>
             </div>
 
@@ -628,18 +641,14 @@ Thank you! 🙏`;
                 <p className="text-muted-foreground mb-6">
                   Be the first to share your experience with this custom trip!
                 </p>
-                <ReviewDialog
-                  type="custom-trip"
-                  relatedId={tripId}
-                  relatedTitle={trip?.tripName || "Custom Trip"}
-                  onSuccess={() => refetchTestimonials()}
-                  triggerButton={
-                    <Button size="lg" className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 gap-2">
-                      <Star className="w-5 h-5" />
-                      Write the First Review
-                    </Button>
-                  }
-                />
+                <Button
+                  size="lg"
+                  onClick={() => setIsReviewDialogOpen(true)}
+                  className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 gap-2"
+                >
+                  <Star className="w-5 h-5" />
+                  Write the First Review
+                </Button>
               </div>
             )}
           </CardContent>
