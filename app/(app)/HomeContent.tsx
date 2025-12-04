@@ -43,6 +43,15 @@ import { fetchApprovedTestimonials } from "@/fetch/testimonials";
 import { MessageSquare } from "lucide-react";
 import { InstagramPostItem } from "@/components/instagram-post-item";
 import InstagramModal from "@/components/InstagramModal";
+import { RecentlyViewed } from "@/components/programs/RecentlyViewed";
+import { LoyaltyWidget } from "@/components/loyalty/LoyaltyDashboard";
+import { ReferralWidget } from "@/components/social/ReferralProgram";
+import { ComparisonDemo } from "@/components/programs/ComparisonDemo";
+import { calculateDynamicPrice } from "@/lib/dynamic-pricing";
+import { Gift, TrendingUp, Users, Bell, Zap, Award } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { subscribeToPushNotifications } from "@/lib/push-notifications";
+import { useState } from "react";
 
 // Helper function to get stagger delay class
 const getStaggerDelay = (index: number): string => {
@@ -71,6 +80,8 @@ const HERO_VIDEOS = [
 
 export default function HomeContent() {
   const sectionsRef = useRef<HTMLElement[]>([]);
+  const { user } = useAuth();
+  const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
 
   // Fetch homepage data with React Query
   const { data, isLoading, isError, refetch } = useQuery({
@@ -143,6 +154,7 @@ export default function HomeContent() {
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl mb-6 sm:mb-8 drop-shadow-md animate-slide-up animate-delay-200 px-2">
               Experience 7,000 years of history, culture, and adventure
             </p>
+
             <Link
               href="/programs"
               className="animate-slide-up animate-delay-400"
@@ -233,6 +245,24 @@ export default function HomeContent() {
           </Link>
         </div>
       </section>
+
+      {/* Recently Viewed Section */}
+      {user && (
+        <section className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12 bg-gradient-to-br from-blue-50/50 to-cyan-50/30 dark:from-blue-950/10 dark:to-cyan-950/10">
+          <div className="flex flex-col items-center mb-8 sm:mb-12 text-center animate-on-scroll">
+            <div className="inline-flex items-center justify-center p-2 sm:p-3 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-full mb-3 sm:mb-4 shadow-lg">
+              <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" aria-hidden="true" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent px-4">
+              Continue Exploring
+            </h2>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xs sm:max-w-2xl md:max-w-3xl px-4">
+              Pick up where you left off with your recently viewed programs
+            </p>
+          </div>
+          <RecentlyViewed />
+        </section>
+      )}
 
       {/* Places to Go Section */}
       <section
@@ -609,6 +639,270 @@ export default function HomeContent() {
                 <Ticket className="h-4 w-4" aria-hidden="true" />
               </Button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Loyalty Program Section */}
+      {user && (
+        <section className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12 bg-gradient-to-br from-amber-50/50 via-yellow-50/30 to-orange-50/50 dark:from-amber-950/10 dark:via-yellow-950/10 dark:to-orange-950/10">
+          <div className="flex flex-col items-center mb-8 sm:mb-12 text-center animate-on-scroll">
+            <div className="inline-flex items-center justify-center p-2 sm:p-3 bg-gradient-to-br from-amber-100 via-yellow-100 to-orange-100 dark:from-amber-900/30 dark:via-yellow-900/30 dark:to-orange-900/30 rounded-full mb-3 sm:mb-4 shadow-lg">
+              <Award className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600" aria-hidden="true" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-amber-600 via-yellow-600 to-orange-600 bg-clip-text text-transparent px-4">
+              Your Loyalty Rewards
+            </h2>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xs sm:max-w-2xl md:max-w-3xl px-4">
+              Earn points with every booking and unlock exclusive benefits
+            </p>
+          </div>
+          <div className="max-w-6xl mx-auto">
+            <LoyaltyWidget />
+            <div className="flex justify-center mt-8">
+              <Link href="/dashboard">
+                <Button size="lg" className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white shadow-lg">
+                  View Full Dashboard
+                  <Award className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Referral Program Section */}
+      {user && (
+        <section className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12 bg-gradient-to-br from-green-50/50 to-emerald-50/30 dark:from-green-950/10 dark:to-emerald-950/10">
+          <div className="flex flex-col items-center mb-8 sm:mb-12 text-center animate-on-scroll">
+            <div className="inline-flex items-center justify-center p-2 sm:p-3 bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-full mb-3 sm:mb-4 shadow-lg">
+              <Users className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" aria-hidden="true" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent px-4">
+              Refer Friends, Earn Rewards
+            </h2>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xs sm:max-w-2xl md:max-w-3xl px-4">
+              Get $50 credit for every friend who books their first trip
+            </p>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <ReferralWidget />
+            <div className="flex justify-center mt-8">
+              <Link href="/dashboard">
+                <Button size="lg" variant="outline" className="gap-2 border-green-600 text-green-600 hover:bg-green-50 dark:hover:bg-green-950/20">
+                  Manage Referrals
+                  <Users className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Gift Cards Promotion Section */}
+      <section className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12 bg-gradient-to-br from-pink-50/50 via-rose-50/30 to-red-50/50 dark:from-pink-950/10 dark:via-rose-950/10 dark:to-red-950/10">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 items-center animate-on-scroll">
+            <div>
+              <div className="inline-flex items-center justify-center p-2 bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-900/30 dark:to-rose-900/30 rounded-full mb-4 shadow-lg">
+                <Gift className="h-6 w-6 text-pink-600" aria-hidden="true" />
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
+                Give the Gift of Travel
+              </h2>
+              <p className="text-base sm:text-lg text-muted-foreground mb-6">
+                Share the magic of Egypt with your loved ones. Our gift cards are perfect for any occasion and never expire.
+              </p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-full">
+                    <Zap className="h-5 w-5 text-pink-600" />
+                  </div>
+                  <span className="text-sm sm:text-base">Instant digital delivery</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-full">
+                    <Gift className="h-5 w-5 text-pink-600" />
+                  </div>
+                  <span className="text-sm sm:text-base">Valid on all programs</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-full">
+                    <Heart className="h-5 w-5 text-pink-600" />
+                  </div>
+                  <span className="text-sm sm:text-base">Personalized message included</span>
+                </div>
+              </div>
+              <Link href="/gift-cards">
+                <Button size="lg" className="gap-2 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white shadow-xl">
+                  Purchase Gift Card
+                  <Gift className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+            <div className="relative h-64 sm:h-80 md:h-96 rounded-2xl overflow-hidden shadow-2xl">
+              <Image
+                src="https://images.unsplash.com/photo-1513581166391-887a96ddeafd?w=800"
+                alt="Gift card promotion"
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-pink-900/50 to-transparent" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Push Notification Prompt */}
+      {user && !showNotificationPrompt && (
+        <section className="py-8 sm:py-12 !w-full px-4 sm:px-6 md:px-8 lg:px-12">
+          <Card className="max-w-4xl mx-auto border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 animate-on-scroll">
+            <CardContent className="p-6 sm:p-8">
+              <div className="flex flex-col sm:flex-row items-center gap-6">
+                <div className="inline-flex items-center justify-center p-4 bg-primary/10 rounded-full">
+                  <Bell className="h-8 w-8 text-primary" />
+                </div>
+                <div className="flex-1 text-center sm:text-left">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-2">Stay Updated on Your Adventures</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    Get instant notifications about booking confirmations, trip reminders, and exclusive deals
+                  </p>
+                </div>
+                <Button
+                  size="lg"
+                  onClick={async () => {
+                    const result = await subscribeToPushNotifications();
+                    if (result) {
+                      setShowNotificationPrompt(true);
+                    }
+                  }}
+                  className="gap-2 whitespace-nowrap"
+                >
+                  Enable Notifications
+                  <Bell className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
+      {/* Interactive Comparison Demo */}
+      <section className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12 bg-secondary/50">
+        <div className="flex flex-col items-center mb-8 sm:mb-12 text-center animate-on-scroll">
+          <div className="inline-flex items-center justify-center p-2 sm:p-3 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-full mb-3 sm:mb-4 shadow-lg">
+            <Compass className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" aria-hidden="true" />
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent px-4">
+            Try Our Program Comparison Tool
+          </h2>
+          <p className="text-sm sm:text-base text-muted-foreground max-w-xs sm:max-w-2xl md:max-w-3xl px-4">
+            Compare up to 3 programs side-by-side to make the best decision for your trip
+          </p>
+        </div>
+
+        <ComparisonDemo />
+      </section>
+
+      {/* Features Showcase Section */}
+      <section className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col items-center mb-8 sm:mb-12 text-center animate-on-scroll">
+            <div className="inline-flex items-center justify-center p-2 sm:p-3 bg-gradient-to-br from-primary/10 to-accent rounded-full mb-3 sm:mb-4 shadow-lg">
+              <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-primary" aria-hidden="true" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 px-4">
+              Why Choose ZoeHoliday?
+            </h2>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xs sm:max-w-2xl md:max-w-3xl px-4">
+              We offer the most comprehensive travel experience with exclusive features
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-on-scroll">
+            {/* Dynamic Pricing */}
+            <Card className="hover-lift border-2 border-primary/10">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-full mb-4">
+                  <TrendingUp className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">Smart Pricing</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Get the best deals with our dynamic pricing engine. Early bird discounts up to 30% off.
+                </p>
+                <div className="text-xs text-primary font-medium">Save up to $500 per trip</div>
+              </CardContent>
+            </Card>
+
+            {/* Group Discounts */}
+            <Card className="hover-lift border-2 border-primary/10">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-full mb-4">
+                  <Users className="h-6 w-6 text-blue-600" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">Group Discounts</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Travel with friends and family! Get up to 20% off for groups of 16 or more.
+                </p>
+                <div className="text-xs text-primary font-medium">Bigger groups = Bigger savings</div>
+              </CardContent>
+            </Card>
+
+            {/* Loyalty Program */}
+            <Card className="hover-lift border-2 border-primary/10">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-900/30 dark:to-yellow-900/30 rounded-full mb-4">
+                  <Award className="h-6 w-6 text-amber-600" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">Loyalty Rewards</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Earn points on every booking. Redeem for discounts and exclusive perks.
+                </p>
+                <div className="text-xs text-primary font-medium">100 points = $1 USD</div>
+              </CardContent>
+            </Card>
+
+            {/* Travel Insurance */}
+            <Card className="hover-lift border-2 border-primary/10">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-full mb-4">
+                  <Heart className="h-6 w-6 text-purple-600" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">Travel Protection</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Travel worry-free with our comprehensive insurance options starting at $49.
+                </p>
+                <div className="text-xs text-primary font-medium">Up to $250K coverage</div>
+              </CardContent>
+            </Card>
+
+            {/* Voice Search */}
+            <Card className="hover-lift border-2 border-primary/10">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-red-100 to-orange-100 dark:from-red-900/30 dark:to-orange-900/30 rounded-full mb-4">
+                  <Play className="h-6 w-6 text-red-600" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">Voice Search</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Find your perfect trip hands-free with our AI-powered voice search.
+                </p>
+                <div className="text-xs text-primary font-medium">Search in any language</div>
+              </CardContent>
+            </Card>
+
+            {/* 24/7 Support */}
+            <Card className="hover-lift border-2 border-primary/10">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-indigo-100 to-blue-100 dark:from-indigo-900/30 dark:to-blue-900/30 rounded-full mb-4">
+                  <MessageSquare className="h-6 w-6 text-indigo-600" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">24/7 Support</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Our expert travel guides are always here to help you plan your perfect trip.
+                </p>
+                <div className="text-xs text-primary font-medium">WhatsApp & Live Chat</div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

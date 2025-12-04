@@ -7,7 +7,7 @@ export default function OrganizationSchema() {
     "url": process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com",
     "logo": `${process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com"}/logo.png`,
     "image": `${process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com"}/og-image.jpg`,
-    "telephone": "+20-XXX-XXX-XXXX",
+    "telephone": "+20-1555-100-961",
     "email": "yousefromany527@example.com",
     "address": {
       "@type": "PostalAddress",

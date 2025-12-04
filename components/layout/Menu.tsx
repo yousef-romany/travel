@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState, useEffect } from "react";
 import Image from "next/image";
 import {
   Sheet,
@@ -8,8 +8,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 import { RiMenu2Fill } from "react-icons/ri";
-import { Sparkles, MapPin, Calendar, Compass } from "lucide-react";
+import { Sparkles, MapPin, Calendar, Compass, GitCompare } from "lucide-react";
+import { getComparisonCount } from "@/lib/comparison";
 import {
   Accordion,
   AccordionContent,
@@ -29,6 +31,23 @@ interface MenuProps {
 }
 
 const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
+  const [comparisonCount, setComparisonCount] = useState(0);
+
+  useEffect(() => {
+    const updateCount = () => {
+      setComparisonCount(getComparisonCount());
+    };
+
+    updateCount();
+    window.addEventListener("comparisonUpdated", updateCount);
+    window.addEventListener("storage", updateCount);
+
+    return () => {
+      window.removeEventListener("comparisonUpdated", updateCount);
+      window.removeEventListener("storage", updateCount);
+    };
+  }, []);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -158,6 +177,26 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                 <span className="text-base font-medium group-hover:text-primary transition-colors">
                   Programs
                 </span>
+              </Link>
+
+              <Link
+                href="/compare"
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/5 transition-all group relative"
+              >
+                <div className="p-2 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors">
+                  <GitCompare className="h-4 w-4 text-blue-600" />
+                </div>
+                <span className="text-base font-medium group-hover:text-primary transition-colors">
+                  Compare Programs
+                </span>
+                {comparisonCount > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="ml-auto h-5 px-2 text-[10px] font-bold"
+                  >
+                    {comparisonCount}
+                  </Badge>
+                )}
               </Link>
 
               <Link

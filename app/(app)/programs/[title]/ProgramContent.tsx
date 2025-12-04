@@ -27,6 +27,8 @@ import ReviewStatistics from "@/components/review/ReviewStatistics";
 import FeaturedReviews from "@/components/review/FeaturedReviews";
 import ReviewAnalytics from "@/components/review/ReviewAnalytics";
 import ExportReviews from "@/components/review/ExportReviews";
+import { ShareButtonCompact } from "@/components/social/ShareButtons";
+import { generateProgramShareText, generateTravelHashtags } from "@/lib/social-sharing";
 
 export default function ProgramContent({ title }: { title: string }) {
   const { data, error, isLoading } = useQuery<
@@ -306,13 +308,37 @@ export default function ProgramContent({ title }: { title: string }) {
                 </div>
               </div>
 
-              <Button
-                size="lg"
-                className="w-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-2xl text-lg py-6 hover:scale-105 transition-transform font-semibold"
-                onClick={handleBookingClick}
-              >
-                Book This Experience
-              </Button>
+              <div className="space-y-3">
+                <Button
+                  size="lg"
+                  className="w-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-2xl text-lg py-6 hover:scale-105 transition-transform font-semibold"
+                  onClick={handleBookingClick}
+                >
+                  Book This Experience
+                </Button>
+
+                {/* Share Button */}
+                <div className="flex justify-center">
+                  <ShareButtonCompact
+                    shareOptions={{
+                      title: program.title || "Amazing Travel Experience",
+                      text: generateProgramShareText(
+                        program.title || "Travel Program",
+                        Number(program.price),
+                        Number(program.rating)
+                      ),
+                      url: typeof window !== "undefined" ? window.location.href : "",
+                      hashtags: generateTravelHashtags(program.Location),
+                      via: "ZoeHolidays",
+                    }}
+                    shareConfig={{
+                      contentType: "program",
+                      contentId: program.documentId || "",
+                      contentTitle: program.title || "Travel Program",
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
 

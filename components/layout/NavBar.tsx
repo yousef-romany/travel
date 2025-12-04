@@ -1,8 +1,10 @@
 "use client";
-import { memo } from "react";
+import { memo, useState, useEffect } from "react";
 import Image from "next/image";
 import { FaRegHeart } from "react-icons/fa6";
+import { GitCompare } from "lucide-react";
 import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 import ModeToggle from "./ModeToggle";
 import { NavigationMenuDemo } from "./NavigationMenuDemo";
 import Menu from "./Menu";
@@ -18,10 +20,28 @@ import logoLight from "@/public/logoLight.png";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/context/AuthContext";
 import { trackButtonClick, trackNavigation } from "@/lib/analytics";
+import { getComparisonCount } from "@/lib/comparison";
 
 const NavBar = () => {
   const { theme } = useTheme();
   const { user } = useAuth();
+  const [comparisonCount, setComparisonCount] = useState(0);
+
+  // Update comparison count
+  useEffect(() => {
+    const updateCount = () => {
+      setComparisonCount(getComparisonCount());
+    };
+
+    updateCount();
+    window.addEventListener("comparisonUpdated", updateCount);
+    window.addEventListener("storage", updateCount);
+
+    return () => {
+      window.removeEventListener("comparisonUpdated", updateCount);
+      window.removeEventListener("storage", updateCount);
+    };
+  }, []);
 
   const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
     queryKey: ["InspirationCategories"],
@@ -49,6 +69,10 @@ const NavBar = () => {
 
   const handleLoginClick = () => {
     trackButtonClick("Login", "NavBar", "/login");
+  };
+
+  const handleComparisonClick = () => {
+    trackButtonClick("Comparison", "NavBar", "/compare");
   };
 
   return (
@@ -94,6 +118,26 @@ const NavBar = () => {
 
       {/* Right Actions */}
       <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-shrink-0">
+        {/* Comparison */}
+        <Link href="/compare" onClick={handleComparisonClick}>
+          <Button
+            size="icon"
+            variant="outline"
+            className="hover:bg-primary/10 transition-colors h-9 w-9 sm:h-10 sm:w-10 relative"
+            title="Compare Programs"
+          >
+            <GitCompare size={18} className="text-primary sm:w-5 sm:h-5" />
+            {comparisonCount > 0 && (
+              <Badge
+                variant="destructive"
+                className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-[10px] font-bold"
+              >
+                {comparisonCount}
+              </Badge>
+            )}
+          </Button>
+        </Link>
+
         {/* Wishlist - Hidden on mobile when logged in */}
         {!user && (
           <Button
