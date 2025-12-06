@@ -15,9 +15,11 @@ export default function ComparePage() {
   const router = useRouter();
 
   useEffect(() => {
+    console.log("ComparePage: Loading programs on mount");
     loadPrograms();
 
     const handleUpdate = () => {
+      console.log("ComparePage: Comparison updated event received");
       loadPrograms();
     };
 
@@ -26,7 +28,10 @@ export default function ComparePage() {
   }, []);
 
   const loadPrograms = () => {
-    setPrograms(getComparisonList());
+    const list = getComparisonList();
+    console.log("ComparePage: Loaded programs from localStorage:", list);
+    console.log("ComparePage: Number of programs:", list.length);
+    setPrograms(list);
   };
 
   const handleRemove = (documentId: string) => {
@@ -102,7 +107,7 @@ export default function ComparePage() {
               )}
               <div className="p-4">
                 <h3 className="font-bold mb-2 line-clamp-2">{program.title}</h3>
-                <Link href={`/programs/${program.title}`}>
+                <Link href={`/programs/${program.documentId}`}>
                   <Button variant="outline" size="sm" className="w-full">
                     View Details
                   </Button>
@@ -178,7 +183,7 @@ export default function ComparePage() {
           <div></div>
           {programs.map((program) => (
             <div key={`action-${program.documentId}`} className="py-4">
-              <Link href={`/programs/${program.title}`} className="block">
+              <Link href={`/programs/${program.documentId}`} className="block">
                 <Button className="w-full" size="lg">
                   Book Now
                 </Button>
@@ -245,10 +250,10 @@ export default function ComparePage() {
               </div>
 
               <div className="flex gap-2">
-                <Link href={`/programs/${program.title}`} className="flex-1">
+                <Link href={`/programs/${program.documentId}`} className="flex-1">
                   <Button className="w-full">Book Now</Button>
                 </Link>
-                <Link href={`/programs/${program.title}`}>
+                <Link href={`/programs/${program.documentId}`}>
                   <Button variant="outline">View Details</Button>
                 </Link>
               </div>

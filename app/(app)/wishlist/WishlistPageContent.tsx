@@ -345,7 +345,7 @@ export default function WishlistPageContent() {
                         <span className="text-sm text-muted-foreground">/person</span>
                       </div>
                     </div>
-                    <Link href={`/programs/${item.program.title}`} className="block">
+                    <Link href={`/programs/${item.program.documentId}`} className="block">
                       <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-smooth shadow-md hover:shadow-lg hover-glow">
                         View Details
                       </Button>

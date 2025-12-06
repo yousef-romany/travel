@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Calendar,
+  Clock,
   Compass,
   Heart,
   Instagram,
@@ -47,6 +48,7 @@ import { RecentlyViewed } from "@/components/programs/RecentlyViewed";
 import { LoyaltyWidget } from "@/components/loyalty/LoyaltyDashboard";
 import { ReferralWidget } from "@/components/social/ReferralProgram";
 import { ComparisonDemo } from "@/components/programs/ComparisonDemo";
+import { CompareButton } from "@/components/programs/CompareButton";
 import { calculateDynamicPrice } from "@/lib/dynamic-pricing";
 import { Gift, TrendingUp, Users, Bell, Zap, Award } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -135,10 +137,6 @@ export default function HomeContent() {
 
   return (
     <div className="!w-full flex-1">
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
-      </div>
       {/* Hero Section with Background Video */}
       <section className="relative h-[95.5vh] sm:h-[95.5vh] overflow-hidden !w-full">
         <BackgroundVideo
@@ -606,25 +604,48 @@ export default function HomeContent() {
                         <span className="font-medium text-sm sm:text-base">{program.rating}</span>
                       </div>
                     </div>
-                    <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4 line-clamp-2">
+                    <p className="text-sm sm:text-base text-muted-foreground mb-2 line-clamp-2">
                       {program.descraption || program.overView}
                     </p>
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
-                      <div>
-                        <span className="text-base sm:text-lg font-bold">
-                          ${program.price}
-                        </span>
-                        <span className="text-muted-foreground text-xs sm:text-sm">
-                          {" "}
-                          / person
-                        </span>
+                    {program.duration && (
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3 sm:mb-4">
+                        <Clock className="h-4 w-4" />
+                        <span>{program.duration} days</span>
                       </div>
-                      <Link
-                        href={`/programs/${encodeURIComponent(program.title)}`}
-                        onClick={() => handleProgramClick(program)}
-                      >
-                        <Button className="transition-smooth hover-glow text-sm sm:text-base w-full sm:w-auto">View Details</Button>
-                      </Link>
+                    )}
+                    <div className="flex flex-col gap-3">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+                        <div>
+                          <span className="text-base sm:text-lg font-bold">
+                            ${program.price}
+                          </span>
+                          <span className="text-muted-foreground text-xs sm:text-sm">
+                            {" "}
+                            / person
+                          </span>
+                        </div>
+                        <Link
+                          href={`/programs/${program.documentId}`}
+                          onClick={() => handleProgramClick(program)}
+                        >
+                          <Button className="transition-smooth hover-glow text-sm sm:text-base w-full sm:w-auto">View Details</Button>
+                        </Link>
+                      </div>
+                      <CompareButton
+                        program={{
+                          id: program.id,
+                          documentId: program.documentId,
+                          title: program.title,
+                          price: program.price,
+                          duration: program.duration || 1,
+                          Location: program.Location || "Egypt",
+                          rating: program.rating || 0,
+                          descraption: program.descraption || program.overView || "",
+                          imageUrl: program.images?.[0] ? getImageUrl(program.images[0] as any) : undefined
+                        }}
+                        variant="outline"
+                        size="sm"
+                      />
                     </div>
                   </CardContent>
                 </Card>
@@ -660,9 +681,9 @@ export default function HomeContent() {
           <div className="max-w-6xl mx-auto">
             <LoyaltyWidget />
             <div className="flex justify-center mt-8">
-              <Link href="/dashboard">
+              <Link href="/me">
                 <Button size="lg" className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white shadow-lg">
-                  View Full Dashboard
+                  View Full Profile
                   <Award className="h-4 w-4" />
                 </Button>
               </Link>
@@ -688,7 +709,7 @@ export default function HomeContent() {
           <div className="max-w-4xl mx-auto">
             <ReferralWidget />
             <div className="flex justify-center mt-8">
-              <Link href="/dashboard">
+              <Link href="/me">
                 <Button size="lg" variant="outline" className="gap-2 border-green-600 text-green-600 hover:bg-green-50 dark:hover:bg-green-950/20">
                   Manage Referrals
                   <Users className="h-4 w-4" />

@@ -288,7 +288,7 @@ export default function CompleteProfilePage() {
     let profileId;
 
     // 2. Create profile if not found (Strapi v5 syntax)
-    if (!p.data.length) {
+    if (!p.data?.length) {
       const created = await fetch(
         `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles`,
         {
@@ -355,14 +355,14 @@ export default function CompleteProfilePage() {
     );
 
   return (
-    <div className="min-h-screen py-12 bg-gradient-to-br from-background-950 to-muted-950 flex items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-screen py-12 bg-gradient-to-br from-background to-muted flex items-center justify-center px-4 relative overflow-hidden">
       {/* Glow background */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-10 left-16 w-72 h-72 bg-amber-600 rounded-full blur-[120px]"></div>
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="absolute top-10 right-16 w-72 h-72 bg-primary/50 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-10 left-16 w-72 h-72 bg-primary/60 rounded-full blur-[120px]"></div>
       </div>
-      
-        <motion.div className="w-full max-w-4xl bg-background/30 p-10 rounded-2xl border border-primary/20">
+
+        <motion.div className="w-full max-w-4xl bg-card/80 backdrop-blur-sm p-10 rounded-2xl border border-primary/20 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-12">
             {/* PERSONAL */}
             <div className="grid grid-cols-2 gap-6">
@@ -533,11 +533,11 @@ export default function CompleteProfilePage() {
               whileHover={{ scale: loading ? 1 : 1.04 }}
               type="submit"
               disabled={loading}
-              className="w-full py-3 text-lg font-semibold bg-primary text-black rounded-xl"
+              className="w-full py-3 text-lg font-semibold bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors"
             >
               {loading ? (
                 <div className="flex justify-center items-center gap-2">
-                  <span className="animate-spin h-4 w-4 border-2 border-black border-t-transparent rounded-full"></span>
+                  <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></span>
                   Saving...
                 </div>
               ) : (
@@ -548,7 +548,7 @@ export default function CompleteProfilePage() {
 
           <Link
             href="/signup"
-            className="block text-center mt-6 text-primary hover:text-primary"
+            className="block text-center mt-6 text-primary hover:text-primary/80 transition-colors"
           >
             <ArrowLeft size={16} className="inline mr-1" /> Back to Signup
           </Link>

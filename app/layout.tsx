@@ -1,6 +1,5 @@
 import "../app/globals.css"
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import NavBar from "@/components/layout/NavBar";
 import { ThemeProvider } from "@/components/Providers";
@@ -11,15 +10,11 @@ import OrganizationSchema from "@/components/seo/OrganizationSchema";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import BackgroundAudio from "@/components/BackgroundAudio";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// Using system fonts to avoid Google Fonts network dependency during build
+const fontVariables = {
+  sans: "--font-geist-sans",
+  mono: "--font-geist-mono",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'),
@@ -226,7 +221,10 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
+        className="antialiased relative"
+        style={{
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+        }}
       >
         <AuthProvider>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>

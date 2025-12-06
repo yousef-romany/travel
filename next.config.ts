@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "scontent.cdninstagram.com" },
       { protocol: "https", hostname: "instagram.fcai21-3.fna.fbcdn.net" },
       { protocol: "https", hostname: "scontent-hbe1-1.cdninstagram.com" },
+      {protocol: 'https',hostname: 'images.unsplash.com',},
       {
         protocol: 'http',
         hostname: 'localhost',

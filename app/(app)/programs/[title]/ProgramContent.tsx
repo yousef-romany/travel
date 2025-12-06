@@ -29,6 +29,7 @@ import ReviewAnalytics from "@/components/review/ReviewAnalytics";
 import ExportReviews from "@/components/review/ExportReviews";
 import { ShareButtonCompact } from "@/components/social/ShareButtons";
 import { generateProgramShareText, generateTravelHashtags } from "@/lib/social-sharing";
+import { addToRecentlyViewed } from "@/lib/recently-viewed";
 
 export default function ProgramContent({ title }: { title: string }) {
   const { data, error, isLoading } = useQuery<
@@ -58,12 +59,29 @@ export default function ProgramContent({ title }: { title: string }) {
     enabled: !!user && !!data?.data?.at(0)?.documentId,
   });
 
-  // Track program view when data loads
+  // Track program view and add to recently viewed when data loads
   useEffect(() => {
     if (data?.data?.at(0)) {
       const program = data.data.at(0);
       if (program?.title && program?.documentId) {
         trackProgramView(program.title, program.documentId);
+
+        // Add to recently viewed with proper data structure
+        const firstImage = program.images?.[0];
+        const imageUrl = firstImage?.imageUrl
+          ? getImageUrl(firstImage.imageUrl)
+          : (firstImage ? getImageUrl(firstImage as any) : undefined);
+
+        addToRecentlyViewed({
+          id: program.id || 0,
+          documentId: program.documentId,
+          title: program.title,
+          price: Number(program.price) || 0,
+          duration: Number(program.duration) || 1,
+          Location: program.Location || "Egypt",
+          rating: Number(program.rating) || 5,
+          imageUrl: imageUrl,
+        });
       }
     }
   }, [data]);
@@ -92,8 +110,8 @@ export default function ProgramContent({ title }: { title: string }) {
         Number(program.price)
       );
     }
-    // Navigate to booking page
-    window.location.href = `/programs/${encodeURIComponent(title)}/book`;
+    // Navigate to booking page using documentId
+    window.location.href = `/programs/${program.documentId}/book`;
   };
 
   return (
@@ -114,7 +132,7 @@ export default function ProgramContent({ title }: { title: string }) {
           duration={Number(program.duration) || 1}
           location={program.Location || "Egypt"}
           rating={Number(program.rating) || 5}
-          url={`/programs/${encodeURIComponent(title)}`}
+          url={`/programs/${program.documentId}`}
         />
         <BreadcrumbSchema
           items={[
@@ -122,7 +140,7 @@ export default function ProgramContent({ title }: { title: string }) {
             { name: "Programs", url: "/programs" },
             {
               name: program.title || "Egypt Tour",
-              url: `/programs/${encodeURIComponent(title)}`,
+              url: `/programs/${program.documentId}`,
             },
           ]}
         />
@@ -193,6 +211,8 @@ export default function ProgramContent({ title }: { title: string }) {
                       fill
                       className="object-cover"
                       sizes="80px"
+                      loading="lazy"
+                      quality={70}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = "/placeholder.svg";
@@ -395,6 +415,8 @@ export default function ProgramContent({ title }: { title: string }) {
                                   alt={step.title}
                                   fill
                                   className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                  loading="lazy"
+                                  quality={80}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent opacity-80" />
 
@@ -455,15 +477,15 @@ export default function ProgramContent({ title }: { title: string }) {
                                         className="hover:bg-primary/10 hover:border-primary/50 transition-all flex-shrink-0 h-9 w-9 md:h-10 md:w-10"
                                       >
                                         <Info className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-                                        <span className="sr-only">More info</span>
+                                        <span className="sr-only text-muted">More info</span>
                                       </Button>
                                     </TooltipTrigger>
-                                    <TooltipContent className="max-w-xs p-4">
-                                      <p className="font-semibold mb-2 text-base">{step.title}</p>
+                                    <TooltipContent className="max-w-xs p-4 text-muted">
+                                      <p className="font-semibold mb-2 text-base !text-muted">{step.title}</p>
                                       {imageUrl && (
                                         <div className="relative w-[200px] h-[130px] mb-2 rounded-md overflow-hidden">
                                           <Image
-                                            src={imageUrl}
+                                            src={getImageUrl(imageUrl)}
                                             alt={step.title}
                                             fill
                                             className="object-cover"
@@ -480,7 +502,7 @@ export default function ProgramContent({ title }: { title: string }) {
                                               }/${step.place_to_go_subcategories.at(-1)
                                                 ?.categoryName || ""
                                               }/${step.title}`}
-                                            className="inline-flex items-center gap-1 text-primary hover:underline text-sm mt-2 font-medium"
+                                            className="inline-flex items-center gap-1 text-muted hover:underline text-sm mt-2 font-medium"
                                           >
                                             Explore this destination
                                             <MapPin className="h-3 w-3" />
@@ -521,7 +543,10 @@ export default function ProgramContent({ title }: { title: string }) {
               <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
                 Overview
               </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed">{program.overView}</p>
+              <div
+                className="text-muted-foreground text-lg leading-relaxed prose prose-slate dark:prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: program.overView || '' }}
+              />
             </div>
           </div>
 

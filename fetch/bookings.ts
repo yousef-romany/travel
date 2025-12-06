@@ -46,10 +46,16 @@ export interface BookingType {
     id: number;
     documentId: string;
     title: string;
-    price: number;
-    duration: number;
+    price?: number;
     location?: string;
-    images?: Array<{
+    startDate?: string;
+    endDate?: string;
+    featuredImage?: {
+      id: number;
+      url: string;
+      name: string;
+    };
+    gallery?: Array<{
       id: number;
       url: string;
       name: string;
@@ -83,9 +89,11 @@ export const fetchUserBookings = async (
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
     // Build URL with proper deep population syntax for Strapi v5
-    let url = `${API_URL}/api/bookings?populate[program][populate]=images&populate[plan_trip][populate]=destinations&populate[event][populate]=images&populate[user]=*&sort[0]=createdAt:desc`;
+    // Event has 'featuredImage' and 'gallery', not 'images'
+    // plan_trip destinations is a JSON field, not a relation, so just populate plan_trip itself
+    let url = `${API_URL}/api/bookings?populate[program][populate][0]=images&populate[plan_trip]=*&populate[event][populate][0]=featuredImage&populate[event][populate][1]=gallery&populate[user]=*&sort[0]=createdAt:desc`;
 
-    // If userId is provided, filter by user
+    // If userId is provided, filter by user documentId
     if (userId) {
       url += `&filters[user][documentId][$eq]=${userId}`;
     }
@@ -94,12 +102,45 @@ export const fetchUserBookings = async (
       headers: {
         Authorization: `Bearer ${API_TOKEN || authToken}`,
       },
+      timeout: 10000, // 10 second timeout
     });
 
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching bookings:", error);
-    throw error;
+
+    // Handle specific error types
+    if (error.code === 'ECONNREFUSED') {
+      throw new Error("Unable to connect to the server. Please check if the backend is running.");
+    }
+
+    if (error.response) {
+      // Server responded with error status
+      const status = error.response.status;
+      const message = error.response.data?.error?.message || "An error occurred";
+
+      if (status === 400) {
+        throw new Error(`Invalid request: ${message}`);
+      } else if (status === 401) {
+        throw new Error("Unauthorized. Please log in again.");
+      } else if (status === 403) {
+        throw new Error("Access forbidden. You don't have permission to view these bookings.");
+      } else if (status === 404) {
+        throw new Error("Bookings not found.");
+      } else if (status >= 500) {
+        throw new Error("Server error. Please try again later.");
+      }
+
+      throw new Error(message);
+    }
+
+    if (error.request) {
+      // Request made but no response received
+      throw new Error("No response from server. Please check your internet connection.");
+    }
+
+    // Generic error
+    throw new Error("Failed to fetch bookings. Please try again.");
   }
 };
 

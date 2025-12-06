@@ -37,6 +37,9 @@ export function addToRecentlyViewed(program: Omit<RecentlyViewedProgram, "viewed
     ].slice(0, MAX_ITEMS); // Keep only MAX_ITEMS
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+
+    // Dispatch custom event to notify components
+    window.dispatchEvent(new Event("recentlyViewedUpdated"));
   } catch (error) {
     console.error("Error adding to recently viewed:", error);
   }

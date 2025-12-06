@@ -219,7 +219,7 @@ export default function WishlistSection() {
                   <span className="text-xs text-muted-foreground">From</span>
                   <span className="text-xl font-bold text-primary">${item.program.price}</span>
                 </div>
-                <Link href={`/programs/${item.program.title}`} className="block">
+                <Link href={`/programs/${item.program.documentId}`} className="block">
                   <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                     View Details
                   </Button>

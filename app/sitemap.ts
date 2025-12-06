@@ -97,7 +97,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Dynamic program pages
   const programPages: MetadataRoute.Sitemap = programs.map((program) => ({
-    url: `${SITE_URL}/programs/${encodeURIComponent(program.title)}`,
+    url: `${SITE_URL}/programs/${program.documentId}`,
     lastModified: program.updatedAt ? new Date(program.updatedAt) : new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,

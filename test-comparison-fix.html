@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comparison Test</title>
+</head>
+<body>
+    <h1>Comparison LocalStorage Test</h1>
+    <div id="output"></div>
+
+    <script>
+        const STORAGE_KEY = "programComparison";
+
+        // Test 1: Add programs
+        const testPrograms = [
+            {
+                id: 1,
+                documentId: "test-1",
+                title: "Test Program 1",
+                price: 100,
+                duration: 5,
+                Location: "Cairo",
+                rating: 4.5,
+                descraption: "Test description 1",
+                imageUrl: "/test1.jpg",
+                addedAt: new Date().toISOString()
+            },
+            {
+                id: 2,
+                documentId: "test-2",
+                title: "Test Program 2",
+                price: 200,
+                duration: 7,
+                Location: "Luxor",
+                rating: 4.8,
+                descraption: "Test description 2",
+                imageUrl: "/test2.jpg",
+                addedAt: new Date().toISOString()
+            }
+        ];
+
+        // Save to localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(testPrograms));
+
+        // Read back
+        const stored = localStorage.getItem(STORAGE_KEY);
+        const parsed = JSON.parse(stored);
+
+        document.getElementById("output").innerHTML = `
+            <h2>Stored Data:</h2>
+            <pre>${JSON.stringify(parsed, null, 2)}</pre>
+            <p>Count: ${parsed.length}</p>
+            <p>Now navigate to <a href="/compare">/compare</a> to see if it loads</p>
+        `;
+    </script>
+</body>
+</html>

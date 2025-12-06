@@ -23,7 +23,7 @@ export default function TripsSection() {
     tripName: string;
   } | null>(null);
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["userBookings", user?.documentId],
     queryFn: () => fetchUserBookings(user?.documentId),
     enabled: !!user?.documentId,
@@ -79,14 +79,28 @@ export default function TripsSection() {
   }
 
   if (isError) {
+    const errorMessage = error instanceof Error ? error.message : "Failed to load bookings. Please try again.";
+    const isConnectionError = errorMessage.includes("connect") || errorMessage.includes("backend");
+
     return (
-      <div className="flex flex-col items-center justify-center py-12 space-y-4">
-        <AlertCircle className="h-12 w-12 text-destructive" />
-        <p className="text-muted-foreground">Failed to load trips</p>
-        <Button onClick={() => refetch()} variant="outline">
-          Try Again
-        </Button>
-      </div>
+      <Card className="border border-destructive/20 bg-destructive/5">
+        <CardContent className="flex flex-col items-center justify-center py-12 space-y-4">
+          <AlertCircle className="h-12 w-12 text-destructive" />
+          <div className="text-center max-w-md">
+            <h3 className="text-lg font-semibold mb-2">Unable to Load Bookings</h3>
+            <p className="text-muted-foreground mb-4">{errorMessage}</p>
+            {isConnectionError && (
+              <p className="text-sm text-muted-foreground bg-muted px-4 py-2 rounded-lg mb-4">
+                💡 Make sure Strapi backend is running on port 1337
+              </p>
+            )}
+          </div>
+          <Button onClick={() => refetch()} variant="outline" className="gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            Try Again
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -119,11 +133,15 @@ export default function TripsSection() {
           detailsLink: trip.plan_trip?.documentId ? `/plan-your-trip/${trip.plan_trip.documentId}` : "#",
         };
       case "event":
+        // Calculate event duration from startDate and endDate
+        const eventDuration = trip.event?.startDate && trip.event?.endDate
+          ? Math.ceil((new Date(trip.event.endDate).getTime() - new Date(trip.event.startDate).getTime()) / (1000 * 60 * 60 * 24))
+          : 1;
         return {
           title: trip.event?.title || "Event",
           location: trip.event?.location || "Egypt",
-          duration: trip.event?.duration || 1,
-          imageUrl: getImageUrl(trip.event?.images?.[0]?.url),
+          duration: eventDuration,
+          imageUrl: getImageUrl(trip.event?.featuredImage || trip.event?.gallery?.[0]),
           detailsLink: trip.event?.documentId ? `/events/${trip.event.documentId}` : "#",
         };
       default: // program
@@ -131,8 +149,8 @@ export default function TripsSection() {
           title: trip.program?.title || "Egypt Tour",
           location: trip.program?.Location || "Egypt",
           duration: trip.program?.duration || 1,
-          imageUrl: getImageUrl(trip.program?.images?.[0]?.url),
-          detailsLink: trip.program?.title ? `/programs/${encodeURIComponent(trip.program.title)}` : "#",
+          imageUrl: getImageUrl(trip.program?.images?.[0]),
+          detailsLink: trip.program?.documentId ? `/programs/${trip.program.documentId}` : "#",
         };
     }
   };

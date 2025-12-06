@@ -28,7 +28,7 @@ export function ComparisonDemo() {
   // Fetch programs from Strapi
   const { data: programsData, isLoading, isError } = useQuery({
     queryKey: ["comparisonDemoPrograms"],
-    queryFn: fetchProgramsList,
+    queryFn: () => fetchProgramsList(6),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 

@@ -25,7 +25,7 @@ export default function DashboardPage() {
   const [recentlyViewed, setRecentlyViewed] = useState<any[]>([]);
 
   // Fetch user bookings from Strapi
-  const { data: bookingsData, isLoading: bookingsLoading, isError: bookingsError } = useQuery({
+  const { data: bookingsData, isLoading: bookingsLoading, isError: bookingsError, error: bookingsErrorObj } = useQuery({
     queryKey: ["userBookings", user?.documentId],
     queryFn: () => fetchUserBookings(user?.documentId),
     enabled: !!user,
@@ -226,7 +226,10 @@ export default function DashboardPage() {
               ) : bookingsError ? (
                 <div className="text-center py-8">
                   <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
-                  <p className="text-muted-foreground">Failed to load bookings</p>
+                  <p className="text-muted-foreground font-semibold mb-2">Failed to load bookings</p>
+                  <p className="text-sm text-muted-foreground">
+                    {bookingsErrorObj instanceof Error ? bookingsErrorObj.message : "Please try again later"}
+                  </p>
                 </div>
               ) : bookingsData?.data && bookingsData.data.length > 0 ? (
                 <div className="space-y-4">
@@ -238,7 +241,8 @@ export default function DashboardPage() {
                     const title = programData?.title || planTripData?.tripName || eventData?.title || booking.customTripName || "Trip";
                     const location = programData?.Location || planTripData?.destinations?.[0]?.location || eventData?.location || "Egypt";
                     const imageUrl = programData?.images?.[0] ? getImageUrl(programData.images[0]) :
-                                     eventData?.images?.[0] ? getImageUrl(eventData.images[0]) : null;
+                                     eventData?.featuredImage ? getImageUrl(eventData.featuredImage) :
+                                     eventData?.gallery?.[0] ? getImageUrl(eventData.gallery[0]) : null;
 
                     const travelDate = new Date(booking.travelDate);
                     const formattedDate = travelDate.toLocaleDateString('en-US', {
@@ -321,7 +325,7 @@ export default function DashboardPage() {
                   {recentlyViewed.slice(0, 3).map((program) => (
                     <Link
                       key={program.documentId}
-                      href={`/programs/${program.title.replace(/\s+/g, "-").toLowerCase()}`}
+                      href={`/programs/${program.documentId}`}
                       className="group"
                     >
                       <Card className="overflow-hidden hover:shadow-lg transition-shadow">

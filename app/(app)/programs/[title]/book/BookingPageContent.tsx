@@ -87,7 +87,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
   useEffect(() => {
     if (!user) {
       toast.error("Please log in to make a booking");
-      router.push(`/login?redirect=/programs/${program.title}/book`);
+      router.push(`/login?redirect=/programs/${program.documentId}/book`);
     }
   }, [user, router, program.title]);
 
@@ -234,7 +234,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Back Button */}
         <Link
-          href={`/programs/${program.title}`}
+          href={`/programs/${program.documentId}`}
           className="inline-flex items-center gap-2 text-primary hover:underline mb-6"
         >
           <ArrowLeft className="w-4 h-4" />

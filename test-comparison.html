@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Comparison LocalStorage</title>
+</head>
+<body>
+    <h1>Test Comparison Feature</h1>
+    <button onclick="addTestProgram()">Add Test Program</button>
+    <button onclick="viewComparison()">View Comparison</button>
+    <button onclick="clearAll()">Clear All</button>
+    <pre id="output"></pre>
+
+    <script>
+        const STORAGE_KEY = "programComparison";
+
+        function addTestProgram() {
+            const program = {
+                id: 1,
+                documentId: "test-123",
+                title: "Test Cairo Tour",
+                price: 1000,
+                duration: 5,
+                Location: "Cairo",
+                rating: 4.5,
+                descraption: "Amazing tour of Cairo",
+                imageUrl: "https://example.com/image.jpg",
+                addedAt: new Date().toISOString()
+            };
+
+            const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+            existing.push(program);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+
+            document.getElementById('output').textContent = "Added program! Total: " + existing.length;
+            viewComparison();
+        }
+
+        function viewComparison() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            document.getElementById('output').textContent = data || "No data in localStorage";
+        }
+
+        function clearAll() {
+            localStorage.removeItem(STORAGE_KEY);
+            document.getElementById('output').textContent = "Cleared!";
+        }
+
+        // Auto-load on page load
+        viewComparison();
+    </script>
+</body>
+</html>

@@ -61,16 +61,16 @@ export default function ResetPasswordForm() {
 
   if (!code) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center px-4">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 right-20 w-72 h-72 bg-amber-500 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-20 w-72 h-72 bg-amber-600 rounded-full blur-3xl"></div>
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center px-4 relative">
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute top-20 right-20 w-72 h-72 bg-primary/50 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 left-20 w-72 h-72 bg-primary/60 rounded-full blur-3xl"></div>
         </div>
 
-        <div className="relative w-full max-w-md bg-slate-900 border border-amber-500/20 rounded-2xl p-8 text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Invalid Link</h1>
-          <p className="text-slate-400 mb-6">This reset link is invalid or expired.</p>
-          <Link href="/forgot-password" className="px-6 py-3 bg-amber-500 text-slate-900 rounded-lg">
+        <div className="relative w-full max-w-md bg-card border border-primary/20 rounded-2xl p-8 text-center shadow-2xl">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Invalid Link</h1>
+          <p className="text-muted-foreground mb-6">This reset link is invalid or expired.</p>
+          <Link href="/forgot-password" className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold">
             Request New Link
           </Link>
         </div>
@@ -79,39 +79,39 @@ export default function ResetPasswordForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted  flex items-center justify-center px-4 relative">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center px-4 relative">
       {/* Decorations */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="absolute top-20 right-20 w-72 h-72 bg-amber-500 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-20 w-72 h-72 bg-amber-600 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 right-20 w-72 h-72 bg-primary/50 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-72 h-72 bg-primary/60 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="relative w-full max-w-md bg-background-900 border border-amber-500/20 rounded-2xl p-8 shadow-2xl">
+      <div className="relative w-full max-w-md bg-card border border-primary/20 rounded-2xl p-8 shadow-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Create New Password</h1>
-          <p className="text-slate-400">Enter your new password below</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Create New Password</h1>
+          <p className="text-muted-foreground">Enter your new password below</p>
         </div>
 
         {!success ? (
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
+              <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-destructive text-sm">
                 {error}
               </div>
             )}
 
             {/* Password */}
             <div>
-              <label className="text-slate-200 text-sm">New Password</label>
+              <label className="text-foreground text-sm">New Password</label>
               <div className="relative mt-1">
                 <input
                   type={showPassword ? "text" : "password"}
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
-                  className="w-full px-4 py-3 pr-10 bg-slate-800 border border-slate-700 rounded-lg text-white"
+                  className="w-full px-4 py-3 pr-10 bg-input border border-border rounded-lg text-foreground focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                   placeholder="Min 8 characters"
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
@@ -119,22 +119,22 @@ export default function ResetPasswordForm() {
 
             {/* Confirm */}
             <div>
-              <label className="text-slate-200 text-sm">Confirm Password</label>
+              <label className="text-foreground text-sm">Confirm Password</label>
               <div className="relative mt-1">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   value={confirmPassword}
-                  className="w-full px-4 py-3 pr-10 bg-slate-800 border border-slate-700 rounded-lg text-white"
+                  className="w-full px-4 py-3 pr-10 bg-input border border-border rounded-lg text-foreground focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                   placeholder="Repeat password"
                 />
-                <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
 
               {confirmPassword.length > 0 && (
-                <p className={`text-xs mt-2 ${passwordsMatch ? "text-green-400" : "text-red-400"}`}>
+                <p className={`text-xs mt-2 ${passwordsMatch ? "text-green-500" : "text-destructive"}`}>
                   {passwordsMatch ? "✓ Passwords match" : "Passwords do not match"}
                 </p>
               )}
@@ -142,20 +142,20 @@ export default function ResetPasswordForm() {
 
             <button
               disabled={loading || !isValid}
-              className="w-full py-3 bg-amber-500 text-slate-900 font-semibold rounded-lg disabled:opacity-50"
+              className="w-full py-3 bg-primary text-primary-foreground font-semibold rounded-lg disabled:opacity-50 hover:bg-primary/90 transition-colors"
             >
               {loading ? "Updating..." : "Reset Password"}
             </button>
 
-            <Link href="/login" className="flex justify-center mt-4 text-amber-400">
+            <Link href="/login" className="flex justify-center items-center gap-1 mt-4 text-primary hover:text-primary/80 transition-colors">
               <ArrowLeft size={16} /> Back to Login
             </Link>
           </form>
         ) : (
           <div className="text-center space-y-4">
-            <CheckCircle size={48} className="text-green-400 mx-auto" />
-            <h2 className="text-white text-xl font-bold">Password Updated!</h2>
-            <Link href="/login" className="block w-full py-3 bg-amber-500 text-slate-900 rounded-lg">
+            <CheckCircle size={48} className="text-green-500 mx-auto" />
+            <h2 className="text-foreground text-xl font-bold">Password Updated!</h2>
+            <Link href="/login" className="block w-full py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold">
               Login Now
             </Link>
           </div>

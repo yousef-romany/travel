@@ -21,18 +21,25 @@ export interface ComparisonProgram {
  * Add a program to comparison list
  */
 export function addToComparison(program: Omit<ComparisonProgram, "addedAt">): boolean {
-  if (typeof window === "undefined") return false;
+  if (typeof window === "undefined") {
+    console.log("addToComparison: window is undefined (SSR)");
+    return false;
+  }
 
   try {
+    console.log("addToComparison: Starting with program:", program);
     const existing = getComparisonList();
+    console.log("addToComparison: Existing list:", existing);
 
     // Check if already in list
     if (existing.some((p) => p.documentId === program.documentId)) {
+      console.log("addToComparison: Program already in list");
       return false;
     }
 
     // Check if limit reached
     if (existing.length >= MAX_ITEMS) {
+      console.log("addToComparison: Max items reached");
       throw new Error(`You can only compare up to ${MAX_ITEMS} programs at once`);
     }
 
@@ -44,9 +51,12 @@ export function addToComparison(program: Omit<ComparisonProgram, "addedAt">): bo
       },
     ];
 
+    console.log("addToComparison: Saving updated list:", updated);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    console.log("addToComparison: Successfully saved to localStorage");
     return true;
   } catch (error) {
+    console.error("addToComparison: Error:", error);
     throw error;
   }
 }

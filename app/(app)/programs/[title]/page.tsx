@@ -9,8 +9,9 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const resolvedParams = await params;
-    const title = decodeURIComponent(resolvedParams.title);
-    const data = await fetchProgramOne(title);
+    // The title param is now actually documentId or title (backwards compatible)
+    const titleOrId = decodeURIComponent(resolvedParams.title);
+    const data = await fetchProgramOne(titleOrId);
     const program = data?.data?.at(0);
 
     if (!program) {
@@ -43,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: `${program.title} | ZoeHoliday`,
         description: program.descraption || program.overView,
         type: "website",
-        url: `/programs/${resolvedParams.title}`,
+        url: `/programs/${program.documentId}`,
         images: [
           {
             url: fullImageUrl,
@@ -60,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         images: [fullImageUrl],
       },
       alternates: {
-        canonical: `/programs/${resolvedParams.title}`,
+        canonical: `/programs/${program.documentId}`,
       },
     };
   } catch (error) {

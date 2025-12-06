@@ -50,24 +50,61 @@ export interface ProgramsResponse {
 }
 
 /**
- * Fetch all programs from Strapi
+ * Fetch all programs from Strapi with retry logic
  */
-export const fetchProgramsList = async (): Promise<ProgramsResponse> => {
-  try {
-    const url = `${API_URL}/api/programs?populate=images&sort=rating:desc`;
+export const fetchProgramsList = async (limit = 100): Promise<ProgramsResponse> => {
+  const retries = 2;
+  let lastError: any;
 
-    const response = await axios.get(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${API_TOKEN}`,
-      },
-    });
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const url = `${API_URL}/api/programs?populate=images&pagination[limit]=${limit}&sort=rating:desc`;
 
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching programs list:", error);
-    throw error;
+      const response = await axios.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${API_TOKEN}`,
+        },
+        timeout: 10000, // 10 second timeout
+      });
+
+      return response.data;
+    } catch (error: any) {
+      lastError = error;
+      console.error(`Error fetching programs list (attempt ${attempt + 1}/${retries + 1}):`, error);
+
+      // Don't retry on client errors (4xx)
+      if (error.response?.status >= 400 && error.response?.status < 500) {
+        break;
+      }
+
+      // Wait before retrying (exponential backoff)
+      if (attempt < retries) {
+        const delay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s...
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
   }
+
+  // Handle the error after all retries
+  if (lastError.code === 'ECONNREFUSED') {
+    throw new Error("Cannot connect to Strapi backend. Please ensure it's running on port 1337.");
+  }
+
+  if (lastError.code === 'ETIMEDOUT' || lastError.code === 'ECONNABORTED') {
+    throw new Error("Request timed out. The server is not responding.");
+  }
+
+  if (lastError.response) {
+    const status = lastError.response.status;
+    if (status === 404) {
+      throw new Error("Programs not found. Please check your Strapi content.");
+    } else if (status >= 500) {
+      throw new Error("Server error. Please try again later.");
+    }
+  }
+
+  throw new Error("Failed to fetch programs. Please check your connection and try again.");
 };
 
 /**

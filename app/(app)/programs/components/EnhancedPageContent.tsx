@@ -52,7 +52,7 @@ export default function EnhancedPageContent() {
     Error
   >({
     queryKey: ["fetchProgramsList"],
-    queryFn: fetchProgramsList,
+    queryFn: () => fetchProgramsList(100),
   });
 
   const [filteredPrograms, setFilteredPrograms] = useState<ProgramType[]>([]);

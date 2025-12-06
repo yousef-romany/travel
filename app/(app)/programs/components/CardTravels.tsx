@@ -14,7 +14,9 @@ import { ProgramCarousel } from "./ProgramCarousel";
 import { memo } from "react";
 import { useRouter } from "next/navigation";
 import WishlistButton from "@/components/WishlistButton";
+import { CompareButton } from "@/components/programs/CompareButton";
 import { trackCardClick, trackExploreClick } from "@/lib/analytics";
+import { getImageUrl } from "@/lib/utils";
 
 interface MediaFormat {
   url: string;
@@ -122,13 +124,28 @@ const CardTravels = ({
         </div>
       </CardContent>
 
-      <CardFooter className="pt-0 pb-5">
+      <CardFooter className="pt-0 pb-5 flex flex-col gap-2">
         <Button
           className="w-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-lg transition-all duration-200 hover:scale-105 font-semibold"
           onClick={handleViewDetails}
         >
           View Details
         </Button>
+        <CompareButton
+          program={{
+            id,
+            documentId,
+            title,
+            price,
+            duration,
+            Location,
+            rating,
+            descraption,
+            imageUrl: images && images.length > 0 ? getImageUrl(images[0]) : undefined
+          }}
+          variant="outline"
+          size="default"
+        />
       </CardFooter>
     </Card>
   );

@@ -9,9 +9,29 @@ import InvoicesSection from "@/components/invoices-section";
 import WishlistSection from "@/components/wishlist-section";
 import PlannedTripsSection from "@/components/planned-trips-section";
 import TestimonialsSection from "@/components/testimonials-section";
+import { LoyaltyDashboard } from "@/components/loyalty/LoyaltyDashboard";
+import { ReferralProgram } from "@/components/social/ReferralProgram";
+import { useAuth } from "@/context/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUserLoyalty } from "@/fetch/loyalty";
+import { Loader2 } from "lucide-react";
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("overview");
+  const { user } = useAuth();
+
+  // Fetch real loyalty data from Strapi
+  const { data: loyaltyData, isLoading: loyaltyLoading } = useQuery({
+    queryKey: ["userLoyalty", user?.id],
+    queryFn: async () => {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) throw new Error("Not authenticated");
+      return fetchUserLoyalty(authToken);
+    },
+    enabled: !!user,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -25,7 +45,7 @@ export default function UserProfile() {
 
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full animate-slide-up animate-delay-200">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 lg:w-auto mb-8 bg-card border border-border shadow-sm p-1 rounded-lg">
+          <TabsList className="grid w-full grid-cols-4 md:grid-cols-4 lg:grid-cols-8 lg:w-auto mb-8 bg-card border border-border shadow-sm p-1 rounded-lg">
             <TabsTrigger
               value="overview"
               className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded transition-smooth"
@@ -62,6 +82,18 @@ export default function UserProfile() {
             >
               My Reviews
             </TabsTrigger>
+            <TabsTrigger
+              value="loyalty"
+              className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded transition-smooth"
+            >
+              Loyalty Points
+            </TabsTrigger>
+            <TabsTrigger
+              value="referrals"
+              className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded transition-smooth"
+            >
+              Referrals
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6 tab-content-enter">
@@ -86,6 +118,31 @@ export default function UserProfile() {
 
           <TabsContent value="reviews" className="space-y-6 tab-content-enter">
             <TestimonialsSection />
+          </TabsContent>
+
+          <TabsContent value="loyalty" className="space-y-6 tab-content-enter">
+            {loyaltyLoading ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : loyaltyData && user ? (
+              <LoyaltyDashboard
+                userId={user.id}
+                totalPoints={loyaltyData.totalPoints}
+                lifetimeSpent={loyaltyData.lifetimeSpent}
+                bookingsCount={loyaltyData.bookingsCount}
+                earnedThisMonth={loyaltyData.earnedThisMonth}
+                history={loyaltyData.history}
+              />
+            ) : (
+              <div className="text-center py-10">
+                <p className="text-muted-foreground">No loyalty data available</p>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="referrals" className="space-y-6 tab-content-enter">
+            <ReferralProgram />
           </TabsContent>
         </Tabs>
       </div>

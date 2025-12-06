@@ -12,7 +12,23 @@ export function RecentlyViewed() {
   const [programs, setPrograms] = useState<RecentlyViewedProgram[]>([]);
 
   useEffect(() => {
+    // Load initially
     setPrograms(getRecentlyViewed());
+
+    // Listen for localStorage changes (from other tabs/windows)
+    const handleStorageChange = () => {
+      setPrograms(getRecentlyViewed());
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    // Also listen for custom event (same tab updates)
+    window.addEventListener("recentlyViewedUpdated", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("recentlyViewedUpdated", handleStorageChange);
+    };
   }, []);
 
   if (programs.length === 0) return null;
@@ -30,7 +46,7 @@ export function RecentlyViewed() {
           {programs.slice(0, 6).map((program) => (
             <Link
               key={program.documentId}
-              href={`/programs/${program.title}`}
+              href={`/programs/${program.documentId}`}
               className="group block"
             >
               <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">

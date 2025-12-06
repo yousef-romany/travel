@@ -37,7 +37,7 @@ export function RecommendedPrograms({
           {recommendations.map((program) => (
             <Link
               key={program.documentId}
-              href={`/programs/${program.title}`}
+              href={`/programs/${program.documentId}`}
               className="group block"
             >
               <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-all hover:border-primary">
