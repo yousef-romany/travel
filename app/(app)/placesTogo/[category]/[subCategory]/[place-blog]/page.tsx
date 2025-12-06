@@ -36,6 +36,7 @@ const PlaceToGoBlogDynamic = () => {
 
       <IndexPagePlaceToGoBlog
         slug={decodeURIComponent(params["place-blog"]) as string}
+        category={decodeURIComponent(params.category)}
       />
     </div>
   );

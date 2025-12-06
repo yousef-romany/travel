@@ -187,9 +187,19 @@ export const fetchProgramById = async (documentId: string): Promise<ProgramType>
 /**
  * Search programs by location or title
  */
-export const searchPrograms = async (query: string): Promise<ProgramsResponse> => {
+export const searchPrograms = async (query: string, limit: number = 10): Promise<ProgramsResponse> => {
   try {
-    const url = `${API_URL}/api/programs?populate=images&filters[$or][0][title][$containsi]=${query}&filters[$or][1][Location][$containsi]=${query}`;
+    // Filter by:
+    // 1. Title
+    // 2. Location string
+    // 3. Direct Category relation on ContentStep (if exists)
+    // 4. Nested Category relation via Subcategory on ContentStep (most likely path)
+    const url = `${API_URL}/api/programs?populate=images` +
+      `&filters[$or][0][title][$containsi]=${query}` +
+      `&filters[$or][1][Location][$containsi]=${query}` +
+      `&filters[$or][2][content_steps][place_to_go_categories][categoryName][$containsi]=${query}` +
+      `&filters[$or][3][content_steps][place_to_go_subcategories][place_to_go_categories][categoryName][$containsi]=${query}` +
+      `&pagination[limit]=${limit}`;
 
     const response = await axios.get(url, {
       headers: {

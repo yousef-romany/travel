@@ -31,7 +31,6 @@ const IndexPageInspireSubCategory = ({
   });
   if (isLoading) return <Loading />;
   if (error instanceof Error) return <p>Error: {error.message}</p>;
-  console.log("data , : hello", data);
   return (
     <div className="flex gap-4 flex-col min-h-screen bg-gradient-to-b from-background to-secondary/20">
       <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">

@@ -14,8 +14,9 @@ import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
+import RelatedPrograms from "./RelatedPrograms";
 
-const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
+const IndexPagePlaceToGoBlog = ({ slug, category }: { slug: string; category: string }) => {
   useEffect(() => {
     applyHieroglyphEffect();
   }, []);
@@ -37,30 +38,33 @@ const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-background to-secondary/20">
       {/* Hero Image Section */}
-      <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden">
+      <div className="relative w-full h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
         <OptimizedImage
           src={getImageUrl(place.image) as string}
           alt={place.title as string}
           className="w-full h-full object-cover"
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-background" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
 
         {/* Title Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
-          <div className="container mx-auto max-w-5xl">
-            <div className="inline-block mb-4">
-              <span className="px-4 py-2 bg-primary/90 backdrop-blur-sm text-white text-sm font-semibold rounded-full shadow-lg">
+        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 z-10">
+          <div className="container mx-auto max-w-5xl text-center md:text-left">
+            <div className="inline-block mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <span className="px-6 py-2 bg-black/30 backdrop-blur-md text-white text-sm font-medium rounded-full border border-white/20 shadow-xl tracking-wide uppercase">
                 ✨ Discover
               </span>
             </div>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-2xl">
+            <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-white mb-6 drop-shadow-2xl tracking-tight animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100 leading-tight">
               {place.title}
             </h1>
-            {place.price && (
-              <div className="flex items-center gap-3 text-white">
-                <span className="text-sm md:text-base">Starting from</span>
-                <span className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent px-4 py-2 bg-white rounded-full">
-                  ${place.price}
+            {(place.price !== undefined && place.price !== null) && (
+              <div className="flex items-center justify-center md:justify-start gap-4 text-white animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+                <span className="text-lg font-medium opacity-90">
+                  {Number(place.price) === 0 ? "Price" : "Starting from"}
+                </span>
+                <span className="text-3xl md:text-4xl font-bold bg-white text-black px-6 py-2 rounded-full shadow-lg">
+                  {Number(place.price) === 0 ? "Free" : `$${place.price}`}
                 </span>
               </div>
             )}
@@ -72,13 +76,12 @@ const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
       <div className="container mx-auto max-w-5xl px-4 md:px-6 py-8 md:py-12 relative z-10">
 
         {/* Content Section */}
-        <Card className="mb-8 border-primary/20 bg-gradient-to-br from-card to-card/50 shadow-xl">
-          <CardContent className="p-6 md:p-10">
-            <div className="prose prose-lg md:prose-xl max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-a:text-primary">
-              <MDXRenderer mdxString={place.details as string} />
-            </div>
-          </CardContent>
-        </Card>
+        {/* Content Section */}
+        <div className="mb-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+          <div className="prose prose-lg md:prose-xl max-w-none dark:prose-invert prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-strong:text-foreground prose-a:text-primary prose-img:rounded-3xl prose-img:shadow-xl">
+            <MDXRenderer mdxString={place.details as string} />
+          </div>
+        </div>
 
         {/* Instagram Section */}
         {(place.instagram_posts?.length || 0) > 0 && (
@@ -149,6 +152,10 @@ const IndexPagePlaceToGoBlog = ({ slug }: { slug: string }) => {
             </div>
           </section>
         )}
+
+        {/* Related Programs Section */}
+        <Separator className="mb-8" />
+        <RelatedPrograms placeTitle={place.title as string} query={category} />
       </div>
     </div>
   );
