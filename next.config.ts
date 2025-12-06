@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    domains: ["scontent.cdninstagram.com"],
+    dangerouslyAllowSVG: true,
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "th.bing.com" },
@@ -17,7 +19,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "video.cdninstagram.com" },
       { protocol: "https", hostname: "*.fbcdn.net" },
       { protocol: "https", hostname: "scontent.*.fna.fbcdn.net" },
-      {protocol: 'https',hostname: 'images.unsplash.com',},
+      { protocol: 'https', hostname: 'images.unsplash.com', },
       {
         protocol: 'http',
         hostname: 'localhost',

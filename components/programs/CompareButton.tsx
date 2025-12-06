@@ -16,9 +16,10 @@ interface CompareButtonProps {
   program: Omit<ComparisonProgram, "addedAt">;
   variant?: "default" | "outline" | "ghost";
   size?: "default" | "sm" | "lg" | "icon";
+  className?: string;
 }
 
-export function CompareButton({ program, variant = "outline", size = "default" }: CompareButtonProps) {
+export function CompareButton({ program, variant = "outline", size = "default", className }: CompareButtonProps) {
   const [isInList, setIsInList] = useState(false);
 
   useEffect(() => {
@@ -77,7 +78,7 @@ export function CompareButton({ program, variant = "outline", size = "default" }
       variant={isInList ? "default" : variant}
       size={size}
       onClick={handleToggle}
-      className="gap-2"
+      className={`gap-2 ${className || ""}`}
     >
       {isInList ? (
         <>

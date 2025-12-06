@@ -151,11 +151,11 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
       {/* Modal with Improved Layout */}
       {isModalOpen && (
         <div
-          className="lg:w-[calc(100vw-350px)] md:w-[calc(100vw-350px)] sm:w-[calc(100vw-100px)] fixed bg-transparent inset-0 bg-black/95 backdrop-blur-md  z-[999999999999999999999999999999] animate-in fade-in duration-300"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-in fade-in duration-300"
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="relative w-full max-w-6xl h-[92vh] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800"
+            className="relative w-full max-w-6xl h-[90vh] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -184,9 +184,9 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
             </div>
 
             {/* Content with Better Balance */}
-            <div className="flex flex-col lg:flex-row h-[calc(92vh-73px)] w-full">
+            <div className="flex flex-col md:flex-row h-[calc(92vh-73px)] w-full">
               {/* Media - Takes 60% on desktop */}
-              <div className="relative flex-[6] bg-black w-full flex items-center justify-center overflow-hidden min-h-[400px] lg:min-h-0">
+              <div className="relative flex-[6] bg-black w-full flex items-center justify-center overflow-hidden min-h-[400px] md:min-h-0">
                 <div className="w-full h-full flex items-center justify-center">
                   <MediaContent
                     media_type={data?.media_type}
@@ -197,7 +197,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
               </div>
 
               {/* Sidebar - Takes 40% on desktop, balanced layout */}
-              <div className="flex-[4] w-full lg:max-w-md flex flex-col bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800">
+              <div className="flex-[4] w-full md:max-w-md flex flex-col bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800">
                 {/* Caption and Info with Better Spacing */}
                 <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
                   {/* Caption with Read More */}

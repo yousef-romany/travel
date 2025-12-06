@@ -1,7 +1,5 @@
- 
 import MDXRenderer from "@/components/MDXRenderer";
 import OptimizedImage from "@/components/OptimizedImage";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -13,6 +11,7 @@ import { getImageUrl } from "@/lib/utils";
 import { Media } from "@/type/programs";
 import Link from "next/link";
 import { memo } from "react";
+import { MdArrowOutward } from "react-icons/md";
 
 const CardFlex = ({
   link,
@@ -28,37 +27,40 @@ const CardFlex = ({
   imageUrl: Media;
 }) => {
   return (
-    <Card className="group overflow-hidden border-primary/20 bg-gradient-to-br from-card to-card/50 hover:shadow-2xl hover:border-primary/50 transition-all duration-300">
-      <div className="flex flex-col sm:flex-row h-full justify-between">
-        <div className="relative lg:w-2/5 md:w-2/5 sm:w-full h-[200px] sm:h-auto overflow-hidden">
-          <OptimizedImage
-            src={getImageUrl(imageUrl)}
-            alt={title}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent sm:block hidden"></div>
-        </div>
-        <div className="flex flex-col justify-between h-full w-full sm:w-3/5 p-6">
-          <div>
-            <CardHeader className="p-0">
-              <CardTitle className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
-                {title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0 overflow-hidden text-muted-foreground">
-              <MDXRenderer mdxString={details.slice(0, 150)} /> ...
-            </CardContent>
+    <Link href={link} className="block h-full">
+      <Card className="group h-full rounded-3xl overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-card">
+        <div className="flex flex-col sm:flex-row h-full">
+          <div className="relative w-full sm:w-2/5 h-[240px] sm:h-auto overflow-hidden">
+            <OptimizedImage
+              src={getImageUrl(imageUrl)}
+              alt={title}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
           </div>
-          <CardFooter className="p-0 mt-6">
-            <Button asChild className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white">
-              <Link href={link}>
-                Read More
-              </Link>
-            </Button>
-          </CardFooter>
+          <div className="flex flex-col justify-between flex-1 p-6 sm:p-8">
+            <div>
+              <CardHeader className="p-0 mb-3">
+                <CardTitle className="text-xl sm:text-2xl font-bold line-clamp-2 group-hover:text-primary transition-colors duration-300">
+                  {title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="text-sm text-muted-foreground line-clamp-2">
+                  <MDXRenderer mdxString={details.slice(0, 100) + "..."} />
+                </div>
+              </CardContent>
+            </div>
+            <CardFooter className="p-0 mt-6 pt-4 border-t border-border/50">
+              <div className="flex items-center gap-2 text-primary text-sm font-medium group-hover:translate-x-2 transition-transform duration-300">
+                <span>Explore Details</span>
+                <MdArrowOutward />
+              </div>
+            </CardFooter>
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </Link>
   );
 };
 export default memo(CardFlex);

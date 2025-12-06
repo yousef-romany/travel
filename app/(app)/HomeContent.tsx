@@ -194,7 +194,7 @@ export default function HomeContent() {
             </Button>
           </div>
         ) : (
-          <div className="!w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+          <div className="!w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {data?.inspireBlogs.map((blog, index) => {
               const image = blog.image;
 
@@ -244,24 +244,6 @@ export default function HomeContent() {
         </div>
       </section>
 
-      {/* Recently Viewed Section */}
-      {user && (
-        <section className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12 bg-gradient-to-br from-blue-50/50 to-cyan-50/30 dark:from-blue-950/10 dark:to-cyan-950/10">
-          <div className="flex flex-col items-center mb-8 sm:mb-12 text-center animate-on-scroll">
-            <div className="inline-flex items-center justify-center p-2 sm:p-3 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-full mb-3 sm:mb-4 shadow-lg">
-              <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" aria-hidden="true" />
-            </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent px-4">
-              Continue Exploring
-            </h2>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-xs sm:max-w-2xl md:max-w-3xl px-4">
-              Pick up where you left off with your recently viewed programs
-            </p>
-          </div>
-          <RecentlyViewed />
-        </section>
-      )}
-
       {/* Places to Go Section */}
       <section
         id="places-to-go"
@@ -293,7 +275,7 @@ export default function HomeContent() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {data?.placeCategories.map((category, index) => (
                 <Card key={category.id} className={`overflow-hidden group hover-lift animate-on-scroll ${getStaggerDelay(index)}`}>
                   <div className="relative h-48 sm:h-52 md:h-56 overflow-hidden">
@@ -351,17 +333,17 @@ export default function HomeContent() {
         </div>
 
         <Tabs defaultValue="when-to-go" className="!w-full max-w-4xl mx-auto">
-          <TabsList className="grid grid-cols-2 sm:grid-cols-4 h-auto gap-1 sm:gap-0">
-            <TabsTrigger value="when-to-go" className="py-2 sm:py-3 text-xs sm:text-sm">
+          <TabsList className="flex w-full overflow-x-auto no-scrollbar pb-2 justify-start sm:justify-center md:grid md:grid-cols-4 h-auto gap-2 sm:gap-0 p-1 bg-muted/50 rounded-xl">
+            <TabsTrigger value="when-to-go" className="whitespace-nowrap min-w-fit px-4 py-2.5 sm:py-3 text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
               When to Go
             </TabsTrigger>
-            <TabsTrigger value="getting-around" className="py-2 sm:py-3 text-xs sm:text-sm">
+            <TabsTrigger value="getting-around" className="whitespace-nowrap min-w-fit px-4 py-2.5 sm:py-3 text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
               Getting Around
             </TabsTrigger>
-            <TabsTrigger value="accommodation" className="py-2 sm:py-3 text-xs sm:text-sm">
+            <TabsTrigger value="accommodation" className="whitespace-nowrap min-w-fit px-4 py-2.5 sm:py-3 text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
               Accommodation
             </TabsTrigger>
-            <TabsTrigger value="travel-tips" className="py-2 sm:py-3 text-xs sm:text-sm">
+            <TabsTrigger value="travel-tips" className="whitespace-nowrap min-w-fit px-4 py-2.5 sm:py-3 text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
               Travel Tips
             </TabsTrigger>
           </TabsList>
@@ -571,9 +553,9 @@ export default function HomeContent() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               {data?.programs.map((program, index) => (
-                <Card key={program.id} className={`overflow-hidden group hover-lift animate-on-scroll ${getStaggerDelay(index)}`}>
+                <Card key={program.id} className={`overflow-hidden group hover-lift animate-on-scroll ${getStaggerDelay(index)} border-primary/10 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300`}>
                   <div className="relative">
                     <div className="relative h-48 sm:h-52 md:h-56 overflow-hidden">
                       {program.images && (
@@ -581,54 +563,59 @@ export default function HomeContent() {
                       )}
                     </div>
                     {index === 0 && (
-                      <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-primary text-primary-foreground px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium animate-pulse">
+                      <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-gradient-to-r from-primary to-amber-500 text-primary-foreground px-3 py-1 rounded-full text-xs sm:text-sm font-bold shadow-lg animate-pulse">
                         Best Seller
                       </div>
                     )}
                     {index === 2 && (
-                      <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-destructive text-destructive-foreground px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium animate-pulse">
+                      <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs sm:text-sm font-bold shadow-lg animate-pulse">
                         New
                       </div>
                     )}
                   </div>
                   <CardContent className="p-4 sm:p-5 md:p-6">
-                    <div className="flex justify-between items-center mb-2 sm:mb-3">
-                      <h3 className="font-bold text-base sm:text-lg line-clamp-1">
+                    <div className="flex justify-between items-start mb-2 sm:mb-3">
+                      <h3 className="font-bold text-lg sm:text-xl line-clamp-1 group-hover:text-primary transition-colors">
                         {program.title}
                       </h3>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 bg-primary/5 px-2 py-1 rounded-md">
                         <Star
-                          className="h-3 w-3 sm:h-4 sm:w-4 fill-primary text-primary"
+                          className="h-3.5 w-3.5 sm:h-4 sm:w-4 fill-amber-400 text-amber-400"
                           aria-hidden="true"
                         />
-                        <span className="font-medium text-sm sm:text-base">{program.rating}</span>
+                        <span className="font-bold text-sm sm:text-base">{program.rating}</span>
                       </div>
                     </div>
-                    <p className="text-sm sm:text-base text-muted-foreground mb-2 line-clamp-2">
+                    <p className="text-sm sm:text-base text-muted-foreground mb-4 line-clamp-2">
                       {program.descraption || program.overView}
                     </p>
                     {program.duration && (
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3 sm:mb-4">
-                        <Clock className="h-4 w-4" />
-                        <span>{program.duration} days</span>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4 bg-muted/30 p-2 rounded-lg w-fit">
+                        <Clock className="h-4 w-4 text-primary" />
+                        <span className="font-medium">{program.duration} days adventure</span>
                       </div>
                     )}
-                    <div className="flex flex-col gap-3">
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+                    <div className="flex flex-col gap-4 mt-auto">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 border-t border-border/50 pt-4">
                         <div>
-                          <span className="text-base sm:text-lg font-bold">
-                            ${program.price}
-                          </span>
-                          <span className="text-muted-foreground text-xs sm:text-sm">
-                            {" "}
-                            / person
-                          </span>
+                          <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold block mb-0.5">Starting from</span>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-xl sm:text-2xl font-bold text-primary">
+                              ${program.price}
+                            </span>
+                            <span className="text-muted-foreground text-xs sm:text-sm">
+                              / person
+                            </span>
+                          </div>
                         </div>
                         <Link
                           href={`/programs/${program.documentId}`}
                           onClick={() => handleProgramClick(program)}
+                          className="w-full sm:w-auto"
                         >
-                          <Button className="transition-smooth hover-glow text-sm sm:text-base w-full sm:w-auto">View Details</Button>
+                          <Button className="w-full sm:w-auto bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-primary/25 transition-all duration-300">
+                            View Details
+                          </Button>
                         </Link>
                       </div>
                       <CompareButton
@@ -643,8 +630,9 @@ export default function HomeContent() {
                           descraption: program.descraption || program.overView || "",
                           imageUrl: program.images?.[0] ? getImageUrl(program.images[0] as any) : undefined
                         }}
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
+                        className="w-full border border-dashed border-primary/20 hover:border-primary/50 hover:bg-primary/5"
                       />
                     </div>
                   </CardContent>
@@ -723,7 +711,7 @@ export default function HomeContent() {
       {/* Gift Cards Promotion Section */}
       <section className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12 bg-gradient-to-br from-pink-50/50 via-rose-50/30 to-red-50/50 dark:from-pink-950/10 dark:via-rose-950/10 dark:to-red-950/10">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8 items-center animate-on-scroll">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center animate-on-scroll">
             <div>
               <div className="inline-flex items-center justify-center p-2 bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-900/30 dark:to-rose-900/30 rounded-full mb-4 shadow-lg">
                 <Gift className="h-6 w-6 text-pink-600" aria-hidden="true" />
@@ -777,16 +765,18 @@ export default function HomeContent() {
       {/* Push Notification Prompt */}
       {user && !showNotificationPrompt && (
         <section className="py-8 sm:py-12 !w-full px-4 sm:px-6 md:px-8 lg:px-12">
-          <Card className="max-w-4xl mx-auto border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 animate-on-scroll">
-            <CardContent className="p-6 sm:p-8">
-              <div className="flex flex-col sm:flex-row items-center gap-6">
-                <div className="inline-flex items-center justify-center p-4 bg-primary/10 rounded-full">
-                  <Bell className="h-8 w-8 text-primary" />
+          <Card className="max-w-4xl mx-auto border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-background shadow-xl animate-on-scroll overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl -ml-16 -mb-16"></div>
+            <CardContent className="p-6 sm:p-8 relative z-10">
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="inline-flex items-center justify-center p-4 bg-gradient-to-br from-primary to-primary/80 rounded-full shadow-lg shadow-primary/25 ring-4 ring-primary/10">
+                  <Bell className="h-8 w-8 text-white" />
                 </div>
                 <div className="flex-1 text-center sm:text-left">
-                  <h3 className="text-xl sm:text-2xl font-bold mb-2">Stay Updated on Your Adventures</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Stay Updated on Your Adventures</h3>
                   <p className="text-sm sm:text-base text-muted-foreground">
-                    Get instant notifications about booking confirmations, trip reminders, and exclusive deals
+                    Get instant notifications about booking confirmations, trip reminders, and exclusive deals directly to your device.
                   </p>
                 </div>
                 <Button
@@ -797,7 +787,7 @@ export default function HomeContent() {
                       setShowNotificationPrompt(true);
                     }
                   }}
-                  className="gap-2 whitespace-nowrap"
+                  className="gap-2 whitespace-nowrap bg-primary hover:bg-primary/90 shadow-lg hover:shadow-primary/25 transition-all hover:scale-105"
                 >
                   Enable Notifications
                   <Bell className="h-4 w-4" />
@@ -840,88 +830,88 @@ export default function HomeContent() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-on-scroll">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-on-scroll">
             {/* Dynamic Pricing */}
-            <Card className="hover-lift border-2 border-primary/10">
+            <Card className="hover-lift border border-primary/10 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50">
               <CardContent className="p-6">
-                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-full mb-4">
+                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-full mb-4 shadow-sm">
                   <TrendingUp className="h-6 w-6 text-green-600" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Smart Pricing</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Get the best deals with our dynamic pricing engine. Early bird discounts up to 30% off.
                 </p>
-                <div className="text-xs text-primary font-medium">Save up to $500 per trip</div>
+                <div className="text-xs text-primary font-bold uppercase tracking-wide">Save up to $500 per trip</div>
               </CardContent>
             </Card>
 
             {/* Group Discounts */}
-            <Card className="hover-lift border-2 border-primary/10">
+            <Card className="hover-lift border border-primary/10 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50">
               <CardContent className="p-6">
-                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-full mb-4">
+                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-full mb-4 shadow-sm">
                   <Users className="h-6 w-6 text-blue-600" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Group Discounts</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Travel with friends and family! Get up to 20% off for groups of 16 or more.
                 </p>
-                <div className="text-xs text-primary font-medium">Bigger groups = Bigger savings</div>
+                <div className="text-xs text-primary font-bold uppercase tracking-wide">Bigger groups = Bigger savings</div>
               </CardContent>
             </Card>
 
             {/* Loyalty Program */}
-            <Card className="hover-lift border-2 border-primary/10">
+            <Card className="hover-lift border border-primary/10 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50">
               <CardContent className="p-6">
-                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-900/30 dark:to-yellow-900/30 rounded-full mb-4">
+                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-900/30 dark:to-yellow-900/30 rounded-full mb-4 shadow-sm">
                   <Award className="h-6 w-6 text-amber-600" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Loyalty Rewards</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Earn points on every booking. Redeem for discounts and exclusive perks.
                 </p>
-                <div className="text-xs text-primary font-medium">100 points = $1 USD</div>
+                <div className="text-xs text-primary font-bold uppercase tracking-wide">100 points = $1 USD</div>
               </CardContent>
             </Card>
 
             {/* Travel Insurance */}
-            <Card className="hover-lift border-2 border-primary/10">
+            <Card className="hover-lift border border-primary/10 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50">
               <CardContent className="p-6">
-                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-full mb-4">
+                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-full mb-4 shadow-sm">
                   <Heart className="h-6 w-6 text-purple-600" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Travel Protection</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Travel worry-free with our comprehensive insurance options starting at $49.
                 </p>
-                <div className="text-xs text-primary font-medium">Up to $250K coverage</div>
+                <div className="text-xs text-primary font-bold uppercase tracking-wide">Up to $250K coverage</div>
               </CardContent>
             </Card>
 
             {/* Voice Search */}
-            <Card className="hover-lift border-2 border-primary/10">
+            <Card className="hover-lift border border-primary/10 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50">
               <CardContent className="p-6">
-                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-red-100 to-orange-100 dark:from-red-900/30 dark:to-orange-900/30 rounded-full mb-4">
+                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-red-100 to-orange-100 dark:from-red-900/30 dark:to-orange-900/30 rounded-full mb-4 shadow-sm">
                   <Play className="h-6 w-6 text-red-600" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Voice Search</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Find your perfect trip hands-free with our AI-powered voice search.
                 </p>
-                <div className="text-xs text-primary font-medium">Search in any language</div>
+                <div className="text-xs text-primary font-bold uppercase tracking-wide">Search in any language</div>
               </CardContent>
             </Card>
 
             {/* 24/7 Support */}
-            <Card className="hover-lift border-2 border-primary/10">
+            <Card className="hover-lift border border-primary/10 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-card to-card/50">
               <CardContent className="p-6">
-                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-indigo-100 to-blue-100 dark:from-indigo-900/30 dark:to-blue-900/30 rounded-full mb-4">
+                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-indigo-100 to-blue-100 dark:from-indigo-900/30 dark:to-blue-900/30 rounded-full mb-4 shadow-sm">
                   <MessageSquare className="h-6 w-6 text-indigo-600" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">24/7 Support</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Our expert travel guides are always here to help you plan your perfect trip.
                 </p>
-                <div className="text-xs text-primary font-medium">WhatsApp & Live Chat</div>
+                <div className="text-xs text-primary font-bold uppercase tracking-wide">WhatsApp & Live Chat</div>
               </CardContent>
             </Card>
           </div>
@@ -987,9 +977,9 @@ export default function HomeContent() {
                   </p>
                 </div>
                 <Link href="/programs" onClick={() => trackButtonClick("Book Your Journey", "Home Page - Testimonials", "/programs")}>
-                  <Button size="lg" className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 gap-2 text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6">
+                  <Button size="default" className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 gap-2 text-sm px-6 py-2 h-auto">
                     Book Your Journey & Share Your Experience
-                    <Star className="h-4 w-4 sm:h-5 sm:w-5 fill-white" />
+                    <Star className="h-4 w-4 fill-white" />
                   </Button>
                 </Link>
               </div>
@@ -1042,7 +1032,7 @@ export default function HomeContent() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-7xl mx-auto">
             {data?.instagramPosts.map((item: any, index: number) => (
               <div key={item.id} className={`animate-on-scroll ${getStaggerDelay(index)}`}>
                 <InstagramModal idPost={item.idPost} />
@@ -1068,6 +1058,20 @@ export default function HomeContent() {
           </a>
         </div>
       </section>
+
+      {/* Recently Viewed Section - Moved to Bottom */}
+      {user && (
+        <section className="py-12 sm:py-16 !w-full px-4 sm:px-6 md:px-8 lg:px-12 bg-muted/30">
+          <div className="flex flex-col items-center mb-8 text-center animate-on-scroll">
+            <div className="inline-flex items-center justify-center p-2 bg-primary/10 rounded-full mb-3">
+              <Clock className="h-6 w-6 text-primary" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3">Continue Exploring</h2>
+            <p className="text-muted-foreground">Pick up where you left off with your recently viewed programs</p>
+          </div>
+          <RecentlyViewed />
+        </section>
+      )}
     </div>
   );
 }

@@ -18,24 +18,29 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   ...props
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [error, setError] = useState(false);
 
   return (
-    <div className={cn("relative w-full h-full", className)}>
-      {!imageLoaded && <Skeleton className="absolute inset-0 w-full h-full" />}
+    <div className={cn("relative w-full h-full bg-muted/20", className)}>
+      {!imageLoaded && !error && (
+        <Skeleton className="absolute inset-0 w-full h-full z-10" />
+      )}
       <Image
-        src={src}
+        src={error ? "/placeholder.svg" : src}
         alt={alt}
         fill
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         className={cn(
-          "object-contain transition-opacity duration-300",
+          "object-contain transition-opacity duration-500",
+          imageLoaded ? "opacity-100" : "opacity-0",
           className
         )}
         loading="lazy"
-        style={{
-          visibility: imageLoaded ? "visible" : "hidden",
-        }}
         onLoad={() => setImageLoaded(true)}
+        onError={() => {
+          setImageLoaded(true);
+          setError(true);
+        }}
         placeholder="blur"
         blurDataURL="/placeholder.svg"
         {...props}
