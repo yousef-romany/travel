@@ -36,7 +36,6 @@ import { toast } from "sonner";
 import Image from "next/image";
 import { getImageUrl } from "@/lib/utils";
 import Link from "next/link";
-import Loading from "@/components/Loading";
 import PaymentComingSoonBanner from "@/components/payment-coming-soon-banner";
 import { trackWhatsAppBooking } from "@/lib/analytics";
 
@@ -89,7 +88,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
       toast.error("Please log in to make a booking");
       router.push(`/login?redirect=/programs/${program.documentId}/book`);
     }
-  }, [user, router, program.title]);
+  }, [user, router, program.documentId]);
 
   // Auto-fill user data
   useEffect(() => {
@@ -227,7 +226,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     ? getImageUrl(firstImage as any)
     : "/placeholder.svg";
 
-  if (!user) return <Loading />;
+  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">

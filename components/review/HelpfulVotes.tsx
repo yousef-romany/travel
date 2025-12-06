@@ -25,21 +25,42 @@ export default function HelpfulVotes({
   const [helpful, setHelpful] = useState(initialHelpful);
   const [unhelpful, setUnhelpful] = useState(initialUnhelpful);
   const [userVote, setUserVote] = useState<"helpful" | "unhelpful" | null>(null);
+  const [userVoteId, setUserVoteId] = useState<string | null>(null); // Track vote document ID
   const [loading, setLoading] = useState(false);
   const isProcessing = useRef(false); // Prevent rapid clicks
 
-  // Load user's existing vote from localStorage on mount
+  // Load user's existing vote from database on mount
   useEffect(() => {
     if (!user?.documentId) return;
 
-    const storageKey = `vote_${testimonialId}_${user.documentId}`;
-    const savedVote = localStorage.getItem(storageKey);
-    if (savedVote) {
-      setUserVote(savedVote as "helpful" | "unhelpful");
-    }
+    const loadUserVote = async () => {
+      try {
+        setLoading(true);
+        const existingVote = await getUserVote(testimonialId, user.documentId!);
+        if (existingVote) {
+          setUserVote(existingVote.voteType);
+          setUserVoteId(existingVote.documentId);
+          // Sync with localStorage for offline fallback
+          const storageKey = `vote_${testimonialId}_${user.documentId}`;
+          localStorage.setItem(storageKey, existingVote.voteType);
+        }
+      } catch (error) {
+        console.error("Error loading user vote:", error);
+        // Fallback to localStorage if database fails
+        const storageKey = `vote_${testimonialId}_${user.documentId}`;
+        const savedVote = localStorage.getItem(storageKey);
+        if (savedVote) {
+          setUserVote(savedVote as "helpful" | "unhelpful");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUserVote();
   }, [testimonialId, user]);
 
-  const handleHelpful = (e: React.MouseEvent) => {
+  const handleHelpful = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -49,35 +70,51 @@ export default function HelpfulVotes({
     }
     if (loading || isProcessing.current) return;
 
+    isProcessing.current = true;
+    setLoading(true);
+
     const storageKey = `vote_${testimonialId}_${user.documentId}`;
 
-    // User already voted helpful - toggle off
-    if (userVote === "helpful") {
-      setHelpful(helpful - 1);
-      setUserVote(null);
-      localStorage.removeItem(storageKey);
-      toast.success("Vote removed");
-      return;
-    }
+    try {
+      // User already voted helpful - remove vote
+      if (userVote === "helpful" && userVoteId) {
+        await deleteVote(userVoteId);
+        setHelpful(helpful - 1);
+        setUserVote(null);
+        setUserVoteId(null);
+        localStorage.removeItem(storageKey);
+        toast.success("Vote removed");
+        return;
+      }
 
-    // User switching from unhelpful to helpful
-    if (userVote === "unhelpful") {
-      setUnhelpful(unhelpful - 1);
+      // User switching from unhelpful to helpful
+      if (userVote === "unhelpful" && userVoteId) {
+        await updateVote(userVoteId, "helpful");
+        setUnhelpful(unhelpful - 1);
+        setHelpful(helpful + 1);
+        setUserVote("helpful");
+        localStorage.setItem(storageKey, "helpful");
+        toast.success("Changed to helpful");
+        return;
+      }
+
+      // New vote
+      const newVote = await createVote(testimonialId, user.documentId!, "helpful");
       setHelpful(helpful + 1);
       setUserVote("helpful");
+      setUserVoteId(newVote.documentId);
       localStorage.setItem(storageKey, "helpful");
-      toast.success("Changed to helpful");
-      return;
+      toast.success("Marked as helpful");
+    } catch (error: any) {
+      console.error("Error handling helpful vote:", error);
+      toast.error(error.message || "Failed to save vote. Please try again.");
+    } finally {
+      setLoading(false);
+      isProcessing.current = false;
     }
-
-    // New vote
-    setHelpful(helpful + 1);
-    setUserVote("helpful");
-    localStorage.setItem(storageKey, "helpful");
-    toast.success("Marked as helpful");
   };
 
-  const handleUnhelpful = (e: React.MouseEvent) => {
+  const handleUnhelpful = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -87,32 +124,48 @@ export default function HelpfulVotes({
     }
     if (loading || isProcessing.current) return;
 
+    isProcessing.current = true;
+    setLoading(true);
+
     const storageKey = `vote_${testimonialId}_${user.documentId}`;
 
-    // User already voted unhelpful - toggle off
-    if (userVote === "unhelpful") {
-      setUnhelpful(unhelpful - 1);
-      setUserVote(null);
-      localStorage.removeItem(storageKey);
-      toast.success("Vote removed");
-      return;
-    }
+    try {
+      // User already voted unhelpful - remove vote
+      if (userVote === "unhelpful" && userVoteId) {
+        await deleteVote(userVoteId);
+        setUnhelpful(unhelpful - 1);
+        setUserVote(null);
+        setUserVoteId(null);
+        localStorage.removeItem(storageKey);
+        toast.success("Vote removed");
+        return;
+      }
 
-    // User switching from helpful to unhelpful
-    if (userVote === "helpful") {
-      setHelpful(helpful - 1);
+      // User switching from helpful to unhelpful
+      if (userVote === "helpful" && userVoteId) {
+        await updateVote(userVoteId, "unhelpful");
+        setHelpful(helpful - 1);
+        setUnhelpful(unhelpful + 1);
+        setUserVote("unhelpful");
+        localStorage.setItem(storageKey, "unhelpful");
+        toast.success("Changed to unhelpful");
+        return;
+      }
+
+      // New vote
+      const newVote = await createVote(testimonialId, user.documentId!, "unhelpful");
       setUnhelpful(unhelpful + 1);
       setUserVote("unhelpful");
+      setUserVoteId(newVote.documentId);
       localStorage.setItem(storageKey, "unhelpful");
-      toast.success("Changed to unhelpful");
-      return;
+      toast.success("Marked as unhelpful");
+    } catch (error: any) {
+      console.error("Error handling unhelpful vote:", error);
+      toast.error(error.message || "Failed to save vote. Please try again.");
+    } finally {
+      setLoading(false);
+      isProcessing.current = false;
     }
-
-    // New vote
-    setUnhelpful(unhelpful + 1);
-    setUserVote("unhelpful");
-    localStorage.setItem(storageKey, "unhelpful");
-    toast.success("Marked as unhelpful");
   };
 
   const total = helpful + unhelpful;

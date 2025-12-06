@@ -70,8 +70,8 @@ export default function AboutContent() {
       </section>
       <main className="flex-1 !w-full">
         {/* History and Culture Section */}
-        <section className="py-16  px-[2em] !w-full">
-          <div className="!w-full grid lg:!grid-cols-2 md:!grid-cols-2 sm:!grid-cols-1 gap-12 items-center">
+        <section className="py-16 px-4 sm:px-6 md:px-8 lg:px-12 !w-full">
+          <div className="!w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="animate-on-scroll">
               <h2 className="text-3xl font-bold mb-6 font-display">
                 A Land of Rich History and Culture
@@ -103,14 +103,14 @@ export default function AboutContent() {
         </section>
 
         {/* Mission and Values Section */}
-        <section className="!w-full py-16 bg-secondary/50 flex items-center justify-center">
-          <div className="!w-full container">
+        <section className="!w-full py-16 bg-secondary/50 px-4 sm:px-6 md:px-8 lg:px-12">
+          <div className="!w-full max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold mb-12 text-center font-display animate-on-scroll">
               Our Mission and Values
             </h2>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               <Card className="hover-lift animate-on-scroll">
-                <CardContent className="pt-6">
+                <CardContent className="p-6">
                   <Globe className="h-12 w-12 text-primary mb-4" />
                   <h3 className="text-xl font-semibold mb-2 font-display">
                     Sustainable Tourism
@@ -123,7 +123,7 @@ export default function AboutContent() {
                 </CardContent>
               </Card>
               <Card className="hover-lift animate-on-scroll animate-delay-200">
-                <CardContent className="pt-6">
+                <CardContent className="p-6">
                   <Users className="h-12 w-12 text-primary mb-4" />
                   <h3 className="text-xl font-semibold mb-2 font-display">
                     Cultural Exchange
@@ -136,7 +136,7 @@ export default function AboutContent() {
                 </CardContent>
               </Card>
               <Card className="hover-lift animate-on-scroll animate-delay-400">
-                <CardContent className="pt-6">
+                <CardContent className="p-6">
                   <MapPin className="h-12 w-12 text-primary mb-4" />
                   <h3 className="text-xl font-semibold mb-2 font-display">
                     Authentic Experiences
@@ -176,8 +176,8 @@ export default function AboutContent() {
         </section> */}
       </main>
       {/* CTA Section */}
-      <section className="py-16 bg-secondary text-primary-foreground">
-        <div className="text-center animate-on-scroll">
+      <section className="py-16 bg-secondary text-primary-foreground px-4 sm:px-6 md:px-8 lg:px-12">
+        <div className="text-center animate-on-scroll max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-4 font-display">
             Ready to Explore Egypt?
           </h2>

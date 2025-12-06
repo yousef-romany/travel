@@ -1,15 +1,16 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { trackAuth } from "@/lib/analytics";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, loading, login, resendConfirmation } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -21,12 +22,13 @@ export default function LoginPage() {
   const [showResend, setShowResend] = useState(false);
   const [resendStatus, setResendStatus] = useState<null | "sending" | "sent" | "failed">(null);
 
-  // ✅ لو المستخدم مسجّل → حوله على /dashboard
+  // ✅ لو المستخدم مسجّل → حوله على الصفحة المطلوبة أو /me
   useEffect(() => {
     if (!loading && user) {
-      router.push("/me");
+      const redirectUrl = searchParams.get("redirect") || "/me";
+      router.push(redirectUrl);
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, searchParams]);
 
   if (loading || user) {
     return (
@@ -173,5 +175,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center text-white">
+        <Loader2 className="animate-spin" size={28} />
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }
