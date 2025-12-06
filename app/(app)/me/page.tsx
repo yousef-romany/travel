@@ -21,7 +21,7 @@ export default function UserProfile() {
   const { user } = useAuth();
 
   // Fetch real loyalty data from Strapi
-  const { data: loyaltyData, isLoading: loyaltyLoading } = useQuery({
+  const { data: loyaltyData, isLoading: loyaltyLoading, error: loyaltyError } = useQuery({
     queryKey: ["userLoyalty", user?.id],
     queryFn: async () => {
       const authToken = localStorage.getItem("authToken");
@@ -30,6 +30,7 @@ export default function UserProfile() {
     },
     enabled: !!user,
     staleTime: 2 * 60 * 1000, // 2 minutes
+    retry: 1, // Only retry once
   });
 
 

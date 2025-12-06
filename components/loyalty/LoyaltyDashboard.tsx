@@ -167,8 +167,10 @@ export function LoyaltyDashboard({
                   </li>
                 ))}
               </ul>
-              <Button className="mt-4 w-full" variant="outline">
-                Explore Programs <ArrowRight className="ml-2 h-4 w-4" />
+              <Button className="mt-4 w-full" variant="outline" asChild>
+                <a href="/programs">
+                  Explore Programs <ArrowRight className="ml-2 h-4 w-4" />
+                </a>
               </Button>
             </div>
           )}

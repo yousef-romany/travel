@@ -10,14 +10,29 @@ const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
  */
 export async function fetchUserLoyalty(authToken: string): Promise<LoyaltyPoints> {
   try {
-    const response = await axios.get(`${API_URL}/api/users/me?populate[loyalty_points]=*`, {
+    // Try to get user with loyalty_points relation
+    // If relation doesn't exist, catch error and return default data
+    const response = await axios.get(`${API_URL}/api/users/me`, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
     });
 
     const user = response.data;
-    const loyaltyData = user.loyalty_points || user.loyaltyPoints;
+
+    // Try to fetch loyalty_points separately if it exists as a relation
+    let loyaltyData = null;
+    try {
+      const loyaltyResponse = await axios.get(`${API_URL}/api/users/me?populate[loyalty_points]=*`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      loyaltyData = loyaltyResponse.data.loyalty_points || loyaltyResponse.data.loyaltyPoints;
+    } catch (loyaltyError) {
+      // Loyalty relation doesn't exist, will use default data
+      console.log("Loyalty points relation not configured, using defaults");
+    }
 
     if (!loyaltyData) {
       // Return default data if user has no loyalty points yet
@@ -46,9 +61,9 @@ export async function fetchUserLoyalty(authToken: string): Promise<LoyaltyPoints
   } catch (error: any) {
     console.error("Error fetching loyalty data:", error);
 
-    // If the endpoint doesn't exist yet, return default data
-    if (error.response?.status === 404) {
-      console.warn("Loyalty points endpoint not found. Using default data.");
+    // If the endpoint doesn't exist or the relation isn't populated, return default data
+    if (error.response?.status === 404 || error.response?.status === 400 || error.code === 'ERR_BAD_REQUEST') {
+      console.warn("Loyalty points not available. Using default data.");
       return {
         userId: 0,
         totalPoints: 0,

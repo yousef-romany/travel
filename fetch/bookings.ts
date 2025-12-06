@@ -90,8 +90,9 @@ export const fetchUserBookings = async (
 
     // Build URL with proper deep population syntax for Strapi v5
     // Event has 'featuredImage' and 'gallery', not 'images'
-    // plan_trip destinations is a JSON field, not a relation, so just populate plan_trip itself
-    let url = `${API_URL}/api/bookings?populate[program][populate][0]=images&populate[plan_trip]=*&populate[event][populate][0]=featuredImage&populate[event][populate][1]=gallery&populate[user]=*&sort[0]=createdAt:desc`;
+    // plan_trip: Only populate safe fields (tripName, destinations, totalPrice, status, notes)
+    // Do NOT populate: user (causes conflict), startDate/endDate (don't exist)
+    let url = `${API_URL}/api/bookings?populate[program][populate][0]=images&populate[plan_trip][fields][0]=tripName&populate[plan_trip][fields][1]=destinations&populate[plan_trip][fields][2]=totalPrice&populate[plan_trip][fields][3]=status&populate[plan_trip][fields][4]=notes&populate[event][populate][0]=featuredImage&populate[event][populate][1]=gallery&sort[0]=createdAt:desc`;
 
     // If userId is provided, filter by user documentId
     if (userId) {

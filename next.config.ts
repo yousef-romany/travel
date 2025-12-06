@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "scontent.cdninstagram.com" },
       { protocol: "https", hostname: "instagram.fcai21-3.fna.fbcdn.net" },
       { protocol: "https", hostname: "scontent-hbe1-1.cdninstagram.com" },
+      // Additional Instagram CDN patterns
+      { protocol: "https", hostname: "scontent-*.cdninstagram.com" },
+      { protocol: "https", hostname: "*.cdninstagram.com" },
+      { protocol: "https", hostname: "video.cdninstagram.com" },
+      { protocol: "https", hostname: "*.fbcdn.net" },
+      { protocol: "https", hostname: "scontent.*.fna.fbcdn.net" },
       {protocol: 'https',hostname: 'images.unsplash.com',},
       {
         protocol: 'http',
@@ -71,9 +77,9 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https: http://localhost:1337",
               "font-src 'self' data: https://fonts.gstatic.com",
-              "connect-src 'self' http://localhost:1337 https://www.google-analytics.com",
-              "media-src 'self' blob: data:",
-              "frame-src 'self' https://www.google.com",
+              "connect-src 'self' http://localhost:1337 https://www.google-analytics.com https://graph.instagram.com https://*.cdninstagram.com https://*.fbcdn.net",
+              "media-src 'self' blob: data: https://*.cdninstagram.com https://*.fbcdn.net https://video.cdninstagram.com",
+              "frame-src 'self' https://www.google.com https://www.instagram.com",
             ].join("; ")
           },
           // CORS for Strapi

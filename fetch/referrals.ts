@@ -105,34 +105,64 @@ export async function completeReferral(bookingId: string): Promise<{
  * Get user's referral statistics
  */
 export async function getReferralStats(): Promise<ReferralStats> {
-  const token = localStorage.getItem("authToken");
+  try {
+    const token = localStorage.getItem("authToken");
 
-  const response = await axios.get(
-    `${API_URL}/api/referrals/stats`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await axios.get(
+      `${API_URL}/api/referrals/stats`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching referral stats:", error);
+
+    // Return default empty stats if endpoint doesn't exist
+    if (error.response?.status === 404 || error.code === 'ERR_BAD_REQUEST') {
+      console.warn("Referral stats endpoint not found. Returning default data.");
+      return {
+        totalReferrals: 0,
+        pendingReferrals: 0,
+        completedReferrals: 0,
+        totalEarned: 0,
+        activeCode: null,
+      };
     }
-  );
 
-  return response.data;
+    throw error;
+  }
 }
 
 /**
  * Get user's referral history
  */
 export async function getReferralHistory(): Promise<Referral[]> {
-  const token = localStorage.getItem("authToken");
+  try {
+    const token = localStorage.getItem("authToken");
 
-  const response = await axios.get(
-    `${API_URL}/api/referrals/history`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await axios.get(
+      `${API_URL}/api/referrals/history`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching referral history:", error);
+
+    // Return empty array if endpoint doesn't exist
+    if (error.response?.status === 404 || error.code === 'ERR_BAD_REQUEST') {
+      console.warn("Referral history endpoint not found. Returning empty history.");
+      return [];
     }
-  );
 
-  return response.data;
+    throw error;
+  }
 }

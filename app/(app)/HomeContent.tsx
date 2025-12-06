@@ -1053,7 +1053,7 @@ export default function HomeContent() {
 
         <div className="flex justify-center mt-8 sm:mt-10 md:mt-12">
           <a
-            href="https://www.instagram.com/yourprofile"
+            href="https://www.instagram.com/zoeholidayss1"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackSocialShare("instagram", "instagram_follow", "home_page")}
@@ -1068,42 +1068,6 @@ export default function HomeContent() {
           </a>
         </div>
       </section>
-
-      {/* Newsletter Section
-      <section className="py-16 bg-muted !w-full">
-        <div className="max-w-3xl mx-auto text-center px-[2em]">
-          <div className="inline-flex items-center justify-center p-2 bg-accent rounded-full mb-4">
-            <Mail className="h-6 w-6 text-primary" aria-hidden="true" />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Stay Updated</h2>
-          <p className="mb-8 text-muted-foreground">
-            Subscribe to our newsletter for travel tips, exclusive offers, and
-            inspiration for your next Egyptian adventure
-          </p>
-          <form
-            onSubmit={handleNewsletterSubmit}
-            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-          >
-            <input
-              type="email"
-              placeholder="Your email address"
-              aria-label="Email address for newsletter"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              disabled={isSubscribing}
-              className="px-4 py-2 rounded-md text-foreground bg-background flex-1 min-w-0 border border-input focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-            />
-            <Button
-              type="submit"
-              disabled={isSubscribing}
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              {isSubscribing ? "Subscribing..." : "Subscribe"}
-            </Button>
-          </form>
-        </div>
-      </section> */}
     </div>
   );
 }

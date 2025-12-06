@@ -64,7 +64,16 @@ export function ReferralProgram() {
       }
     } catch (error) {
       console.error("Error loading referral data:", error);
-      toast.error("Failed to load referral data");
+      // Don't show error toast - the fetch functions already handle missing endpoints gracefully
+      // Set default data instead
+      setStats({
+        totalReferrals: 0,
+        pendingReferrals: 0,
+        completedReferrals: 0,
+        totalEarned: 0,
+        activeCode: null,
+      });
+      setHistory([]);
     } finally {
       setIsLoadingStats(false);
     }

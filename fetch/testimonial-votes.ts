@@ -20,8 +20,9 @@ export const getUserVote = async (
     const authToken =
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
+    // Query using testimonialId and userId fields (not relation filters)
     const response = await axios.get(
-      `${API_URL}/api/testimonial-votes?filters[testimonial][documentId][$eq]=${testimonialId}&filters[user][documentId][$eq]=${userId}`,
+      `${API_URL}/api/testimonial-votes?filters[testimonialId][$eq]=${testimonialId}&filters[userId][$eq]=${userId}`,
       {
         headers: {
           Authorization: `Bearer ${authToken || API_TOKEN}`,
@@ -46,15 +47,23 @@ export const createVote = async (
     const authToken =
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
+    const payload = {
+      data: {
+        testimonialId: testimonialId,
+        userId: userId,
+        voteType,
+      },
+    };
+
+    console.log("Creating vote with payload:", JSON.stringify(payload, null, 2));
+    console.log("testimonialId:", testimonialId);
+    console.log("userId:", userId);
+    console.log("voteType:", voteType);
+
+    // Backend expects testimonialId and userId (not testimonial/user)
     const response = await axios.post(
       `${API_URL}/api/testimonial-votes`,
-      {
-        data: {
-          testimonial: testimonialId,
-          user: userId,
-          voteType,
-        },
-      },
+      payload,
       {
         headers: {
           Authorization: `Bearer ${authToken || API_TOKEN}`,
@@ -64,8 +73,28 @@ export const createVote = async (
     );
 
     return response.data.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating vote:", error);
+    // Log full error for debugging
+    if (error.response) {
+      console.error("Error response FULL:", JSON.stringify(error.response.data, null, 2));
+      console.error("Error status:", error.response.status);
+      console.error("Error details:", error.response.data?.error?.details);
+    }
+
+    // If endpoint doesn't exist (404), throw helpful error
+    if (error.response?.status === 404) {
+      throw new Error("Testimonial votes feature not configured in backend. Please create the testimonial-votes collection in Strapi.");
+    }
+
+    // If validation error (400), provide details
+    if (error.response?.status === 400) {
+      const errorMsg = error.response?.data?.error?.message || "Invalid vote data";
+      const errorDetails = error.response?.data?.error?.details || {};
+      console.error("Validation error details:", errorDetails);
+      throw new Error(`Vote creation failed: ${errorMsg}`);
+    }
+
     throw error;
   }
 };
@@ -95,8 +124,12 @@ export const updateVote = async (
     );
 
     return response.data.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error updating vote:", error);
+    if (error.response) {
+      console.error("Error response:", error.response.data);
+      console.error("Error status:", error.response.status);
+    }
     throw error;
   }
 };
@@ -112,8 +145,12 @@ export const deleteVote = async (voteId: string): Promise<void> => {
         Authorization: `Bearer ${authToken || API_TOKEN}`,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting vote:", error);
+    if (error.response) {
+      console.error("Error response:", error.response.data);
+      console.error("Error status:", error.response.status);
+    }
     throw error;
   }
 };

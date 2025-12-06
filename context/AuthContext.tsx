@@ -16,7 +16,7 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string, referralCode?: string) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   resetPassword: (code: string, password: string, passwordConfirmation: string) => Promise<void>;
   resendConfirmation: (email: string) => Promise<void>;
@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   // ✅ SIGNUP
-  const signup = async (email: string, password: string) => {
+  const signup = async (email: string, password: string, referralCode?: string) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/local/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -110,6 +110,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         data: { user: data.user.id, isProfileCompleted: false },
       }),
     });
+
+    // If referral code provided, process it
+    if (referralCode) {
+      try {
+        await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/referrals/use-code`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${data.jwt}`,
+          },
+          body: JSON.stringify({
+            referralCode: referralCode,
+            newUserId: data.user.documentId,
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to apply referral code:", error);
+        // Don't fail signup if referral code fails
+      }
+    }
 
     setUser({ ...data.user, token: data.jwt });
     window.location.href = "/email-confirmation";

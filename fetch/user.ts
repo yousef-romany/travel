@@ -127,7 +127,8 @@ export const getUserProfile = async (userId: number, token: string): Promise<Use
 export const getUserTrips = async (userId: number, token: string): Promise<UserTrip[]> => {
   try {
     // Fetch all bookings for authenticated user with proper population
-    const url = `${API_URL}/api/bookings?populate[program][populate]=images&populate[plan_trip]=*&populate[event]=*&populate[user]=*&sort[0]=tripDate:desc`;
+    // Fixed: Only populate fields that exist in plan_trip (no user, no startDate/endDate)
+    const url = `${API_URL}/api/bookings?populate[program][populate]=images&populate[plan_trip][fields][0]=tripName&populate[plan_trip][fields][1]=destinations&populate[plan_trip][fields][2]=totalPrice&populate[plan_trip][fields][3]=status&populate[event]=*&sort[0]=tripDate:desc`;
 
     const response = await axios.get(url, {
       headers: {

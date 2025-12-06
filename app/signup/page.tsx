@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { trackAuth } from "@/lib/analytics";
 
-export default function SignupPage() {
+function SignupForm() {
   const { signup } = useAuth();
+  const searchParams = useSearchParams();
+  const referralCode = searchParams.get('ref');
 
   const [formData, setFormData] = useState({
     email: "",
@@ -35,7 +38,7 @@ export default function SignupPage() {
     setErrorMsg("");
 
     try {
-      await signup(formData.email, formData.password);
+      await signup(formData.email, formData.password, referralCode || undefined);
       trackAuth("signup");
       // Signup function handles redirect internally
       setLoading(false);
@@ -51,6 +54,12 @@ export default function SignupPage() {
       <div className="w-full max-w-md bg-background-900/60 border border-amber-500/20 rounded-2xl p-8 shadow-xl animate-slide-up">
         <h1 className="text-3xl font-bold text-white text-center mb-2 animate-fade-in">Create Account</h1>
         <p className="text-slate-400 text-center mb-6 animate-fade-in animate-delay-100">Create your account to continue</p>
+
+        {referralCode && (
+          <div className="bg-green-500/10 border border-green-500 text-green-300 p-3 mb-4 rounded animate-slide-down">
+            🎁 Referral code applied: <span className="font-bold">{referralCode}</span>
+          </div>
+        )}
 
         {errorMsg && <div className="bg-red-500/10 border border-red-500 text-red-300 p-3 mb-4 rounded animate-slide-down">{errorMsg}</div>}
 
@@ -97,5 +106,17 @@ export default function SignupPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-background-950 to-muted-950 flex items-center justify-center">
+        <Loader className="animate-spin w-8 h-8 text-amber-500" />
+      </div>
+    }>
+      <SignupForm />
+    </Suspense>
   );
 }
