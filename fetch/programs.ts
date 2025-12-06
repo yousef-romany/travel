@@ -112,10 +112,38 @@ export const fetchProgramsList = async (limit = 100): Promise<ProgramsResponse> 
  */
 export const fetchProgramOne = async (titleOrId: string) => {
   try {
-    // First try to fetch by title with full population including content_steps images
-    const urlByTitle = `${API_URL}/api/programs?populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true&filters[title][$eq]=${titleOrId}`;
+    // Clean and decode the input
+    const cleanInput = decodeURIComponent(titleOrId).trim();
 
-    const responseByTitle = await axios.get(String(urlByTitle), {
+    // First try to fetch by documentId (most efficient)
+    try {
+      const urlById = `${API_URL}/api/programs/${encodeURIComponent(cleanInput)}?populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true`;
+
+      const responseById = await axios.get(urlById, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${API_TOKEN}`,
+        },
+      });
+
+      // If found by ID, wrap in array format
+      if (responseById.data.data) {
+        return {
+          data: [responseById.data.data],
+          meta: responseById.data.meta || {}
+        };
+      }
+    } catch (idError: any) {
+      // If 404, continue to try by title
+      if (idError.response?.status !== 404) {
+        throw idError;
+      }
+    }
+
+    // If not found by ID, try to fetch by title
+    const urlByTitle = `${API_URL}/api/programs?populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true&filters[title][$eq]=${encodeURIComponent(cleanInput)}`;
+
+    const responseByTitle = await axios.get(urlByTitle, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${API_TOKEN}`,
@@ -127,22 +155,9 @@ export const fetchProgramOne = async (titleOrId: string) => {
       return responseByTitle.data;
     }
 
-    // Otherwise, try to fetch by documentId
-    const urlById = `${API_URL}/api/programs/${titleOrId}?populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true`;
-
-    const responseById = await axios.get(String(urlById), {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${API_TOKEN}`,
-      },
-    });
-
-    // Wrap single document in array format to match the collection response
-    return {
-      data: responseById.data.data ? [responseById.data.data] : [],
-      meta: responseById.data.meta || {}
-    };
-  } catch (error) {
+    // If still not found, throw error
+    throw new Error(`Program not found with identifier: ${cleanInput}`);
+  } catch (error: any) {
     console.error("Error fetching program by title or ID:", error);
     throw error;
   }

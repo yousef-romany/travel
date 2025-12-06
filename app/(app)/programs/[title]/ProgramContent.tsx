@@ -544,8 +544,8 @@ export default function ProgramContent({ title }: { title: string }) {
                 Overview
               </h2>
               <div
-                className="text-muted-foreground text-lg leading-relaxed prose prose-slate dark:prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: program.overView || '' }}
+                className="text-muted-foreground text-lg leading-relaxed prose prose-slate dark:prose-invert max-w-none [&>p]:mb-4 [&>ul]:mb-4 [&>ol]:mb-4 [&>h1]:text-2xl [&>h2]:text-xl [&>h3]:text-lg [&>strong]:font-bold [&>em]:italic"
+                dangerouslySetInnerHTML={{ __html: program.overView || program.descraption || 'No overview available' }}
               />
             </div>
           </div>
