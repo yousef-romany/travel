@@ -116,11 +116,10 @@ export function ComparisonDemo() {
           return (
             <Card
               key={program.documentId}
-              className={`relative overflow-hidden transition-all ${
-                isSelected
+              className={`relative overflow-hidden transition-all ${isSelected
                   ? "border-2 border-primary shadow-lg scale-105"
                   : "border hover:shadow-md"
-              }`}
+                }`}
             >
               {/* Selected Badge */}
               {isSelected && (
@@ -191,7 +190,7 @@ export function ComparisonDemo() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 flex-wrap">
         {selected.length > 0 && (
           <div className="text-center sm:text-left">
             <p className="text-sm text-muted-foreground mb-2">
