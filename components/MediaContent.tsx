@@ -121,23 +121,12 @@ export default function MediaContent({
   };
 
   const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
-    console.error('Video error event:', e);
-    console.error('Video URL:', imageUrl);
-    if (videoRef.current) {
+    // Only log essential info - we have UI fallback handling
+    if (videoRef.current?.error) {
       const error = videoRef.current.error;
-      console.error('Video error code:', error?.code);
-      console.error('Video error message:', error?.message);
-
-      // Error codes:
-      // 1 = MEDIA_ERR_ABORTED
-      // 2 = MEDIA_ERR_NETWORK
-      // 3 = MEDIA_ERR_DECODE
-      // 4 = MEDIA_ERR_SRC_NOT_SUPPORTED
-
-      if (error?.code === 2) {
-        console.error('Network error - video may be blocked by CORS or network issues');
-      } else if (error?.code === 4) {
-        console.error('Video source not supported - codec or format issue');
+      // Only log if it's not a common Instagram CORS/network issue
+      if (error.code !== 2 && error.code !== 4) {
+        console.warn(`Video load error (code ${error.code}):`, imageUrl);
       }
     }
     setIsLoading(false);
@@ -154,7 +143,7 @@ export default function MediaContent({
     // If using iframe fallback (for Instagram embed)
     if (useIframe && thumbnail_url) {
       return (
-        <div className="relative group cursor-pointer w-full h-full min-h-[400px] sm:min-h-[500px] md:min-h-[600px] flex items-center justify-center bg-black dark:bg-gray-950" onClick={togglePlay}>
+        <div className="relative group cursor-pointer w-full min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:h-[80vh] flex items-center justify-center bg-black dark:bg-gray-950" onClick={togglePlay}>
           <div className="relative w-full h-full flex items-center justify-center">
             {/* Loading indicator */}
             {isLoading && (
@@ -264,7 +253,7 @@ export default function MediaContent({
     }
 
     return (
-      <div className="relative group cursor-pointer w-full h-full min-h-[400px] sm:min-h-[500px] md:min-h-[600px] flex items-center justify-center bg-black dark:bg-gray-950" onClick={togglePlay}>
+      <div className="relative group cursor-pointer w-full min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:h-[80vh] flex items-center justify-center bg-black dark:bg-gray-950" onClick={togglePlay}>
         <div className="relative w-full h-full flex items-center justify-center">
           {/* Loading indicator */}
           {isLoading && (
@@ -421,7 +410,7 @@ export default function MediaContent({
         <div className="absolute top-4 right-4 z-10 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
           <p className="text-white text-xs font-semibold flex items-center gap-1">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M3 5h18v14H3V5zm2 2v10h14V7H5zm2 2h10v6H7V9zm2 2v2h6v-2H9z"/>
+              <path d="M3 5h18v14H3V5zm2 2v10h14V7H5zm2 2h10v6H7V9zm2 2v2h6v-2H9z" />
             </svg>
             Multiple Items
           </p>

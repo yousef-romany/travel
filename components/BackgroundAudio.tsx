@@ -17,11 +17,10 @@ export default function BackgroundAudio() {
   const pathname = usePathname();
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
 
-  // Array of background music tracks
-  // TODO: Add second audio file to /public/audio/ and uncomment the second track
+  // Array of background music tracks - rotates between both
   const audioTracks = [
-    "/audio/mainAudio.mp3", // Uncomment when you add your second audio file
     "/audio/videoplayback.mp3",
+    "/audio/mainAudio.mp3",
   ];
 
   // Show scroll button when user scrolls down
@@ -45,8 +44,8 @@ export default function BackgroundAudio() {
     initRef.current = true;
 
     // Create and initialize audio with the first track
-    const audio = new Audio("/audio/videoplayback.mp3");
-    audio.loop = false; // Don't loop - we'll rotate tracks when we have multiple
+    const audio = new Audio(audioTracks[0]);
+    audio.loop = false; // Don't loop - rotate to next track
     audio.volume = 0.3; // Set to 30% volume
     audio.preload = "auto";
     audioRef.current = audio;
@@ -58,9 +57,8 @@ export default function BackgroundAudio() {
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
     const handleEnded = () => {
-      // Loop the single track (until we add more tracks)
-      audio.currentTime = 0;
-      audio.play().catch(console.error);
+      // Rotate to next track when current track ends
+      setCurrentTrackIndex((prev) => (prev + 1) % audioTracks.length);
     };
 
     audio.addEventListener("play", handlePlay);
@@ -122,7 +120,10 @@ export default function BackgroundAudio() {
 
   // Load new track when index changes
   useEffect(() => {
-    if (!audioRef.current || currentTrackIndex === 0) return; // Skip initial mount
+    if (!audioRef.current) return;
+
+    // Skip the very first mount (when component initializes)
+    if (currentTrackIndex === 0 && !audioRef.current.src) return;
 
     const wasPlaying = isPlaying;
     const audio = audioRef.current;
