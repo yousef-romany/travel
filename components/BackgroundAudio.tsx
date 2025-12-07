@@ -20,8 +20,8 @@ export default function BackgroundAudio() {
   // Array of background music tracks
   // TODO: Add second audio file to /public/audio/ and uncomment the second track
   const audioTracks = [
+    "/audio/mainAudio.mp3", // Uncomment when you add your second audio file
     "/audio/videoplayback.mp3",
-    // "/audio/track2.mp3", // Uncomment when you add your second audio file
   ];
 
   // Show scroll button when user scrolls down
