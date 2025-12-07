@@ -15,6 +15,14 @@ export default function BackgroundAudio() {
   const [showControls, setShowControls] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const pathname = usePathname();
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+
+  // Array of background music tracks
+  // TODO: Add second audio file to /public/audio/ and uncomment the second track
+  const audioTracks = [
+    "/audio/videoplayback.mp3",
+    // "/audio/track2.mp3", // Uncomment when you add your second audio file
+  ];
 
   // Show scroll button when user scrolls down
   useEffect(() => {
@@ -36,9 +44,9 @@ export default function BackgroundAudio() {
     if (initRef.current) return;
     initRef.current = true;
 
-    // Create and initialize audio
+    // Create and initialize audio with the first track
     const audio = new Audio("/audio/videoplayback.mp3");
-    audio.loop = true;
+    audio.loop = false; // Don't loop - we'll rotate tracks when we have multiple
     audio.volume = 0.3; // Set to 30% volume
     audio.preload = "auto";
     audioRef.current = audio;
@@ -50,9 +58,9 @@ export default function BackgroundAudio() {
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
     const handleEnded = () => {
-      if (audio.loop) {
-        audio.play().catch(console.error);
-      }
+      // Loop the single track (until we add more tracks)
+      audio.currentTime = 0;
+      audio.play().catch(console.error);
     };
 
     audio.addEventListener("play", handlePlay);
@@ -97,12 +105,9 @@ export default function BackgroundAudio() {
       setTimeout(() => {
         playAudio();
       }, 100);
-    } else {
-      // On other pages, don't autoplay but keep audio ready
-      console.log("Background audio ready (not autoplaying on non-home pages)");
     }
 
-    // Cleanup on unmount
+    // Cleanup only on component unmount (not on pathname change)
     return () => {
       if (audioRef.current) {
         audioRef.current.removeEventListener("play", handlePlay);
@@ -112,7 +117,25 @@ export default function BackgroundAudio() {
         audioRef.current.src = "";
       }
     };
-  }, [pathname]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
+
+  // Load new track when index changes
+  useEffect(() => {
+    if (!audioRef.current || currentTrackIndex === 0) return; // Skip initial mount
+
+    const wasPlaying = isPlaying;
+    const audio = audioRef.current;
+
+    // Load new track
+    audio.src = audioTracks[currentTrackIndex];
+    audio.load();
+
+    // If was playing, continue playing the new track
+    if (wasPlaying) {
+      audio.play().catch(console.error);
+    }
+  }, [currentTrackIndex]);
 
   const toggleAudio = async () => {
     if (!audioRef.current) return;
