@@ -6,7 +6,7 @@ import { fetchInspirationOneCategory } from "@/fetch/category";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 type Props = {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

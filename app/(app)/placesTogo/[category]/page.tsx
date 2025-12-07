@@ -6,11 +6,12 @@ import { fetchPlaceToGoCategoriesOneCategory } from "@/fetch/placesToGo";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 type Props = {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const category = decodeURIComponent(params.category);
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.category);
   // Fetch data for metadata
   const data = await fetchPlaceToGoCategoriesOneCategory(category);
   const categoryData = data?.data?.at(-1);
@@ -32,13 +33,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: categoryData?.image ? [{ url: categoryData.image.url }] : [],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesTogo/${params.category}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesTogo/${resolvedParams.category}`,
     },
   };
 }
 
-const PlacesToGoDynamic = ({ params }: Props) => {
-  const category = decodeURIComponent(params.category);
+const PlacesToGoDynamic = async ({ params }: Props) => {
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.category);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -60,7 +62,7 @@ const PlacesToGoDynamic = ({ params }: Props) => {
         items={[
           { name: "Home", item: "/" },
           { name: "Places To Go", item: "/placesTogo" },
-          { name: category, item: `/placesTogo/${params.category}` }
+          { name: category, item: `/placesTogo/${resolvedParams.category}` }
         ]}
       />
 

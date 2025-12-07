@@ -6,17 +6,18 @@ import { fetchInspirationOneBlog } from "@/fetch/category";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 type Props = {
-  params: {
+  params: Promise<{
     category: string;
     subCategory: string;
     "inspire-blog": string;
-  };
+  }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const category = decodeURIComponent(params.category);
-  const subCategory = decodeURIComponent(params.subCategory);
-  const blogTitle = decodeURIComponent(params["inspire-blog"]);
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.category);
+  const subCategory = decodeURIComponent(resolvedParams.subCategory);
+  const blogTitle = decodeURIComponent(resolvedParams["inspire-blog"]);
 
   // Fetch data for metadata
   const data = await fetchInspirationOneBlog(blogTitle);
@@ -43,15 +44,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       authors: ["ZoeHoliday"],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/inspiration/${params.category}/${params.subCategory}/${params["inspire-blog"]}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/inspiration/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["inspire-blog"]}`,
     },
   };
 }
 
-const InspirationDynamic = ({ params }: Props) => {
-  const category = decodeURIComponent(params.category);
-  const subCategory = decodeURIComponent(params.subCategory);
-  const blogTitle = decodeURIComponent(params["inspire-blog"]);
+const InspirationDynamic = async ({ params }: Props) => {
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.category);
+  const subCategory = decodeURIComponent(resolvedParams.subCategory);
+  const blogTitle = decodeURIComponent(resolvedParams["inspire-blog"]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -62,11 +64,11 @@ const InspirationDynamic = ({ params }: Props) => {
           { label: "Inspiration", href: "/inspiration" },
           {
             label: category,
-            href: `/inspiration/${params.category}`,
+            href: `/inspiration/${resolvedParams.category}`,
           },
           {
             label: subCategory,
-            href: `/inspiration/${params.category}/${params.subCategory}`,
+            href: `/inspiration/${resolvedParams.category}/${resolvedParams.subCategory}`,
           },
           { label: blogTitle },
         ]}
@@ -76,9 +78,9 @@ const InspirationDynamic = ({ params }: Props) => {
         items={[
           { name: "Home", item: "/" },
           { name: "Inspiration", item: "/inspiration" },
-          { name: category, item: `/inspiration/${params.category}` },
-          { name: subCategory, item: `/inspiration/${params.category}/${params.subCategory}` },
-          { name: blogTitle, item: `/inspiration/${params.category}/${params.subCategory}/${params["inspire-blog"]}` }
+          { name: category, item: `/inspiration/${resolvedParams.category}` },
+          { name: subCategory, item: `/inspiration/${resolvedParams.category}/${resolvedParams.subCategory}` },
+          { name: blogTitle, item: `/inspiration/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["inspire-blog"]}` }
         ]}
       />
 

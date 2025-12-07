@@ -109,7 +109,7 @@ const IndexPage = ({ slug }: { slug: string }) => {
                         {item?.inspire_blogs?.map((itemBlog: InspireBlogs) => (
                           <CarouselItem
                             key={itemBlog?.id}
-                            className="pl-2 md:pl-4 basis-full sm:basis-1 lg:basis-1/3 xl:basis-1/4"
+                            className="pl-2 md:pl-4 basis-full sm:basis-2 lg:basis-1/3 xl:basis-1/4"
                           >
                             <Link
                               href={`/inspiration/${slug}/${item?.categoryName}/${itemBlog?.title}`}

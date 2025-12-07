@@ -144,7 +144,7 @@ const NavBar = () => {
             size="icon"
             variant="outline"
             onClick={handleWishlistClick}
-            className="hover:bg-primary/10 transition-colors h-9 w-9 sm:h-10 sm:w-10"
+            className="hover:bg-primary/10 transition-colors h-9 w-9 sm:h-10 sm:w-10 sm:hidden lg:flex md:flex"
             title="Wishlist"
           >
             <FaRegHeart size={18} className="text-primary sm:w-5 sm:h-5" />

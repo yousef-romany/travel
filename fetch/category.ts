@@ -45,9 +45,12 @@ const url =
 
 
 export const fetchInspirationOneSubCategory = async (name: string) => {
-  // http://localhost:1337/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/inspire-subCategories?filters[categoryName][$eq]=${name}&populate=*`;
+    const url =
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/inspire-subcategories` +
+      `?filters[categoryName][$eq]=${encodeURIComponent(name)}` +
+      `&populate[image]=true` +
+      `&populate[inspire_blogs][populate][image]=true`;
 
     const response = await axios.get(String(url), {
       headers: {
@@ -57,7 +60,7 @@ export const fetchInspirationOneSubCategory = async (name: string) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching inspiration categories:", error || error);
+    console.error("Error fetching inspiration subcategory:", error || error);
     throw error; // Re-throw for higher-level error handling if needed
   }
 };

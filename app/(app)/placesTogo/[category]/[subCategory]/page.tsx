@@ -13,12 +13,13 @@ import { fetchPlaceToOneSubCategory } from "@/fetch/placesToGo";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 type Props = {
-  params: { category: string; subCategory: string };
+  params: Promise<{ category: string; subCategory: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const category = decodeURIComponent(params.category);
-  const subCategory = decodeURIComponent(params.subCategory);
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.category);
+  const subCategory = decodeURIComponent(resolvedParams.subCategory);
 
   // Fetch data for metadata
   const data = await fetchPlaceToOneSubCategory(subCategory);
@@ -41,14 +42,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: subCategoryData?.image ? [{ url: subCategoryData.image.url }] : [],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesTogo/${params.category}/${params.subCategory}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}`,
     },
   };
 }
 
-const PlacesToGoDynamic = ({ params }: Props) => {
-  const category = decodeURIComponent(params.category);
-  const subCategory = decodeURIComponent(params.subCategory);
+const PlacesToGoDynamic = async ({ params }: Props) => {
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.category);
+  const subCategory = decodeURIComponent(resolvedParams.subCategory);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -70,7 +72,7 @@ const PlacesToGoDynamic = ({ params }: Props) => {
             <BreadcrumbSeparator className="text-white/60" />
             <BreadcrumbItem className="text-white">
               <BreadcrumbLink
-                href={`/placesTogo/${params.category}`}
+                href={`/placesTogo/${resolvedParams.category}`}
                 className="hover:text-white/80 transition-colors"
               >
                 {category}
@@ -90,8 +92,8 @@ const PlacesToGoDynamic = ({ params }: Props) => {
         items={[
           { name: "Home", item: "/" },
           { name: "Places To Go", item: "/placesTogo" },
-          { name: category, item: `/placesTogo/${params.category}` },
-          { name: subCategory, item: `/placesTogo/${params.category}/${params.subCategory}` }
+          { name: category, item: `/placesTogo/${resolvedParams.category}` },
+          { name: subCategory, item: `/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}` }
         ]}
       />
 

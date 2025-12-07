@@ -6,17 +6,18 @@ import { fetchPlaceToGoOneBlog } from "@/fetch/placesToGo";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 type Props = {
-  params: {
+  params: Promise<{
     category: string;
     subCategory: string;
     "place-blog": string;
-  };
+  }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const category = decodeURIComponent(params.category);
-  const subCategory = decodeURIComponent(params.subCategory);
-  const blogTitle = decodeURIComponent(params["place-blog"]);
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.category);
+  const subCategory = decodeURIComponent(resolvedParams.subCategory);
+  const blogTitle = decodeURIComponent(resolvedParams["place-blog"]);
 
   // Fetch data for metadata
   const data = await fetchPlaceToGoOneBlog(blogTitle);
@@ -43,15 +44,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       authors: ["ZoeHoliday"],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesTogo/${params.category}/${params.subCategory}/${params["place-blog"]}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["place-blog"]}`,
     },
   };
 }
 
-const PlaceToGoBlogDynamic = ({ params }: Props) => {
-  const category = decodeURIComponent(params.category);
-  const subCategory = decodeURIComponent(params.subCategory);
-  const blogTitle = decodeURIComponent(params["place-blog"]);
+const PlaceToGoBlogDynamic = async ({ params }: Props) => {
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.category);
+  const subCategory = decodeURIComponent(resolvedParams.subCategory);
+  const blogTitle = decodeURIComponent(resolvedParams["place-blog"]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -67,11 +69,11 @@ const PlaceToGoBlogDynamic = ({ params }: Props) => {
           { label: "Places To Go", href: "/placesTogo" },
           {
             label: category,
-            href: `/placesTogo/${params.category}`,
+            href: `/placesTogo/${resolvedParams.category}`,
           },
           {
             label: subCategory,
-            href: `/placesTogo/${params.category}/${params.subCategory}`,
+            href: `/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}`,
           },
           { label: blogTitle },
         ]}
@@ -81,9 +83,9 @@ const PlaceToGoBlogDynamic = ({ params }: Props) => {
         items={[
           { name: "Home", item: "/" },
           { name: "Places To Go", item: "/placesTogo" },
-          { name: category, item: `/placesTogo/${params.category}` },
-          { name: subCategory, item: `/placesTogo/${params.category}/${params.subCategory}` },
-          { name: blogTitle, item: `/placesTogo/${params.category}/${params.subCategory}/${params["place-blog"]}` }
+          { name: category, item: `/placesTogo/${resolvedParams.category}` },
+          { name: subCategory, item: `/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}` },
+          { name: blogTitle, item: `/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["place-blog"]}` }
         ]}
       />
 

@@ -3,14 +3,16 @@ import { Button } from "@/components/ui/button";
 import { fetchInspirationOneSubCategory } from "@/fetch/category";
 import { useQuery } from "@tanstack/react-query";
 import { memo, useState } from "react";
-import CardFlex from "./CardFlex";
-import CardGrid from "./CardGrid";
+// import CardFlex from "./CardFlex";
+// import CardGrid from "./CardGrid";
 import { CiGrid41 } from "react-icons/ci";
 import { CiGrid2H } from "react-icons/ci";
 import { InspireBlogs, InspireSubcategories, meta } from "@/type/inspiration";
 import Loading from "@/components/Loading";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
+import CardGrid from "@/app/(app)/placesTogo/[category]/[subCategory]/components/CardGrid";
+import CardFlex from "@/app/(app)/placesTogo/[category]/[subCategory]/components/CardFlex";
 
 const IndexPageInspireSubCategory = ({
   routes,
@@ -40,7 +42,7 @@ const IndexPageInspireSubCategory = ({
       </div>
 
       {/* Hero section with responsive height */}
-      <div className="relative w-full h-[40vh] sm:h-[50vh] md:h-[60vh] overflow-hidden">
+      <div className="relative w-full h-[50vh] sm:h-[55vh] md:h-[60vh] overflow-hidden">
         <OptimizedImage
           src={getImageUrl(data?.data?.at(-1)?.image)}
           alt={data?.data?.at(-1)?.categoryName as string}
@@ -76,21 +78,21 @@ const IndexPageInspireSubCategory = ({
           <div className="flex gap-2 items-center">
             <Button
               onClick={() => setView("grid")}
-              className={view === "grid" ? "bg-gradient-to-r from-primary to-amber-600" : ""}
+              className={`transition-all duration-300 ${view === "grid" ? "bg-primary text-white shadow-lg" : "bg-background hover:bg-muted text-foreground border-input"}`}
               variant={view === "grid" ? "default" : "outline"}
               size="sm"
             >
-              <CiGrid41 className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="ml-2 hidden sm:inline">Grid</span>
+              <CiGrid41 className="w-4 h-4 md:w-5 md:h-5" />
+              <span className="ml-2 hidden sm:inline text-xs md:text-sm font-medium">Grid</span>
             </Button>
             <Button
               onClick={() => setView("flex")}
-              className={view === "flex" ? "bg-gradient-to-r from-primary to-amber-600" : ""}
+              className={`transition-all duration-300 ${view === "flex" ? "bg-primary text-white shadow-lg" : "bg-background hover:bg-muted text-foreground border-input"}`}
               variant={view === "flex" ? "default" : "outline"}
               size="sm"
             >
-              <CiGrid2H className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="ml-2 hidden sm:inline">List</span>
+              <CiGrid2H className="w-4 h-4 md:w-5 md:h-5" />
+              <span className="ml-2 hidden sm:inline text-xs md:text-sm font-medium">List</span>
             </Button>
           </div>
         </div>
@@ -98,8 +100,9 @@ const IndexPageInspireSubCategory = ({
         {/* Grid/Flex view with improved responsive breakpoints */}
         {view === "grid" ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-            {data?.data?.at(-1)?.inspire_blogs?.map((item: InspireBlogs) => (
-              <CardGrid
+            {data?.data?.at(-1)?.inspire_blogs?.map((item: InspireBlogs) => {
+              console.log(data)
+              return <CardGrid
                 key={item.id}
                 details={item.details}
                 title={item.title}
@@ -108,7 +111,7 @@ const IndexPageInspireSubCategory = ({
                 slug={slug}
                 link={`/inspiration/${routes}/${slug}/${item.title}` as string}
               />
-            ))}
+            })}
           </div>
         ) : (
           <div className="flex flex-col gap-4 md:gap-6">

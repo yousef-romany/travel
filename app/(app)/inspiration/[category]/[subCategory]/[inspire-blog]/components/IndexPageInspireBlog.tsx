@@ -5,7 +5,7 @@ import { fetchInspirationOneBlog } from "@/fetch/category";
 import MDXRenderer from "@/components/MDXRenderer";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
 import { PlacesToGoBlogs, instagramPostsType, meta } from "@/type/placesToGo";
-import { FaArrowTurnDown } from "react-icons/fa6";
+import { FaInstagram, FaYoutube } from "react-icons/fa";
 import InstagramModal from "@/components/InstagramModal";
 import { Separator } from "@/components/ui/separator";
 import Loading from "@/components/Loading";
@@ -18,91 +18,106 @@ const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
   useEffect(() => {
     applyHieroglyphEffect();
   }, []);
+
   const { data, error, isLoading } = useQuery<
     { data: PlacesToGoBlogs[]; meta: meta },
     Error
   >({
-    queryKey: ["fetchInspirationOneBlog"],
+    queryKey: ["fetchInspirationOneBlog", slug],
     queryFn: () => fetchInspirationOneBlog(decodeURIComponent(slug)),
   });
+
   if (isLoading) return <Loading />;
-  if (error instanceof Error) return <p>Error: {error.message}</p>;
+  if (error instanceof Error) return <p className="text-center text-red-500 py-8">Error: {error.message}</p>;
+
+  const blog = data?.data?.at(-1);
+  if (!blog) return <p className="text-center py-8">Blog not found</p>;
+
   return (
-    <div className="flex gap-4 flex-col h-fit justify-between">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute top-10 right-4 md:right-16 w-48 h-48 md:w-72 md:h-72 bg-amber-500 rounded-full blur-[80px] md:blur-[120px]"></div>
-        <div className="absolute bottom-10 left-4 md:left-16 w-48 h-48 md:w-72 md:h-72 bg-amber-600 rounded-full blur-[80px] md:blur-[120px]"></div>
-      </div>
-
-      {/* Hero Image */}
-      <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] xl:h-[calc(100vh-80px)] z-0">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-background to-secondary/20">
+      {/* Hero Image Section */}
+      <div className="relative w-full h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
         <OptimizedImage
-          src={getImageUrl(data?.data?.at(-1)?.image as Media)}
-          alt={data?.data?.at(-1)?.title as string}
-          className="min-w-full"
+          src={getImageUrl(blog.image as Media) as string}
+          alt={blog.title as string}
+          className="w-full h-full object-cover"
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-background" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+
+        {/* Title Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 z-10">
+          <div className="container mx-auto max-w-5xl text-center md:text-left">
+            <div className="inline-block mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <span className="px-6 py-2 bg-black/30 backdrop-blur-md text-white text-sm font-medium rounded-full border border-white/20 shadow-xl tracking-wide uppercase">
+                ✨ Get Inspired
+              </span>
+            </div>
+            <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-white mb-6 drop-shadow-2xl tracking-tight animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100 leading-tight">
+              {blog.title}
+            </h1>
+          </div>
+        </div>
       </div>
 
-      {/* Instagram Posts Section */}
-      {(data?.data?.at(-1)?.instagram_posts?.length || 0) > 0 ? (
-        <div className="w-full flex justify-center items-center flex-col mt-6 md:mt-12 gap-6 md:gap-8 px-4 sm:px-6 md:px-8 lg:px-12">
-          <div className="flex flex-col w-full max-w-7xl items-start">
-            <h1
-              role="heading"
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold flex items-center gap-2 md:gap-3 mb-3 md:mb-4"
-            >
-              Instagram Feeds <FaArrowTurnDown className="text-lg sm:text-xl md:text-2xl" />
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 font-light max-w-3xl">
-              Discover and preview top-notch content from across the Instagram
-              universe.
+      {/* Main Content Container */}
+      <div className="container mx-auto max-w-5xl px-4 md:px-6 py-8 md:py-12 relative z-10">
+
+        {/* Content Section */}
+        <div className="mb-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+          <div className="prose prose-lg md:prose-xl max-w-none dark:prose-invert prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-strong:text-foreground prose-a:text-primary prose-img:rounded-3xl prose-img:shadow-xl">
+            <MDXRenderer mdxString={blog.details as string} />
+          </div>
+        </div>
+
+        {/* Instagram Section */}
+        {(blog.instagram_posts?.length || 0) > 0 && (
+          <section className="mb-12">
+            <div className="flex items-center gap-3 mb-6">
+              <FaInstagram className="text-4xl text-pink-500" />
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                Instagram Highlights
+              </h2>
+            </div>
+            <p className="text-muted-foreground text-lg mb-8">
+              See what travelers are sharing about {blog.title}
             </p>
-          </div>
-          <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
-            {data?.data?.at(-1)?.instagram_posts &&
-              (data?.data?.at(-1)?.instagram_posts as instagramPostsType[]).map(
-                (itemPost) => (
-                  <InstagramModal
-                    key={itemPost?.id}
-                    idPost={itemPost?.idPost}
-                  />
-                )
-              )}
-          </div>
-        </div>
-      ) : null}
 
-      {/* Content Section */}
-      <div className="px-4 sm:px-6 md:px-8 lg:px-12 flex flex-col gap-6 md:gap-8 py-6 md:py-10 max-w-7xl mx-auto w-full">
-        <Separator />
-        <div className="prose prose-sm sm:prose-base md:prose-lg lg:prose-xl dark:prose-invert max-w-none">
-          <MDXRenderer mdxString={data?.data?.at(-1)?.details as string} />
-        </div>
-        <Separator />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {(blog.instagram_posts as instagramPostsType[] | undefined)?.map((itemPost: instagramPostsType) => (
+                <div
+                  key={itemPost.id}
+                  className="transform transition-all duration-300 hover:scale-105"
+                >
+                  <InstagramModal idPost={itemPost.idPost} />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
-        {/* YouTube Video Section */}
-        {data?.data?.at(-1)?.youtubeUrl && (
-          <div className="w-full flex justify-center items-center flex-col gap-6 md:gap-8 mt-6 md:mt-12">
-            <div className="flex flex-col w-full items-start">
-              <h1
-                role="heading"
-                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl flex items-center gap-2 md:gap-3 font-extrabold mb-3 md:mb-4"
-              >
-                Curated Video Showcase <FaArrowTurnDown className="text-lg sm:text-xl md:text-2xl" />
-              </h1>
-              <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 font-light max-w-3xl">
-                Discover and preview top-notch content from across the YouTube
-                universe.
-              </p>
+        {/* YouTube Section */}
+        {blog.youtubeUrl && (
+          <section className="mb-12">
+            <Separator className="mb-8" />
+            <div className="flex items-center gap-3 mb-6">
+              <FaYoutube className="text-4xl text-red-600" />
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                Video Tour
+              </h2>
             </div>
-            <div className="w-full max-w-5xl">
-              <YouTubeEmbed videoUrl={data?.data?.at(-1)?.youtubeUrl as string} />
+            <p className="text-muted-foreground text-lg mb-8">
+              Experience {blog.title} through our curated video content
+            </p>
+
+            <div className="rounded-2xl overflow-hidden shadow-2xl border border-primary/20">
+              <YouTubeEmbed videoUrl={blog.youtubeUrl as string} />
             </div>
-          </div>
+          </section>
         )}
       </div>
     </div>
   );
 };
+
 export default memo(IndexPageInspireBlog);
