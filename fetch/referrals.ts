@@ -119,11 +119,9 @@ export async function getReferralStats(): Promise<ReferralStats> {
 
     return response.data;
   } catch (error: any) {
-    console.error("Error fetching referral stats:", error);
-
     // Return default empty stats if endpoint doesn't exist
     if (error.response?.status === 404 || error.code === 'ERR_BAD_REQUEST') {
-      console.warn("Referral stats endpoint not found. Returning default data.");
+      // Silently return default data - endpoint not configured yet
       return {
         totalReferrals: 0,
         pendingReferrals: 0,
@@ -133,6 +131,8 @@ export async function getReferralStats(): Promise<ReferralStats> {
       };
     }
 
+    // Only log unexpected errors
+    console.error("Error fetching referral stats:", error);
     throw error;
   }
 }
@@ -155,14 +155,14 @@ export async function getReferralHistory(): Promise<Referral[]> {
 
     return response.data;
   } catch (error: any) {
-    console.error("Error fetching referral history:", error);
-
     // Return empty array if endpoint doesn't exist
     if (error.response?.status === 404 || error.code === 'ERR_BAD_REQUEST') {
-      console.warn("Referral history endpoint not found. Returning empty history.");
+      // Silently return empty array - endpoint not configured yet
       return [];
     }
 
+    // Only log unexpected errors
+    console.error("Error fetching referral history:", error);
     throw error;
   }
 }

@@ -80,7 +80,7 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: blob: https: http://localhost:1337",
               "font-src 'self' data: https://fonts.gstatic.com",
               "connect-src 'self' http://localhost:1337 https://www.google-analytics.com https://graph.instagram.com https://*.cdninstagram.com https://*.fbcdn.net",
-              "media-src 'self' blob: data: https://*.cdninstagram.com https://*.fbcdn.net https://video.cdninstagram.com",
+              "media-src 'self' blob: data: https://*.cdninstagram.com https://*.fbcdn.net https://video.cdninstagram.com https://res.cloudinary.com",
               "frame-src 'self' https://www.google.com https://www.instagram.com",
             ].join("; ")
           },

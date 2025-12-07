@@ -383,8 +383,8 @@ export function ReferralProgram() {
                           referral.status === "completed"
                             ? "default"
                             : referral.status === "pending"
-                            ? "secondary"
-                            : "outline"
+                              ? "secondary"
+                              : "outline"
                         }
                       >
                         {referral.status}
@@ -468,7 +468,9 @@ export function ReferralWidget() {
     if (user) {
       getReferralStats()
         .then(setStats)
-        .catch((error) => console.error("Error loading stats:", error));
+        .catch(() => {
+          // Silently fail - getReferralStats already handles errors gracefully
+        });
     }
   }, [user]);
 

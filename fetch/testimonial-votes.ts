@@ -31,7 +31,12 @@ export const getUserVote = async (
     );
 
     return response.data.data.length > 0 ? response.data.data[0] : null;
-  } catch (error) {
+  } catch (error: any) {
+    // Silently handle expected errors (endpoint not configured, auth issues)
+    if (error.response?.status === 404 || error.response?.status === 400) {
+      return null;
+    }
+    // Only log unexpected errors
     console.error("Error fetching user vote:", error);
     return null;
   }
