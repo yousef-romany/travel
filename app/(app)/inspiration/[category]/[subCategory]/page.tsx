@@ -17,8 +17,9 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const category = decodeURIComponent(params.category);
-  const subCategory = decodeURIComponent(params.subCategory);
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.category);
+  const subCategory = decodeURIComponent(resolvedParams.subCategory);
 
   // Fetch data for metadata
   const data = await fetchInspirationOneSubCategory(subCategory);
@@ -41,44 +42,45 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: subCategoryData?.image ? [{ url: subCategoryData.image.url }] : [],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/inspiration/${params.category}/${params.subCategory}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/inspiration/${resolvedParams.category}/${resolvedParams.subCategory}`,
     },
   };
 }
 
-const InspirationDynamic = ({ params }: Props) => {
-  const category = decodeURIComponent(params.category);
-  const subCategory = decodeURIComponent(params.subCategory);
+const InspirationDynamic = async ({ params }: Props) => {
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.category);
+  const subCategory = decodeURIComponent(resolvedParams.subCategory);
 
   return (
     <div className="flex flex-col min-h-screen">
       <HieroglyphEffect />
-      <div className="bg-gradient-to-r from-primary to-amber-600 w-full p-3 px-[2em] shadow-lg">
+      <div className="bg-gradient-to-r from-primary to-amber-600 w-full p-3 px-4 sm:px-6 md:px-8 lg:px-12 shadow-lg">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem className="text-white">
-              <BreadcrumbLink href="/" className="hover:text-white/80 transition-colors">
+              <BreadcrumbLink href="/" className="hover:text-white/80 transition-colors text-sm sm:text-base">
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="text-white/60" />
             <BreadcrumbItem className="text-white">
-              <BreadcrumbLink href="/inspiration" className="hover:text-white/80 transition-colors">
+              <BreadcrumbLink href="/inspiration" className="hover:text-white/80 transition-colors text-sm sm:text-base">
                 Inspiration
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="text-white/60" />
             <BreadcrumbItem className="text-white">
               <BreadcrumbLink
-                href={`/inspiration/${params.category}`}
-                className="hover:text-white/80 transition-colors"
+                href={`/inspiration/${resolvedParams.category}`}
+                className="hover:text-white/80 transition-colors text-sm sm:text-base"
               >
                 {category}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="text-white/60" />
             <BreadcrumbItem className="text-white">
-              <BreadcrumbPage className="text-white font-semibold border-b-2 border-white/40">
+              <BreadcrumbPage className="text-white font-semibold border-b-2 border-white/40 text-sm sm:text-base">
                 {subCategory}
               </BreadcrumbPage>
             </BreadcrumbItem>
@@ -90,8 +92,8 @@ const InspirationDynamic = ({ params }: Props) => {
         items={[
           { name: "Home", item: "/" },
           { name: "Inspiration", item: "/inspiration" },
-          { name: category, item: `/inspiration/${params.category}` },
-          { name: subCategory, item: `/inspiration/${params.category}/${params.subCategory}` }
+          { name: category, item: `/inspiration/${resolvedParams.category}` },
+          { name: subCategory, item: `/inspiration/${resolvedParams.category}/${resolvedParams.subCategory}` }
         ]}
       />
 

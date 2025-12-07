@@ -33,39 +33,43 @@ const IndexPageInspireSubCategory = ({
 
   return (
     <div className="flex gap-4 flex-col min-h-screen bg-gradient-to-b from-background to-secondary/20">
-      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-primary rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-amber-500 rounded-full blur-[120px]"></div>
+      {/* Background decorative elements - responsive sizing and hidden on mobile */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden hidden md:block">
+        <div className="absolute top-10 md:top-20 right-10 md:right-20 w-48 h-48 md:w-96 md:h-96 bg-primary rounded-full blur-[80px] md:blur-[120px]"></div>
+        <div className="absolute bottom-10 md:bottom-20 left-10 md:left-20 w-48 h-48 md:w-96 md:h-96 bg-amber-500 rounded-full blur-[80px] md:blur-[120px]"></div>
       </div>
 
-      <div className="relative w-full h-[60vh] overflow-hidden">
+      {/* Hero section with responsive height */}
+      <div className="relative w-full h-[40vh] sm:h-[50vh] md:h-[60vh] overflow-hidden">
         <OptimizedImage
           src={getImageUrl(data?.data?.at(-1)?.image)}
           alt={data?.data?.at(-1)?.categoryName as string}
           className="w-full h-full object-cover opacity-40"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background"></div>
-        <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full px-4 text-center">
-          <div className="inline-block mb-4">
-            <span className="px-6 py-3 bg-primary/10 backdrop-blur-sm text-primary text-sm font-semibold rounded-full border border-primary/20 shadow-lg">
+        <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full px-4 sm:px-6 md:px-8 text-center">
+          <div className="inline-block mb-3 md:mb-4">
+            <span className="px-4 py-2 sm:px-6 sm:py-3 bg-primary/10 backdrop-blur-sm text-primary text-xs sm:text-sm font-semibold rounded-full border border-primary/20 shadow-lg">
               ✨ Get Inspired
             </span>
           </div>
           <h1
             role="heading"
-            className="text-4xl sm:text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-primary via-amber-600 to-primary bg-clip-text text-transparent drop-shadow-2xl"
+            className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold bg-gradient-to-r from-primary via-amber-600 to-primary bg-clip-text text-transparent drop-shadow-2xl px-2"
           >
             {slug}
           </h1>
-          <p className="text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mt-3 md:mt-4 max-w-2xl mx-auto px-4">
             Discover amazing stories and tips about {slug}
           </p>
         </div>
       </div>
 
-      <div className="w-full flex flex-col gap-8 px-[2em] py-12 relative z-10">
+      {/* Content section with responsive padding */}
+      <div className="w-full flex flex-col gap-6 md:gap-8 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-12 relative z-10">
+        {/* Header with view toggle */}
         <div className="w-full flex justify-between items-center flex-wrap gap-4">
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
             All About {slug}
           </h2>
 
@@ -74,21 +78,26 @@ const IndexPageInspireSubCategory = ({
               onClick={() => setView("grid")}
               className={view === "grid" ? "bg-gradient-to-r from-primary to-amber-600" : ""}
               variant={view === "grid" ? "default" : "outline"}
+              size="sm"
             >
-              <CiGrid41 className="w-5 h-5" />
+              <CiGrid41 className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="ml-2 hidden sm:inline">Grid</span>
             </Button>
             <Button
               onClick={() => setView("flex")}
               className={view === "flex" ? "bg-gradient-to-r from-primary to-amber-600" : ""}
               variant={view === "flex" ? "default" : "outline"}
+              size="sm"
             >
-              <CiGrid2H className="w-5 h-5" />
+              <CiGrid2H className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="ml-2 hidden sm:inline">List</span>
             </Button>
           </div>
         </div>
 
+        {/* Grid/Flex view with improved responsive breakpoints */}
         {view === "grid" ? (
-          <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
             {data?.data?.at(-1)?.inspire_blogs?.map((item: InspireBlogs) => (
               <CardGrid
                 key={item.id}
@@ -102,7 +111,7 @@ const IndexPageInspireSubCategory = ({
             ))}
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 md:gap-6">
             {data?.data?.at(-1)?.inspire_blogs?.map((item: InspireBlogs) => (
               <CardFlex
                 key={item.id}

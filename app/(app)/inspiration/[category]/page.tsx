@@ -10,7 +10,8 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const category = decodeURIComponent(params.category);
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.category);
   // Fetch data for metadata
   const data = await fetchInspirationOneCategory(category);
   const categoryData = data?.data?.at(-1);
@@ -32,13 +33,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: categoryData?.image ? [{ url: categoryData.image.url }] : [],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/inspiration/${params.category}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/inspiration/${resolvedParams.category}`,
     },
   };
 }
 
-const InspirationDynamic = ({ params }: Props) => {
-  const category = decodeURIComponent(params.category);
+const InspirationDynamic = async ({ params }: Props) => {
+  const resolvedParams = await params;
+  const category = decodeURIComponent(resolvedParams.category);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -55,7 +57,7 @@ const InspirationDynamic = ({ params }: Props) => {
         items={[
           { name: "Home", item: "/" },
           { name: "Inspiration", item: "/inspiration" },
-          { name: category, item: `/inspiration/${params.category}` }
+          { name: category, item: `/inspiration/${resolvedParams.category}` }
         ]}
       />
 
