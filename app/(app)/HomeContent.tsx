@@ -708,60 +708,6 @@ export default function HomeContent() {
         </section>
       )}
 
-      {/* Gift Cards Promotion Section */}
-      <section className="py-12 sm:py-16 lg:py-20 !w-full px-4 sm:px-6 md:px-8 lg:px-12 bg-gradient-to-br from-pink-50/50 via-rose-50/30 to-red-50/50 dark:from-pink-950/10 dark:via-rose-950/10 dark:to-red-950/10">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center animate-on-scroll">
-            <div>
-              <div className="inline-flex items-center justify-center p-2 bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-900/30 dark:to-rose-900/30 rounded-full mb-4 shadow-lg">
-                <Gift className="h-6 w-6 text-pink-600" aria-hidden="true" />
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-                Give the Gift of Travel
-              </h2>
-              <p className="text-base sm:text-lg text-muted-foreground mb-6">
-                Share the magic of Egypt with your loved ones. Our gift cards are perfect for any occasion and never expire.
-              </p>
-              <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3">
-                  <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-full">
-                    <Zap className="h-5 w-5 text-pink-600" />
-                  </div>
-                  <span className="text-sm sm:text-base">Instant digital delivery</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-full">
-                    <Gift className="h-5 w-5 text-pink-600" />
-                  </div>
-                  <span className="text-sm sm:text-base">Valid on all programs</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-full">
-                    <Heart className="h-5 w-5 text-pink-600" />
-                  </div>
-                  <span className="text-sm sm:text-base">Personalized message included</span>
-                </div>
-              </div>
-              <Link href="/gift-cards">
-                <Button size="lg" className="gap-2 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white shadow-xl">
-                  Purchase Gift Card
-                  <Gift className="h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-            <div className="relative h-64 sm:h-80 md:h-96 rounded-2xl overflow-hidden shadow-2xl">
-              <Image
-                src="https://images.unsplash.com/photo-1513581166391-887a96ddeafd?w=800"
-                alt="Gift card promotion"
-                fill
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-pink-900/50 to-transparent" />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Push Notification Prompt */}
       {user && !showNotificationPrompt && (
         <section className="py-8 sm:py-12 !w-full px-4 sm:px-6 md:px-8 lg:px-12">

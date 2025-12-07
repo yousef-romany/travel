@@ -203,11 +203,13 @@ p {
   width: fit-content;
   font-weight: bold;
   white-space: pre;
-  font-size: 4rem;
-  line-height: 1.2em;
-  height: 1.2em;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1em;
+  height: 1em;
   overflow: hidden;
+  max-width: 100%;
 }
+
 .loader:before {
   content: "Loading...\A𓂀oading...\A𓂀𓏤ading...\A𓂀𓏤𓏃ding...\A𓂀𓏤𓏃𓇳ing...\A𓂀𓏤𓏃𓇳𓏇g...\A𓂀𓏤𓏃𓇳𓏇𓋴...\A𓂀𓏤𓏃𓇳𓏇𓋴𓏏..\A𓂀𓏤𓏃𓇳𓏇𓋴𓏏𓅓.\A𓂀𓏤𓏃𓇳𓏇𓋴𓏏𓅓𓏏";
   white-space: pre;
@@ -221,6 +223,7 @@ p {
     transform: translateY(-100%);
   }
 }
+
 
 .skiptranslate {
   display: none !important;

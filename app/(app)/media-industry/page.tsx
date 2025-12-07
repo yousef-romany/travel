@@ -1,15 +1,19 @@
 import { Metadata } from "next";
 import Content from "./MEDIAINDUSTRYContent";
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 export const metadata: Metadata = {
-  title: "Media & Industry - ZoeHoliday Egypt",
-  description: "ZoeHoliday media resources, press releases, industry partnerships, and professional travel services for media and tourism professionals.",
-  keywords: ["media kit", "press releases", "tourism industry", "travel media", "Egypt tourism news", "travel partnerships"],
+  title: "Media & Industry Resources | ZoeHoliday",
+  description: "ZoeHoliday media resources, press releases, industry partnerships, and professional travel services for media and tourism professionals in Egypt.",
+  keywords: ["media kit", "press releases", "tourism industry", "travel media", "Egypt tourism news", "travel partnerships", "ZoeHoliday press"],
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/media-industry`,
+  },
   openGraph: {
     title: "Media & Industry Resources | ZoeHoliday",
     description: "Resources and partnerships for media professionals and tourism industry stakeholders.",
     type: "website",
-    url: "/media-industry",
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/media-industry`,
     images: [
       {
         url: "/images/media-industry-og.jpg",
@@ -23,9 +27,20 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Media & Industry Resources | ZoeHoliday",
     description: "Resources and partnerships for media professionals and tourism industry stakeholders.",
+    creator: "@zoeholiday",
   },
 };
 
 export default function MediaindustryPage() {
-  return <Content />;
+  return (
+    <>
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", item: "/" },
+          { name: "Media & Industry", item: "/media-industry" }
+        ]}
+      />
+      <Content />
+    </>
+  );
 }

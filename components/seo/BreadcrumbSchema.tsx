@@ -1,6 +1,6 @@
 interface BreadcrumbItem {
   name: string;
-  url: string;
+  item: string;
 }
 
 interface BreadcrumbSchemaProps {
@@ -17,7 +17,7 @@ export default function BreadcrumbSchema({ items }: BreadcrumbSchemaProps) {
       "@type": "ListItem",
       "position": index + 1,
       "name": item.name,
-      "item": `${siteUrl}${item.url}`
+      "item": item.item.startsWith("http") ? item.item : `${siteUrl}${item.item}`
     }))
   };
 

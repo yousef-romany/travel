@@ -1,14 +1,18 @@
 import { Metadata } from "next";
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 export const metadata: Metadata = {
   title: "Terms and Conditions - ZoeHoliday Egypt Travel",
   description: "Read ZoeHoliday's terms and conditions for Egypt travel services. Learn about our booking policies, cancellation terms, travel insurance requirements, and customer responsibilities for your Egyptian adventure.",
   keywords: ["terms and conditions", "Egypt travel terms", "booking policy", "cancellation policy", "travel insurance Egypt", "ZoeHoliday terms", "Egypt tour terms"],
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/terms`,
+  },
   openGraph: {
     title: "Terms and Conditions - ZoeHoliday Egypt Travel",
     description: "Read ZoeHoliday's terms and conditions for Egypt travel services. Learn about our booking policies, cancellation terms, and customer responsibilities.",
     type: "website",
-    url: "/terms",
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/terms`,
     images: [
       {
         url: "/og-terms.jpg",
@@ -23,12 +27,19 @@ export const metadata: Metadata = {
     title: "Terms and Conditions - ZoeHoliday Egypt Travel",
     description: "Read ZoeHoliday's terms and conditions for Egypt travel services. Learn about our booking policies, cancellation terms, and customer responsibilities.",
     images: ["/og-terms.jpg"],
+    creator: "@zoeholiday",
   },
 };
 
 export default function TermsPage() {
   return (
     <div className="flex flex-col min-h-screen font-sans">
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", item: "/" },
+          { name: "Terms", item: "/terms" }
+        ]}
+      />
       <main className="flex-1">
         {/* Hero Section */}
         <section className="bg-muted text-primary py-16">

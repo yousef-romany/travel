@@ -1,4 +1,3 @@
-"use client";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,20 +6,53 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { memo, useEffect } from "react";
+import { Metadata } from "next";
 import IndexPageInspireSubCategory from "./components/IndexPageInspireSubCategory";
-import { useParams } from "next/navigation";
-import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
+import HieroglyphEffect from "@/components/HieroglyphEffect";
+import { fetchPlaceToOneSubCategory } from "@/fetch/placesToGo";
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
-const PlacesToGoDynamic = () => {
-  useEffect(() => {
-    applyHieroglyphEffect();
-  }, []);
+type Props = {
+  params: { category: string; subCategory: string };
+};
 
-  const params: { category: string; subCategory: string } = useParams();
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const category = decodeURIComponent(params.category);
+  const subCategory = decodeURIComponent(params.subCategory);
+
+  // Fetch data for metadata
+  const data = await fetchPlaceToOneSubCategory(subCategory);
+  const subCategoryData = data?.data?.at(-1);
+
+  const title = subCategoryData?.categoryName
+    ? `${subCategoryData.categoryName} - ${category} | ZoeHoliday`
+    : `${subCategory} - ${category} | ZoeHoliday`;
+
+  const description = subCategoryData?.description
+    ? subCategoryData.description.slice(0, 160)
+    : `Explore ${subCategory} in ${category}, Egypt. Find the best tours, activities, and travel guides with ZoeHoliday.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: subCategoryData?.image ? [{ url: subCategoryData.image.url }] : [],
+    },
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesTogo/${params.category}/${params.subCategory}`,
+    },
+  };
+}
+
+const PlacesToGoDynamic = ({ params }: Props) => {
+  const category = decodeURIComponent(params.category);
+  const subCategory = decodeURIComponent(params.subCategory);
 
   return (
     <div className="flex flex-col min-h-screen">
+      <HieroglyphEffect />
       <div className="bg-gradient-to-r from-primary to-amber-600 w-full p-3 px-[2em] shadow-lg">
         <Breadcrumb>
           <BreadcrumbList>
@@ -31,34 +63,43 @@ const PlacesToGoDynamic = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator className="text-white/60" />
             <BreadcrumbItem className="text-white">
-              <BreadcrumbLink href="/placesToGo" className="hover:text-white/80 transition-colors">
+              <BreadcrumbLink href="/placesTogo" className="hover:text-white/80 transition-colors">
                 Places To Go
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="text-white/60" />
             <BreadcrumbItem className="text-white">
               <BreadcrumbLink
-                href={`/placesTogo/${decodeURIComponent(params?.category)}`}
+                href={`/placesTogo/${params.category}`}
                 className="hover:text-white/80 transition-colors"
               >
-                {decodeURIComponent(params?.category)}
+                {category}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="text-white/60" />
             <BreadcrumbItem className="text-white">
               <BreadcrumbPage className="text-white font-semibold border-b-2 border-white/40">
-                {decodeURIComponent(params?.subCategory)}
+                {subCategory}
               </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
 
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", item: "/" },
+          { name: "Places To Go", item: "/placesTogo" },
+          { name: category, item: `/placesTogo/${params.category}` },
+          { name: subCategory, item: `/placesTogo/${params.category}/${params.subCategory}` }
+        ]}
+      />
+
       <IndexPageInspireSubCategory
-        routes={decodeURIComponent(params.category)}
-        slug={decodeURIComponent(params.subCategory) as string}
+        routes={category}
+        slug={subCategory}
       />
     </div>
   );
 };
-export default memo(PlacesToGoDynamic);
+export default PlacesToGoDynamic;

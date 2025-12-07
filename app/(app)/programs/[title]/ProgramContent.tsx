@@ -136,11 +136,11 @@ export default function ProgramContent({ title }: { title: string }) {
         />
         <BreadcrumbSchema
           items={[
-            { name: "Home", url: "/" },
-            { name: "Programs", url: "/programs" },
+            { name: "Home", item: "/" },
+            { name: "Programs", item: "/programs" },
             {
               name: program.title || "Egypt Tour",
-              url: `/programs/${program.documentId}`,
+              item: `/programs/${program.documentId}`,
             },
           ]}
         />

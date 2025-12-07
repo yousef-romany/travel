@@ -7,12 +7,24 @@ import VideoSchema from "@/components/seo/VideoSchema";
 export const metadata: Metadata = {
   title: "ZoeHoliday - Explore the Beauty of Egypt | Travel & Tour Packages",
   description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure. Book your Egyptian journey today with our curated travel packages and tours. Explore pyramids, Nile cruises, and ancient temples.",
-  keywords: ["Egypt travel", "Egypt tours", "Egyptian vacation", "pyramids tour", "Nile cruise", "Cairo tours", "Luxor travel", "Egyptian holidays", "travel packages Egypt", "Egypt tourism", "ZoeHoliday"],
+  keywords: [
+    "Egypt travel", "Egypt tours", "Egyptian vacation", "pyramids tour", "Nile cruise",
+    "Cairo tours", "Luxor travel", "Egyptian holidays", "travel packages Egypt", "Egypt tourism",
+    "Giza pyramids", "Valley of Kings", "Red Sea diving", "Aswan tours", "Alexandria travel",
+    "Egypt tour operator", "Egyptian adventure", "ancient Egypt tours", "Karnak Temple",
+    "Abu Simbel", "Egypt cultural tours", "Egypt family vacation", "Egypt honeymoon packages",
+    "luxury Egypt tours", "Egypt vacation packages 2025", "best Egypt travel agency",
+    "ZoeHoliday"
+  ],
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com',
+  },
   openGraph: {
     title: "ZoeHoliday - Explore the Beauty of Egypt",
     description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure.",
     type: "website",
-    url: "/",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com",
+    siteName: "ZoeHoliday",
     images: [
       {
         url: "/og-image.jpg",
@@ -27,6 +39,7 @@ export const metadata: Metadata = {
     title: "ZoeHoliday - Explore the Beauty of Egypt",
     description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure.",
     images: ["/og-image.jpg"],
+    creator: "@zoeholiday",
   },
 };
 
@@ -54,6 +67,8 @@ const faqs = [
   }
 ];
 
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+
 export default function Home() {
   return (
     <>
@@ -61,6 +76,11 @@ export default function Home() {
         name="ZoeHoliday - Egypt Travel & Tours"
         description="Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure with our curated travel packages."
         url="/"
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", item: "/" }
+        ]}
       />
       <FAQSchema faqs={faqs} />
       <VideoSchema

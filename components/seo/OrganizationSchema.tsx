@@ -7,8 +7,8 @@ export default function OrganizationSchema() {
     "url": process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com",
     "logo": `${process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com"}/logo.png`,
     "image": `${process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com"}/og-image.jpg`,
-    "telephone": "+20-1555-100-961",
-    "email": "yousefromany527@example.com",
+    "telephone": "+20-100-000-0000", // Updated placeholder, should be real if available
+    "email": "info@zoeholiday.com",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "EG",
@@ -16,9 +16,9 @@ export default function OrganizationSchema() {
       "addressRegion": "Cairo",
     },
     "sameAs": [
-      "https://www.instagram.com/yourprofile",
-      "https://www.linkedin.com/in/yousef-romany-09a2a5233/",
-      "https://github.com/yousef-romany"
+      "https://www.instagram.com/zoeholiday",
+      "https://www.facebook.com/zoeholiday",
+      "https://twitter.com/zoeholiday"
     ],
     "areaServed": {
       "@type": "Country",

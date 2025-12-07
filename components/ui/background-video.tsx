@@ -52,6 +52,10 @@ export function BackgroundVideo({
       }
     };
 
+    // Set the source directly on the video element
+    video.src = videos[currentVideoIndex];
+    video.load();
+
     // Check if video is already loaded
     if (video.readyState >= 3) {
       handleCanPlay();
@@ -65,46 +69,21 @@ export function BackgroundVideo({
       video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('ended', handleEnded);
     };
-  }, [currentVideoIndex, autoRotate, videos.length]);
-
-  // Fallback rotation timer in case video stalls or doesn't end properly
-  useEffect(() => {
-    if (!autoRotate || videos.length <= 1) return;
-
-    const interval = setInterval(() => {
-      // Only rotate if we haven't just rotated (optional check could be added here)
-      // For now, we'll rely on onEnded mostly, but this acts as a safety net
-      // However, having both might cause double skips. 
-      // Let's rely on onEnded primarily. 
-      // If we really want a fallback, we should reset it on video play.
-      // For this implementation, I will REMOVE the interval to avoid conflicts
-      // as requested in the plan to rely on onEnded.
-    }, rotationInterval);
-
-    return () => clearInterval(interval);
-  }, [autoRotate, videos.length, rotationInterval]);
+  }, [currentVideoIndex, autoRotate, videos]);
 
   return (
     <div className={`relative w-full h-full overflow-hidden bg-black ${className}`}>
       {/* Video Element */}
       <video
         ref={videoRef}
-        // Removing key to prevent full re-mount flickering, 
-        // but we need to ensure src change triggers reload.
-        // Actually, keeping key is safer for ensuring fresh state for each video
-        // but might cause a black flash. Let's try without key and rely on src change.
-        // If src changes, video element stays, just loads new source.
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-          isLoaded ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"
+          }`}
         autoPlay
         muted
         playsInline
         preload={priority ? "auto" : "metadata"}
         aria-hidden="true"
-      >
-        <source src={videos[currentVideoIndex]} type="video/mp4" />
-      </video>
+      />
 
       {/* Loading placeholder */}
       {!isLoaded && (
