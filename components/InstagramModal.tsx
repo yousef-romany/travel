@@ -148,45 +148,45 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
         )}
       </div>
 
-      {/* Modal with Improved Layout */}
+      {/* Modal with Improved Layout - Mobile Responsive */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-in fade-in duration-300"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-2 sm:p-4 animate-in fade-in duration-300"
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="relative w-full max-w-6xl h-[90vh] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800"
+            className="relative w-full max-w-sm sm:max-w-md md:max-w-3xl lg:max-w-7xl xl:max-w-[90vw] h-[95vh] sm:h-[90vh] bg-white dark:bg-gray-900 rounded-lg sm:rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#D4AF37] to-amber-600 flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold">ZH</span>
+            <div className="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-[#D4AF37] to-amber-600 flex items-center justify-center shadow-md">
+                  <span className="text-white text-xs sm:text-base font-bold">ZH</span>
                 </div>
                 <div>
-                  <span className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <span className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white flex items-center gap-2">
                     @ZoeHolidays
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-medium">
+                    <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-medium">
                       Official
                     </span>
                   </span>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{formattedDate}</p>
+                  <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">{formattedDate}</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors"
                 aria-label="Close Instagram post modal"
               >
-                <X className="w-5 h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
               </button>
             </div>
 
             {/* Content with Better Balance */}
-            <div className="flex flex-col md:flex-row h-[calc(92vh-73px)] w-full">
-              {/* Media - Takes 60% on desktop */}
-              <div className="relative flex-[6] bg-black w-full flex items-center justify-center overflow-hidden min-h-[400px] md:min-h-0">
+            <div className="flex flex-col md:flex-row h-[calc(95vh-57px)] sm:h-[calc(90vh-73px)] w-full">
+              {/* Media - Full width on mobile, 70% on desktop for larger video */}
+              <div className="relative flex-1 md:flex-[7] lg:flex-[8] bg-black w-full flex items-center justify-center overflow-hidden h-[50vh] md:h-auto">
                 <div className="w-full h-full flex items-center justify-center">
                   <MediaContent
                     media_type={data?.media_type}
@@ -196,13 +196,13 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                 </div>
               </div>
 
-              {/* Sidebar - Takes 40% on desktop, balanced layout */}
-              <div className="flex-[4] w-full md:max-w-md flex flex-col bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800">
+              {/* Sidebar - Full width on mobile, 30% on desktop */}
+              <div className="flex-1 md:flex-[3] lg:flex-[2] w-full md:max-w-sm lg:max-w-xs flex flex-col bg-white dark:bg-gray-900 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-800">
                 {/* Caption and Info with Better Spacing */}
-                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+                <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-3 sm:py-6 space-y-3 sm:space-y-4">
                   {/* Caption with Read More */}
                   <div className="space-y-2">
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                    <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
                       <span className="font-bold text-[#D4AF37]">@ZoeHolidays</span>{" "}
                       <span className="text-gray-800 dark:text-gray-100">{displayCaption}</span>
                     </p>
@@ -220,14 +220,14 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                   <div className="border-t border-gray-200 dark:border-gray-800"></div>
 
                   {/* Media Info with Better Contrast */}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
+                  <div className="space-y-2 sm:space-y-3">
+                    <div className="flex items-center justify-between text-xs sm:text-sm">
                       <span className="text-gray-600 dark:text-gray-400 font-medium">Type</span>
-                      <span className="font-semibold px-3 py-1.5 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20">
+                      <span className="font-semibold px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm rounded-full bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20">
                         {data?.media_type}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center justify-between text-xs sm:text-sm">
                       <span className="text-gray-600 dark:text-gray-400 font-medium">Posted</span>
                       <span className="font-semibold text-gray-900 dark:text-white">{formattedDate}</span>
                     </div>
@@ -235,7 +235,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                 </div>
 
                 {/* Actions with Branded Button */}
-                <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 space-y-3">
+                <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 space-y-2 sm:space-y-3">
                   {/* Instagram Link with Branded Colors */}
                   <a
                     href={data?.permalink}
@@ -244,10 +244,10 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                     className="block"
                   >
                     <Button
-                      className="w-full bg-gradient-to-r from-[#D4AF37] to-amber-600 hover:from-[#C49F2F] hover:to-amber-700 text-white shadow-lg hover:shadow-xl transition-all font-semibold"
+                      className="w-full bg-gradient-to-r from-[#D4AF37] to-amber-600 hover:from-[#C49F2F] hover:to-amber-700 text-white shadow-lg hover:shadow-xl transition-all font-semibold text-sm sm:text-base"
                       size="lg"
                     >
-                      <Instagram className="w-5 h-5 mr-2" />
+                      <Instagram className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       View on Instagram
                       <ExternalLink className="w-4 h-4 ml-2" />
                     </Button>

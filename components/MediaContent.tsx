@@ -158,7 +158,7 @@ export default function MediaContent({
             {/* Show thumbnail with play overlay when not playing */}
             {!isPlaying && (
               <div className="relative w-full h-full flex items-center justify-center">
-                <div className="relative w-full h-full max-h-[85vh]">
+                <div className="relative w-full h-full">
                   <Image
                     src={thumbnail_url}
                     alt="Instagram video thumbnail"
@@ -252,7 +252,7 @@ export default function MediaContent({
     }
 
     return (
-      <div className="relative group cursor-pointer w-full min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:h-[80vh] flex items-center justify-center bg-black dark:bg-gray-950" onClick={togglePlay}>
+      <div className="relative group cursor-pointer w-full h-full flex items-center justify-center bg-black dark:bg-gray-950" onClick={togglePlay}>
         <div className="relative w-full h-full flex items-center justify-center">
           {/* Loading indicator */}
           {isLoading && (
