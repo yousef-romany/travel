@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Star, Clock, MapPin, Check, X, Info, MessageSquare } from "lucide-react";
+import { Star, Clock, MapPin, Check, X, Info, MessageSquare, HelpCircle } from "lucide-react";
 import { fetchProgramOne } from "@/fetch/programs";
 import { dataTypeCardTravel, ContentStep, Media } from "@/type/programs";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +17,7 @@ import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 import TourPackageSchema from "@/components/seo/TourPackageSchema";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import ProgramFAQGenerator from "@/components/seo/ProgramFAQGenerator";
 import { trackProgramView, trackBookingClick } from "@/lib/analytics";
 import { getImageUrl } from "@/lib/utils";
 import AddTestimonialDialog from "@/components/add-testimonial-dialog";
@@ -132,6 +133,7 @@ export default function ProgramContent({ title }: { title: string }) {
           duration={Number(program.duration) || 1}
           location={program.Location || "Egypt"}
           rating={Number(program.rating) || 5}
+          reviewCount={testimonialsData?.data?.length || 0}
           url={`/programs/${program.documentId}`}
         />
         <BreadcrumbSchema
@@ -200,8 +202,8 @@ export default function ProgramContent({ title }: { title: string }) {
                   <div
                     key={index}
                     className={`relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden cursor-pointer transition-all ${index === activeImage
-                        ? "ring-2 ring-primary scale-105"
-                        : "ring-1 ring-border hover:ring-primary/50"
+                      ? "ring-2 ring-primary scale-105"
+                      : "ring-1 ring-border hover:ring-primary/50"
                       }`}
                     onClick={() => setActiveImage(index)}
                   >
@@ -496,9 +498,9 @@ export default function ProgramContent({ title }: { title: string }) {
                                         step.place_to_go_subcategories.length > 0 && (
                                           <a
                                             href={`/placesTogo/${step.place_to_go_subcategories
-                                                .at(-1)
-                                                ?.place_to_go_categories?.at(-1)
-                                                ?.categoryName || ""
+                                              .at(-1)
+                                              ?.place_to_go_categories?.at(-1)
+                                              ?.categoryName || ""
                                               }/${step.place_to_go_subcategories.at(-1)
                                                 ?.categoryName || ""
                                               }/${step.title}`}
@@ -589,6 +591,26 @@ export default function ProgramContent({ title }: { title: string }) {
                   </li>
                 ))}
               </ul>
+            </div>
+          </div>
+
+          {/* FAQ Section */}
+          <div className="mt-12 animate-slide-up animate-delay-500">
+            <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-2xl p-8 shadow-xl">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="p-3 bg-gradient-to-r from-primary to-amber-600 rounded-xl">
+                  <HelpCircle className="h-7 w-7 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                    Frequently Asked Questions
+                  </h2>
+                  <p className="text-muted-foreground text-sm">
+                    Everything you need to know about this tour
+                  </p>
+                </div>
+              </div>
+              <ProgramFAQGenerator program={program} />
             </div>
           </div>
 

@@ -4,6 +4,7 @@ import { UnifiedBreadcrumb } from "@/components/unified-breadcrumb";
 import HieroglyphEffect from "@/components/HieroglyphEffect";
 import { fetchPlaceToGoOneBlog } from "@/fetch/placesToGo";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import ArticleSchema from "@/components/seo/ArticleSchema";
 
 type Props = {
   params: Promise<{
@@ -34,6 +35,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    keywords: [
+      blogData?.title || blogTitle,
+      subCategory,
+      category,
+      "Egypt travel",
+      "travel guide",
+      "places to visit",
+      "tourism Egypt",
+    ],
     openGraph: {
       title,
       description,
@@ -43,8 +53,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       modifiedTime: blogData?.updatedAt,
       authors: ["ZoeHoliday"],
     },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: blogData?.image ? [blogData.image.url] : [],
+    },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["place-blog"]}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesToGo/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["place-blog"]}`,
     },
   };
 }
@@ -55,8 +71,32 @@ const PlaceToGoBlogDynamic = async ({ params }: Props) => {
   const subCategory = decodeURIComponent(resolvedParams.subCategory);
   const blogTitle = decodeURIComponent(resolvedParams["place-blog"]);
 
+  // Fetch data for schema
+  const data = await fetchPlaceToGoOneBlog(blogTitle);
+  const blogData = data?.data?.at(0);
+
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Article Schema for SEO */}
+      {blogData && (
+        <ArticleSchema
+          headline={blogData.title || blogTitle}
+          description={blogData.description || `Discover ${blogTitle} in ${subCategory}, ${category}`}
+          image={blogData.image?.url || ""}
+          datePublished={blogData.createdAt || new Date().toISOString()}
+          dateModified={blogData.updatedAt || blogData.createdAt || new Date().toISOString()}
+          authorName="ZoeHoliday Editorial Team"
+          url={`/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["place-blog"]}`}
+          keywords={[
+            blogData.title || blogTitle,
+            subCategory,
+            category,
+            "Egypt",
+            "travel guide",
+          ]}
+        />
+      )}
+
       <HieroglyphEffect />
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute top-10 right-16 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
@@ -83,7 +123,7 @@ const PlaceToGoBlogDynamic = async ({ params }: Props) => {
         items={[
           { name: "Home", item: "/" },
           { name: "Places To Go", item: "/placesTogo" },
-          { name: category, item: `/placesTogo/${resolvedParams.category}` },
+          { name: category, item: `/placesToGo/${resolvedParams.category}` },
           { name: subCategory, item: `/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}` },
           { name: blogTitle, item: `/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["place-blog"]}` }
         ]}

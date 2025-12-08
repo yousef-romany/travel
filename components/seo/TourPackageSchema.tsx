@@ -6,6 +6,7 @@ interface TourPackageSchemaProps {
   duration: number;
   location: string;
   rating?: number;
+  reviewCount?: number;
   url: string;
 }
 
@@ -17,6 +18,7 @@ export default function TourPackageSchema({
   duration,
   location,
   rating = 5,
+  reviewCount = 0,
   url,
 }: TourPackageSchemaProps) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com";
@@ -34,7 +36,11 @@ export default function TourPackageSchema({
     "provider": {
       "@type": "TravelAgency",
       "name": "ZoeHoliday",
-      "url": siteUrl
+      "url": siteUrl,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${siteUrl}/logo.png`,
+      },
     },
     "offers": {
       "@type": "Offer",
@@ -42,13 +48,16 @@ export default function TourPackageSchema({
       "priceCurrency": "USD",
       "availability": "https://schema.org/InStock",
       "validFrom": new Date().toISOString(),
-      "url": `${siteUrl}${url}`
+      "url": `${siteUrl}${url}`,
+      "priceValidUntil": new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year from now
     },
     "itinerary": {
       "@type": "ItemList",
       "name": `${name} Itinerary`,
-      "description": `${duration} days tour in ${location}`
+      "description": `${duration} ${duration === 1 ? 'day' : 'days'} tour in ${location}`,
+      "numberOfItems": duration,
     },
+    "duration": `P${duration}D`, // ISO 8601 duration format
     "touristType": [
       "Family",
       "Individual",
@@ -57,15 +66,19 @@ export default function TourPackageSchema({
     "subjectOf": {
       "@type": "TouristDestination",
       "name": location,
-      "description": `Visit ${location} with ZoeHoliday`
+      "description": `Visit ${location} with ZoeHoliday`,
+      "geo": {
+        "@type": "GeoCoordinates",
+        "addressCountry": "EG",
+      },
     },
-    "aggregateRating": rating ? {
+    "aggregateRating": rating && reviewCount > 0 ? {
       "@type": "AggregateRating",
-      "ratingValue": rating,
+      "ratingValue": rating.toFixed(1),
       "bestRating": "5",
       "worstRating": "1",
-      "ratingCount": "1"
-    } : undefined
+      "ratingCount": reviewCount.toString(),
+    } : undefined,
   };
 
   return (
