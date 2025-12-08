@@ -151,23 +151,23 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
       {/* Modal with Improved Layout */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-in fade-in duration-300"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-2 sm:p-4 animate-in fade-in duration-300"
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="relative w-full max-w-6xl h-[90vh] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800"
+            className="relative w-full max-w-lg md:max-w-4xl lg:max-w-6xl h-full sm:h-[95vh] md:h-[90vh] bg-white dark:bg-gray-900 rounded-lg sm:rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#D4AF37] to-amber-600 flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold">ZH</span>
+            <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm flex-shrink-0">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-[#D4AF37] to-amber-600 flex items-center justify-center shadow-md">
+                  <span className="text-white font-bold text-sm sm:text-base">ZH</span>
                 </div>
                 <div>
-                  <span className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                  <span className="font-semibold text-gray-900 dark:text-white flex items-center gap-2 text-sm sm:text-base">
                     @ZoeHolidays
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-medium">
+                    <span className="hidden sm:inline-block text-xs px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-medium">
                       Official
                     </span>
                   </span>
@@ -176,17 +176,17 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors"
                 aria-label="Close Instagram post modal"
               >
                 <X className="w-5 h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
               </button>
             </div>
 
-            {/* Content with Better Balance */}
-            <div className="flex flex-col md:flex-row h-[calc(92vh-73px)] w-full">
-              {/* Media - Takes 60% on desktop */}
-              <div className="relative flex-[6] bg-black w-full flex items-center justify-center overflow-hidden min-h-[400px] md:min-h-0">
+            {/* Content with Better Balance and Responsiveness */}
+            <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+              {/* Media - Takes full width on mobile, 60% on desktop */}
+              <div className="relative md:flex-[6] bg-black w-full flex items-center justify-center overflow-hidden h-[50vh] sm:h-auto">
                 <div className="w-full h-full flex items-center justify-center">
                   <MediaContent
                     media_type={data?.media_type}
@@ -196,10 +196,10 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                 </div>
               </div>
 
-              {/* Sidebar - Takes 40% on desktop, balanced layout */}
-              <div className="flex-[4] w-full md:max-w-md flex flex-col bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800">
-                {/* Caption and Info with Better Spacing */}
-                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+              {/* Sidebar - Below media on mobile, 40% on desktop, balanced layout */}
+              <div className="md:flex-[4] w-full md:max-w-md flex flex-col bg-white dark:bg-gray-900 md:border-l border-t md:border-t-0 border-gray-200 dark:border-gray-800 flex-1">
+                {/* Caption and Info with Better Spacing and Scrolling */}
+                <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4">
                   {/* Caption with Read More */}
                   <div className="space-y-2">
                     <p className="text-sm leading-relaxed whitespace-pre-wrap">
@@ -235,7 +235,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                 </div>
 
                 {/* Actions with Branded Button */}
-                <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 space-y-3">
+                <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 space-y-3 flex-shrink-0">
                   {/* Instagram Link with Branded Colors */}
                   <a
                     href={data?.permalink}
@@ -252,16 +252,6 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                       <ExternalLink className="w-4 h-4 ml-2" />
                     </Button>
                   </a>
-
-                  {/* Secondary Actions */}
-                  <div className="flex gap-2 justify-center">
-                    <Button variant="ghost" size="icon" className="hover:text-red-500 dark:hover:text-red-400 text-gray-600 dark:text-gray-400" aria-label="Like post">
-                      <Heart className="w-5 h-5" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="hover:text-blue-500 dark:hover:text-blue-400 text-gray-600 dark:text-gray-400" aria-label="Comment on post">
-                      <MessageCircle className="w-5 h-5" />
-                    </Button>
-                  </div>
                 </div>
               </div>
             </div>

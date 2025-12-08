@@ -19,6 +19,13 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "video.cdninstagram.com" },
       { protocol: "https", hostname: "*.fbcdn.net" },
       { protocol: "https", hostname: "scontent.*.fna.fbcdn.net" },
+
+      // More specific Instagram CDN hostnames
+      { protocol: "https", hostname: "scontent-ams2-1.cdninstagram.com" },
+      { protocol: "https", hostname: "scontent-iad3-1.cdninstagram.com" },
+      { protocol: "https", hostname: "scontent-lga3-1.cdninstagram.com" },
+      { protocol: "https", hostname: "scontent-lax3-1.cdninstagram.com" },
+
       { protocol: 'https', hostname: 'images.unsplash.com', },
       {
         protocol: 'http',
