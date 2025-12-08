@@ -49,6 +49,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { usePlanningTracking, useFormTracking, useModalTracking } from "@/hooks/useEnhancedAnalytics";
 
 export default function PlanYourTripContent() {
   const [travelPlan, setTravelPlan] = useState<any[]>([]);
@@ -59,6 +60,10 @@ export default function PlanYourTripContent() {
   const { user } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { trackStep } = usePlanningTracking();
+  const { trackSubmission } = useFormTracking();
+  const { trackOpen: trackFinishDialogOpen, trackClose: trackFinishDialogClose } = useModalTracking("finish-planning-dialog");
+  const { trackOpen: trackSummaryDialogOpen, trackClose: trackSummaryDialogClose } = useModalTracking("trip-summary-dialog");
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -125,6 +130,9 @@ export default function PlanYourTripContent() {
     setTravelPlan((prevPlan) =>
       prevPlan.filter((place) => place?.id !== placeId)
     );
+
+    // Track removing a destination
+    trackStep(travelPlan.length, "Remove Destination", false);
   };
 
   const totalPrice = travelPlan.reduce(
@@ -142,6 +150,7 @@ export default function PlanYourTripContent() {
       return;
     }
     setIsFinishDialogOpen(true);
+    trackFinishDialogOpen("finish-button");
   };
 
   // Mutation for creating plan trip
@@ -150,20 +159,26 @@ export default function PlanYourTripContent() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["userPlanTrips"] });
 
-      // Show different message based on status
+      // Track successful form submission
       if (data?.data?.status === "quoted") {
+        trackSubmission("custom-trip-booking", "plan-your-trip", true);
         toast.success("Booking request submitted! We'll contact you soon with a quote.");
       } else {
+        trackSubmission("custom-trip-save", "plan-your-trip", true);
         toast.success("Trip plan saved successfully!");
       }
 
       setIsFinishDialogOpen(false);
+      trackFinishDialogClose("success");
       setTripName("");
     },
     onError: (error: any) => {
       console.error("Error saving trip plan:", error);
       const errorMessage = error.response?.data?.error?.message || "Failed to save trip plan. Please try again.";
       toast.error(errorMessage);
+
+      // Track failed submission
+      trackSubmission("custom-trip-save", "plan-your-trip", false);
     },
   });
 
@@ -202,6 +217,9 @@ export default function PlanYourTripContent() {
       pricePerDay,
       userId: user.documentId,
     });
+
+    // Track planning completion
+    trackStep(travelPlan.length, "Save Custom Trip", true);
   };
 
   const handleCreateBooking = () => {
@@ -240,6 +258,9 @@ export default function PlanYourTripContent() {
       userId: user.documentId,
       status: "quoted",
     });
+
+    // Track planning completion
+    trackStep(travelPlan.length, "Create Booking", true);
   };
 
   const handleRequestQuote = () => {
@@ -268,11 +289,17 @@ Thank you! 🙏`;
 
     toast.success("Opening WhatsApp to request quote!");
     setIsFinishDialogOpen(false);
+    trackFinishDialogClose("whatsapp-quote");
+
+    // Track planning completion
+    trackStep(travelPlan.length, "Request Quote via WhatsApp", true);
   };
 
   const handleViewSummary = () => {
     setIsFinishDialogOpen(false);
+    trackFinishDialogClose("view-summary");
     setIsSummaryDialogOpen(true);
+    trackSummaryDialogOpen("from-finish-dialog");
   };
 
   const { data, isLoading, error } = useQuery<PlacesToGoCategory>({

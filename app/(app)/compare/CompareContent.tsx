@@ -9,10 +9,12 @@ import { X, Star, MapPin, Clock, DollarSign, Trash2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useComparisonTracking } from "@/hooks/useEnhancedAnalytics";
 
 export default function CompareContent() {
     const [programs, setPrograms] = useState<ComparisonProgram[]>([]);
     const router = useRouter();
+    const { trackCompare } = useComparisonTracking();
 
     useEffect(() => {
         console.log("ComparePage: Loading programs on mount");
@@ -32,6 +34,14 @@ export default function CompareContent() {
         console.log("ComparePage: Loaded programs from localStorage:", list);
         console.log("ComparePage: Number of programs:", list.length);
         setPrograms(list);
+
+        // Track comparison usage when programs are loaded
+        if (list.length > 0) {
+            trackCompare(
+                list.map(p => p.title),
+                "Programs"
+            );
+        }
     };
 
     const handleRemove = (documentId: string) => {

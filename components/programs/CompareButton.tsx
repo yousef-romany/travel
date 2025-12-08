@@ -11,6 +11,7 @@ import {
   ComparisonProgram,
 } from "@/lib/comparison";
 import { toast } from "sonner";
+import { useComparisonTracking } from "@/hooks/useEnhancedAnalytics";
 
 interface CompareButtonProps {
   program: Omit<ComparisonProgram, "addedAt">;
@@ -21,6 +22,7 @@ interface CompareButtonProps {
 
 export function CompareButton({ program, variant = "outline", size = "default", className }: CompareButtonProps) {
   const [isInList, setIsInList] = useState(false);
+  const { trackCompare } = useComparisonTracking();
 
   useEffect(() => {
     setIsInList(isInComparison(program.documentId));
@@ -56,6 +58,9 @@ export function CompareButton({ program, variant = "outline", size = "default", 
           setIsInList(true);
           toast.success("Added to comparison");
           console.log("Successfully added to comparison");
+
+          // Track comparison addition
+          trackCompare([program.title], "Programs");
         } else {
           console.log("Failed to add - already in list");
         }

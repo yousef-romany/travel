@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getComparisonCount } from "@/lib/comparison";
 import { Badge } from "@/components/ui/badge";
+import { useFilterTracking, useSortTracking } from "@/hooks/useEnhancedAnalytics";
 
 // Helper function to get stagger delay class
 const getStaggerDelay = (index: number): string => {
@@ -46,6 +47,8 @@ export default function EnhancedPageContent() {
   });
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [comparisonCount, setComparisonCount] = useState(0);
+  const { trackPriceChange, trackDurationChange } = useFilterTracking();
+  const { trackSortChange } = useSortTracking();
 
   const { data, error, isLoading } = useQuery<
     { data: ProgramType[]; meta: any },
@@ -180,6 +183,37 @@ export default function EnhancedPageContent() {
     }
   };
 
+  // Track filter changes
+  const handleFilterChange = (newFilters: FilterOptions) => {
+    // Track price filter changes
+    if (newFilters.priceRange[0] !== filters.priceRange[0] || newFilters.priceRange[1] !== filters.priceRange[1]) {
+      trackPriceChange(newFilters.priceRange[0], newFilters.priceRange[1]);
+    }
+
+    // Track duration filter changes
+    if (newFilters.duration !== filters.duration && newFilters.duration !== "all") {
+      const durationMap: Record<string, [number, number]> = {
+        "1-3": [1, 3],
+        "4-7": [4, 7],
+        "8-14": [8, 14],
+        "15+": [15, 999],
+      };
+      const range = durationMap[newFilters.duration];
+      if (range) {
+        trackDurationChange(range[0], range[1]);
+      }
+    }
+
+    setFilters(newFilters);
+  };
+
+  // Track sort changes
+  const handleSortChange = (newSort: SortOption) => {
+    const sortOrder = newSort.includes("asc") ? "asc" : "desc";
+    trackSortChange(newSort, sortOrder, "Programs");
+    setSortBy(newSort);
+  };
+
   const handleApplySavedSearch = (savedSearch: any) => {
     if (savedSearch.filters.searchTerm) setSearchTerm(savedSearch.filters.searchTerm);
     if (savedSearch.filters.priceRange) setFilters({ ...filters, priceRange: savedSearch.filters.priceRange });
@@ -237,7 +271,7 @@ export default function EnhancedPageContent() {
           <div className="lg:col-span-1">
             <AdvancedFilters
               filters={filters}
-              onFilterChange={setFilters}
+              onFilterChange={handleFilterChange}
               onReset={handleFilterReset}
             />
           </div>
@@ -257,7 +291,7 @@ export default function EnhancedPageContent() {
                   />
                 </div>
                 <div className="flex gap-3">
-                  <SortOptions value={sortBy} onChange={setSortBy} />
+                  <SortOptions value={sortBy} onChange={handleSortChange} />
                   {comparisonCount > 0 && (
                     <Link href="/compare">
                       <Button variant="outline" className="relative">

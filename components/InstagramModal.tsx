@@ -7,6 +7,7 @@ import { instagramPostsType, instaGramType } from "@/type/placesToGo";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useModalTracking } from "@/hooks/useEnhancedAnalytics";
 
 export default function InstagramModal({ idPost }: instagramPostsType) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,6 +15,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
   const [isLoading, setIsLoading] = useState(true);
   const [isFetched, setIsFetched] = useState(false);
   const [showFullCaption, setShowFullCaption] = useState(false);
+  const { trackOpen, trackClose } = useModalTracking("instagram-post");
 
   useEffect(() => {
     if (!isFetched) {
@@ -62,7 +64,10 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
     <>
       {/* Thumbnail Card - Fully Responsive */}
       <div
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => {
+          setIsModalOpen(true);
+          trackOpen("thumbnail-click");
+        }}
         className="group w-full max-w-md mx-auto rounded-2xl cursor-pointer overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:scale-[1.02]"
       >
         {isLoading ? (
@@ -137,6 +142,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsModalOpen(true);
+                  trackOpen("view-full-post-button");
                 }}
                 className="w-full bg-gradient-to-r from-[#D4AF37] to-amber-600 hover:from-[#C49F2F] hover:to-amber-700 text-white border-0 shadow-md hover:shadow-lg transition-all font-semibold text-xs sm:text-sm"
               >
@@ -152,7 +158,10 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
       {isModalOpen && (
         <div
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-2 sm:p-4 animate-in fade-in duration-300"
-          onClick={() => setIsModalOpen(false)}
+          onClick={() => {
+            setIsModalOpen(false);
+            trackClose("backdrop-click");
+          }}
         >
           <div
             className="relative w-full max-w-sm sm:max-w-md md:max-w-3xl lg:max-w-7xl xl:max-w-[90vw] h-[95vh] sm:h-[90vh] bg-white dark:bg-gray-900 rounded-lg sm:rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800"
@@ -175,7 +184,10 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                 </div>
               </div>
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => {
+                  setIsModalOpen(false);
+                  trackClose("close-button");
+                }}
                 className="w-8 h-8 sm:w-10 sm:h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors"
                 aria-label="Close Instagram post modal"
               >

@@ -10,6 +10,7 @@ import { Star, Loader2, CheckCircle } from "lucide-react";
 import { createTestimonial, updateTestimonial, Testimonial } from "@/fetch/testimonials";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useFormTracking, useReviewTracking } from "@/hooks/useEnhancedAnalytics";
 
 interface AddTestimonialFormProps {
   testimonialType: "program" | "event" | "custom-trip" | "place" | "general";
@@ -32,6 +33,8 @@ export default function AddTestimonialForm({
 }: AddTestimonialFormProps) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { trackSubmission } = useFormTracking();
+  const { trackReview } = useReviewTracking();
   const [rating, setRating] = useState(existingTestimonial?.rating || 5);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState(existingTestimonial?.comment || "");
@@ -44,6 +47,11 @@ export default function AddTestimonialForm({
         "Thank you for your feedback! Your testimonial will be reviewed and published soon.",
         { duration: 5000 }
       );
+
+      // Track successful form submission and review
+      trackSubmission(`${testimonialType}-review`, relatedName || testimonialType, true);
+      trackReview(testimonialType, relatedId || "unknown", rating);
+
       resetForm();
       onSuccess?.();
     },
@@ -52,6 +60,9 @@ export default function AddTestimonialForm({
       const errorMessage =
         error.response?.data?.error?.message || "Failed to submit testimonial. Please try again.";
       toast.error(errorMessage);
+
+      // Track failed form submission
+      trackSubmission(`${testimonialType}-review`, relatedName || testimonialType, false);
     },
   });
 
@@ -61,6 +72,10 @@ export default function AddTestimonialForm({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
       toast.success("Your testimonial has been updated successfully!");
+
+      // Track successful update
+      trackSubmission(`${testimonialType}-review-update`, relatedName || testimonialType, true);
+
       resetForm();
       onSuccess?.();
     },
@@ -69,6 +84,9 @@ export default function AddTestimonialForm({
       const errorMessage =
         error.response?.data?.error?.message || "Failed to update testimonial. Please try again.";
       toast.error(errorMessage);
+
+      // Track failed update
+      trackSubmission(`${testimonialType}-review-update`, relatedName || testimonialType, false);
     },
   });
 
@@ -184,11 +202,10 @@ export default function AddTestimonialForm({
                     className="transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary rounded"
                   >
                     <Star
-                      className={`w-8 h-8 transition-colors ${
-                        isFilled
+                      className={`w-8 h-8 transition-colors ${isFilled
                           ? "fill-amber-400 text-amber-400"
                           : "fill-gray-200 text-gray-200 dark:fill-gray-700 dark:text-gray-700"
-                      }`}
+                        }`}
                     />
                   </button>
                 );

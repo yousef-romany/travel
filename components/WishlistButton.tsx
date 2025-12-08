@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/context/AuthContext"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { trackWishlistAction } from "@/lib/analytics"
 
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"
 
@@ -75,6 +76,9 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
         if (response.ok) {
           setInWishlist(false)
           toast.success("Removed from wishlist")
+
+          // Track wishlist removal
+          trackWishlistAction("remove", `Program ${programId}`)
         } else {
           const errorData = await response.json().catch(() => ({}))
           console.error("Remove failed:", response.status, errorData)
@@ -98,6 +102,9 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
         if (response.ok) {
           setInWishlist(true)
           toast.success("Added to wishlist")
+
+          // Track wishlist addition
+          trackWishlistAction("add", `Program ${programId}`)
         } else {
           throw new Error(responseData.error?.message || responseData.message || "Failed to add to wishlist")
         }
@@ -140,9 +147,8 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
         <Loader2 className="w-5 h-5 animate-spin text-red-500" />
       ) : (
         <Heart
-          className={`w-5 h-5 transition-colors ${
-            inWishlist ? "fill-red-500 text-red-500" : "text-slate-400 hover:text-red-400"
-          }`}
+          className={`w-5 h-5 transition-colors ${inWishlist ? "fill-red-500 text-red-500" : "text-slate-400 hover:text-red-400"
+            }`}
         />
       )}
     </Button>
