@@ -101,7 +101,6 @@ const IndexPageInspireSubCategory = ({
         {view === "grid" ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
             {data?.data?.at(-1)?.inspire_blogs?.map((item: InspireBlogs) => {
-              console.log(data)
               return <CardGrid
                 key={item.id}
                 details={item.details}

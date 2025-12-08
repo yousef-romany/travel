@@ -42,11 +42,13 @@ const IndexPage = ({ slug }: { slug: string }) => {
 
       {/* Hero section with responsive height */}
       <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[calc(100vh-80px)] overflow-hidden">
-        {data?.data?.at(-1)?.image && <OptimizedImage
-          src={getImageUrl(data?.data?.at(-1)?.image as Media)}
-          alt={data?.data?.at(-1)?.categoryName as string}
-          className="w-full h-full object-cover opacity-40"
-        />}
+        {data?.data?.at(-1)?.image && (
+          <OptimizedImage
+            src={getImageUrl(data?.data?.at(-1)?.image as Media)}
+            alt={data?.data?.at(-1)?.categoryName as string}
+            className="w-full h-full object-cover opacity-40"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background"></div>
         <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full px-4 sm:px-6 md:px-8 text-center">
           <div className="inline-block mb-3 md:mb-4">
@@ -66,13 +68,16 @@ const IndexPage = ({ slug }: { slug: string }) => {
       {/* Content section with responsive padding */}
       <div className="w-full h-fit py-8 sm:py-12 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 space-y-12 md:space-y-16 relative z-10">
         {/* sub category text */}
-        <div className="w-full flex justify-center items-center">
-          <h1
-            role="heading"
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent pb-2"
-          >
-            Subcategories
-          </h1>
+        <div className="w-full flex justify-center items-center mb-8">
+          <div className="relative">
+            <h1
+              role="heading"
+              className="text-4xl sm:text-5xl font-bold text-foreground pb-2 relative z-10"
+            >
+              Subcategories
+            </h1>
+            <div className="absolute -bottom-2 left-0 w-full h-3 bg-primary/20 -rotate-1 rounded-full -z-0"></div>
+          </div>
         </div>
         {/* grid system */}
         <div className="grid grid-cols-1 gap-8 md:gap-10 lg:gap-12">
@@ -90,12 +95,18 @@ const IndexPage = ({ slug }: { slug: string }) => {
                     href={`/inspiration/${slug}/${item?.categoryName}`}
                     className="w-fit group"
                   >
-                    <h1
-                      role="heading"
-                      className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold flex items-center gap-2 w-fit bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent group-hover:from-amber-600 group-hover:to-primary transition-all"
-                    >
-                      {item?.categoryName} <MdArrowOutward className="text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform text-lg sm:text-xl md:text-2xl lg:text-3xl" />
-                    </h1>
+                    <div className="w-full flex justify-center items-center mb-8">
+                      <div className="relative">
+                        <h1
+                          role="heading"
+                          className="text-4xl sm:text-5xl font-bold text-foreground pb-2 relative z-10 flex items-center gap-2 group-hover:text-primary transition-colors"
+                        >
+                          {item?.categoryName}
+                          <MdArrowOutward className="text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform text-lg sm:text-xl md:text-2xl lg:text-3xl" />
+                        </h1>
+                        <div className="absolute -bottom-2 left-0 w-full h-3 bg-primary/20 -rotate-1 rounded-full -z-0"></div>
+                      </div>
+                    </div>
                   </Link>
                   {/* slider */}
                   {(item?.inspire_blogs?.length ?? 0) > 0 ? (
@@ -119,7 +130,9 @@ const IndexPage = ({ slug }: { slug: string }) => {
                                 <CardContent className="p-0">
                                   <div className="relative overflow-hidden">
                                     <OptimizedImageInspireBlog
-                                      src={getImageUrl(itemBlog.image) as string}
+                                      src={
+                                        getImageUrl(itemBlog.image) as string
+                                      }
                                       alt={itemBlog?.title}
                                       className="w-full h-[200px] sm:h-[220px] md:h-[250px] object-cover group-hover:scale-110 transition-transform duration-500"
                                     />

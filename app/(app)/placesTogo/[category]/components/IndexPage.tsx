@@ -75,8 +75,8 @@ const IndexPage = ({ slug }: { slug: string }) => {
         </div>
         {/* grid system */}
         <div className="grid grid-cols-1 gap-10">
-          {data?.data?.at(-1)?.place_to_go_subcategories?.length ?? 0 > 0
-            ? data?.data
+          {data?.data?.at(-1)?.place_to_go_subcategories?.length ?? 0 > 0 ? (
+            data?.data
               ?.at(-1)
               ?.place_to_go_subcategories?.map(
                 (item: PlacesToGoSubcategories) => (
@@ -90,12 +90,18 @@ const IndexPage = ({ slug }: { slug: string }) => {
                       href={`/placesTogo/${slug}/${item?.categoryName}`}
                       className="w-fit group"
                     >
-                      <h1
-                        role="heading"
-                        className="text-[2rem] font-bold flex items-center gap-2 w-fit bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent group-hover:from-amber-600 group-hover:to-primary transition-all"
-                      >
-                        {item?.categoryName} <MdArrowOutward className="text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                      </h1>
+                      <div className="w-full flex justify-center items-center mb-8">
+                        <div className="relative">
+                          <h1
+                            role="heading"
+                            className="text-4xl sm:text-5xl font-bold text-foreground pb-2 relative z-10 flex items-center gap-2 group-hover:text-primary transition-colors"
+                          >
+                            {item?.categoryName}
+                            <MdArrowOutward className="text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform text-lg sm:text-xl md:text-2xl lg:text-3xl" />
+                          </h1>
+                          <div className="absolute -bottom-2 left-0 w-full h-3 bg-primary/20 -rotate-1 rounded-full -z-0"></div>
+                        </div>
+                      </div>
                     </Link>
                     {/* slider */}
                     {(item?.place_to_go_blogs?.length ?? 0) > 0 ? (
@@ -154,7 +160,9 @@ const IndexPage = ({ slug }: { slug: string }) => {
                   </div>
                 )
               )
-            : <NoDataPlaceholder />}
+          ) : (
+            <NoDataPlaceholder />
+          )}
         </div>
       </div>
     </div>
