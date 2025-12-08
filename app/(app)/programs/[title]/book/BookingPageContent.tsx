@@ -38,6 +38,9 @@ import { getImageUrl } from "@/lib/utils";
 import Link from "next/link";
 import PaymentComingSoonBanner from "@/components/payment-coming-soon-banner";
 import { trackWhatsAppBooking } from "@/lib/analytics";
+import { fetchProgramAvailability } from "@/fetch/availability";
+import { PromoCodeInput } from "@/components/booking/PromoCodeInput";
+import { PromoCode, incrementPromoCodeUsage } from "@/fetch/promo-codes";
 
 interface BookingPageContentProps {
   program: {
@@ -72,6 +75,14 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  // Map of date string (YYYY-MM-DD) to available spots count
+  const [availabilityMap, setAvailabilityMap] = useState<Record<string, number>>({});
+  const [isLoadingAvailability, setIsLoadingAvailability] = useState(true);
+  const [appliedPromo, setAppliedPromo] = useState<{
+    code: PromoCode;
+    discountAmount: number;
+    finalPrice: number;
+  } | null>(null);
 
   const [formData, setFormData] = useState<BookingFormData>({
     fullName: "",
@@ -105,14 +116,53 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     }
   }, [user]);
 
+  // Load availability
+  useEffect(() => {
+    const loadAvailability = async () => {
+      try {
+        setIsLoadingAvailability(true);
+        // Fetch 90 days of availability
+        const today = new Date();
+        const endDate = new Date();
+        endDate.setDate(today.getDate() + 90);
+
+        const response = await fetchProgramAvailability(
+          program.documentId,
+          today.toISOString().split("T")[0],
+          endDate.toISOString().split("T")[0]
+        );
+
+        // Create map of date -> spots
+        const map: Record<string, number> = {};
+        response.data.forEach((item) => {
+          if (item.isAvailable && item.availableSpots > 0) {
+            map[item.date] = item.availableSpots;
+          }
+        });
+
+        setAvailabilityMap(map);
+      } catch (error) {
+        console.error("Error loading availability:", error);
+      } finally {
+        setIsLoadingAvailability(false);
+      }
+    };
+    loadAvailability();
+  }, [program.documentId]);
+
   const createBookingMutation = useMutation({
     mutationFn: createBooking,
     onSuccess: async (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["userBookings"] });
 
       try {
+        // Increment promo code usage if applied
+        if (appliedPromo) {
+          await incrementPromoCodeUsage(appliedPromo.code.documentId);
+        }
+
         const invoiceNumber = `INV-${Date.now()}-${data.data.documentId}`;
-        const totalAmount = program.price * formData.numberOfTravelers;
+        const finalAmount = appliedPromo ? appliedPromo.finalPrice : (program.price * formData.numberOfTravelers);
 
         const invoiceData = {
           invoiceNumber,
@@ -125,7 +175,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
           tripDuration: program.duration,
           numberOfTravelers: formData.numberOfTravelers,
           pricePerPerson: program.price,
-          totalAmount,
+          totalAmount: finalAmount,
           bookingType: "program" as const,
           userId: user?.documentId,
           bookingDate: new Date().toISOString(),
@@ -148,13 +198,14 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
         // Download PDF
         await downloadInvoicePDF(invoiceData, `invoice-${invoiceNumber}.pdf`);
 
-        // WhatsApp message
-        const whatsAppMessage = `🎉 *New Booking Request*\n\n📋 *Booking Details:*\n• Tour: ${program.title}\n• Customer: ${formData.fullName}\n• Email: ${formData.email}\n• Phone: ${formData.phone}\n• Number of Travelers: ${formData.numberOfTravelers}\n• Travel Date: ${format(formData.travelDate!, "PPP")}\n• Total Amount: $${totalAmount.toFixed(2)}\n\n${formData.specialRequests ? `📝 *Special Requests:*\n${formData.specialRequests}\n` : ""}Please confirm this booking as soon as possible.\n\nThank you! 🙏`;
+        // WhatsApp message with discount info
+        const discountText = appliedPromo ? `\n• Discount: -$${appliedPromo.discountAmount.toFixed(2)} (${appliedPromo.code.code})` : "";
+        const whatsAppMessage = `🎉 *New Booking Request*\n\n📋 *Booking Details:*\n• Tour: ${program.title}\n• Customer: ${formData.fullName}\n• Email: ${formData.email}\n• Phone: ${formData.phone}\n• Number of Travelers: ${formData.numberOfTravelers}\n• Travel Date: ${format(formData.travelDate!, "PPP")}${discountText}\n• Total Amount: $${finalAmount.toFixed(2)}\n\n${formData.specialRequests ? `📝 *Special Requests:*\n${formData.specialRequests}\n` : ""}Please confirm this booking as soon as possible.\n\nThank you! 🙏`;
 
         const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsAppMessage)}`;
 
         // Track WhatsApp booking
-        trackWhatsAppBooking(program.title, program.documentId, totalAmount);
+        trackWhatsAppBooking(program.title, program.documentId, finalAmount);
 
         window.open(whatsappUrl, "_blank");
 
@@ -193,7 +244,25 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
       return;
     }
 
+    // Check availability for selected date
+    if (formData.travelDate) {
+      const dateStr = formData.travelDate.toISOString().split("T")[0];
+      // Only check if we have availability data loaded
+      if (Object.keys(availabilityMap).length > 0) {
+        const spots = availabilityMap[dateStr];
+        if (spots === undefined) {
+          toast.error("Selected date is not available");
+          return;
+        }
+        if (formData.numberOfTravelers > spots) {
+          toast.error(`Only ${spots} spots available for this date`);
+          return;
+        }
+      }
+    }
+
     const totalAmount = program.price * formData.numberOfTravelers;
+    const finalAmount = appliedPromo ? appliedPromo.finalPrice : totalAmount;
 
     createBookingMutation.mutate({
       fullName: formData.fullName,
@@ -204,7 +273,10 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
       specialRequests: formData.specialRequests,
       programId: program.documentId,
       userId: user!.documentId,
-      totalAmount: totalAmount,
+      totalAmount: finalAmount,
+      promoCodeId: appliedPromo?.code.documentId,
+      discountAmount: appliedPromo?.discountAmount,
+      finalPrice: appliedPromo?.finalPrice,
     });
   };
 
@@ -218,13 +290,48 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     }));
   };
 
+  const isDateAvailable = (date: Date): boolean => {
+    // If no availability data loaded yet or empty, allow all future dates
+    if (Object.keys(availabilityMap).length === 0) return true;
+    const dateStr = date.toISOString().split("T")[0];
+    return !!availabilityMap[dateStr]; // true if date exists in map (implies spots > 0 from fetch logic)
+  };
+
+  const isDateDisabled = (date: Date): boolean => {
+    // Disable past dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (date < today) return true;
+
+    // If availability data exists, check if date is available
+    if (Object.keys(availabilityMap).length > 0 && !isDateAvailable(date)) return true;
+
+    return false;
+  };
+
+  // Get available spots for selected date
+  const getSelectedDateSpots = (): number | null => {
+    if (!formData.travelDate) return null;
+    const dateStr = formData.travelDate.toISOString().split("T")[0];
+    return availabilityMap[dateStr] ?? null;
+  };
+
+  const handlePromoApplied = (promoCode: PromoCode, discountAmount: number, finalPrice: number) => {
+    setAppliedPromo({ code: promoCode, discountAmount, finalPrice });
+  };
+
+  const handlePromoRemoved = () => {
+    setAppliedPromo(null);
+  };
+
   const totalAmount = program.price * formData.numberOfTravelers;
+  const finalAmount = appliedPromo ? appliedPromo.finalPrice : totalAmount;
   const firstImage = program.images?.[0];
   const imageUrl = firstImage?.imageUrl
     ? getImageUrl(firstImage.imageUrl as string)
     : firstImage
-    ? getImageUrl(firstImage as any)
-    : "/placeholder.svg";
+      ? getImageUrl(firstImage as any)
+      : "/placeholder.svg";
 
   if (!user) return null;
 
@@ -358,6 +465,12 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                               <ChevronDownIcon className="h-4 w-4 opacity-50" />
                             </Button>
                           </PopoverTrigger>
+                          {formData.travelDate && getSelectedDateSpots() !== null && (
+                            <div className="mt-1 text-xs text-primary font-medium flex items-center gap-1">
+                              <Check className="w-3 h-3" />
+                              {getSelectedDateSpots()} spots available
+                            </div>
+                          )}
                           <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
                               mode="single"
@@ -366,7 +479,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                                 setFormData((prev) => ({ ...prev, travelDate: date }));
                                 if (date) setIsCalendarOpen(false);
                               }}
-                              disabled={(date) => date < new Date()}
+                              disabled={isDateDisabled}
                               initialFocus
                             />
                           </PopoverContent>
@@ -384,6 +497,18 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                       onChange={handleInputChange}
                       placeholder="Any dietary restrictions, accessibility needs, or special requests..."
                       rows={4}
+                    />
+                  </div>
+
+                  <Separator />
+
+                  {/* Promo Code */}
+                  <div className="space-y-4">
+                    <PromoCodeInput
+                      totalAmount={totalAmount}
+                      programId={program.documentId}
+                      onPromoApplied={handlePromoApplied}
+                      onPromoRemoved={handlePromoRemoved}
                     />
                   </div>
 
@@ -462,13 +587,25 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                       <span>Number of travelers:</span>
                       <span className="font-semibold">{formData.numberOfTravelers}</span>
                     </div>
+                    {appliedPromo && (
+                      <>
+                        <div className="flex justify-between text-sm">
+                          <span>Subtotal:</span>
+                          <span className="font-semibold">${totalAmount.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm text-green-600">
+                          <span>Discount ({appliedPromo.code.code}):</span>
+                          <span className="font-semibold">-${appliedPromo.discountAmount.toFixed(2)}</span>
+                        </div>
+                      </>
+                    )}
                     <Separator />
                     <div className="flex justify-between text-lg font-bold">
                       <span className="flex items-center gap-2">
                         <DollarSign className="w-5 h-5 text-primary" />
                         Total Amount:
                       </span>
-                      <span className="text-primary">${totalAmount.toFixed(2)}</span>
+                      <span className="text-primary">${finalAmount.toFixed(2)}</span>
                     </div>
                   </div>
                 </CardContent>

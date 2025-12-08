@@ -159,6 +159,9 @@ export const createBooking = async (bookingData: {
   bookingType?: "program" | "custom-trip" | "event";
   userId?: string;
   totalAmount: number;
+  promoCodeId?: string;
+  discountAmount?: number;
+  finalPrice?: number;
 }): Promise<{ data: BookingType }> => {
   try {
     // Get auth token from localStorage
@@ -175,6 +178,9 @@ export const createBooking = async (bookingData: {
       totalAmount: bookingData.totalAmount,
       status: "pending",
       bookingType: bookingData.bookingType || "program",
+      ...(bookingData.promoCodeId && { promoCode: bookingData.promoCodeId }),
+      ...(bookingData.discountAmount && { discountAmount: bookingData.discountAmount }),
+      ...(bookingData.finalPrice && { finalPrice: bookingData.finalPrice }),
     };
 
     // Add custom trip name if provided
