@@ -143,7 +143,7 @@ export default function MediaContent({
     // If using iframe fallback (for Instagram embed)
     if (useIframe && thumbnail_url) {
       return (
-        <div className="relative group cursor-pointer w-full min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:h-[80vh] flex items-center justify-center bg-black dark:bg-gray-950" onClick={togglePlay}>
+        <div className="relative group cursor-pointer w-full h-full flex items-center justify-center bg-black dark:bg-gray-950" onClick={togglePlay}>
           <div className="relative w-full h-full flex items-center justify-center">
             {/* Loading indicator */}
             {isLoading && (
@@ -158,12 +158,12 @@ export default function MediaContent({
             {/* Show thumbnail with play overlay when not playing */}
             {!isPlaying && (
               <div className="relative w-full h-full flex items-center justify-center">
-                <div className="relative w-full aspect-[9/16] sm:aspect-[3/4] md:aspect-video max-h-[85vh]">
+                <div className="relative w-full h-full max-h-[85vh]">
                   <Image
                     src={thumbnail_url}
                     alt="Instagram video thumbnail"
                     fill
-                    className="object-cover rounded-lg"
+                    className="object-contain rounded-lg"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
                   />
                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 gap-4 rounded-lg">
@@ -180,16 +180,15 @@ export default function MediaContent({
 
             {/* Video player */}
             {isPlaying && (
-              <div className="relative w-full aspect-[9/16] sm:aspect-[3/4] md:aspect-video max-h-[85vh]">
+              <div className="relative w-full h-full max-h-[85vh]">
                 <video
                   ref={videoRef}
-                  className="w-full h-full object-cover rounded-lg transition-opacity duration-300"
+                  className="w-full h-full object-contain rounded-lg transition-opacity duration-300"
                   poster={thumbnail_url}
                   playsInline
                   controls={false}
                   muted={isMuted}
                   preload="metadata"
-                  crossOrigin="anonymous"
                   onPlay={() => {
                     setIsPlaying(true);
                     setIsLoading(false);
@@ -316,10 +315,10 @@ export default function MediaContent({
           )}
 
           {/* Video container with proper aspect ratio */}
-          <div className="relative w-full aspect-[9/16] sm:aspect-[3/4] md:aspect-video max-h-[85vh]">
+          <div className="relative w-full h-full flex items-center justify-center bg-black">
             <video
               ref={videoRef}
-              className="w-full h-full object-cover rounded-lg transition-opacity duration-300"
+              className="w-full h-full max-h-[85vh] object-contain rounded-lg transition-opacity duration-300"
               style={{
                 opacity: isLoading ? 0 : 1
               }}
@@ -328,7 +327,6 @@ export default function MediaContent({
               controls={false}
               muted={isMuted}
               preload="metadata"
-              crossOrigin="anonymous"
               onPlay={() => {
                 setIsPlaying(true);
                 console.log('Video playing');

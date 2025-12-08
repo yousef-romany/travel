@@ -186,7 +186,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
             {/* Content with Better Balance */}
             <div className="flex flex-col md:flex-row h-[calc(92vh-73px)] w-full">
               {/* Media - Takes 60% on desktop */}
-              <div className="relative flex-[6] bg-black w-full flex items-center justify-center overflow-hidden min-h-[400px] md:min-h-0">
+              <div className="relative flex-[6] bg-black w-full flex items-center justify-center overflow-hidden min-h-[400px] md:min-h-0 background-gradient-to-br from-purple-900 via-pink-900 to-orange-900  ">
                 <div className="w-full h-full flex items-center justify-center">
                   <MediaContent
                     media_type={data?.media_type}
