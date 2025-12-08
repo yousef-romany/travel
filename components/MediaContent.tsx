@@ -140,265 +140,149 @@ export default function MediaContent({
 
   // Handle VIDEO and CAROUSEL_ALBUM (which may contain videos)
   if (media_type === "VIDEO" || media_type === "CAROUSEL_ALBUM") {
-    // If using iframe fallback (for Instagram embed)
-    if (useIframe && thumbnail_url) {
+    // Fallback to a simple thumbnail view if the video URL is missing
+    if (!imageUrl) {
       return (
-        <div className="relative group cursor-pointer w-full min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:h-[80vh] flex items-center justify-center bg-black dark:bg-gray-950" onClick={togglePlay}>
-          <div className="relative w-full h-full flex items-center justify-center">
-            {/* Loading indicator */}
-            {isLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-900/50 dark:bg-gray-950/70 z-10">
-                <div className="flex flex-col items-center gap-3">
-                  <Loader2 className="w-12 h-12 text-white animate-spin" />
-                  <p className="text-white text-sm">Loading video...</p>
-                </div>
-              </div>
-            )}
-
-            {/* Show thumbnail with play overlay when not playing */}
-            {!isPlaying && (
-              <div className="relative w-full h-full flex items-center justify-center">
-                <div className="relative w-full aspect-[9/16] sm:aspect-[3/4] md:aspect-video max-h-[85vh]">
-                  <Image
-                    src={thumbnail_url}
-                    alt="Instagram video thumbnail"
-                    fill
-                    className="object-cover rounded-lg"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                  />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 gap-4 rounded-lg">
-                    <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center transition-transform group-hover:scale-110 shadow-2xl">
-                      <Play className="w-10 h-10 text-primary ml-1" fill="currentColor" />
-                    </div>
-                    <p className="text-white text-sm px-4 text-center font-medium">
-                      Click to play video
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Video player */}
-            {isPlaying && (
-              <div className="relative w-full aspect-[9/16] sm:aspect-[3/4] md:aspect-video max-h-[85vh]">
-                <video
-                  ref={videoRef}
-                  className="w-full h-full object-cover rounded-lg transition-opacity duration-300"
-                  poster={thumbnail_url}
-                  playsInline
-                  controls={false}
-                  muted={isMuted}
-                  preload="metadata"
-                  crossOrigin="anonymous"
-                  onPlay={() => {
-                    setIsPlaying(true);
-                    setIsLoading(false);
-                    console.log('Video playing');
-                  }}
-                  onPause={() => {
-                    setIsPlaying(false);
-                    console.log('Video paused');
-                  }}
-                  onLoadedData={handleVideoLoad}
-                  onCanPlay={handleCanPlay}
-                  onError={handleVideoError}
-                >
-                  <source src={imageUrl} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-
-                {/* Custom pause overlay when playing */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20 dark:bg-black/40 transition-opacity group-hover:bg-black/30 dark:group-hover:bg-black/50 pointer-events-none rounded-lg">
-                  <div className="w-20 h-20 rounded-full bg-white/90 dark:bg-white/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">
-                    <Pause className="w-10 h-10 text-primary dark:text-primary" fill="currentColor" />
-                  </div>
-                </div>
-
-                {/* Progress bar and controls */}
-                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-b-lg">
-                  {/* Progress bar */}
-                  <div
-                    className="w-full h-1.5 bg-white/30 rounded-full mb-2 cursor-pointer pointer-events-auto"
-                    onClick={handleProgressClick}
-                  >
-                    <div
-                      className="h-full bg-primary rounded-full transition-all"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-
-                  {/* Time and controls */}
-                  <div className="flex items-center justify-between pointer-events-auto">
-                    <span className="text-white text-xs sm:text-sm font-medium">
-                      {formatTime(currentTime)} / {formatTime(duration)}
-                    </span>
-                    <button
-                      onClick={toggleMute}
-                      className="p-1.5 sm:p-2 rounded-full bg-white/20 dark:bg-white/10 hover:bg-white/30 dark:hover:bg-white/20 backdrop-blur-sm transition-all shadow-lg"
-                      aria-label={isMuted ? "Unmute video" : "Mute video"}
-                    >
-                      {isMuted ? (
-                        <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                      ) : (
-                        <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+        <div className="relative w-full h-full flex items-center justify-center bg-black">
+          {thumbnail_url ? (
+            <Image
+              src={thumbnail_url}
+              alt="Instagram media thumbnail"
+              fill
+              className="object-contain"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="text-white">Media not available</div>
+          )}
         </div>
       );
     }
 
+    // Main video player component
     return (
-      <div className="relative group cursor-pointer w-full min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:h-[80vh] flex items-center justify-center bg-black dark:bg-gray-950" onClick={togglePlay}>
-        <div className="relative w-full h-full flex items-center justify-center">
-          {/* Loading indicator */}
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-900/50 dark:bg-gray-950/70 z-10">
-              <div className="flex flex-col items-center gap-3">
-                <Loader2 className="w-12 h-12 text-white animate-spin" />
-                <p className="text-white text-sm">Loading video...</p>
-              </div>
-            </div>
-          )}
+      <div
+        className="relative group/video cursor-pointer w-full h-full flex items-center justify-center bg-black"
+        onClick={togglePlay}
+      >
+        {/* Main Video Element */}
+        <video
+          ref={videoRef}
+          className="w-full h-full object-contain transition-opacity duration-300"
+          style={{ opacity: isLoading || hasError ? 0 : 1 }}
+          poster={thumbnail_url}
+          playsInline
+          controls={false}
+          muted={isMuted}
+          loop
+          preload="metadata"
+          crossOrigin="anonymous"
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onLoadedData={handleVideoLoad}
+          onCanPlay={handleCanPlay}
+          onError={handleVideoError}
+          onWaiting={() => setIsLoading(true)}
+        >
+          <source src={imageUrl} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
 
-          {/* Error state */}
-          {hasError && !useIframe && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/90 dark:bg-gray-950/95 z-10 gap-4 p-6">
-              <div className="flex flex-col items-center gap-3 max-w-md text-center">
-                <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <p className="text-white text-base font-semibold">Unable to load video</p>
-                <p className="text-white/70 text-sm">
-                  Instagram videos may be restricted due to privacy settings or CORS policies
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setUseIframe(true);
-                      setHasError(false);
-                    }}
-                    variant="outline"
-                    className="text-white border-white/20 hover:bg-white/10"
-                  >
-                    View Thumbnail
-                  </Button>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.open(imageUrl, '_blank');
-                    }}
-                    className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700"
-                  >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Open in Instagram
-                  </Button>
-                </div>
-              </div>
-              {thumbnail_url && (
-                <div className="absolute inset-0 -z-10">
-                  <Image
-                    src={thumbnail_url}
-                    alt="Video thumbnail"
-                    fill
-                    className="object-cover opacity-20"
-                  />
-                </div>
-              )}
-            </div>
-          )}
+        {/* Thumbnail as a fallback and initial view */}
+        {(isLoading || hasError) && thumbnail_url && (
+          <Image
+            src={thumbnail_url}
+            alt="Video thumbnail"
+            fill
+            className="object-contain transition-opacity duration-300"
+            style={{ opacity: hasError ? 0.3 : 1 }}
+          />
+        )}
 
-          {/* Video container with proper aspect ratio */}
-          <div className="relative w-full aspect-[9/16] sm:aspect-[3/4] md:aspect-video max-h-[85vh]">
-            <video
-              ref={videoRef}
-              className="w-full h-full object-cover rounded-lg transition-opacity duration-300"
-              style={{
-                opacity: isLoading ? 0 : 1
-              }}
-              poster={thumbnail_url}
-              playsInline
-              controls={false}
-              muted={isMuted}
-              preload="metadata"
-              crossOrigin="anonymous"
-              onPlay={() => {
-                setIsPlaying(true);
-                console.log('Video playing');
-              }}
-              onPause={() => {
-                setIsPlaying(false);
-                console.log('Video paused');
-              }}
-              onLoadedData={handleVideoLoad}
-              onCanPlay={handleCanPlay}
-              onError={handleVideoError}
-              onLoadedMetadata={() => console.log('Video metadata loaded')}
-              onWaiting={() => console.log('Video waiting for data')}
-              onStalled={() => console.log('Video stalled')}
-            >
-              <source src={imageUrl} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-
-            {/* Custom play/pause overlay with improved dark mode support */}
-            {!isLoading && !hasError && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/20 dark:bg-black/40 transition-opacity group-hover:bg-black/30 dark:group-hover:bg-black/50 pointer-events-none rounded-lg">
-                {!isPlaying && (
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-white/90 dark:bg-white/80 flex items-center justify-center transition-transform hover:scale-110 shadow-2xl">
-                    <Play className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-primary dark:text-primary ml-1" fill="currentColor" />
-                  </div>
-                )}
-                {isPlaying && (
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-white/90 dark:bg-white/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-2xl">
-                    <Pause className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-primary dark:text-primary" fill="currentColor" />
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Progress bar and controls */}
-            {isPlaying && !isLoading && (
-              <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-b-lg">
-                {/* Progress bar */}
-                <div
-                  className="w-full h-1.5 bg-white/30 rounded-full mb-2 cursor-pointer pointer-events-auto"
-                  onClick={handleProgressClick}
-                >
-                  <div
-                    className="h-full bg-primary rounded-full transition-all"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-
-                {/* Time and controls */}
-                <div className="flex items-center justify-between pointer-events-auto">
-                  <span className="text-white text-xs sm:text-sm font-medium">
-                    {formatTime(currentTime)} / {formatTime(duration)}
-                  </span>
-                  <button
-                    onClick={toggleMute}
-                    className="p-1.5 sm:p-2 rounded-full bg-white/20 dark:bg-white/10 hover:bg-white/30 dark:hover:bg-white/20 backdrop-blur-sm transition-all shadow-lg"
-                    aria-label={isMuted ? "Unmute video" : "Mute video"}
-                  >
-                    {isMuted ? (
-                      <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                    ) : (
-                      <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                    )}
-                  </button>
-                </div>
-              </div>
-            )}
+        {/* Loading Spinner */}
+        {isLoading && !hasError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
+            <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 text-white animate-spin" />
           </div>
-        </div>
+        )}
+
+        {/* Error State Overlay */}
+        {hasError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-10 gap-3 sm:gap-4 p-4 text-center">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-red-500/20 flex items-center justify-center">
+              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p className="text-white text-sm sm:text-base font-semibold">Could not load video</p>
+            <p className="text-white/70 text-xs sm:text-sm max-w-xs">
+              This might be due to Instagram&apos;s privacy settings or network issues.
+            </p>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(`https://www.instagram.com/p/${imageUrl.split("/")[4]}/`, '_blank');
+              }}
+              className="mt-2 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm"
+              size="sm"
+            >
+              <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+              View on Instagram
+            </Button>
+          </div>
+        )}
+
+        {/* Custom Controls - visible when not loading/error */}
+        {!isLoading && !hasError && (
+          <>
+            {/* Play/Pause Center Button */}
+            <div
+              className={
+                "absolute inset-0 flex items-center justify-center transition-opacity duration-300 " +
+                (isPlaying ? "opacity-0 group-hover/video:opacity-100" : "opacity-100")
+              }
+            >
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                {isPlaying ? (
+                  <Pause className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="white" />
+                ) : (
+                  <Play className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1" fill="white" />
+                )}
+              </div>
+            </div>
+
+            {/* Bottom Controls Bar */}
+            <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover/video:opacity-100 transition-opacity duration-300">
+              {/* Progress Bar */}
+              <div
+                className="w-full h-1 bg-white/30 rounded-full cursor-pointer"
+                onClick={handleProgressClick}
+              >
+                <div
+                  className="h-full bg-primary rounded-full"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              {/* Time and Mute Button */}
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-white text-xs sm:text-sm font-mono">
+                  {formatTime(currentTime)} / {formatTime(duration)}
+                </span>
+                <button
+                  onClick={toggleMute}
+                  className="p-1"
+                  aria-label={isMuted ? "Unmute" : "Mute"}
+                >
+                  {isMuted ? (
+                    <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  ) : (
+                    <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  )}
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     );
   }
