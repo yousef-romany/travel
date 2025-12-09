@@ -168,7 +168,7 @@ npm run dev
 ```
 
 ### 3. Test Audio
-1. Visit http://localhost:3000
+1. Visit https://zoeholidays.com
 2. See two buttons bottom-right:
    - Top (gold): Play/Pause
    - Bottom (secondary): Mute/Unmute
@@ -181,13 +181,13 @@ npm run dev
 
 ### 4. Test User Dashboard
 1. Login to your account
-2. Visit http://localhost:3000/me
+2. Visit https://zoeholidays.com/me
 3. Click "Planned Trips" tab
 4. Should see your trips (not empty)
 5. Check console - no 400 errors ✅
 
 ### 5. Test Events
-1. Visit http://localhost:3000/events
+1. Visit https://zoeholidays.com/events
 2. Should see 6 events in grid
 3. Try filter tabs (Music, Cultural, etc.)
 4. Click any event

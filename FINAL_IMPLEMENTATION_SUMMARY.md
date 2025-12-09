@@ -186,7 +186,7 @@
    - Backend is already running at http://localhost:1337
 
 3. **Make a Test Booking:**
-   - Go to http://localhost:3000
+   - Go to https://zoeholidays.com
    - Browse a tour/program
    - Click "Book Now"
    - Fill in the booking form

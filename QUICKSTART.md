@@ -30,7 +30,7 @@ Required variables:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open [https://zoeholidays.com](https://zoeholidays.com)
 
 ### 4. Verify Everything Works
 

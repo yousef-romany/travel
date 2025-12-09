@@ -40,7 +40,7 @@ npm run develop
 5. **IMPORTANT**: Click **Publish** button
 
 #### Step 4: Test
-Visit: http://localhost:3000/events
+Visit: https://zoeholidays.com/events
 
 ---
 
@@ -53,7 +53,7 @@ Visit: http://localhost:3000/events
 The component now correctly extracts `data` array from the response `{data: [...], meta:{...}}`
 
 #### Verify the Fix:
-1. Visit: http://localhost:3000/plan-your-trip
+1. Visit: https://zoeholidays.com/plan-your-trip
 2. Check browser console for debug logs:
    ```
    Plan Your Trip - Data is array: true

@@ -25,7 +25,7 @@ Follow these steps:
 npm run dev
 ```
 
-- Open http://localhost:3000
+- Open https://zoeholidays.com
 - Check homepage loads
 - Test navigation
 - Verify no console errors
@@ -57,7 +57,7 @@ npm run build
 npm run start
 ```
 
-- Open http://localhost:3000
+- Open https://zoeholidays.com
 - Test everything again
 - Should be faster than dev mode
 

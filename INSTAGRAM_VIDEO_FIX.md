@@ -76,7 +76,7 @@ npm run dev # Start fresh server with new config
 
 ### 2. Test Instagram Videos
 
-1. **Navigate to homepage**: `http://localhost:3000`
+1. **Navigate to homepage**: `https://zoeholidays.com`
 2. **Scroll to Instagram section**
 3. **Click on any Instagram post** (especially videos)
 4. **Check console** for debug messages:

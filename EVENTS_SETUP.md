@@ -84,7 +84,7 @@ Add the following fields to your Events collection:
 ### Step 5: Test the Events Page
 
 1. Restart your Next.js development server if needed
-2. Visit http://localhost:3000/events
+2. Visit https://zoeholidays.com/events
 3. You should now see your events displayed!
 
 ## Event Types and Their Use Cases

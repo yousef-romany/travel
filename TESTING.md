@@ -15,7 +15,7 @@ cd /home/yousefx00/Documents/Programing\ Projects/ZoeHolidays/travel
 npm run dev
 ```
 
-**Expected**: Server starts on http://localhost:3000
+**Expected**: Server starts on https://zoeholidays.com
 
 ---
 
@@ -170,7 +170,7 @@ npm run build
 npm run start
 ```
 
-**Server starts on**: http://localhost:3000
+**Server starts on**: https://zoeholidays.com
 
 **Test Everything Again**:
 - [ ] Homepage loads
@@ -245,7 +245,7 @@ nano .env.production
 npm run start
 
 # In another terminal, check headers
-curl -I http://localhost:3000
+curl -I https://zoeholidays.com
 ```
 
 **Should see**:

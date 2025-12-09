@@ -15,7 +15,7 @@ export async function GET(req: Request) {
   const contentType = res.headers.get("content-type") || "";
 
   if (contentType.includes("text/html")) {
-    return NextResponse.redirect("http://localhost:3000/login");
+    return NextResponse.redirect("https://zoeholidays.com/login");
   }
 
   const data = await res.json();

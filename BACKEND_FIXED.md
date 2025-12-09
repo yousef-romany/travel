@@ -60,7 +60,7 @@ npm run dev
 ```
 
 ### 3. Test Events Page
-Visit: http://localhost:3000/events
+Visit: https://zoeholidays.com/events
 
 **You should see**:
 - ✅ 6 events displayed in beautiful grid

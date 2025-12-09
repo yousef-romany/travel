@@ -42,7 +42,7 @@ when loading booking tab
 7- solve this aslo please "bun start
 $ next start
    ▲ Next.js 15.1.6
-   - Local:        http://localhost:3000
+   - Local:        https://zoeholidays.com
    - Network:      http://192.168.1.29:3000
 
  ✓ Starting...

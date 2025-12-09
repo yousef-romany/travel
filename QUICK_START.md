@@ -10,7 +10,7 @@ cd ../backend && npm run develop
 npm run dev
 ```
 
-Then open: **http://localhost:3000**
+Then open: **https://zoeholidays.com**
 
 ---
 

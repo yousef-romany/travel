@@ -603,7 +603,7 @@ These features work perfectly without Strapi:
 # Start Next.js
 npm run dev
 
-# Visit http://localhost:3000
+# Visit https://zoeholidays.com
 # All features work except those needing Strapi backend
 ```
 
