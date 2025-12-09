@@ -34,7 +34,7 @@ export default function InvoicesSection() {
     0
   )
   const pendingAmount = invoices
-    .filter((invoice) => invoice.status === "pending")
+    .filter((invoice) => invoice.invoiceStatus === "pending")
     .reduce((sum, invoice) => sum + (invoice.totalAmount || 0), 0)
 
   const formatDate = (dateString: string) => {
@@ -125,8 +125,8 @@ export default function InvoicesSection() {
                       bookingType === "custom-trip"
                         ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
                         : bookingType === "event"
-                        ? "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
-                        : "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300";
+                          ? "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+                          : "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300";
 
                     return (
                       <TableRow key={invoice.id} className="hover:bg-muted/50 border-b border-border">
@@ -151,8 +151,8 @@ export default function InvoicesSection() {
                           {formatDate(invoice.tripDate)}
                         </TableCell>
                         <TableCell>
-                          <Badge className={getStatusBadgeClass(invoice.status)}>
-                            {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                          <Badge className={getStatusBadgeClass(invoice.invoiceStatus)}>
+                            {invoice.invoiceStatus.charAt(0).toUpperCase() + invoice.invoiceStatus.slice(1)}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">

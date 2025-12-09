@@ -176,8 +176,8 @@ export default function PersonalInfo() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-semibold text-foreground">{trip.tripName}</h4>
-                      <Badge className={getStatusColor(trip.status)}>
-                        {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                      <Badge className={getStatusColor(trip.tripStatus)}>
+                        {trip.tripStatus.charAt(0).toUpperCase() + trip.tripStatus.slice(1)}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">

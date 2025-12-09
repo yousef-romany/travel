@@ -242,8 +242,8 @@ export default function CompleteProfilePage() {
 
   const filteredCountries = countryQuery
     ? COUNTRIES.filter((c) =>
-        c.toLowerCase().includes(countryQuery.toLowerCase())
-      )
+      c.toLowerCase().includes(countryQuery.toLowerCase())
+    )
     : COUNTRIES;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -258,93 +258,131 @@ export default function CompleteProfilePage() {
 
   // ---------------- Submit ----------------
   const handleSubmit = async (e: any) => {
-  e.preventDefault();
-  setErrors({});
+    e.preventDefault();
+    setErrors({});
 
-  // Validate form data
-  const validation = validateCompleteProfile(formData);
-  if (!validation.isValid) {
-    setErrors(validation.errors);
-    toast.error("Please fix the errors in the form");
-    return;
-  }
+    // Validate form data
+    const validation = validateCompleteProfile(formData);
+    if (!validation.isValid) {
+      setErrors(validation.errors);
+      toast.error("Please fix the errors in the form");
+      return;
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    const token = user?.token;
-    if (!token) return (window.location.href = "/login");
+    try {
+      const token = user?.token;
+      if (!token) return (window.location.href = "/login");
 
-    // 1. Check if profile exists
-    const p = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles?filters[user][id]=${user.id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      console.log("Current User:", user); // Debug user object
+      const userId = user.documentId || user.id;
+      if (!userId) {
+        toast.error("User ID missing. Please login again.");
+        return;
       }
-    ).then((r) => r.json());
 
-    let profileId;
-
-    // 2. Create profile if not found (Strapi v5 syntax)
-    if (!p.data?.length) {
-      const created = await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles`,
+      // 1. Check if profile exists
+      const me = await fetch(
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me?populate=profile`,
         {
-          method: "POST",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            data: {
-              ...formData,
-              isProfileCompleted: true,
-              user: {
-                connect: [user.id], // <-- أهم تعديل
-              },
-            },
-          }),
         }
       ).then((r) => r.json());
 
-      if (!created.data) throw new Error("create-failed");
+      let profileId;
 
-      profileId = created.data.id;
+      // 2. Create profile if not found
+      if (!me.profile) {
+        const created = await fetch(
+          `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              data: {
+                ...formData,
+                isProfileCompleted: true,
+              },
+            }),
+          }
+        ).then(async (r) => {
+          const res = await r.json();
+          if (!r.ok) {
+            console.error("Create Profile Error:", res);
+            throw res.error || new Error("Failed to create profile");
+          }
+          return res;
+        });
 
-    } else {
-      // 3. Update existing profile
-      profileId = p.data[0].id;
+        if (!created.data) throw new Error("create-failed");
 
-      await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles/${profileId}`,
-        {
+        profileId = created.data.documentId;
+
+        // 4. Link Profile to User (Since Profile -> User failed)
+        await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/${user.id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            data: {
-              ...formData,
-              isProfileCompleted: true,
-            },
+            profile: profileId
           }),
-        }
-      );
+        });
+
+      } else {
+        // 3. Update existing profile
+        profileId = me.profile.documentId;
+
+        await fetch(
+          `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles/${profileId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              data: {
+                ...formData,
+                isProfileCompleted: true,
+              },
+            }),
+          }
+        );
+      }
+
+      setSuccess(true);
+      setTimeout(() => (window.location.href = "/"), 1000);
+
+    } catch (err: any) {
+      console.error("Full Error Object:", err);
+      let msg = "Error updating/creating profile";
+
+      // 1. Check for standard Error object
+      if (err instanceof Error) {
+        msg = err.message;
+      }
+      // 2. Check for Strapi error format
+      else if (err?.error?.message) {
+        msg = err.error.message;
+      }
+      // 3. Check for Strapi detailed validation errors
+      else if (err?.data?.error?.message) {
+        msg = err.data.error.message;
+      }
+
+      toast.error(msg);
+    } finally {
+      setLoading(false);
     }
-
-    setSuccess(true);
-    setTimeout(() => (window.location.href = "/"), 1000);
-
-  } catch (err) {
-    console.error(err);
-    alert("Error updating/creating profile");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   if (success)
     return (
@@ -362,197 +400,196 @@ export default function CompleteProfilePage() {
         <div className="absolute bottom-10 left-16 w-72 h-72 bg-primary/60 rounded-full blur-[120px]"></div>
       </div>
 
-        <motion.div className="w-full max-w-4xl bg-card/80 backdrop-blur-sm p-10 rounded-2xl border border-primary/20 shadow-2xl">
-          <form onSubmit={handleSubmit} className="space-y-12">
-            {/* PERSONAL */}
-            <div className="grid grid-cols-2 gap-6">
-              <FormField
-                label="First Name"
-                placeholder="Joe"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                required
-                error={errors.firstName}
-              />
-              <FormField
-                label="Last Name"
-                placeholder="Romany"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                required
-                error={errors.lastName}
-              />
-              <FormField
-                label="Phone Number"
-                placeholder="+20 10 123 4567"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                error={errors.phone}
-              />
-              <FormField
-                type="date"
-                label="Date of Birth"
-                name="dateOfBirth"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                required
-                error={errors.dateOfBirth}
-              />
-              <FormField
-                label="Nationality"
-                placeholder="Egyptian"
-                name="nationality"
-                value={formData.nationality}
-                onChange={handleChange}
-                required
-                error={errors.nationality}
-              />
-            </div>
+      <motion.div className="w-full max-w-4xl bg-card/80 backdrop-blur-sm p-10 rounded-2xl border border-primary/20 shadow-2xl">
+        <form onSubmit={handleSubmit} className="space-y-12">
+          {/* PERSONAL */}
+          <div className="grid grid-cols-2 gap-6">
+            <FormField
+              label="First Name"
+              placeholder="Joe"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+              error={errors.firstName}
+            />
+            <FormField
+              label="Last Name"
+              placeholder="Romany"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+              error={errors.lastName}
+            />
+            <FormField
+              label="Phone Number"
+              placeholder="+20 10 123 4567"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              error={errors.phone}
+            />
+            <FormField
+              type="date"
+              label="Date of Birth"
+              name="dateOfBirth"
+              value={formData.dateOfBirth}
+              onChange={handleChange}
+              required
+              error={errors.dateOfBirth}
+            />
+            <FormField
+              label="Nationality"
+              placeholder="Egyptian"
+              name="nationality"
+              value={formData.nationality}
+              onChange={handleChange}
+              required
+              error={errors.nationality}
+            />
+          </div>
 
-            {/* PASSPORT */}
-            <div className="grid grid-cols-2 gap-6">
-              <FormField
-                label="Passport Number"
-                placeholder="A12345678"
-                name="passportNumber"
-                value={formData.passportNumber}
-                onChange={handleChange}
-                required
-                error={errors.passportNumber}
-              />
-              <FormField
-                type="date"
-                label="Passport Expiry"
-                name="passportExpiry"
-                value={formData.passportExpiry}
-                onChange={handleChange}
-                required
-                error={errors.passportExpiry}
-              />
-            </div>
+          {/* PASSPORT */}
+          <div className="grid grid-cols-2 gap-6">
+            <FormField
+              label="Passport Number"
+              placeholder="A12345678"
+              name="passportNumber"
+              value={formData.passportNumber}
+              onChange={handleChange}
+              required
+              error={errors.passportNumber}
+            />
+            <FormField
+              type="date"
+              label="Passport Expiry"
+              name="passportExpiry"
+              value={formData.passportExpiry}
+              onChange={handleChange}
+              required
+              error={errors.passportExpiry}
+            />
+          </div>
 
-            {/* ADDRESS */}
-            <div className="grid grid-cols-2 gap-6">
-              <FormField
-                label="Street Address"
-                placeholder="12 Garden St"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                required
-                error={errors.address}
-              />
-              <FormField
-                label="City"
-                placeholder="Cairo"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                required
-                error={errors.city}
-              />
+          {/* ADDRESS */}
+          <div className="grid grid-cols-2 gap-6">
+            <FormField
+              label="Street Address"
+              placeholder="12 Garden St"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              required
+              error={errors.address}
+            />
+            <FormField
+              label="City"
+              placeholder="Cairo"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              required
+              error={errors.city}
+            />
 
-              {/* COUNTRY DROPDOWN */}
-              <div>
-                <label className="text-sm text-primary">Country</label>
-                <Popover open={countryOpen} onOpenChange={setCountryOpen}>
-                  <PopoverTrigger asChild>
-                    <button className={`w-full px-4 py-3 rounded-xl text-primary border border-primary/20 text-left ${
-                      errors.country ? "border-destructive" : ""
+            {/* COUNTRY DROPDOWN */}
+            <div>
+              <label className="text-sm text-primary">Country</label>
+              <Popover open={countryOpen} onOpenChange={setCountryOpen}>
+                <PopoverTrigger asChild>
+                  <button className={`w-full px-4 py-3 rounded-xl text-primary border border-primary/20 text-left ${errors.country ? "border-destructive" : ""
                     }`}>
-                      {formData.country || "Select country..."}
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="p-0 w-[260px]">
-                    <Command>
-                      <CommandInput
-                        placeholder="Search..."
-                        value={countryQuery}
-                        onValueChange={setCountryQuery}
-                      />
-                      <CommandList>
-                        <CommandEmpty>No results.</CommandEmpty>
-                        <CommandGroup>
-                          {filteredCountries.map((c) => (
-                            <CommandItem
-                              key={c}
-                              onSelect={() => handleSelectCountry(c)}
-                            >
-                              {c}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                {errors.country && (
-                  <p className="text-xs text-destructive mt-1">{errors.country}</p>
-                )}
-              </div>
-
-              <FormField
-                label="Zip Code"
-                placeholder="11511"
-                name="zipCode"
-                value={formData.zipCode}
-                onChange={handleChange}
-                required
-                error={errors.zipCode}
-              />
-            </div>
-
-            {/* EMERGENCY CONTACT */}
-            <div className="grid grid-cols-2 gap-6">
-              <FormField
-                label="Emergency Contact Name"
-                placeholder="Mohamed Ali"
-                name="emergencyContactName"
-                value={formData.emergencyContactName}
-                onChange={handleChange}
-                required
-                error={errors.emergencyContactName}
-              />
-              <FormField
-                label="Emergency Contact Phone"
-                placeholder="+20 11 987 6543"
-                name="emergencyContactPhone"
-                value={formData.emergencyContactPhone}
-                onChange={handleChange}
-                required
-                error={errors.emergencyContactPhone}
-              />
-            </div>
-
-            {/* SUBMIT */}
-            <MotionButton
-              whileHover={{ scale: loading ? 1 : 1.04 }}
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 text-lg font-semibold bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors"
-            >
-              {loading ? (
-                <div className="flex justify-center items-center gap-2">
-                  <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></span>
-                  Saving...
-                </div>
-              ) : (
-                "Complete Profile"
+                    {formData.country || "Select country..."}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="p-0 w-[260px]">
+                  <Command>
+                    <CommandInput
+                      placeholder="Search..."
+                      value={countryQuery}
+                      onValueChange={setCountryQuery}
+                    />
+                    <CommandList>
+                      <CommandEmpty>No results.</CommandEmpty>
+                      <CommandGroup>
+                        {filteredCountries.map((c) => (
+                          <CommandItem
+                            key={c}
+                            onSelect={() => handleSelectCountry(c)}
+                          >
+                            {c}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              {errors.country && (
+                <p className="text-xs text-destructive mt-1">{errors.country}</p>
               )}
-            </MotionButton>
-          </form>
+            </div>
 
-          <Link
-            href="/signup"
-            className="block text-center mt-6 text-primary hover:text-primary/80 transition-colors"
+            <FormField
+              label="Zip Code"
+              placeholder="11511"
+              name="zipCode"
+              value={formData.zipCode}
+              onChange={handleChange}
+              required
+              error={errors.zipCode}
+            />
+          </div>
+
+          {/* EMERGENCY CONTACT */}
+          <div className="grid grid-cols-2 gap-6">
+            <FormField
+              label="Emergency Contact Name"
+              placeholder="Mohamed Ali"
+              name="emergencyContactName"
+              value={formData.emergencyContactName}
+              onChange={handleChange}
+              required
+              error={errors.emergencyContactName}
+            />
+            <FormField
+              label="Emergency Contact Phone"
+              placeholder="+20 11 987 6543"
+              name="emergencyContactPhone"
+              value={formData.emergencyContactPhone}
+              onChange={handleChange}
+              required
+              error={errors.emergencyContactPhone}
+            />
+          </div>
+
+          {/* SUBMIT */}
+          <MotionButton
+            whileHover={{ scale: loading ? 1 : 1.04 }}
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 text-lg font-semibold bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors"
           >
-            <ArrowLeft size={16} className="inline mr-1" /> Back to Signup
-          </Link>
-        </motion.div>
+            {loading ? (
+              <div className="flex justify-center items-center gap-2">
+                <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></span>
+                Saving...
+              </div>
+            ) : (
+              "Complete Profile"
+            )}
+          </MotionButton>
+        </form>
+
+        <Link
+          href="/signup"
+          className="block text-center mt-6 text-primary hover:text-primary/80 transition-colors"
+        >
+          <ArrowLeft size={16} className="inline mr-1" /> Back to Signup
+        </Link>
+      </motion.div>
     </div>
   );
 }

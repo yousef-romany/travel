@@ -32,7 +32,7 @@ export default function PlannedTripsSection() {
     staleTime: 2 * 60 * 1000,
   });
 
-  const trips: any = data  || [];
+  const trips: any = data || [];
 
   const deleteTripMutation = useMutation({
     mutationFn: (tripId: string) => deletePlanTrip(tripId),
@@ -155,8 +155,8 @@ export default function PlannedTripsSection() {
                     {trip.destinations?.length || 0} destinations
                   </CardDescription>
                 </div>
-                <Badge className={getStatusColor(trip.status)}>
-                  {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                <Badge className={getStatusColor(trip.tripStatus)}>
+                  {trip.tripStatus.charAt(0).toUpperCase() + trip.tripStatus.slice(1)}
                 </Badge>
               </div>
             </CardHeader>
@@ -229,7 +229,7 @@ export default function PlannedTripsSection() {
                 >
                   Quick View
                 </Button>
-                {(trip.status === "draft" || trip.status === "cancelled") && (
+                {(trip.tripStatus === "draft" || trip.tripStatus === "cancelled") && (
                   <Button
                     variant="outline"
                     size="sm"
@@ -289,8 +289,8 @@ export default function PlannedTripsSection() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="text-muted-foreground">Status</p>
-                    <Badge className={getStatusColor(selectedTrip.status)}>
-                      {selectedTrip.status.charAt(0).toUpperCase() + selectedTrip.status.slice(1)}
+                    <Badge className={getStatusColor(selectedTrip.tripStatus)}>
+                      {selectedTrip.tripStatus.charAt(0).toUpperCase() + selectedTrip.tripStatus.slice(1)}
                     </Badge>
                   </div>
                   <div>

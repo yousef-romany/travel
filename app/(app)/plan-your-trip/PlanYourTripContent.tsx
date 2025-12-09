@@ -234,8 +234,8 @@ export default function PlanYourTripContent() {
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                             <div className="absolute bottom-2 left-2 right-2">
-                              <Badge className={`${getStatusColor(trip.status)} backdrop-blur-sm`}>
-                                {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                              <Badge className={`${getStatusColor(trip.tripStatus)} backdrop-blur-sm`}>
+                                {trip.tripStatus.charAt(0).toUpperCase() + trip.tripStatus.slice(1)}
                               </Badge>
                             </div>
                           </div>
@@ -247,8 +247,8 @@ export default function PlanYourTripContent() {
                               {trip.tripName}
                             </CardTitle>
                             {(!trip.destinations || !trip.destinations[0]?.image) && (
-                              <Badge className={getStatusColor(trip.status)}>
-                                {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                              <Badge className={getStatusColor(trip.tripStatus)}>
+                                {trip.tripStatus.charAt(0).toUpperCase() + trip.tripStatus.slice(1)}
                               </Badge>
                             )}
                           </div>
@@ -346,140 +346,140 @@ export default function PlanYourTripContent() {
               </p>
 
               {trips.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {trips.map((trip) => (
-                <Card
-                  key={trip.id}
-                  className="border-border hover:border-primary/50 transition-all duration-300 cursor-pointer group hover:shadow-2xl hover:scale-105 bg-gradient-to-br from-card to-card/50 overflow-hidden"
-                  onClick={() => router.push(`/plan-your-trip/${trip.documentId}`)}
-                >
-                {/* Trip Image */}
-                {trip.destinations && trip.destinations.length > 0 && trip.destinations[0].image && (
-                  <div className="relative h-48 w-full overflow-hidden">
-                    <Image
-                      src={getImageUrl(trip.destinations[0].image) || "/placeholder.svg"}
-                      alt={trip.tripName}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                    <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
-                      <Badge className={`${getStatusColor(trip.status)} backdrop-blur-sm`}>
-                        {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
-                      </Badge>
-                      {trip.user && (
-                        <Badge variant="secondary" className="backdrop-blur-sm flex items-center gap-1">
-                          <User className="w-3 h-3" />
-                          {trip.user.username || trip.user.email?.split("@")[0] || "Traveler"}
-                        </Badge>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                  {trips.map((trip) => (
+                    <Card
+                      key={trip.id}
+                      className="border-border hover:border-primary/50 transition-all duration-300 cursor-pointer group hover:shadow-2xl hover:scale-105 bg-gradient-to-br from-card to-card/50 overflow-hidden"
+                      onClick={() => router.push(`/plan-your-trip/${trip.documentId}`)}
+                    >
+                      {/* Trip Image */}
+                      {trip.destinations && trip.destinations.length > 0 && trip.destinations[0].image && (
+                        <div className="relative h-48 w-full overflow-hidden">
+                          <Image
+                            src={getImageUrl(trip.destinations[0].image) || "/placeholder.svg"}
+                            alt={trip.tripName}
+                            fill
+                            className="object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                          <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
+                            <Badge className={`${getStatusColor(trip.tripStatus)} backdrop-blur-sm`}>
+                              {trip.tripStatus.charAt(0).toUpperCase() + trip.tripStatus.slice(1)}
+                            </Badge>
+                            {trip.user && (
+                              <Badge variant="secondary" className="backdrop-blur-sm flex items-center gap-1">
+                                <User className="w-3 h-3" />
+                                {trip.user.username || trip.user.email?.split("@")[0] || "Traveler"}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
                       )}
-                    </div>
-                  </div>
-                )}
 
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="text-base md:text-lg group-hover:text-primary transition-colors line-clamp-2">
-                      {trip.tripName}
-                    </CardTitle>
-                    {(!trip.destinations || !trip.destinations[0]?.image) && (
-                      <Badge className={getStatusColor(trip.status)}>
-                        {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
-                      </Badge>
-                    )}
-                  </div>
-                  {trip.user && (!trip.destinations || !trip.destinations[0]?.image) && (
-                    <CardDescription className="flex items-center gap-1 text-xs md:text-sm">
-                      <Users className="w-3 h-3" />
-                      <span className="truncate">
-                        {trip.user.username || trip.user.email?.split("@")[0] || "Traveler"}
-                      </span>
-                    </CardDescription>
-                  )}
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-xs md:text-sm">
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <MapPin className="w-3 h-3 md:w-4 md:h-4" />
-                        {trip.destinations?.length || 0} destinations
-                      </span>
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <CalendarIcon className="w-3 h-3 md:w-4 md:h-4" />
-                        {trip.estimatedDuration} {trip.estimatedDuration === 1 ? "day" : "days"}
-                      </span>
-                    </div>
-
-                    <div className="pt-2 border-t border-border">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">Total Cost</span>
-                        <span className="text-lg md:text-xl font-bold text-primary">
-                          ${trip.totalPrice?.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        ${trip.pricePerDay?.toFixed(0)} per day
-                      </div>
-                    </div>
-
-                    {trip.destinations && trip.destinations.length > 0 && (
-                      <div className="pt-2 border-t border-border">
-                        <p className="text-xs text-muted-foreground mb-1">Destinations:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {trip.destinations.slice(0, 3).map((dest: any, idx: number) => (
-                            <span
-                              key={idx}
-                              className="text-xs bg-muted px-2 py-1 rounded truncate max-w-[100px]"
-                              title={dest.title}
-                            >
-                              {dest.title}
-                            </span>
-                          ))}
-                          {trip.destinations.length > 3 && (
-                            <span className="text-xs bg-muted px-2 py-1 rounded">
-                              +{trip.destinations.length - 3} more
-                            </span>
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <CardTitle className="text-base md:text-lg group-hover:text-primary transition-colors line-clamp-2">
+                            {trip.tripName}
+                          </CardTitle>
+                          {(!trip.destinations || !trip.destinations[0]?.image) && (
+                            <Badge className={getStatusColor(trip.tripStatus)}>
+                              {trip.tripStatus.charAt(0).toUpperCase() + trip.tripStatus.slice(1)}
+                            </Badge>
                           )}
                         </div>
-                      </div>
-                    )}
+                        {trip.user && (!trip.destinations || !trip.destinations[0]?.image) && (
+                          <CardDescription className="flex items-center gap-1 text-xs md:text-sm">
+                            <Users className="w-3 h-3" />
+                            <span className="truncate">
+                              {trip.user.username || trip.user.email?.split("@")[0] || "Traveler"}
+                            </span>
+                          </CardDescription>
+                        )}
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between text-xs md:text-sm">
+                            <span className="flex items-center gap-1 text-muted-foreground">
+                              <MapPin className="w-3 h-3 md:w-4 md:h-4" />
+                              {trip.destinations?.length || 0} destinations
+                            </span>
+                            <span className="flex items-center gap-1 text-muted-foreground">
+                              <CalendarIcon className="w-3 h-3 md:w-4 md:h-4" />
+                              {trip.estimatedDuration} {trip.estimatedDuration === 1 ? "day" : "days"}
+                            </span>
+                          </div>
 
+                          <div className="pt-2 border-t border-border">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-muted-foreground">Total Cost</span>
+                              <span className="text-lg md:text-xl font-bold text-primary">
+                                ${trip.totalPrice?.toLocaleString()}
+                              </span>
+                            </div>
+                            <div className="text-xs text-muted-foreground mt-1">
+                              ${trip.pricePerDay?.toFixed(0)} per day
+                            </div>
+                          </div>
+
+                          {trip.destinations && trip.destinations.length > 0 && (
+                            <div className="pt-2 border-t border-border">
+                              <p className="text-xs text-muted-foreground mb-1">Destinations:</p>
+                              <div className="flex flex-wrap gap-1">
+                                {trip.destinations.slice(0, 3).map((dest: any, idx: number) => (
+                                  <span
+                                    key={idx}
+                                    className="text-xs bg-muted px-2 py-1 rounded truncate max-w-[100px]"
+                                    title={dest.title}
+                                  >
+                                    {dest.title}
+                                  </span>
+                                ))}
+                                {trip.destinations.length > 3 && (
+                                  <span className="text-xs bg-muted px-2 py-1 rounded">
+                                    +{trip.destinations.length - 3} more
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          <Button
+                            className="w-full mt-2 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-lg text-sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              router.push(`/plan-your-trip/${trip.documentId}`);
+                            }}
+                          >
+                            View Details
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <Card className="border-dashed border-2 border-primary/30 bg-gradient-to-br from-card to-primary/5">
+                  <CardContent className="flex flex-col items-center justify-center py-12 md:py-16">
+                    <div className="p-4 bg-primary/10 rounded-full mb-6">
+                      <TrendingUp className="h-12 w-12 md:h-16 md:w-16 text-primary" />
+                    </div>
+                    <h3 className="text-xl md:text-2xl font-bold mb-3">No Community Trips Yet</h3>
+                    <p className="text-sm md:text-base text-muted-foreground text-center mb-8 max-w-md px-4">
+                      Be the first to create a custom itinerary and share it with the community!
+                    </p>
                     <Button
-                      className="w-full mt-2 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-lg text-sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/plan-your-trip/${trip.documentId}`);
-                      }}
+                      size="lg"
+                      className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-lg"
+                      onClick={() => router.push("/plan-your-trip/create")}
                     >
-                      View Details
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      <Plus className="w-5 h-5 mr-2" />
+                      Create First Trip
                     </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          ) : (
-              <Card className="border-dashed border-2 border-primary/30 bg-gradient-to-br from-card to-primary/5">
-                <CardContent className="flex flex-col items-center justify-center py-12 md:py-16">
-                  <div className="p-4 bg-primary/10 rounded-full mb-6">
-                    <TrendingUp className="h-12 w-12 md:h-16 md:w-16 text-primary" />
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-3">No Community Trips Yet</h3>
-                  <p className="text-sm md:text-base text-muted-foreground text-center mb-8 max-w-md px-4">
-                    Be the first to create a custom itinerary and share it with the community!
-                  </p>
-                  <Button
-                    size="lg"
-                    className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-lg"
-                    onClick={() => router.push("/plan-your-trip/create")}
-                  >
-                    <Plus className="w-5 h-5 mr-2" />
-                    Create First Trip
-                  </Button>
-                </CardContent>
-              </Card>
-          )}
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
           </Tabs>
         </div>

@@ -34,7 +34,7 @@ export interface UserTrip {
   documentId: string;
   tripDate: string;
   endDate: string;
-  status: "upcoming" | "confirmed" | "completed" | "cancelled";
+  bookingStatus: "upcoming" | "confirmed" | "completed" | "cancelled";
   numberOfTravelers: number;
   totalPrice: number;
   program: {
@@ -73,7 +73,7 @@ export interface UserInvoice {
   issueDate: string;
   dueDate: string;
   amount: number;
-  status: "paid" | "pending" | "overdue";
+  invoiceStatus: "paid" | "pending" | "overdue";
   tripName: string;
   booking?: {
     id: number;
@@ -128,7 +128,7 @@ export const getUserTrips = async (userId: number, token: string): Promise<UserT
   try {
     // Fetch all bookings for authenticated user with proper population
     // Fixed: Only populate fields that exist in plan_trip (no user, no startDate/endDate)
-    const url = `${API_URL}/api/bookings?populate[program][populate]=images&populate[plan_trip][fields][0]=tripName&populate[plan_trip][fields][1]=destinations&populate[plan_trip][fields][2]=totalPrice&populate[plan_trip][fields][3]=status&populate[event]=*&sort[0]=tripDate:desc`;
+    const url = `${API_URL}/api/bookings?populate[program][populate]=images&populate[plan_trip][fields][0]=tripName&populate[plan_trip][fields][1]=destinations&populate[plan_trip][fields][2]=totalPrice&populate[plan_trip][fields][3]=tripStatus&populate[event]=*&sort[0]=tripDate:desc`;
 
     const response = await axios.get(url, {
       headers: {
@@ -203,8 +203,8 @@ export const getUserStats = async (userId: number, token: string): Promise<UserS
       getUserWishlist(token),
     ]);
 
-    const completedTrips = trips.filter(trip => trip.status === "completed");
-    const upcomingTrips = trips.filter(trip => trip.status === "upcoming" || trip.status === "confirmed");
+    const completedTrips = trips.filter(trip => trip.bookingStatus === "completed");
+    const upcomingTrips = trips.filter(trip => trip.bookingStatus === "upcoming" || trip.bookingStatus === "confirmed");
     const totalSpent = completedTrips.reduce((sum, trip) => sum + (trip.totalPrice || 0), 0);
 
     return {

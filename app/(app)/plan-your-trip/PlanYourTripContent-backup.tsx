@@ -151,7 +151,7 @@ export default function PlanYourTripContent() {
       queryClient.invalidateQueries({ queryKey: ["userPlanTrips"] });
 
       // Show different message based on status
-      if (data?.data?.status === "quoted") {
+      if (data?.data?.tripStatus === "quoted") {
         toast.success("Booking request submitted! We'll contact you soon with a quote.");
       } else {
         toast.success("Trip plan saved successfully!");
@@ -238,7 +238,7 @@ export default function PlanYourTripContent() {
       estimatedDuration,
       pricePerDay,
       userId: user.documentId,
-      status: "quoted",
+      tripStatus: "quoted",
     });
   };
 
@@ -348,8 +348,8 @@ Thank you! 🙏`;
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-2">
                       <CardTitle className="text-lg hover:text-primary transition-colors">{trip.tripName}</CardTitle>
-                      <Badge className={getStatusColor(trip.status)}>
-                        {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                      <Badge className={getStatusColor(trip.tripStatus)}>
+                        {trip.tripStatus.charAt(0).toUpperCase() + trip.tripStatus.slice(1)}
                       </Badge>
                     </div>
                     {trip.user && (

@@ -13,7 +13,7 @@ export interface BookingType {
   numberOfTravelers: number;
   travelDate: string;
   specialRequests?: string;
-  status: "pending" | "confirmed" | "cancelled";
+  bookingStatus: "pending" | "confirmed" | "cancelled";
   totalAmount: number;
   bookingType?: "program" | "custom-trip" | "event";
   customTripName?: string;
@@ -176,7 +176,7 @@ export const createBooking = async (bookingData: {
       travelDate: bookingData.travelDate,
       specialRequests: bookingData.specialRequests,
       totalAmount: bookingData.totalAmount,
-      status: "pending",
+      bookingStatus: "pending",
       bookingType: bookingData.bookingType || "program",
       ...(bookingData.promoCodeId && { promoCode: bookingData.promoCodeId }),
       ...(bookingData.discountAmount && { discountAmount: bookingData.discountAmount }),
@@ -255,7 +255,7 @@ export const fetchBookingById = async (
 // Update booking status
 export const updateBookingStatus = async (
   bookingId: string,
-  status: "pending" | "confirmed" | "cancelled"
+  bookingStatus: "pending" | "confirmed" | "cancelled"
 ): Promise<{ data: BookingType }> => {
   try {
     const authToken =
@@ -264,7 +264,7 @@ export const updateBookingStatus = async (
     const response = await axios.put(
       `${API_URL}/api/bookings/${bookingId}`,
       {
-        data: { status },
+        data: { bookingStatus },
       },
       {
         headers: {

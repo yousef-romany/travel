@@ -19,7 +19,7 @@ export interface InvoiceType {
   pricePerPerson: number;
   totalAmount: number;
   pdfUrl?: string;
-  status: "pending" | "paid" | "cancelled";
+  invoiceStatus: "pending" | "paid" | "cancelled";
   bookingType?: "program" | "custom-trip" | "event";
   createdAt: string;
   updatedAt: string;
@@ -104,7 +104,7 @@ export const createInvoice = async (invoiceData: {
           totalAmount: invoiceData.totalAmount,
           pdfUrl: invoiceData.pdfUrl,
           bookingType: invoiceData.bookingType || "program",
-          status: "pending",
+          invoiceStatus: "pending",
           user: invoiceData.userId,
         },
       },
@@ -150,7 +150,7 @@ export const fetchInvoiceById = async (
 // Update invoice status
 export const updateInvoiceStatus = async (
   invoiceId: string,
-  status: "pending" | "paid" | "cancelled"
+  invoiceStatus: "pending" | "paid" | "cancelled"
 ): Promise<{ data: InvoiceType }> => {
   try {
     const authToken =
@@ -159,7 +159,7 @@ export const updateInvoiceStatus = async (
     const response = await axios.put(
       `${API_URL}/api/invoices/${invoiceId}`,
       {
-        data: { status },
+        data: { invoiceStatus },
       },
       {
         headers: {
@@ -210,7 +210,7 @@ export const updateInvoicePdfUrl = async (
 // Update invoice status by booking ID
 export const updateInvoiceStatusByBookingId = async (
   bookingId: string,
-  status: "pending" | "paid" | "cancelled"
+  invoiceStatus: "pending" | "paid" | "cancelled"
 ): Promise<{ data: InvoiceType }> => {
   try {
     const authToken =
@@ -236,7 +236,7 @@ export const updateInvoiceStatusByBookingId = async (
     const response = await axios.put(
       `${API_URL}/api/invoices/${invoice.documentId}`,
       {
-        data: { status },
+        data: { invoiceStatus },
       },
       {
         headers: {

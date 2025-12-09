@@ -20,7 +20,7 @@ export interface PlanTripType {
   totalPrice: number;
   estimatedDuration: number;
   pricePerDay: number;
-  status: "draft" | "quoted" | "booked" | "completed" | "cancelled";
+  tripStatus: "draft" | "quoted" | "booked" | "completed" | "cancelled";
   notes?: string;
   user?: any;
   createdAt: string;
@@ -79,7 +79,7 @@ export const fetchBestCustomTrips = async (
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
     const response = await axios.get(
-      `${API_URL}/api/plan-trips?populate=user&filters[status][$ne]=cancelled&sort=createdAt:desc&pagination[limit]=${limit}`,
+      `${API_URL}/api/plan-trips?populate=user&filters[tripStatus][$ne]=cancelled&sort=createdAt:desc&pagination[limit]=${limit}`,
       {
         headers: {
           Authorization: `Bearer ${authToken || API_TOKEN}`,
@@ -106,7 +106,7 @@ export const createPlanTrip = async (planTripData: {
   pricePerDay: number;
   notes?: string;
   userId?: string;
-  status?: "draft" | "quoted" | "booked" | "completed" | "cancelled";
+  tripStatus?: "draft" | "quoted" | "booked" | "completed" | "cancelled";
 }): Promise<{ data: PlanTripType }> => {
   try {
     const authToken =
@@ -119,7 +119,7 @@ export const createPlanTrip = async (planTripData: {
       estimatedDuration: planTripData.estimatedDuration,
       pricePerDay: planTripData.pricePerDay,
       notes: planTripData.notes,
-      status: planTripData.status || "draft",
+      tripStatus: planTripData.tripStatus || "draft",
     };
 
     // Add user relation if provided
@@ -179,7 +179,7 @@ export const fetchPlanTripById = async (
 // Update plan trip status
 export const updatePlanTripStatus = async (
   planTripId: string,
-  status: "draft" | "quoted" | "booked" | "completed" | "cancelled"
+  tripStatus: "draft" | "quoted" | "booked" | "completed" | "cancelled"
 ): Promise<{ data: PlanTripType }> => {
   try {
     const authToken =
@@ -188,7 +188,7 @@ export const updatePlanTripStatus = async (
     const response = await axios.put(
       `${API_URL}/api/plan-trips/${planTripId}`,
       {
-        data: { status },
+        data: { tripStatus },
       },
       {
         headers: {

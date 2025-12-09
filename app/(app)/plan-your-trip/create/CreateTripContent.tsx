@@ -160,7 +160,7 @@ export default function PlanYourTripContent() {
       queryClient.invalidateQueries({ queryKey: ["userPlanTrips"] });
 
       // Track successful form submission
-      if (data?.data?.status === "quoted") {
+      if (data?.data?.tripStatus === "quoted") {
         trackSubmission("custom-trip-booking", "plan-your-trip", true);
         toast.success("Booking request submitted! We'll contact you soon with a quote.");
       } else {
@@ -256,7 +256,7 @@ export default function PlanYourTripContent() {
       estimatedDuration,
       pricePerDay,
       userId: user.documentId,
-      status: "quoted",
+      tripStatus: "quoted",
     });
 
     // Track planning completion
@@ -375,8 +375,8 @@ Thank you! 🙏`;
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-2">
                       <CardTitle className="text-lg hover:text-primary transition-colors">{trip.tripName}</CardTitle>
-                      <Badge className={getStatusColor(trip.status)}>
-                        {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                      <Badge className={getStatusColor(trip.tripStatus)}>
+                        {trip.tripStatus.charAt(0).toUpperCase() + trip.tripStatus.slice(1)}
                       </Badge>
                     </div>
                     {trip.user && (

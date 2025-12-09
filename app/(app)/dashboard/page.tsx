@@ -241,8 +241,8 @@ export default function DashboardPage() {
                     const title = programData?.title || planTripData?.tripName || eventData?.title || booking.customTripName || "Trip";
                     const location = programData?.Location || planTripData?.destinations?.[0]?.location || eventData?.location || "Egypt";
                     const imageUrl = programData?.images?.[0] ? getImageUrl(programData.images[0]) :
-                                     eventData?.featuredImage ? getImageUrl(eventData.featuredImage) :
-                                     eventData?.gallery?.[0] ? getImageUrl(eventData.gallery[0]) : null;
+                      eventData?.featuredImage ? getImageUrl(eventData.featuredImage) :
+                        eventData?.gallery?.[0] ? getImageUrl(eventData.gallery[0]) : null;
 
                     const travelDate = new Date(booking.travelDate);
                     const formattedDate = travelDate.toLocaleDateString('en-US', {
@@ -275,12 +275,11 @@ export default function DashboardPage() {
                               {location}
                             </span>
                           </div>
-                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${
-                            booking.status === 'confirmed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-                            booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                            'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
-                          }`}>
-                            {booking.status}
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${booking.bookingStatus === 'confirmed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                              booking.bookingStatus === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                                'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
+                            }`}>
+                            {booking.bookingStatus}
                           </span>
                         </div>
                         <div className="text-right">

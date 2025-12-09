@@ -380,14 +380,14 @@ export function ReferralProgram() {
                       </code>
                       <Badge
                         variant={
-                          referral.status === "completed"
+                          referral.referralStatus === "completed"
                             ? "default"
-                            : referral.status === "pending"
+                            : referral.referralStatus === "pending"
                               ? "secondary"
                               : "outline"
                         }
                       >
-                        {referral.status}
+                        {referral.referralStatus}
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -405,7 +405,7 @@ export function ReferralProgram() {
                     <div className="text-lg font-bold text-green-600">
                       ${referral.referralReward.toFixed(0)}
                     </div>
-                    {referral.status === "completed" && referral.isRewardClaimed && (
+                    {referral.referralStatus === "completed" && referral.isRewardClaimed && (
                       <Badge variant="outline" className="text-xs">
                         <Check className="h-3 w-3 mr-1" />
                         Claimed

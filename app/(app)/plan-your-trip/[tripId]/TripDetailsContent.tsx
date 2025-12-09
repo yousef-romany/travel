@@ -204,8 +204,8 @@ Thank you! 🙏`;
                 {trip.tripName}
               </h1>
               <div className="flex flex-wrap items-center gap-3">
-                <Badge className={getStatusColor(trip.status)}>
-                  {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                <Badge className={getStatusColor(trip.tripStatus)}>
+                  {trip.tripStatus.charAt(0).toUpperCase() + trip.tripStatus.slice(1)}
                 </Badge>
                 {trip.user && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -317,8 +317,8 @@ Thank you! 🙏`;
                 </div>
                 <div>
                   <p className="text-muted-foreground mb-1">Trip Status</p>
-                  <Badge className={getStatusColor(trip.status)}>
-                    {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                  <Badge className={getStatusColor(trip.tripStatus)}>
+                    {trip.tripStatus.charAt(0).toUpperCase() + trip.tripStatus.slice(1)}
                   </Badge>
                 </div>
               </div>
@@ -542,8 +542,8 @@ Thank you! 🙏`;
                 </div>
                 <div className="flex justify-between items-center pt-2 border-t">
                   <span className="text-sm text-muted-foreground">Status</span>
-                  <Badge className={getStatusColor(trip.status)}>
-                    {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                  <Badge className={getStatusColor(trip.tripStatus)}>
+                    {trip.tripStatus.charAt(0).toUpperCase() + trip.tripStatus.slice(1)}
                   </Badge>
                 </div>
               </div>
