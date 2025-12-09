@@ -19,7 +19,7 @@ export const fetchInspirationCategories = async () => {
 };
 
 export const fetchInspirationOneCategory = async (name: string) => {
-  // http://localhost:1337/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
+  // https://dashboard.zoeholidays.com/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
 const url =
   `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/inspire-categories` +
@@ -67,7 +67,7 @@ export const fetchInspirationOneSubCategory = async (name: string) => {
 // fetchInspirationOneSubCategory
 
 export const fetchInspirationOneBlog = async (name: string) => {
-  // http://localhost:1337/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
+  // https://dashboard.zoeholidays.com/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
     const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/inspire-blogs?filters[title][$eq]=${name}&populate=*`;
 

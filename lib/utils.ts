@@ -2,7 +2,7 @@ import { Media } from "@/type/programs";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "https://dashboard.zoeholidays.com";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

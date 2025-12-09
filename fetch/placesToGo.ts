@@ -19,7 +19,7 @@ export const fetchPlaceToGoCategories = async () => {
 };
 
 export const fetchPlaceToGoCategoriesOneCategory = async (name: string) => {
-  // http://localhost:1337/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
+  // https://dashboard.zoeholidays.com/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
     const url =
       `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/place-to-go-categories` +
@@ -44,7 +44,7 @@ export const fetchPlaceToGoCategoriesOneCategory = async (name: string) => {
 };
 
 export const fetchPlaceToOneSubCategory = async (name: string) => {
-  // http://localhost:1337/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
+  // https://dashboard.zoeholidays.com/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
     const url =
       `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/place-to-go-subcategories` +
@@ -66,7 +66,7 @@ export const fetchPlaceToOneSubCategory = async (name: string) => {
 };
 
 export const fetchPlaceToGoOneBlog = async (name: string) => {
-  // http://localhost:1337/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
+  // https://dashboard.zoeholidays.com/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
     const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/place-to-go-blogs?filters[title][$eq]=${encodeURIComponent(name)}&populate=*`;
 

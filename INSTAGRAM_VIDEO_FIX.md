@@ -57,11 +57,11 @@ Instagram videos were not playing in the modal viewer due to:
 ```typescript
 // Old:
 "media-src 'self' blob: data:"
-"connect-src 'self' http://localhost:1337 https://www.google-analytics.com"
+"connect-src 'self' https://dashboard.zoeholidays.com https://www.google-analytics.com"
 
 // New:
 "media-src 'self' blob: data: https://*.cdninstagram.com https://*.fbcdn.net https://video.cdninstagram.com"
-"connect-src 'self' http://localhost:1337 https://www.google-analytics.com https://graph.instagram.com https://*.cdninstagram.com https://*.fbcdn.net"
+"connect-src 'self' https://dashboard.zoeholidays.com https://www.google-analytics.com https://graph.instagram.com https://*.cdninstagram.com https://*.fbcdn.net"
 "frame-src 'self' https://www.google.com https://www.instagram.com"
 ```
 

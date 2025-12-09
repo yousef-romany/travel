@@ -22,7 +22,7 @@ This is normal - the collection doesn't exist yet in Strapi.
 
 ### Step 1: Create Events Collection Type
 
-1. Open your Strapi admin panel (usually at http://localhost:1337/admin)
+1. Open your Strapi admin panel (usually at https://dashboard.zoeholidays.com/admin)
 2. Go to **Content-Type Builder**
 3. Click **Create new collection type**
 4. Name it **"event"** (singular)
@@ -125,7 +125,7 @@ The following API endpoints are already configured:
 Make sure these are set in your `.env` file:
 
 ```env
-NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
+NEXT_PUBLIC_STRAPI_URL=https://dashboard.zoeholidays.com
 NEXT_PUBLIC_STRAPI_TOKEN=your-api-token-here
 ```
 

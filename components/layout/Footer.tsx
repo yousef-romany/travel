@@ -66,7 +66,7 @@ export default function Footer() {
     setIsSubscribing(true);
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+      const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://dashboard.zoeholidays.com';
 
       const response = await fetch(`${API_URL}/api/newsletters/subscribe`, {
         method: 'POST',

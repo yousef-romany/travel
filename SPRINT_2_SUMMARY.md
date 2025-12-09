@@ -171,7 +171,7 @@ import TrustBadges from '@/components/trust-badges';
 ### How to Create in Strapi:
 
 **Option 1: Via Strapi Admin Panel**
-1. Go to `http://localhost:1337/admin`
+1. Go to `https://dashboard.zoeholidays.com/admin`
 2. Content-Type Builder → Create new collection type
 3. Name: "Testimonial"
 4. Add fields as shown above

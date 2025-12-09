@@ -5,7 +5,7 @@ This guide will help you create the **Invoice** collection in your Strapi backen
 ## Steps to Create Invoice Collection
 
 ### 1. Access Strapi Admin Panel
-- Navigate to `http://localhost:1337/admin`
+- Navigate to `https://dashboard.zoeholidays.com/admin`
 - Login with your admin credentials
 
 ### 2. Create New Collection Type

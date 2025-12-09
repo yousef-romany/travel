@@ -314,7 +314,7 @@ Add to `/travel-backend/src/api/invoice/content-types/invoice/schema.json`:
 ```
 
 **Update Steps:**
-1. Open Strapi admin: `http://localhost:1337/admin`
+1. Open Strapi admin: `https://dashboard.zoeholidays.com/admin`
 2. Go to Content-Type Builder
 3. Add fields to Booking and Invoice collections
 4. Save and restart Strapi

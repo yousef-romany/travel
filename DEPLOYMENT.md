@@ -31,10 +31,10 @@ Replace the CORS origin on line 78:
 
 ```typescript
 // Change this:
-value: process.env.NODE_ENV === "production" ? "https://yourdomain.com" : "http://localhost:1337"
+value: process.env.NODE_ENV === "production" ? "https://yourdomain.com" : "https://dashboard.zoeholidays.com"
 
 // To your actual domain:
-value: process.env.NODE_ENV === "production" ? "https://your-actual-domain.com" : "http://localhost:1337"
+value: process.env.NODE_ENV === "production" ? "https://your-actual-domain.com" : "https://dashboard.zoeholidays.com"
 ```
 
 ### 3. Build and Test

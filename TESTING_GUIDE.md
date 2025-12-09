@@ -181,7 +181,7 @@ npm run dev
 ```bash
 # Using curl (replace TOKEN and USER_ID)
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  "http://localhost:1337/api/bookings?populate[program][populate][0]=images&populate[plan_trip][populate][0]=destinations&populate[event][populate][0]=images&filters[user][documentId][\$eq]=USER_ID"
+  "https://dashboard.zoeholidays.com/api/bookings?populate[program][populate][0]=images&populate[plan_trip][populate][0]=destinations&populate[event][populate][0]=images&filters[user][documentId][\$eq]=USER_ID"
 ```
 
 **Expected:** 200 status code with bookings array

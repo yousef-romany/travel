@@ -21,7 +21,7 @@ npm run lint
 ## Environment Setup
 
 Required environment variables in `.env`:
-- `NEXT_PUBLIC_STRAPI_URL` - Strapi backend URL (default: http://localhost:1337)
+- `NEXT_PUBLIC_STRAPI_URL` - Strapi backend URL (default: https://dashboard.zoeholidays.com)
 - `STRAPI_HOST` - Strapi host URL
 - `NEXT_PUBLIC_STRAPI_TOKEN` - Strapi API token for authenticated requests
 - `NEXT_PUBLIC_INSTAGRAM_TOKEN` - Instagram API token for feed integration

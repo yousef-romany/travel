@@ -11,7 +11,7 @@ import { toast } from "sonner"
 import { getProgramImageUrl } from "@/lib/utils"
 import { trackWishlistAction } from "@/lib/analytics"
 
-const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://dashboard.zoeholidays.com';
 
 interface Media {
   id: number

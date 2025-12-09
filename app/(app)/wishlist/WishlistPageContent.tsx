@@ -30,7 +30,7 @@ const getStaggerDelay = (index: number): string => {
   return delayClasses[delay as keyof typeof delayClasses] || "animate-delay-0";
 };
 
-const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://dashboard.zoeholidays.com';
 
 interface Media {
   id: number

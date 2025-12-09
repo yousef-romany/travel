@@ -1,7 +1,7 @@
 // fetch/availability.ts
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "https://dashboard.zoeholidays.com";
 const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_TOKEN || "";
 
 export interface ProgramAvailability {

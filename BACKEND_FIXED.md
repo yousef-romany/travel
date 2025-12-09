@@ -75,13 +75,13 @@ Visit: https://zoeholidays.com/events
 
 ```bash
 # Get all events
-curl http://localhost:1337/api/events
+curl https://dashboard.zoeholidays.com/api/events
 
 # Get featured events only
-curl "http://localhost:1337/api/events?filters[isFeatured][\$eq]=true"
+curl "https://dashboard.zoeholidays.com/api/events?filters[isFeatured][\$eq]=true"
 
 # Get music events
-curl "http://localhost:1337/api/events?filters[eventType][\$eq]=music"
+curl "https://dashboard.zoeholidays.com/api/events?filters[eventType][\$eq]=music"
 ```
 
 ---

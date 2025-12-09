@@ -3,7 +3,7 @@
 import axios from "axios";
 import { LoyaltyPoints, PointTransaction } from "@/lib/loyalty";
 
-const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "https://dashboard.zoeholidays.com";
 
 /**
  * Fetch user's loyalty points and stats from Strapi

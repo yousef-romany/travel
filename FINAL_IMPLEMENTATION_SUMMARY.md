@@ -34,19 +34,19 @@
 1. **Created Booking Collection** ✅
    - Schema: `src/api/booking/content-types/booking/schema.json`
    - Controllers, Routes, Services created
-   - API: `http://localhost:1337/api/bookings`
+   - API: `https://dashboard.zoeholidays.com/api/bookings`
 
 2. **Created Invoice Collection** ✅
    - Schema: `src/api/invoice/content-types/invoice/schema.json`
    - Controllers, Routes, Services created
-   - API: `http://localhost:1337/api/invoices`
+   - API: `https://dashboard.zoeholidays.com/api/invoices`
 
 3. **Updated User Model** ✅
    - File: `src/extensions/users-permissions/content-types/user/schema.json`
    - Added inverse relations: `bookings` and `invoices`
 
 4. **Strapi Running** ✅
-   - Admin: http://localhost:1337/admin
+   - Admin: https://dashboard.zoeholidays.com/admin
    - Status: 🟢 Active
 
 ---
@@ -162,7 +162,7 @@
 
 ### Step 1: Set Up Strapi Permissions (5 minutes)
 
-1. Open http://localhost:1337/admin
+1. Open https://dashboard.zoeholidays.com/admin
 2. Go to Settings → Roles
 3. Configure **Public** role:
    - Booking: ✅ find, ✅ findOne
@@ -183,7 +183,7 @@
    ```
 
 2. **Verify Strapi is Running:**
-   - Backend is already running at http://localhost:1337
+   - Backend is already running at https://dashboard.zoeholidays.com
 
 3. **Make a Test Booking:**
    - Go to https://zoeholidays.com
@@ -200,7 +200,7 @@
    - ✅ Success notification appears
 
 5. **Check Strapi Admin:**
-   - Go to http://localhost:1337/admin
+   - Go to https://dashboard.zoeholidays.com/admin
    - Content Manager → Booking (see your booking)
    - Content Manager → Invoice (see your invoice)
 

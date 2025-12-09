@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://dashboard.zoeholidays.com';
 const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_TOKEN || '';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 

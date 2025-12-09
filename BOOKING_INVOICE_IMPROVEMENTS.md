@@ -150,7 +150,7 @@ Add this field:
 ```
 
 ### How to Update:
-1. Go to `http://localhost:1337/admin`
+1. Go to `https://dashboard.zoeholidays.com/admin`
 2. Content-Type Builder → Select collection
 3. Add fields as shown above
 4. Save and rebuild

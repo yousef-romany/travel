@@ -18,7 +18,7 @@ npm run develop
 ```
 
 #### Step 2: Set Public Permissions
-1. Go to Strapi Admin: http://localhost:1337/admin
+1. Go to Strapi Admin: https://dashboard.zoeholidays.com/admin
 2. Navigate to **Settings** → **Roles** → **Public**
 3. Scroll to **Event** permissions
 4. Check these boxes:
@@ -93,7 +93,7 @@ The component now correctly extracts `data` array from the response `{data: [...
 
 Check if Strapi is running:
 ```bash
-curl http://localhost:1337/api/events
+curl https://dashboard.zoeholidays.com/api/events
 ```
 
 Expected: JSON response with data or empty array
@@ -121,7 +121,7 @@ npm run develop
 Make sure these are set in your frontend `.env`:
 
 ```env
-NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
+NEXT_PUBLIC_STRAPI_URL=https://dashboard.zoeholidays.com
 NEXT_PUBLIC_STRAPI_TOKEN=your-token-here
 ```
 

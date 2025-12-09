@@ -484,7 +484,7 @@ const { data } = useQuery({
 Add to `.env`:
 ```bash
 # Already configured
-NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
+NEXT_PUBLIC_STRAPI_URL=https://dashboard.zoeholidays.com
 NEXT_PUBLIC_STRAPI_TOKEN=your-token-here
 
 # No additional variables needed for social features

@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { trackWishlistAction } from "@/lib/analytics"
 
-const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"
+const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "https://dashboard.zoeholidays.com"
 
 interface WishlistButtonProps {
   programId: number

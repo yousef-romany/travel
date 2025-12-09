@@ -78,9 +78,9 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google-analytics.com https://www.googletagmanager.com https://www.instagram.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob: https: http://localhost:1337",
+              "img-src 'self' data: blob: https: https://dashboard.zoeholidays.com",
               "font-src 'self' data: https://fonts.gstatic.com",
-              "connect-src 'self' http://localhost:1337 https://www.google-analytics.com https://graph.instagram.com https://*.cdninstagram.com https://*.fbcdn.net",
+              "connect-src 'self' https://dashboard.zoeholidays.com https://www.google-analytics.com https://graph.instagram.com https://*.cdninstagram.com https://*.fbcdn.net",
               "media-src 'self' blob: data: https://*.cdninstagram.com https://*.fbcdn.net https://video.cdninstagram.com https://res.cloudinary.com",
               "frame-src 'self' https://www.google.com https://www.instagram.com",
               "worker-src 'self' blob:",
@@ -89,7 +89,7 @@ const nextConfig: NextConfig = {
           // CORS for Strapi
           {
             key: "Access-Control-Allow-Origin",
-            value: process.env.NODE_ENV === "production" ? "https://yourdomain.com" : "http://localhost:1337"
+            value: process.env.NODE_ENV === "production" ? "https://yourdomain.com" : "https://dashboard.zoeholidays.com"
           },
           {
             key: "Access-Control-Allow-Credentials",
@@ -103,7 +103,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: process.env.NODE_ENV === "production" ? "https://yourdomain.com" : "http://localhost:1337"
+            value: process.env.NODE_ENV === "production" ? "https://yourdomain.com" : "https://dashboard.zoeholidays.com"
           },
           {
             key: "Access-Control-Allow-Credentials",
