@@ -75,8 +75,8 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  // Map of date string (YYYY-MM-DD) to available spots count
-  const [availabilityMap, setAvailabilityMap] = useState<Record<string, number>>({});
+  // Map of date string (YYYY-MM-DD) to availability data (spots + status)
+  const [availabilityMap, setAvailabilityMap] = useState<Record<string, { spots: number; status: string }>>({});
   const [isLoadingAvailability, setIsLoadingAvailability] = useState(true);
   const [appliedPromo, setAppliedPromo] = useState<{
     code: PromoCode;
@@ -132,11 +132,20 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
           endDate.toISOString().split("T")[0]
         );
 
-        // Create map of date -> spots
-        const map: Record<string, number> = {};
+        // Create map of date -> { spots, status }
+        const map: Record<string, { spots: number; status: string }> = {};
         response.data.forEach((item) => {
-          if (item.isAvailable && item.availableSpots > 0) {
-            map[item.date] = item.availableSpots;
+          // Only include dates that are available and not sold-out/cancelled
+          if (
+            item.isAvailable &&
+            item.availableSpots > 0 &&
+            item.availabilityStatus !== "sold-out" &&
+            item.availabilityStatus !== "cancelled"
+          ) {
+            map[item.date] = {
+              spots: item.availableSpots,
+              status: item.availabilityStatus
+            };
           }
         });
 
@@ -249,13 +258,21 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
       const dateStr = formData.travelDate.toISOString().split("T")[0];
       // Only check if we have availability data loaded
       if (Object.keys(availabilityMap).length > 0) {
-        const spots = availabilityMap[dateStr];
-        if (spots === undefined) {
+        const availability = availabilityMap[dateStr];
+        if (!availability) {
           toast.error("Selected date is not available");
           return;
         }
-        if (formData.numberOfTravelers > spots) {
-          toast.error(`Only ${spots} spots available for this date`);
+        if (availability.status === "sold-out") {
+          toast.error("This date is sold out. Please select another date.");
+          return;
+        }
+        if (availability.status === "cancelled") {
+          toast.error("This date has been cancelled. Please select another date.");
+          return;
+        }
+        if (formData.numberOfTravelers > availability.spots) {
+          toast.error(`Only ${availability.spots} spot${availability.spots === 1 ? '' : 's'} available for this date`);
           return;
         }
       }
@@ -313,7 +330,30 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
   const getSelectedDateSpots = (): number | null => {
     if (!formData.travelDate) return null;
     const dateStr = formData.travelDate.toISOString().split("T")[0];
-    return availabilityMap[dateStr] ?? null;
+    return availabilityMap[dateStr]?.spots ?? null;
+  };
+
+  // Get availability status for selected date
+  const getSelectedDateStatus = (): string | null => {
+    if (!formData.travelDate) return null;
+    const dateStr = formData.travelDate.toISOString().split("T")[0];
+    return availabilityMap[dateStr]?.status ?? null;
+  };
+
+  // Get status badge color
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case "available":
+        return "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300";
+      case "limited":
+        return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300";
+      case "sold-out":
+        return "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300";
+      case "cancelled":
+        return "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300";
+      default:
+        return "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300";
+    }
   };
 
   const handlePromoApplied = (promoCode: PromoCode, discountAmount: number, finalPrice: number) => {
@@ -466,9 +506,24 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                             </Button>
                           </PopoverTrigger>
                           {formData.travelDate && getSelectedDateSpots() !== null && (
-                            <div className="mt-1 text-xs text-primary font-medium flex items-center gap-1">
-                              <Check className="w-3 h-3" />
-                              {getSelectedDateSpots()} spots available
+                            <div className="mt-2 space-y-1">
+                              <div className="flex items-center gap-2">
+                                <Check className="w-3 h-3 text-primary" />
+                                <span className="text-xs font-medium text-foreground">
+                                  {getSelectedDateSpots()} spot{getSelectedDateSpots() === 1 ? '' : 's'} available
+                                </span>
+                              </div>
+                              {getSelectedDateStatus() && (
+                                <div className="flex items-center gap-2">
+                                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${getStatusBadgeClass(getSelectedDateStatus()!)}`}>
+                                    {getSelectedDateStatus() === "available" ? "✓ Available" :
+                                      getSelectedDateStatus() === "limited" ? "⚠ Limited Spots" :
+                                        getSelectedDateStatus() === "sold-out" ? "✕ Sold Out" :
+                                          getSelectedDateStatus() === "cancelled" ? "✕ Cancelled" :
+                                            getSelectedDateStatus()}
+                                  </span>
+                                </div>
+                              )}
                             </div>
                           )}
                           <PopoverContent className="w-auto p-0" align="start">

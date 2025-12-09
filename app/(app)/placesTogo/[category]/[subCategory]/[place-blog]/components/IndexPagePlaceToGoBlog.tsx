@@ -13,10 +13,9 @@ import Loading from "@/components/Loading";
 import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
-import { Card, CardContent } from "@/components/ui/card";
 import RelatedPrograms from "./RelatedPrograms";
 
-const IndexPagePlaceToGoBlog = ({ slug, category }: { slug: string; category: string }) => {
+const IndexPagePlaceToGoBlog = ({ slug, category, subCategory }: { slug: string; category: string; subCategory: string }) => {
   useEffect(() => {
     applyHieroglyphEffect();
   }, []);
@@ -155,7 +154,11 @@ const IndexPagePlaceToGoBlog = ({ slug, category }: { slug: string; category: st
 
         {/* Related Programs Section */}
         <Separator className="mb-8" />
-        <RelatedPrograms placeTitle={place.title as string} query={category} />
+        <RelatedPrograms
+          placeTitle={place.title as string}
+          location={subCategory}
+          query={category}
+        />
       </div>
     </div>
   );

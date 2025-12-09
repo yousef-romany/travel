@@ -11,6 +11,11 @@ export interface ProgramAvailability {
   availableSpots: number;
   totalSpots: number;
   isAvailable: boolean;
+  availabilityStatus: "available" | "limited" | "sold-out" | "cancelled";
+  priceOverride?: number;
+  minimumBooking?: number;
+  maximumBooking?: number;
+  notes?: string;
   program?: {
     id: number;
     documentId: string;

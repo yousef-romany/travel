@@ -6,7 +6,6 @@ import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { MdArrowOutward } from "react-icons/md";
 
@@ -21,14 +20,18 @@ import { Badge } from "@/components/ui/badge";
 
 interface RelatedProgramsProps {
     placeTitle: string;
+    location?: string; // Add location prop
     query: string;
 }
 
-const RelatedPrograms = ({ placeTitle, query }: RelatedProgramsProps) => {
+const RelatedPrograms = ({ placeTitle, location, query }: RelatedProgramsProps) => {
+    // Use location if available, otherwise fall back to query (category)
+    const searchQuery = location || query;
+
     const { data, isLoading, error } = useQuery({
-        queryKey: ["relatedPrograms", query],
-        queryFn: () => searchPrograms(query, 10),
-        enabled: !!query,
+        queryKey: ["relatedPrograms", searchQuery],
+        queryFn: () => searchPrograms(searchQuery, 10),
+        enabled: !!searchQuery,
     });
 
     if (isLoading) {
@@ -51,7 +54,7 @@ const RelatedPrograms = ({ placeTitle, query }: RelatedProgramsProps) => {
                 </h2>
             </div>
             <p className="text-muted-foreground text-lg mb-8">
-                Explore travel programs featuring {query}
+                Explore travel programs featuring {searchQuery}
             </p>
 
             <Carousel

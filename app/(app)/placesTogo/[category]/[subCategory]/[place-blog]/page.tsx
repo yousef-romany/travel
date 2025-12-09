@@ -132,6 +132,7 @@ const PlaceToGoBlogDynamic = async ({ params }: Props) => {
       <IndexPagePlaceToGoBlog
         slug={blogTitle}
         category={category}
+        subCategory={subCategory}
       />
     </div>
   );
