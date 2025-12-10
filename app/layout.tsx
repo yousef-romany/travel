@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 import OrganizationSchema from "@/components/seo/OrganizationSchema";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import BackgroundAudio from "@/components/BackgroundAudio";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 
 // Using system fonts to avoid Google Fonts network dependency during build
 const fontVariables = {
@@ -212,6 +213,7 @@ export default function RootLayout({
           <div className="pt-[76px]">{children}</div>
           <div id="google_translate_element"></div>
           <BackgroundAudio />
+          <InstallPrompt />
           <Toaster />
         </ThemeProvider>
         </AuthProvider>
