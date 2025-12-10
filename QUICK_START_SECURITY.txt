@@ -1,0 +1,187 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║                    🚨 SECURITY INCIDENT - QUICK GUIDE 🚨                 ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ STEP 1: IMMEDIATE ACTION (Do this RIGHT NOW!)                            │
+└──────────────────────────────────────────────────────────────────────────┘
+
+1. Stop production server:
+   $ pkill -f "next"
+   $ pkill -f "npm"
+
+2. Run cleanup script:
+   $ ./SECURITY_CLEANUP.sh
+
+   This will:
+   ✓ Remove compromised files
+   ✓ Clear npm cache
+   ✓ Reinstall clean dependencies
+   ✓ Update vulnerable packages
+   ✓ Rebuild and verify
+
+3. Check if build is clean:
+   $ npm run security:check
+
+   You should see:
+   ✅ No malicious code patterns detected
+   ✅ Bundle sizes look normal
+   ✅ No environment variable leaks detected
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ STEP 2: ROTATE API KEYS (Critical - Do within 1 hour!)                   │
+└──────────────────────────────────────────────────────────────────────────┘
+
+Visit these URLs and generate NEW keys:
+
+□ SendGrid:     https://app.sendgrid.com/settings/api_keys
+□ Strapi:       Your dashboard → Settings → API Tokens
+□ Instagram:    https://developers.facebook.com/apps
+□ Google:       https://analytics.google.com/
+
+Then update your .env file (NEVER commit this file!):
+
+NEXT_PUBLIC_STRAPI_URL=https://dashboard.zoeholidays.com
+NEXT_PUBLIC_STRAPI_TOKEN=<NEW_TOKEN_HERE>
+NEXT_PUBLIC_INSTAGRAM_TOKEN=<NEW_TOKEN_HERE>
+NEXT_PUBLIC_WHATSAPP_NUMBER=201000000000
+NEXT_PUBLIC_GA_MEASUREMENT_ID=<YOUR_GA_ID>
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ STEP 3: VERIFY & TEST                                                    │
+└──────────────────────────────────────────────────────────────────────────┘
+
+1. Test locally:
+   $ npm run dev
+   Visit http://localhost:3000
+   Test all features
+
+2. Production build:
+   $ npm run build:safe
+
+   This runs:
+   - Security audit
+   - Build
+   - Automatic verification
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ NEW SECURITY COMMANDS AVAILABLE                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+Daily use:
+  $ npm run security:check      - Full security scan
+  $ npm run build:safe          - Safe build with verification
+
+Weekly:
+  $ npm run deps:check          - Check outdated packages
+  $ npm run security:audit      - Vulnerability scan
+  $ npm run security:fix        - Auto-fix vulnerabilities
+
+Emergency:
+  $ ./SECURITY_CLEANUP.sh       - Nuclear option cleanup
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ FILES CREATED FOR YOU                                                    │
+└──────────────────────────────────────────────────────────────────────────┘
+
+📄 SECURITY_SUMMARY.md       - Quick reference guide (READ THIS FIRST!)
+📄 SECURITY.md               - Complete security documentation
+🔧 SECURITY_CLEANUP.sh       - Automated cleanup script
+🔧 scripts/verify-build.js   - Build verification tool
+📦 package.json              - Updated with security scripts
+🔒 .gitignore                - Enhanced to block secrets
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ WHAT HAPPENED?                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+Malicious code found in:
+  .next/static/chunks/71d5b6fe-f44e32e73fb39284.js
+  .next/static/chunks/25b8c134-2559732815665463.js
+
+The code tried to:
+  ✓ Scan your filesystem for config files
+  ✓ Find SendGrid API keys
+  ✓ Steal your credentials
+  ✗ BUT IT FAILED! (Syntax errors prevented execution)
+
+Vulnerable packages:
+  axios 1.7.9 → 1.13.2 (HIGH severity - DoS/SSRF)
+  + 38 other outdated packages
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PREVENTION: How to stay safe                                            │
+└──────────────────────────────────────────────────────────────────────────┘
+
+✅ DO:
+  • Always run: npm run build:safe (instead of npm run build)
+  • Review Dependabot PRs before merging
+  • Keep .env files in .gitignore
+  • Use npm ci in production (not npm install)
+  • Run npm audit weekly
+
+❌ DON'T:
+  • Commit .env files
+  • Skip security warnings
+  • Use npm install --force (unless necessary)
+  • Install random packages without vetting
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ MONITORING SETUP (Recommended)                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+Option 1 - GitHub Dependabot (FREE):
+  1. Go to repo → Settings → Security → Code security
+  2. Enable "Dependabot alerts"
+  3. Enable "Dependabot security updates"
+
+Option 2 - Snyk (More features):
+  $ npm install -g snyk
+  $ snyk auth
+  $ snyk monitor
+
+Option 3 - Socket (Supply chain):
+  $ npx socket npm install
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ NEXT STEPS CHECKLIST                                                    │
+└──────────────────────────────────────────────────────────────────────────┘
+
+TODAY:
+□ Run ./SECURITY_CLEANUP.sh
+□ Rotate ALL API keys
+□ Update .env with new keys
+□ Test locally (npm run dev)
+□ Verify build (npm run security:check)
+□ Update production environment variables
+
+THIS WEEK:
+□ Enable GitHub Dependabot
+□ Set up Snyk or Socket
+□ Review git history for suspicious commits
+□ Scan dev machine for malware (clamscan -r .)
+□ Read SECURITY.md in full
+
+ONGOING:
+□ Run npm run security:audit weekly
+□ Review Dependabot PRs
+□ Keep dependencies updated
+□ Monitor build output after each build
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ NEED HELP?                                                               │
+└──────────────────────────────────────────────────────────────────────────┘
+
+📖 Read: SECURITY_SUMMARY.md (quick guide)
+📖 Read: SECURITY.md (detailed documentation)
+
+🆘 Emergency:
+   GitHub Security: https://github.com/security
+   npm Security:    security@npmjs.com
+
+💬 Questions? Check the FAQ in SECURITY_SUMMARY.md
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  Remember: Your keys are likely safe (attack failed), but rotate them!   ║
+║  The cleanup script and new security tools will protect you going forward ║
+╚══════════════════════════════════════════════════════════════════════════╝
