@@ -346,3 +346,224 @@ A: See "Emergency Contacts" section above.
 **Remember**: Security is an ongoing process, not a one-time fix. Stay vigilant!
 
 📖 For detailed information, see [SECURITY.md](./SECURITY.md)
+
+---
+
+## 🌐 Cloudflare Protection (NEW!)
+
+### Why Add Cloudflare?
+
+After the security incident, adding Cloudflare provides an **additional security layer**:
+
+✅ **DDoS Protection** - Blocks attacks before they reach your server
+✅ **Web Application Firewall (WAF)** - Stops SQL injection, XSS, and more
+✅ **Bot Protection** - Filters out malicious bots
+✅ **Rate Limiting** - Prevents API abuse
+✅ **Free SSL** - Automatic HTTPS certificates
+✅ **CDN** - Faster page loads worldwide
+
+### Quick Setup (30 minutes)
+
+1. **Create Account**: https://dash.cloudflare.com/sign-up
+2. **Add Domain**: Click "Add Site" → Enter `zoeholidays.com`
+3. **Update Nameservers**: At your domain registrar
+4. **Configure Security**: Follow the guide in `CLOUDFLARE_SETUP.md`
+
+### Essential Security Rules
+
+After setup, create these firewall rules:
+
+**1. Protect Admin Routes**
+```
+Path contains "/admin" or "/dashboard"
+→ Challenge visitors
+```
+
+**2. Block SQL Injection**
+```
+URI contains "union" or "select" or "drop table"
+→ Block
+```
+
+**3. Rate Limit APIs**
+```
+Path contains "/api/"
+→ Limit to 100 requests/minute
+```
+
+### New Commands Available
+
+```bash
+# Purge Cloudflare cache after deployment
+npm run cloudflare:purge
+
+# Full deployment with cache purge
+npm run build:deploy
+
+# Purge specific files
+npm run cloudflare:purge:files -- --files=https://zoeholidays.com/,https://zoeholidays.com/programs
+
+# Purge by tags
+npm run cloudflare:purge:tags -- --tags=static,programs
+```
+
+### Environment Variables
+
+Add to your `.env` file:
+
+```bash
+# Get from Cloudflare Dashboard
+CLOUDFLARE_ZONE_ID=your_zone_id_here
+CLOUDFLARE_API_TOKEN=your_api_token_here
+```
+
+Get these from:
+- **Zone ID**: Dashboard → Overview → API section (right sidebar)
+- **API Token**: My Profile → API Tokens → Create Token (Cache Purge permission)
+
+### Monitoring
+
+Install Cloudflare mobile app for alerts:
+- **iOS**: https://apps.apple.com/app/cloudflare/id1182897623
+- **Android**: https://play.google.com/store/apps/details?id=com.cloudflare.cloudflare
+
+Enable "I'm Under Attack" mode instantly from your phone if you detect an attack!
+
+### Complete Guide
+
+📖 See **CLOUDFLARE_SETUP.md** for:
+- Detailed step-by-step setup
+- Advanced firewall rules
+- Performance optimization
+- SSL/TLS configuration
+- Rate limiting setup
+- Incident response procedures
+
+### Security Layers Now Active
+
+```
+┌─────────────────────────────────────────┐
+│  User Request                           │
+└─────────────────┬───────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────┐
+│  🌐 Cloudflare Layer                    │
+│  • DDoS Protection                      │
+│  • WAF (SQL Injection, XSS blocking)    │
+│  • Bot Protection                       │
+│  • Rate Limiting                        │
+└─────────────────┬───────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────┐
+│  🔒 Next.js Security Headers            │
+│  • CSP, HSTS, X-Frame-Options          │
+│  • Content-Type-Options                 │
+└─────────────────┬───────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────┐
+│  🛡️ Build Verification                  │
+│  • Malicious code scanning              │
+│  • Bundle size checks                   │
+│  • Env variable leak detection          │
+└─────────────────┬───────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────┐
+│  ✅ Secure Application                  │
+└─────────────────────────────────────────┘
+```
+
+### Cost
+
+- **Free Plan**: Perfect for most needs
+  - Unlimited DDoS mitigation
+  - Basic WAF
+  - Free SSL
+  - 3 Page Rules
+  
+- **Pro Plan** ($20/mo): Upgrade if you need
+  - Advanced DDoS
+  - More firewall rules
+  - Image optimization
+  - Priority support
+
+### Quick Test
+
+After Cloudflare setup, verify it's working:
+
+```bash
+# Check if Cloudflare is active
+dig zoeholidays.com
+
+# Test SSL grade (should be A+)
+https://www.ssllabs.com/ssltest/analyze.html?d=zoeholidays.com
+
+# Test security headers
+https://securityheaders.com/?q=zoeholidays.com
+```
+
+---
+
+## 📚 Updated Documentation
+
+### Security Files Created
+
+```
+SECURITY.md              # Complete security guide
+SECURITY_SUMMARY.md      # This file - quick reference
+SECURITY_CLEANUP.sh      # Automated cleanup
+CLOUDFLARE_SETUP.md      # NEW! Cloudflare guide
+QUICK_START_SECURITY.txt # Visual quick reference
+.env.example             # Environment variable template
+```
+
+### Scripts Created
+
+```
+scripts/verify-build.js           # Build security verification
+scripts/cloudflare-purge-cache.js # NEW! Cache management
+```
+
+### Updated Files
+
+```
+package.json     # Added security & Cloudflare scripts
+.gitignore       # Enhanced to block secrets
+next.config.ts   # Security headers configured
+```
+
+---
+
+## 🎯 Recommended Setup Order
+
+### Day 1 (TODAY):
+1. ✅ Run `./SECURITY_CLEANUP.sh`
+2. ✅ Rotate all API keys
+3. ✅ Verify clean build
+4. ⬜ Set up Cloudflare (30 min - see CLOUDFLARE_SETUP.md)
+
+### Day 2:
+1. ⬜ Configure Cloudflare firewall rules
+2. ⬜ Enable Cloudflare bot protection
+3. ⬜ Test Cloudflare setup
+4. ⬜ Enable GitHub Dependabot
+
+### Week 1:
+1. ⬜ Set up Snyk or Socket monitoring
+2. ⬜ Configure Cloudflare rate limiting
+3. ⬜ Enable Cloudflare analytics
+4. ⬜ Install Cloudflare mobile app
+
+### Ongoing:
+1. ⬜ Run `npm run security:audit` weekly
+2. ⬜ Review Cloudflare analytics monthly
+3. ⬜ Update dependencies regularly
+4. ⬜ Monitor Cloudflare alerts
+
+---
+
+**With Cloudflare + Security Scripts + Monitoring = Your site is now FORTRESS MODE! 🏰**
+
