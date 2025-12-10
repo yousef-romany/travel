@@ -70,11 +70,11 @@ export const metadata: Metadata = {
     description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure with our licensed tour operator. Book now!",
     images: [
       {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
+        url: "/icons/icon-512x512.png",
+        width: 512,
+        height: 512,
         alt: "ZoeHoliday - Egypt Travel & Tours - Explore Pyramids, Nile Cruises & Ancient Temples",
-        type: "image/jpeg",
+        type: "image/png",
       },
     ],
   },
@@ -84,7 +84,7 @@ export const metadata: Metadata = {
     creator: "@zoeholiday",
     title: "ZoeHoliday - Explore the Beauty of Egypt | Tour Packages",
     description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure. Expert guides, secure booking, 24/7 support.",
-    images: ["/og-image.jpg"],
+    images: ["/icons/icon-512x512.png"],
   },
   robots: {
     index: true,
@@ -99,9 +99,9 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'your-google-verification-code',
-    // yandex: 'your-yandex-verification-code',
-    // bing: 'your-bing-verification-code',
+    google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || '',
+    // yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+    // bing: process.env.NEXT_PUBLIC_BING_VERIFICATION,
   },
   other: {
     'geo.region': 'EG',

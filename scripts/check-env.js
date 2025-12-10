@@ -251,23 +251,29 @@ function validateEnvironment() {
   console.log('');
 
   const cloudflareResults = CLOUDFLARE_VARS.map(checkVar);
-  const requiredCloudflareVars = cloudflareResults.filter(r => !r.optional);
+  // Filter for required Cloudflare vars (not optional)
+  const requiredCloudflareVars = cloudflareResults.filter((r, index) => {
+    return !CLOUDFLARE_VARS[index].optional;
+  });
   const anyCloudflareSet = requiredCloudflareVars.some(r => r.isSet);
   const allCloudflareSet = requiredCloudflareVars.every(r => r.isSet);
 
   cloudflareResults.forEach(result => {
+    const config = CLOUDFLARE_VARS.find(v => v.name === result.name);
+    const isOptional = config?.optional || false;
+
     if (result.isSet) {
       success(`${result.name}`);
       log(`  Value: ${result.value}`, COLORS.GREEN);
     } else {
-      if (anyCloudflareSet && !allCloudflareSet && !result.optional) {
+      if (anyCloudflareSet && !allCloudflareSet && !isOptional) {
         error(`${result.name} - MISSING!`);
         log(`  Description: ${result.description}`, COLORS.YELLOW);
         log(`  Example: ${result.example}`, COLORS.CYAN);
         log(`  Get from: ${result.getUrl}`, COLORS.BLUE);
         hasErrors = true;
       } else {
-        warning(`${result.name} - Not set`);
+        warning(`${result.name} - Not set ${isOptional ? '(optional)' : ''}`);
         log(`  Description: ${result.description}`, COLORS.YELLOW);
       }
     }
@@ -278,6 +284,7 @@ function validateEnvironment() {
     error('Cloudflare configuration is incomplete!');
     warning('Both CLOUDFLARE_ZONE_ID and CLOUDFLARE_API_TOKEN are required.');
     warning('Either set both or remove both from .env');
+    warning('Note: CLOUDFLARE_ACCOUNT_ID is optional');
     hasErrors = true;
   } else if (!anyCloudflareSet) {
     info('Cloudflare is not configured (optional)');
