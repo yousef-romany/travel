@@ -76,20 +76,25 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google-analytics.com https://www.googletagmanager.com https://www.instagram.com",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob: https: https://dashboard.zoeholidays.com",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google-analytics.com https://www.googletagmanager.com https://www.instagram.com https://translate.google.com https://translate.googleapis.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://cdn.jsdelivr.net",
+              "img-src 'self' data: blob: https: http://localhost:1337",
               "font-src 'self' data: https://fonts.gstatic.com",
-              "connect-src 'self' https://dashboard.zoeholidays.com https://www.google-analytics.com https://graph.instagram.com https://*.cdninstagram.com https://*.fbcdn.net",
-              "media-src 'self' blob: data: https://*.cdninstagram.com https://*.fbcdn.net https://video.cdninstagram.com https://res.cloudinary.com",
-              "frame-src 'self' https://www.google.com https://www.instagram.com",
+              "connect-src 'self' https://dashboard.zoeholidays.com https://www.google-analytics.com https://graph.instagram.com https://*.cdninstagram.com https://*.fbcdn.net https://translate.googleapis.com http://localhost:1337",
+              "media-src 'self' blob: data: https://*.cdninstagram.com https://*.fbcdn.net https://video.cdninstagram.com https://res.cloudinary.com https://dashboard.zoeholidays.com",
+              "frame-src 'self' https://www.google.com https://www.instagram.com https://translate.google.com",
               "worker-src 'self' blob:",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "frame-ancestors 'self'",
+              "upgrade-insecure-requests",
             ].join("; ")
           },
           // CORS for Strapi
           {
             key: "Access-Control-Allow-Origin",
-            value: process.env.NODE_ENV === "production" ? "https://yourdomain.com" : "https://dashboard.zoeholidays.com"
+            value: process.env.NODE_ENV === "production" ? "https://zoeholidays.com" : "http://localhost:3000"
           },
           {
             key: "Access-Control-Allow-Credentials",
@@ -103,7 +108,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: process.env.NODE_ENV === "production" ? "https://yourdomain.com" : "https://dashboard.zoeholidays.com"
+            value: process.env.NODE_ENV === "production" ? "https://zoeholidays.com" : "http://localhost:3000"
           },
           {
             key: "Access-Control-Allow-Credentials",
