@@ -3,6 +3,7 @@ import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 import { useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -39,21 +40,52 @@ import {
 import { getImageUrl } from "@/lib/utils";
 import { BackgroundVideo } from "@/components/ui/background-video";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import Testimonials from "@/components/testimonials";
 import { fetchApprovedTestimonials } from "@/fetch/testimonials";
 import { MessageSquare } from "lucide-react";
 import { InstagramPostItem } from "@/components/instagram-post-item";
-import InstagramModal from "@/components/InstagramModal";
-import { RecentlyViewed } from "@/components/programs/RecentlyViewed";
-import { LoyaltyWidget } from "@/components/loyalty/LoyaltyDashboard";
-import { ReferralWidget } from "@/components/social/ReferralProgram";
-import { ComparisonDemo } from "@/components/programs/ComparisonDemo";
 import { CompareButton } from "@/components/programs/CompareButton";
 import { calculateDynamicPrice } from "@/lib/dynamic-pricing";
 import { Gift, TrendingUp, Users, Bell, Zap, Award } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { subscribeToPushNotifications } from "@/lib/push-notifications";
 import { useState } from "react";
+
+// Lazy load heavy components below the fold for better performance
+const Testimonials = dynamic(() => import("@/components/testimonials"), {
+  loading: () => <div className="h-96 animate-pulse bg-muted rounded-lg" />,
+  ssr: false,
+});
+const InstagramModal = dynamic(() => import("@/components/InstagramModal"), {
+  ssr: false,
+});
+const RecentlyViewed = dynamic(
+  () => import("@/components/programs/RecentlyViewed").then(mod => mod.RecentlyViewed),
+  {
+    loading: () => <div className="h-64 animate-pulse bg-muted rounded-lg" />,
+    ssr: false,
+  }
+);
+const LoyaltyWidget = dynamic(
+  () => import("@/components/loyalty/LoyaltyDashboard").then(mod => mod.LoyaltyWidget),
+  {
+    loading: () => <div className="h-48 animate-pulse bg-muted rounded-lg" />,
+    ssr: false,
+  }
+);
+const ReferralWidget = dynamic(
+  () => import("@/components/social/ReferralProgram").then(mod => mod.ReferralWidget),
+  {
+    loading: () => <div className="h-48 animate-pulse bg-muted rounded-lg" />,
+    ssr: false,
+  }
+);
+const ComparisonDemo = dynamic(
+  () => import("@/components/programs/ComparisonDemo").then(mod => mod.ComparisonDemo),
+  {
+    loading: () => <div className="h-96 animate-pulse bg-muted rounded-lg" />,
+    ssr: false,
+  }
+);
 
 // Helper function to get stagger delay class
 const getStaggerDelay = (index: number): string => {
@@ -205,6 +237,7 @@ export default function HomeContent() {
                       src={getImageUrl(image)}
                       alt={`${blog.title} - Egypt travel inspiration`}
                       fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 80vw, 1200px"
                       className="object-cover transition-transform group-hover:scale-110 duration-500"
                     />
                     {image?.formats?.large?.url}
@@ -283,6 +316,7 @@ export default function HomeContent() {
                       src={getImageUrl(category.image)}
                       alt={`${category.categoryName} - Egypt destination`}
                       fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 80vw, 1200px"
                       className="object-cover transition-transform group-hover:scale-110 duration-500"
                     />
                   </div>
@@ -388,6 +422,7 @@ export default function HomeContent() {
                   src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1764619947/Pyramids_Egypt_wobalm.jpg"
                   alt="Best seasons to visit Egypt"
                   fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 80vw, 1200px"
                   className="object-cover"
                 />
               </div>
@@ -433,6 +468,7 @@ export default function HomeContent() {
                   src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1738112213/young-tourist-wearing-blue-turban-standing-near-great-sphinx-giza-cairo-egypt_1_sjvfoh.jpg"
                   alt="Transportation options in Egypt"
                   fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 80vw, 1200px"
                   className="object-cover"
                 />
               </div>
@@ -476,6 +512,7 @@ export default function HomeContent() {
                   src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1764620275/dsasad_cujjah.jpg"
                   alt="Egypt accommodation options"
                   fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 80vw, 1200px"
                   className="object-cover"
                 />
               </div>
@@ -521,6 +558,7 @@ export default function HomeContent() {
                   src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1764620401/__jduupn.jpg"
                   alt="Egypt travel tips and advice"
                   fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 80vw, 1200px"
                   className="object-cover"
                 />
               </div>

@@ -230,6 +230,7 @@ export default function PlanYourTripContent() {
                               src={getImageUrl(trip.destinations[0].image) || "/placeholder.svg"}
                               alt={trip.tripName}
                               fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                               className="object-cover group-hover:scale-110 transition-transform duration-500"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
@@ -360,6 +361,7 @@ export default function PlanYourTripContent() {
                             src={getImageUrl(trip.destinations[0].image) || "/placeholder.svg"}
                             alt={trip.tripName}
                             fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                             className="object-cover group-hover:scale-110 transition-transform duration-500"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />

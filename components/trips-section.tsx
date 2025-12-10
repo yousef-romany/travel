@@ -174,6 +174,7 @@ export default function TripsSection() {
                   src={details.imageUrl}
                   alt={details.title}
                   fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                   className="object-cover"
                 />
                 {/* Booking Type Badge */}

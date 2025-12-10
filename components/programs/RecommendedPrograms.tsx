@@ -50,6 +50,7 @@ export function RecommendedPrograms({
                       }
                       alt={program.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 25vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute top-2 right-2">

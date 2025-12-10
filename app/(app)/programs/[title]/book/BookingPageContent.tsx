@@ -603,6 +603,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                     src={imageUrl}
                     alt={program.title}
                     fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                     className="object-cover"
                   />
                 </div>

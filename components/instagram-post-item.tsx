@@ -109,6 +109,7 @@ export function InstagramPostItem({ postId, index, onPostClick }: InstagramPostI
           src={getImageUrl(thumbnailUrl, "/placeholder.svg?height=600&width=600")}
           alt={shortCaption}
           fill
+          sizes="(max-width: 768px) 100vw, 400px"
           className="object-contain"
         />
 

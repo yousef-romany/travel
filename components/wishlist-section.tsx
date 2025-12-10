@@ -179,6 +179,7 @@ export default function WishlistSection() {
                 src={getProgramImageUrl(item.program, 0, "/placeholder.svg?height=176&width=320")}
                 alt={`${item.program.title} - Egypt tour`}
                 fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                 className="object-cover group-hover:scale-110 transition-transform duration-500"
               />
               <Button

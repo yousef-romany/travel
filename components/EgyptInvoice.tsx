@@ -95,6 +95,7 @@ export const EgyptInvoice: React.FC<InvoiceProps> = ({
             src={logo}
             alt="Egyptian Hieroglyphs"
             fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
             className="object-cover"
           />
         </div>

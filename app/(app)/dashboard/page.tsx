@@ -259,6 +259,7 @@ export default function DashboardPage() {
                               src={imageUrl}
                               alt={title}
                               fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                               className="object-cover"
                             />
                           )}
@@ -334,6 +335,7 @@ export default function DashboardPage() {
                               src={program.imageUrl}
                               alt={program.title}
                               fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                               className="object-cover group-hover:scale-105 transition-transform"
                             />
                           </div>

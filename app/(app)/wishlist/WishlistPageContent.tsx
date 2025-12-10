@@ -289,6 +289,7 @@ export default function WishlistPageContent() {
                     src={getProgramImageUrl(item.program, 0, "/placeholder.svg?height=224&width=400")}
                     alt={`${item.program.title} - Egypt travel program`}
                     fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                     className="object-cover group-hover:scale-110 transition-transform duration-500 hover-scale"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity" />

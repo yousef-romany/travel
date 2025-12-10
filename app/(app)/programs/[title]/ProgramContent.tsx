@@ -416,6 +416,7 @@ export default function ProgramContent({ title }: { title: string }) {
                                   src={imageUrl}
                                   alt={step.title}
                                   fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 80vw, 1200px"
                                   className="object-cover group-hover:scale-110 transition-transform duration-700"
                                   loading="lazy"
                                   quality={80}
@@ -490,6 +491,7 @@ export default function ProgramContent({ title }: { title: string }) {
                                             src={getImageUrl(imageUrl)}
                                             alt={step.title}
                                             fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 80vw, 1200px"
                                             className="object-cover"
                                           />
                                         </div>
