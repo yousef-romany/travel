@@ -119,13 +119,13 @@ export default function Footer() {
                 <OptimizedImage
                   src={logoLight as any}
                   alt="ZoeHoliday - Egypt Travel & Tours Logo"
-                  className="!h-[80px] !w-[180px] object-contain mb-4 z-[-9]"
+                  className="!h-[80px] !w-[180px] object-contain mb-4 z-[-9] bg-none shadow-none"
                 />
               ) : (
                 <OptimizedImage
                   src={logo as any}
                   alt="ZoeHoliday - Egypt Travel & Tours Logo"
-                  className="!h-[80px] !w-[180px] object-contain mb-4 z-[-9]"
+                  className="!h-[80px] !w-[180px] object-contain mb-4 z-[-9] bg-none shadow-none"
                 />
               )}
               <p className="text-muted-foreground text-sm mb-4">

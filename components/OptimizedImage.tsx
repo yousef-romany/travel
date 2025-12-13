@@ -21,7 +21,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const [error, setError] = useState(false);
 
   return (
-    <div className={cn("relative w-full h-full bg-muted/20", className)}>
+    <div className={cn("relative w-full h-full", className)}>
       {!imageLoaded && !error && (
         <Skeleton className="absolute inset-0 w-full h-full z-10" />
       )}

@@ -14,17 +14,19 @@ import { useQuery } from "@tanstack/react-query";
 import { InspirationCategory } from "@/type/inspiration";
 import Link from "next/link";
 import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
-import Loading from "../Loading";
+import NavBarSkeleton from "./NavBarSkeleton";
 import logo from "@/public/logo.png";
 import logoLight from "@/public/logoLight.png";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/context/AuthContext";
 import { trackButtonClick, trackNavigation } from "@/lib/analytics";
 import { getComparisonCount } from "@/lib/comparison";
+import { useToast } from "@/hooks/use-toast";
 
 const NavBar = () => {
   const { theme } = useTheme();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [comparisonCount, setComparisonCount] = useState(0);
 
   // Update comparison count
@@ -43,19 +45,83 @@ const NavBar = () => {
     };
   }, []);
 
-  const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
+  // Fetch inspiration categories with improved error handling and retry logic
+  const {
+    data: inspirationData,
+    error: inspirationError,
+    isLoading: inspirationLoading,
+    refetch: refetchInspiration,
+  } = useQuery<InspirationCategory, Error>({
     queryKey: ["InspirationCategories"],
     queryFn: fetchInspirationCategories,
+    retry: 2,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
-  const placeToGo = useQuery<{ data: InspirationCategory }>({
+  // Fetch places to go categories with improved error handling and retry logic
+  const {
+    data: placesToGoData,
+    error: placesToGoError,
+    isLoading: placesToGoLoading,
+    refetch: refetchPlacesToGo,
+  } = useQuery<{ data: InspirationCategory }>({
     queryKey: ["PlacesToGoCategories"],
     queryFn: fetchPlaceToGoCategories,
+    retry: 2,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
-  if (placeToGo.isLoading && isLoading) return <Loading />;
-  if (placeToGo.error && error instanceof Error)
-    return <p>Error: {error.message}</p>;
+  // Show error notifications
+  useEffect(() => {
+    if (inspirationError) {
+      toast({
+        title: "Failed to load inspiration categories",
+        description: inspirationError.message,
+        variant: "destructive",
+        action: (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => refetchInspiration()}
+          >
+            Retry
+          </Button>
+        ),
+      });
+    }
+  }, [inspirationError, toast, refetchInspiration]);
+
+  useEffect(() => {
+    if (placesToGoError) {
+      toast({
+        title: "Failed to load places categories",
+        description: placesToGoError.message,
+        variant: "destructive",
+        action: (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => refetchPlacesToGo()}
+          >
+            Retry
+          </Button>
+        ),
+      });
+    }
+  }, [placesToGoError, toast, refetchPlacesToGo]);
+
+  // Show skeleton while loading
+  if (inspirationLoading || placesToGoLoading) {
+    return <NavBarSkeleton />;
+  }
+
+  // Prepare data with fallbacks
+  const categories = inspirationData?.data || [];
+  const placesCategories = Array.isArray(placesToGoData?.data)
+    ? placesToGoData.data
+    : [];
 
   const handleWishlistClick = () => {
     trackButtonClick("Wishlist", "NavBar", user ? "/wishlist" : "/login");
@@ -79,16 +145,15 @@ const NavBar = () => {
     <nav className="z-50 w-full h-[76px] px-3 sm:px-4 md:px-6 lg:px-8 fixed top-0 left-0 border-b-2 border-primary bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 flex justify-between items-center shadow-sm">
       {/* Mobile Menu */}
       <div className="lg:hidden flex-shrink-0">
-        <Menu
-          categories={data?.data || []}
-          placesTogCategorie={
-            Array.isArray(placeToGo?.data?.data) ? placeToGo.data.data : []
-          }
-        />
+        <Menu categories={categories} placesTogCategorie={placesCategories} />
       </div>
 
       {/* Logo */}
-      <Link href={"/"} className="flex-shrink-0 mx-auto lg:mx-0" onClick={handleLogoClick}>
+      <Link
+        href={"/"}
+        className="flex-shrink-0 mx-auto lg:mx-0"
+        onClick={handleLogoClick}
+      >
         {theme == "light" ? (
           <Image
             src={logoLight}
@@ -109,10 +174,8 @@ const NavBar = () => {
       {/* Desktop Navigation */}
       <div className="hidden lg:flex flex-1 justify-center">
         <NavigationMenuDemo
-          categories={data?.data || []}
-          placesTogCategorie={
-            Array.isArray(placeToGo?.data?.data) ? placeToGo.data.data : []
-          }
+          categories={categories}
+          placesTogCategorie={placesCategories}
         />
       </div>
 

@@ -18,11 +18,7 @@ export default function TrustBadges() {
         <div className="relative w-10 h-10 flex-shrink-0">
           <div className="absolute inset-0 bg-[#34E0A1] rounded-full"></div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="w-8 h-8" fill="white">
-              <path d="M12.006 4.295c-2.67 0-5.338.784-7.631 2.35H.244l2.351 2.35a10.884 10.884 0 0 0-1.394 5.29c0 6.042 4.898 10.94 10.94 10.94 6.043 0 10.941-4.898 10.941-10.94 0-6.043-4.898-10.941-10.94-10.941h-.136zm0 19.359c-4.627 0-8.418-3.79-8.418-8.419 0-4.627 3.79-8.418 8.418-8.418 4.628 0 8.419 3.79 8.419 8.418 0 4.628-3.79 8.419-8.419 8.419z"/>
-              <circle cx="7.835" cy="14.235" r="2.933"/>
-              <circle cx="16.133" cy="14.235" r="2.933"/>
-            </svg>
+            <svg viewBox="0 -96 512.2 512.2" id="Layer_2" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path className="st0" d="M128.2 127.9C92.7 127.9 64 156.6 64 192c0 35.4 28.7 64.1 64.1 64.1 35.4 0 64.1-28.7 64.1-64.1.1-35.4-28.6-64.1-64-64.1zm0 110c-25.3 0-45.9-20.5-45.9-45.9s20.5-45.9 45.9-45.9S174 166.7 174 192s-20.5 45.9-45.8 45.9z"></path><circle className="st0" cx="128.4" cy="191.9" r="31.9"></circle><path className="st0" d="M384.2 127.9c-35.4 0-64.1 28.7-64.1 64.1 0 35.4 28.7 64.1 64.1 64.1 35.4 0 64.1-28.7 64.1-64.1 0-35.4-28.7-64.1-64.1-64.1zm0 110c-25.3 0-45.9-20.5-45.9-45.9s20.5-45.9 45.9-45.9S430 166.7 430 192s-20.5 45.9-45.8 45.9z"></path><circle className="st0" cx="384.4" cy="191.9" r="31.9"></circle><path className="st0" d="M474.4 101.2l37.7-37.4h-76.4C392.9 29 321.8 0 255.9 0c-66 0-136.5 29-179.3 63.8H0l37.7 37.4C14.4 124.4 0 156.5 0 192c0 70.8 57.4 128.2 128.2 128.2 32.5 0 62.2-12.1 84.8-32.1l43.4 31.9 42.9-31.2-.5-1.2c22.7 20.2 52.5 32.5 85.3 32.5 70.8 0 128.2-57.4 128.2-128.2-.1-35.4-14.6-67.5-37.9-90.7zM368 64.8c-60.7 7.6-108.3 57.6-111.9 119.5-3.7-62-51.4-112.1-112.3-119.5 30.6-22 69.6-32.8 112.1-32.8S337.4 42.8 368 64.8zM128.2 288.2C75 288.2 32 245.1 32 192s43.1-96.2 96.2-96.2 96.2 43.1 96.2 96.2c-.1 53.1-43.1 96.2-96.2 96.2zm256 0c-53.1 0-96.2-43.1-96.2-96.2s43.1-96.2 96.2-96.2 96.2 43.1 96.2 96.2c-.1 53.1-43.1 96.2-96.2 96.2z"></path></g></svg>
           </div>
         </div>
         <div className="text-left">
@@ -46,8 +42,17 @@ export default function TrustBadges() {
         className="flex items-center gap-3 px-4 py-3 bg-background border border-border rounded-lg hover:border-primary/50 hover:shadow-md transition-all group"
         aria-label="Book with us on Viator"
       >
-        <div className="relative w-10 h-10 flex-shrink-0 bg-[#00AA6C] rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold text-xl">V</span>
+        <div className="relative w-10 h-10 flex-shrink-0">
+          <div className="absolute inset-0 bg-[#34E0A1] rounded-full"></div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Image
+              src="/viator-seeklogo-2.svg"
+              alt="Viator Logo"
+              width={24}
+              height={24}
+              className="object-cover w-6 h-6"
+            />
+          </div>
         </div>
         <div className="text-left">
           <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
