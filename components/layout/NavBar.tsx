@@ -21,12 +21,11 @@ import { useTheme } from "next-themes";
 import { useAuth } from "@/context/AuthContext";
 import { trackButtonClick, trackNavigation } from "@/lib/analytics";
 import { getComparisonCount } from "@/lib/comparison";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 const NavBar = () => {
   const { theme } = useTheme();
   const { user } = useAuth();
-  const { toast } = useToast();
   const [comparisonCount, setComparisonCount] = useState(0);
 
   // Update comparison count
@@ -76,41 +75,27 @@ const NavBar = () => {
   // Show error notifications
   useEffect(() => {
     if (inspirationError) {
-      toast({
-        title: "Failed to load inspiration categories",
+      toast.error("Failed to load inspiration categories", {
         description: inspirationError.message,
-        variant: "destructive",
-        action: (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => refetchInspiration()}
-          >
-            Retry
-          </Button>
-        ),
+        action: {
+          label: "Retry",
+          onClick: () => refetchInspiration(),
+        },
       });
     }
-  }, [inspirationError, toast, refetchInspiration]);
+  }, [inspirationError, refetchInspiration]);
 
   useEffect(() => {
     if (placesToGoError) {
-      toast({
-        title: "Failed to load places categories",
+      toast.error("Failed to load places categories", {
         description: placesToGoError.message,
-        variant: "destructive",
-        action: (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => refetchPlacesToGo()}
-          >
-            Retry
-          </Button>
-        ),
+        action: {
+          label: "Retry",
+          onClick: () => refetchPlacesToGo(),
+        },
       });
     }
-  }, [placesToGoError, toast, refetchPlacesToGo]);
+  }, [placesToGoError, refetchPlacesToGo]);
 
   // Show skeleton while loading
   if (inspirationLoading || placesToGoLoading) {
