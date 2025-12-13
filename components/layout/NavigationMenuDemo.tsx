@@ -55,7 +55,7 @@ export function NavigationMenuDemo({
                       </div>
                     </ListItem>
                   ))
-                : "<NoDataPlaceholder /> found ."}
+                : "No Data found ."}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -89,7 +89,7 @@ export function NavigationMenuDemo({
                       </ListItem>
                     )
                   )
-                : "<NoDataPlaceholder /> found ."}
+                : "No Data found ."}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
