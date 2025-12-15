@@ -75,5 +75,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProgramPage({ params }: Props) {
   const resolvedParams = await params;
-  return <ProgramContent title={resolvedParams.title} />;
+  const titleOrId = decodeURIComponent(resolvedParams.title);
+  const data = await fetchProgramOne(titleOrId);
+
+  return <ProgramContent title={resolvedParams.title} initialData={data} />;
 }

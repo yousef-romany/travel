@@ -32,13 +32,20 @@ import { ShareButtonCompact } from "@/components/social/ShareButtons";
 import { generateProgramShareText, generateTravelHashtags } from "@/lib/social-sharing";
 import { addToRecentlyViewed } from "@/lib/recently-viewed";
 
-export default function ProgramContent({ title }: { title: string }) {
+export default function ProgramContent({
+  title,
+  initialData,
+}: {
+  title: string;
+  initialData?: { data: dataTypeCardTravel[]; meta: meta };
+}) {
   const { data, error, isLoading } = useQuery<
     { data: dataTypeCardTravel[]; meta: meta },
     Error
   >({
     queryKey: ["fetchProgramOne", title],
     queryFn: async () => await fetchProgramOne(decodeURIComponent(title)),
+    initialData,
   });
 
   const { user } = useAuth();

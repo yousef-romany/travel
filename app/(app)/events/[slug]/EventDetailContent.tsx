@@ -17,6 +17,7 @@ import ExportReviews from "@/components/review/ExportReviews";
 
 interface EventDetailContentProps {
   event: Event;
+  initialData?: { data: Event };
 }
 
 const eventTypeIcons: Record<string, any> = {
