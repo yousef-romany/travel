@@ -1,37 +1,18 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { fetchInspirationOneSubCategory } from "@/fetch/category";
-import { useQuery } from "@tanstack/react-query";
-import { memo, useState } from "react";
-// import CardFlex from "./CardFlex";
-// import CardGrid from "./CardGrid";
-import { CiGrid41 } from "react-icons/ci";
-import { CiGrid2H } from "react-icons/ci";
-import { InspireBlogs, InspireSubcategories, meta } from "@/type/inspiration";
-import Loading from "@/components/Loading";
+import { InspireSubcategories, meta } from "@/type/inspiration";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
-import CardGrid from "@/app/(app)/placesTogo/[category]/[subCategory]/components/CardGrid";
-import CardFlex from "@/app/(app)/placesTogo/[category]/[subCategory]/components/CardFlex";
+import SubCategoryContent from "./SubCategoryContent";
 
 const IndexPageInspireSubCategory = ({
   routes,
   slug,
+  data,
 }: {
   routes: string;
   slug: string;
+  data: { data: InspireSubcategories[]; meta: meta };
 }) => {
-  const [view, setView] = useState<string>("grid");
-  const { data, error, isLoading } = useQuery<
-    { data: InspireSubcategories[]; meta: meta },
-    Error
-  >({
-    queryKey: ["fetchInspirationOneSubCategory", slug],
-    queryFn: () => fetchInspirationOneSubCategory(slug),
-  });
-
-  if (isLoading) return <Loading />;
-  if (error instanceof Error) return <p className="text-center text-red-500 py-8">Error: {error.message}</p>;
+  const blogs = data?.data?.at(-1)?.inspire_blogs || [];
 
   return (
     <div className="flex gap-4 flex-col min-h-screen bg-gradient-to-b from-background to-secondary/20">
@@ -67,68 +48,9 @@ const IndexPageInspireSubCategory = ({
         </div>
       </div>
 
-      {/* Content section with responsive padding */}
-      <div className="w-full flex flex-col gap-6 md:gap-8 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-12 relative z-10">
-        {/* Header with view toggle */}
-        <div className="w-full flex justify-between items-center flex-wrap gap-4">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
-            All About {slug}
-          </h2>
-
-          <div className="flex gap-2 items-center">
-            <Button
-              onClick={() => setView("grid")}
-              className={`transition-all duration-300 ${view === "grid" ? "bg-primary text-white shadow-lg" : "bg-background hover:bg-muted text-foreground border-input"}`}
-              variant={view === "grid" ? "default" : "outline"}
-              size="sm"
-            >
-              <CiGrid41 className="w-4 h-4 md:w-5 md:h-5" />
-              <span className="ml-2 hidden sm:inline text-xs md:text-sm font-medium">Grid</span>
-            </Button>
-            <Button
-              onClick={() => setView("flex")}
-              className={`transition-all duration-300 ${view === "flex" ? "bg-primary text-white shadow-lg" : "bg-background hover:bg-muted text-foreground border-input"}`}
-              variant={view === "flex" ? "default" : "outline"}
-              size="sm"
-            >
-              <CiGrid2H className="w-4 h-4 md:w-5 md:h-5" />
-              <span className="ml-2 hidden sm:inline text-xs md:text-sm font-medium">List</span>
-            </Button>
-          </div>
-        </div>
-
-        {/* Grid/Flex view with improved responsive breakpoints */}
-        {view === "grid" ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-            {data?.data?.at(-1)?.inspire_blogs?.map((item: InspireBlogs) => {
-              return <CardGrid
-                key={item.id}
-                details={item.details}
-                title={item.title}
-                imageUrl={item.image}
-                routes={routes}
-                slug={slug}
-                link={`/inspiration/${routes}/${slug}/${item.title}` as string}
-              />
-            })}
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4 md:gap-6">
-            {data?.data?.at(-1)?.inspire_blogs?.map((item: InspireBlogs) => (
-              <CardFlex
-                key={item.id}
-                details={item.details}
-                title={item.title}
-                imageUrl={item.image}
-                routes={routes}
-                slug={slug}
-                link={`/inspiration/${routes}/${slug}/${item.title}` as string}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      <SubCategoryContent slug={slug} routes={routes} blogs={blogs} />
     </div>
   );
 };
-export default memo(IndexPageInspireSubCategory);
+
+export default IndexPageInspireSubCategory;

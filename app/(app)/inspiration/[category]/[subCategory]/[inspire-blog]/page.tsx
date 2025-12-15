@@ -54,6 +54,7 @@ const InspirationDynamic = async ({ params }: Props) => {
   const category = decodeURIComponent(resolvedParams.category);
   const subCategory = decodeURIComponent(resolvedParams.subCategory);
   const blogTitle = decodeURIComponent(resolvedParams["inspire-blog"]);
+  const data = await fetchInspirationOneBlog(blogTitle);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -86,6 +87,7 @@ const InspirationDynamic = async ({ params }: Props) => {
 
       <IndexPageInspireBlog
         slug={blogTitle}
+        data={data}
       />
     </div>
   );

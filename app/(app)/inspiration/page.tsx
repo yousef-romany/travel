@@ -1,5 +1,7 @@
 import MainContentInpiration from "./components/MainContentInpiration";
 import type { Metadata } from "next";
+import { fetchInspirationCategories } from "@/fetch/category";
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 export const metadata: Metadata = {
   title: "Egypt Travel Inspiration & Ideas | ZoeHoliday",
@@ -35,9 +37,15 @@ export const metadata: Metadata = {
   },
 };
 
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+const InspirationPage = async () => {
+  let data;
+  try {
+    data = await fetchInspirationCategories();
+  } catch (error) {
+    console.error("Error fetching inspiration categories:", error);
+    data = { data: [], meta: { pagination: { page: 1, pageSize: 25, pageCount: 0, total: 0 } } };
+  }
 
-const InspirationPage = () => {
   return (
     <>
       <BreadcrumbSchema
@@ -46,7 +54,7 @@ const InspirationPage = () => {
           { name: "Inspiration", item: "/inspiration" }
         ]}
       />
-      <MainContentInpiration />
+      <MainContentInpiration data={data} />
     </>
   );
 };
