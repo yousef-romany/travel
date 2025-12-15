@@ -67,7 +67,11 @@ interface Meta {
   };
 }
 
-export default function PageContent() {
+export default function PageContent({
+  initialData,
+}: {
+  initialData?: { data: ProgramType[]; meta: Meta };
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [priceRange, setPriceRange] = useState([0, 5000]);
 
@@ -77,6 +81,7 @@ export default function PageContent() {
   >({
     queryKey: ["fetchProgramsList"],
     queryFn: () => fetchProgramsList(100),
+    initialData,
   });
 
   const [filteredPrograms, setFilteredPrograms] = useState<ProgramType[]>([]);

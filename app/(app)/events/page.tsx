@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { UnifiedBreadcrumb } from "@/components/unified-breadcrumb";
 import EventsContent from "./EventsContent";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import { fetchEvents } from "@/fetch/events";
 
 export const metadata: Metadata = {
   title: "Events & Festivals in Egypt | ZoeHoliday",
@@ -33,7 +34,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function EventsPage() {
+export default async function EventsPage() {
+  let data;
+  try {
+    data = await fetchEvents({
+      isActive: true,
+      pageSize: 50,
+    });
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    data = { data: [], meta: { pagination: { page: 1, pageSize: 50, pageCount: 0, total: 0 } } };
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <UnifiedBreadcrumb
@@ -50,7 +62,7 @@ export default function EventsPage() {
         ]}
       />
 
-      <EventsContent />
+      <EventsContent initialData={data} />
     </div>
   );
 }

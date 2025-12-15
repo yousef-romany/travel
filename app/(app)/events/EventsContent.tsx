@@ -35,7 +35,20 @@ const eventTypeColors: Record<string, string> = {
   other: "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300",
 };
 
-export default function EventsContent() {
+interface Meta {
+  pagination: {
+    page: number;
+    pageSize: number;
+    pageCount: number;
+    total: number;
+  };
+}
+
+export default function EventsContent({
+  initialData,
+}: {
+  initialData?: { data: Event[]; meta: Meta };
+}) {
   const [activeTab, setActiveTab] = useState<string>("all");
 
   const { data, isLoading, error } = useQuery({
@@ -46,6 +59,7 @@ export default function EventsContent() {
         isActive: true,
         pageSize: 50,
       }),
+    initialData: activeTab === "all" ? initialData : undefined,
   });
 
   const handleTabChange = (tab: string) => {
