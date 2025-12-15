@@ -173,44 +173,44 @@ Thank you! 🙏`;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-6xl">
       {/* Back Button */}
       <Button
         variant="ghost"
         onClick={() => router.push("/plan-your-trip")}
-        className="mb-6"
+        className="mb-4 sm:mb-6 text-xs sm:text-sm"
       >
-        <ArrowLeft className="w-4 h-4 mr-2" />
+        <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
         Back to All Trips
       </Button>
 
       {/* Hero Section */}
-      <div className="mb-8 relative">
+      <div className="mb-6 sm:mb-8 relative">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10 opacity-20 pointer-events-none overflow-hidden rounded-3xl">
           <div className="absolute top-10 right-10 w-72 h-72 bg-primary rounded-full blur-[120px]"></div>
           <div className="absolute bottom-10 left-10 w-72 h-72 bg-amber-500 rounded-full blur-[120px]"></div>
         </div>
 
-        <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-3xl p-8 shadow-2xl">
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-6">
+        <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 sm:gap-6 mb-4 sm:mb-6">
             <div className="flex-1">
-              <div className="inline-block mb-4">
-                <span className="px-4 py-2 bg-primary/10 text-primary text-sm font-semibold rounded-full border border-primary/20">
+              <div className="inline-block mb-3 sm:mb-4">
+                <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-primary/10 text-primary text-xs sm:text-sm font-semibold rounded-full border border-primary/20">
                   ✨ Custom Travel Plan
                 </span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent leading-tight break-words">
                 {trip.tripName}
               </h1>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <Badge className={getStatusColor(trip.tripStatus)}>
                   {trip.tripStatus.charAt(0).toUpperCase() + trip.tripStatus.slice(1)}
                 </Badge>
                 {trip.user && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <User className="w-4 h-4" />
-                    <span>
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
+                    <User className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <span className="break-words">
                       Created by{" "}
                       <span className="font-semibold text-foreground">
                         {trip.user.username || trip.user.email?.split("@")[0] || "Anonymous"}
@@ -220,17 +220,17 @@ Thank you! 🙏`;
                 )}
               </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" onClick={handleShare} className="hover-lift">
-                <Share2 className="w-4 h-4 mr-2" />
+            <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full md:w-auto">
+              <Button variant="outline" onClick={handleShare} className="hover-lift text-xs sm:text-sm w-full sm:w-auto">
+                <Share2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                 Share
               </Button>
-              <Button onClick={handleBookNow} className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 shadow-lg hover-lift">
-                <CheckCircle className="w-4 h-4 mr-2" />
+              <Button onClick={handleBookNow} className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 shadow-lg hover-lift text-xs sm:text-sm w-full sm:w-auto">
+                <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                 Book This Trip
               </Button>
-              <Button onClick={handleRequestQuote} className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 shadow-lg hover-lift">
-                <Send className="w-4 h-4 mr-2" />
+              <Button onClick={handleRequestQuote} className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 shadow-lg hover-lift text-xs sm:text-sm w-full sm:w-auto">
+                <Send className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                 Request Quote
               </Button>
             </div>
@@ -239,55 +239,55 @@ Thank you! 🙏`;
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8">
         <Card>
-          <CardHeader className="pb-3">
-            <CardDescription className="flex items-center gap-2 text-xs">
-              <MapPin className="w-4 h-4" />
+          <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-4 pt-3 sm:pt-4">
+            <CardDescription className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs">
+              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               Destinations
             </CardDescription>
-            <CardTitle className="text-2xl">{trip.destinations?.length || 0}</CardTitle>
+            <CardTitle className="text-lg sm:text-xl md:text-2xl">{trip.destinations?.length || 0}</CardTitle>
           </CardHeader>
         </Card>
 
         <Card>
-          <CardHeader className="pb-3">
-            <CardDescription className="flex items-center gap-2 text-xs">
-              <Clock className="w-4 h-4" />
+          <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-4 pt-3 sm:pt-4">
+            <CardDescription className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs">
+              <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               Duration
             </CardDescription>
-            <CardTitle className="text-2xl">
+            <CardTitle className="text-lg sm:text-xl md:text-2xl">
               {trip.estimatedDuration} {trip.estimatedDuration === 1 ? "Day" : "Days"}
             </CardTitle>
           </CardHeader>
         </Card>
 
         <Card>
-          <CardHeader className="pb-3">
-            <CardDescription className="flex items-center gap-2 text-xs">
-              <DollarSign className="w-4 h-4" />
+          <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-4 pt-3 sm:pt-4">
+            <CardDescription className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs">
+              <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               Total Cost
             </CardDescription>
-            <CardTitle className="text-2xl text-primary">
+            <CardTitle className="text-lg sm:text-xl md:text-2xl text-primary">
               ${trip.totalPrice?.toLocaleString()}
             </CardTitle>
           </CardHeader>
         </Card>
 
         <Card>
-          <CardHeader className="pb-3">
-            <CardDescription className="flex items-center gap-2 text-xs">
-              <Users className="w-4 h-4" />
+          <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-4 pt-3 sm:pt-4">
+            <CardDescription className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs">
+              <Users className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               Created By
             </CardDescription>
-            <CardTitle className="text-lg truncate">{trip.user?.username || trip.user?.email?.split("@")[0] || "User"}</CardTitle>
+            <CardTitle className="text-sm sm:text-base md:text-lg truncate">{trip.user?.username || trip.user?.email?.split("@")[0] || "User"}</CardTitle>
           </CardHeader>
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           {/* Trip Overview */}
           <Card>
             <CardHeader>
@@ -336,42 +336,42 @@ Thank you! 🙏`;
 
           {/* Itinerary */}
           <Card className="border-primary/20 shadow-xl">
-            <CardHeader>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2.5 bg-gradient-to-r from-primary to-amber-600 rounded-xl">
-                  <MapPin className="h-6 w-6 text-white" />
+            <CardHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4">
+              <div className="flex items-start sm:items-center gap-2 sm:gap-3 mb-2">
+                <div className="p-1.5 sm:p-2.5 bg-gradient-to-r from-primary to-amber-600 rounded-xl flex-shrink-0">
+                  <MapPin className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                  <CardTitle className="text-lg sm:text-xl md:text-2xl bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
                     Complete Itinerary
                   </CardTitle>
-                  <CardDescription className="text-sm mt-1">
+                  <CardDescription className="text-xs sm:text-sm mt-0.5 sm:mt-1">
                     Day-by-day breakdown of your Egyptian adventure
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
               <div className="relative">
                 {/* Vertical timeline line */}
-                <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-gradient-to-b from-primary via-amber-500 to-primary/20" />
+                <div className="absolute left-[15px] sm:left-[19px] top-4 bottom-4 w-0.5 bg-gradient-to-b from-primary via-amber-500 to-primary/20" />
 
-                <div className="space-y-6 md:space-y-8">
+                <div className="space-y-4 sm:space-y-6 md:space-y-8">
                   {trip.destinations?.map((dest: any, index: number) => (
                     <div
                       key={index}
-                      className="relative pl-12 md:pl-16 group animate-slide-up"
+                      className="relative pl-10 sm:pl-12 md:pl-16 group animate-slide-up"
                       style={{ animationDelay: `${index * 100}ms` }}
                     >
                       {/* Timeline dot */}
-                      <div className="absolute left-0 w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-primary to-amber-600 text-white rounded-full flex items-center justify-center font-bold text-base md:text-lg shadow-lg z-10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                      <div className="absolute left-0 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-r from-primary to-amber-600 text-white rounded-full flex items-center justify-center font-bold text-sm sm:text-base md:text-lg shadow-lg z-10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                         {index + 1}
                       </div>
 
-                      <div className="bg-gradient-to-br from-background via-background/90 to-primary/5 border border-primary/10 rounded-xl overflow-hidden hover:border-primary/30 hover:shadow-2xl transition-all duration-500 group-hover:translate-x-2">
+                      <div className="bg-gradient-to-br from-background via-background/90 to-primary/5 border border-primary/10 rounded-lg sm:rounded-xl overflow-hidden hover:border-primary/30 hover:shadow-2xl transition-all duration-500 group-hover:translate-x-2">
                         {/* Image header if image exists */}
                         {dest.image && (
-                          <div className="relative w-full h-48 md:h-64 overflow-hidden bg-gradient-to-br from-primary/5 to-amber-500/5">
+                          <div className="relative w-full h-40 sm:h-48 md:h-56 lg:h-64 overflow-hidden bg-gradient-to-br from-primary/5 to-amber-500/5">
                             <OptimizedImage
                               src={dest.image}
                               alt={dest.title}
@@ -380,47 +380,47 @@ Thank you! 🙏`;
                             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent opacity-80" />
 
                             {/* Day badge on image */}
-                            <div className="absolute top-4 right-4 bg-gradient-to-r from-primary to-amber-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                            <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-gradient-to-r from-primary to-amber-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg">
                               Day {index + 1}
                             </div>
 
                             {/* Price badge */}
-                            <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm text-primary px-4 py-2 rounded-full text-sm font-bold shadow-lg border border-primary/20">
+                            <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 bg-background/90 backdrop-blur-sm text-primary px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg border border-primary/20">
                               ${dest.price}
                             </div>
                           </div>
                         )}
 
-                        <div className="p-5 md:p-6">
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex-1">
+                        <div className="p-3 sm:p-4 md:p-5 lg:p-6">
+                          <div className="flex items-start justify-between gap-3 sm:gap-4">
+                            <div className="flex-1 min-w-0">
                               {/* Day badge if no image */}
                               {!dest.image && (
-                                <span className="inline-block px-3 py-1 bg-gradient-to-r from-primary/10 to-amber-600/10 text-primary text-xs font-semibold rounded-full border border-primary/20 mb-2">
+                                <span className="inline-block px-2 py-0.5 sm:px-3 sm:py-1 bg-gradient-to-r from-primary/10 to-amber-600/10 text-primary text-[10px] sm:text-xs font-semibold rounded-full border border-primary/20 mb-1.5 sm:mb-2">
                                   Day {index + 1}
                                 </span>
                               )}
 
-                              <h4 className="font-bold text-xl md:text-2xl mb-3 group-hover:text-primary transition-colors leading-tight">
+                              <h4 className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl mb-2 sm:mb-3 group-hover:text-primary transition-colors leading-tight break-words">
                                 {dest.title}
                               </h4>
                               {dest.location && (
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3 bg-muted/30 px-3 py-2 rounded-lg w-fit">
-                                  <MapPin className="w-4 h-4 text-primary" />
-                                  <span className="font-medium">{dest.location}</span>
+                                <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3 bg-muted/30 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg w-fit">
+                                  <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
+                                  <span className="font-medium break-words">{dest.location}</span>
                                 </div>
                               )}
                               {dest.description && (
-                                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                                <p className="text-xs sm:text-sm md:text-base text-muted-foreground leading-relaxed break-words">
                                   {dest.description}
                                 </p>
                               )}
                             </div>
                             {!dest.image && (
                               <div className="text-right flex-shrink-0">
-                                <p className="text-xs text-muted-foreground mb-1 font-medium">Day Cost</p>
-                                <div className="px-3 py-2 bg-gradient-to-br from-primary/10 to-amber-600/10 rounded-lg border border-primary/20 shadow-sm">
-                                  <p className="font-bold text-xl md:text-2xl bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">${dest.price}</p>
+                                <p className="text-[10px] sm:text-xs text-muted-foreground mb-1 font-medium">Day Cost</p>
+                                <div className="px-2 py-1.5 sm:px-3 sm:py-2 bg-gradient-to-br from-primary/10 to-amber-600/10 rounded-lg border border-primary/20 shadow-sm">
+                                  <p className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">${dest.price}</p>
                                 </div>
                               </div>
                             )}
@@ -492,7 +492,7 @@ Thank you! 🙏`;
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Creator Info */}
           {trip.user && (
             <Card>
@@ -552,26 +552,26 @@ Thank you! 🙏`;
 
           {/* Quick Actions */}
           <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Quick Actions</CardTitle>
+            <CardHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4">
+              <CardTitle className="text-base sm:text-lg">Quick Actions</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <Button onClick={handleBookNow} className="w-full bg-green-600 hover:bg-green-700">
-                <CheckCircle className="w-4 h-4 mr-2" />
+            <CardContent className="space-y-2 px-4 sm:px-6 pb-4 sm:pb-6">
+              <Button onClick={handleBookNow} className="w-full bg-green-600 hover:bg-green-700 text-xs sm:text-sm py-2 sm:py-2.5">
+                <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                 Book This Trip
               </Button>
-              <Button onClick={handleRequestQuote} className="w-full">
-                <Send className="w-4 h-4 mr-2" />
+              <Button onClick={handleRequestQuote} className="w-full text-xs sm:text-sm py-2 sm:py-2.5">
+                <Send className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                 Request Quote
               </Button>
-              <Button onClick={handleShare} variant="outline" className="w-full">
-                <Share2 className="w-4 h-4 mr-2" />
+              <Button onClick={handleShare} variant="outline" className="w-full text-xs sm:text-sm py-2 sm:py-2.5">
+                <Share2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                 Share This Trip
               </Button>
               <Button
                 onClick={() => router.push("/plan-your-trip/create")}
                 variant="outline"
-                className="w-full"
+                className="w-full text-xs sm:text-sm py-2 sm:py-2.5"
               >
                 Create Your Own
               </Button>

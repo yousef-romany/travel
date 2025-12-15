@@ -35,15 +35,15 @@ export default function PlaceCard({ place, isInPlan }: PlaceCardProps) {
       <OptimizedImage
         src={getImageUrl(place?.image) || "/placeholder.svg"}
         alt={place?.title || "null"}
-        className="w-full h-32 object-cover"
+        className="w-full h-28 sm:h-32 md:h-36 object-cover"
       />
-      <div className="p-4">
-        <h3 className="font-semibold text-lg mb-2">{place?.title}</h3>
-        <p className="text-gray-600">${place?.price}</p>
+      <div className="p-3 sm:p-4">
+        <h3 className="font-semibold text-sm sm:text-base md:text-lg mb-1 sm:mb-2 line-clamp-2 leading-tight">{place?.title}</h3>
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">${place?.price}</p>
       </div>
       {isInPlan && (
-        <div className="absolute top-2 right-2 bg-green-500 text-white p-1 rounded-full">
-          <Check size={16} />
+        <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 bg-green-500 text-white p-1 sm:p-1.5 rounded-full shadow-lg">
+          <Check size={14} className="sm:w-4 sm:h-4" />
         </div>
       )}
     </div>

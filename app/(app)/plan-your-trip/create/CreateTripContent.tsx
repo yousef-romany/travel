@@ -346,26 +346,26 @@ Thank you! 🙏`;
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
     >
-      <div className="!px-[2em] mx-auto p-4">
-        <h1 className="text-4xl font-bold mb-8 text-center text-primary animate-slide-up">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 md:mb-10 text-center text-primary animate-slide-up leading-tight">
           Plan Your Travel
         </h1>
 
         {/* Best Custom Trips Section */}
         {bestTrips?.data && bestTrips.data.length > 0 && (
-          <div className="mb-12 animate-slide-up animate-delay-200">
-            <div className="flex items-center justify-between mb-6">
+          <div className="mb-8 sm:mb-10 md:mb-12 animate-slide-up animate-delay-200">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3">
               <div>
-                <h2 className="text-2xl font-semibold text-primary flex items-center gap-2">
-                  <TrendingUp className="w-6 h-6" />
+                <h2 className="text-xl sm:text-2xl font-semibold text-primary flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" />
                   Popular Custom Trips
                 </h2>
-                <p className="text-muted-foreground mt-1">
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                   Discover amazing itineraries created by our community
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
               {bestTrips.data.map((trip) => (
                 <Card
                   key={trip.id}
@@ -437,13 +437,13 @@ Thank you! 🙏`;
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2 animate-slide-up animate-delay-300">
-            <div className="mb-6">
-              <h2 className="text-2xl font-semibold mb-4 text-primary">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div className="lg:col-span-2 animate-slide-up animate-delay-300">
+            <div className="mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-primary">
                 Categories
               </h2>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {data?.data?.map((category: PlacesToGoCategoryData) => (
                   <Badge
                     key={category?.id}
@@ -465,11 +465,11 @@ Thank you! 🙏`;
                 ))}
               </div>
             </div>
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-4 text-primary">
+            <div className="mb-4 sm:mb-6">
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-primary">
                 Subcategories
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {selectedCategory?.place_to_go_subcategories.map(
                   (subcategory: PlacesToGoSubcategories) => (
                     <Badge
@@ -490,10 +490,10 @@ Thank you! 🙏`;
               </div>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-4 text-primary">
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-primary">
                 Places
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {selectedSubcategory?.place_to_go_blogs?.map(
                   (place: PlacesToGoBlogs) => (
                     <PlaceCard
@@ -507,8 +507,8 @@ Thank you! 🙏`;
             </div>
           </div>
           <div className="animate-slide-up animate-delay-400">
-            <div className="bg-card shadow-lg rounded-lg p-6 sticky top-4">
-              <h2 className="text-2xl font-semibold mb-4 text-primary">
+            <div className="bg-card shadow-lg rounded-lg p-4 sm:p-5 md:p-6 lg:sticky lg:top-4">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-primary">
                 Your Travel Plan
               </h2>
               <SortableContext
@@ -527,33 +527,33 @@ Thank you! 🙏`;
                 ))}
               </SortableContext>
               {travelPlan.length === 0 && (
-                <p className="text-primary text-center">
+                <p className="text-primary text-center text-sm sm:text-base py-8">
                   Drag and drop places here to build your plan
                 </p>
               )}
               {travelPlan.length > 0 && (
-                <div className="mt-6 pt-4 border-t border-gray-200 space-y-3">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-200 space-y-2 sm:space-y-3">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                     <div>
-                      <p className="text-muted-foreground">Estimated Duration</p>
-                      <p className="font-semibold text-primary">{estimatedDuration} {estimatedDuration === 1 ? 'Day' : 'Days'}</p>
+                      <p className="text-muted-foreground text-[11px] sm:text-xs">Estimated Duration</p>
+                      <p className="font-semibold text-primary text-sm sm:text-base">{estimatedDuration} {estimatedDuration === 1 ? 'Day' : 'Days'}</p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Price per Day</p>
-                      <p className="font-semibold text-primary">${pricePerDay.toFixed(2)}</p>
+                      <p className="text-muted-foreground text-[11px] sm:text-xs">Price per Day</p>
+                      <p className="font-semibold text-primary text-sm sm:text-base">${pricePerDay.toFixed(2)}</p>
                     </div>
                   </div>
                   <div className="pt-2 border-t border-gray-200">
-                    <p className="text-xl font-semibold text-primary">
+                    <p className="text-base sm:text-lg md:text-xl font-semibold text-primary">
                       Total Price: ${totalPrice}
                     </p>
                   </div>
                 </div>
               )}
-              <div className="mt-4 space-y-2">
+              <div className="mt-3 sm:mt-4 space-y-2">
                 <Button
                   onClick={handleFinishPlanning}
-                  className="w-full py-2 px-4 rounded transition duration-200"
+                  className="w-full py-2 sm:py-2.5 px-4 rounded transition duration-200 text-sm sm:text-base"
                   disabled={travelPlan.length === 0}
                 >
                   Finish Planning
@@ -561,7 +561,7 @@ Thank you! 🙏`;
                 <Button
                   onClick={() => setTravelPlan([])}
                   variant="outline"
-                  className="w-full py-2 px-4 rounded transition duration-200"
+                  className="w-full py-2 sm:py-2.5 px-4 rounded transition duration-200 text-sm sm:text-base"
                 >
                   Clear Plan
                 </Button>
@@ -572,14 +572,14 @@ Thank you! 🙏`;
 
         {/* Finish Planning Dialog */}
         <Dialog open={isFinishDialogOpen} onOpenChange={setIsFinishDialogOpen}>
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="w-[95vw] max-w-[500px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>What would you like to do with your trip plan?</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-base sm:text-lg">What would you like to do with your trip plan?</DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm">
                 You have {travelPlan.length} place{travelPlan.length !== 1 ? 's' : ''} in your plan with a total of ${totalPrice}
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 py-4">
+            <div className="space-y-3 sm:space-y-4 py-3 sm:py-4">
               {/* Trip Name Input */}
               <div className="space-y-2">
                 <Label htmlFor="tripName">Trip Name (required for saving)</Label>
@@ -592,19 +592,19 @@ Thank you! 🙏`;
                 />
               </div>
 
-              <div className="grid gap-3">
+              <div className="grid gap-2 sm:gap-3">
                 <Button
                   onClick={handleSaveCustomTrip}
                   variant="outline"
-                  className="w-full justify-start h-auto py-4"
+                  className="w-full justify-start h-auto py-3 sm:py-4 px-3 sm:px-4"
                   disabled={createPlanTripMutation.isPending}
                 >
-                  <Save className="mr-3 h-5 w-5" />
+                  <Save className="mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
                   <div className="text-left">
-                    <div className="font-semibold">
+                    <div className="font-semibold text-xs sm:text-sm">
                       {createPlanTripMutation.isPending ? "Saving..." : "Save as Custom Trip"}
                     </div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-[10px] sm:text-xs text-muted-foreground leading-tight">
                       Save this itinerary to your account for later
                     </div>
                   </div>
@@ -613,12 +613,12 @@ Thank you! 🙏`;
                 <Button
                   onClick={handleCreateBooking}
                   variant="outline"
-                  className="w-full justify-start h-auto py-4"
+                  className="w-full justify-start h-auto py-3 sm:py-4 px-3 sm:px-4"
                 >
-                  <FileText className="mr-3 h-5 w-5" />
+                  <FileText className="mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
                   <div className="text-left">
-                    <div className="font-semibold">Create Booking Now</div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="font-semibold text-xs sm:text-sm">Create Booking Now</div>
+                    <div className="text-[10px] sm:text-xs text-muted-foreground leading-tight">
                       Book this trip and proceed to payment
                     </div>
                   </div>
@@ -627,12 +627,12 @@ Thank you! 🙏`;
                 <Button
                   onClick={handleRequestQuote}
                   variant="outline"
-                  className="w-full justify-start h-auto py-4"
+                  className="w-full justify-start h-auto py-3 sm:py-4 px-3 sm:px-4"
                 >
-                  <Send className="mr-3 h-5 w-5" />
+                  <Send className="mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
                   <div className="text-left">
-                    <div className="font-semibold">Request Quote</div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="font-semibold text-xs sm:text-sm">Request Quote</div>
+                    <div className="text-[10px] sm:text-xs text-muted-foreground leading-tight">
                       Get a personalized quote for this itinerary
                     </div>
                   </div>
@@ -641,12 +641,12 @@ Thank you! 🙏`;
                 <Button
                   onClick={handleViewSummary}
                   variant="outline"
-                  className="w-full justify-start h-auto py-4"
+                  className="w-full justify-start h-auto py-3 sm:py-4 px-3 sm:px-4"
                 >
-                  <Eye className="mr-3 h-5 w-5" />
+                  <Eye className="mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
                   <div className="text-left">
-                    <div className="font-semibold">View Summary</div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="font-semibold text-xs sm:text-sm">View Summary</div>
+                    <div className="text-[10px] sm:text-xs text-muted-foreground leading-tight">
                       See detailed summary of your planned trip
                     </div>
                   </div>
@@ -658,14 +658,14 @@ Thank you! 🙏`;
 
         {/* Trip Summary Dialog */}
         <Dialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>
-          <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+          <DialogContent className="w-[95vw] max-w-[700px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Your Custom Trip Summary</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-base sm:text-lg md:text-xl">Your Custom Trip Summary</DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm">
                 Review your planned itinerary details
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Trip Overview */}
               <div className="bg-primary/10 p-4 rounded-lg">
                 <h3 className="font-semibold text-lg mb-3 text-primary">Trip Overview</h3>

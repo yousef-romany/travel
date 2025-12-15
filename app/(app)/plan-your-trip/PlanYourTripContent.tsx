@@ -119,19 +119,19 @@ export default function PlanYourTripContent() {
       {/* Hero Section */}
       <PlanTripHero />
 
-      <div className="container mx-auto px-4 py-12 max-w-7xl relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 max-w-7xl relative z-10">
         {/* Trips Section */}
-        <div className="text-center mb-12 animate-slide-up">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent px-4">
+        <div className="text-center mb-8 sm:mb-10 md:mb-12 animate-slide-up">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent px-2 sm:px-4">
             Your Custom Itineraries
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 md:mb-8 leading-relaxed px-4">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-4 sm:mb-6 md:mb-8 leading-relaxed px-4 sm:px-6">
             Browse custom itineraries created by fellow travelers or design your own unique journey through the land of pharaohs
           </p>
 
-          <Alert className="max-w-3xl mx-auto bg-gradient-to-r from-primary/5 to-amber-500/5 border-primary/30 shadow-lg mx-4">
-            <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-            <AlertDescription className="text-sm md:text-base">
+          <Alert className="max-w-3xl mx-auto bg-gradient-to-r from-primary/5 to-amber-500/5 border-primary/30 shadow-lg px-4 sm:px-6">
+            <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+            <AlertDescription className="text-xs sm:text-sm md:text-base">
               Choose from ready-made itineraries below or create your own custom trip tailored to your preferences
             </AlertDescription>
           </Alert>
@@ -139,72 +139,72 @@ export default function PlanYourTripContent() {
 
         {/* Stats Bar */}
         {(trips.length > 0 || userTrips.length > 0) && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-12 md:mb-16 animate-slide-up animate-delay-200 px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-10 md:mb-12 lg:mb-16 animate-slide-up animate-delay-200">
             <Card className="text-center border-primary/20 bg-gradient-to-br from-card to-primary/5 hover:shadow-xl transition-all">
-              <CardContent className="pt-6 md:pt-8 pb-4 md:pb-6">
-                <div className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent mb-2 md:mb-3">
+              <CardContent className="pt-4 sm:pt-6 md:pt-8 pb-3 sm:pb-4 md:pb-6 px-3 sm:px-4">
+                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent mb-1 sm:mb-2 md:mb-3">
                   {trips.length}
                 </div>
-                <p className="text-xs md:text-sm font-medium text-muted-foreground">Custom Itineraries Available</p>
+                <p className="text-[10px] sm:text-xs md:text-sm font-medium text-muted-foreground leading-tight">Custom Itineraries Available</p>
               </CardContent>
             </Card>
             <Card className="text-center border-amber-500/20 bg-gradient-to-br from-card to-amber-500/5 hover:shadow-xl transition-all">
-              <CardContent className="pt-6 md:pt-8 pb-4 md:pb-6">
-                <div className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-amber-600 to-primary bg-clip-text text-transparent mb-2 md:mb-3">
+              <CardContent className="pt-4 sm:pt-6 md:pt-8 pb-3 sm:pb-4 md:pb-6 px-3 sm:px-4">
+                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-amber-600 to-primary bg-clip-text text-transparent mb-1 sm:mb-2 md:mb-3">
                   {trips.reduce((acc, trip) => acc + (trip.destinations?.length || 0), 0)}
                 </div>
-                <p className="text-xs md:text-sm font-medium text-muted-foreground">Total Destinations</p>
+                <p className="text-[10px] sm:text-xs md:text-sm font-medium text-muted-foreground leading-tight">Total Destinations</p>
               </CardContent>
             </Card>
             <Card className="text-center border-green-500/20 bg-gradient-to-br from-card to-green-500/5 hover:shadow-xl transition-all sm:col-span-2 md:col-span-1">
-              <CardContent className="pt-6 md:pt-8 pb-4 md:pb-6">
-                <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2 md:mb-3">
+              <CardContent className="pt-4 sm:pt-6 md:pt-8 pb-3 sm:pb-4 md:pb-6 px-3 sm:px-4">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-1 sm:mb-2 md:mb-3 break-words">
                   ${Math.min(...trips.map(t => t.totalPrice || 0)).toLocaleString()} - $
                   {Math.max(...trips.map(t => t.totalPrice || 0)).toLocaleString()}
                 </div>
-                <p className="text-xs md:text-sm font-medium text-muted-foreground">Price Range</p>
+                <p className="text-[10px] sm:text-xs md:text-sm font-medium text-muted-foreground leading-tight">Price Range</p>
               </CardContent>
             </Card>
           </div>
         )}
 
         {/* User-Created Trips Section with Tabs */}
-        <div className="mb-16 animate-slide-up animate-delay-300">
+        <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 animate-slide-up animate-delay-300">
           <Tabs defaultValue={user ? "my-trips" : "all-trips"} className="w-full">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
-              <div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-2 flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6 mb-6 sm:mb-8">
+              <div className="w-full md:w-auto">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 flex items-center gap-2 sm:gap-3">
+                  <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                    <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-primary" />
                   </div>
-                  <span className="bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent break-words">
                     Custom Itineraries
                   </span>
                 </h2>
-                <p className="text-sm md:text-base text-muted-foreground">
+                <p className="text-xs sm:text-sm md:text-base text-muted-foreground pl-0 sm:pl-8 md:pl-12">
                   {user ? "Manage your trips or browse community itineraries" : "Explore trips from our community"}
                 </p>
               </div>
 
-              <TabsList className="grid w-full md:w-auto grid-cols-2 bg-muted/50">
+              <TabsList className="grid w-full md:w-auto grid-cols-2 bg-muted/50 min-w-[200px]">
                 {user && (
-                  <TabsTrigger value="my-trips" className="gap-2">
-                    <User className="w-4 h-4" />
-                    <span className="hidden sm:inline">My Trips</span>
-                    <span className="sm:hidden">Mine</span>
+                  <TabsTrigger value="my-trips" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+                    <User className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <span className="hidden xs:inline sm:hidden md:inline">My Trips</span>
+                    <span className="xs:hidden sm:inline md:hidden">Mine</span>
                     {userTrips.length > 0 && (
-                      <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
+                      <Badge variant="secondary" className="ml-0.5 sm:ml-1 h-4 sm:h-5 px-1 sm:px-1.5 text-[10px] sm:text-xs">
                         {userTrips.length}
                       </Badge>
                     )}
                   </TabsTrigger>
                 )}
-                <TabsTrigger value="all-trips" className="gap-2">
-                  <TrendingUp className="w-4 h-4" />
-                  <span className="hidden sm:inline">All Trips</span>
-                  <span className="sm:hidden">All</span>
+                <TabsTrigger value="all-trips" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+                  <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                  <span className="hidden xs:inline sm:hidden md:inline">All Trips</span>
+                  <span className="xs:hidden sm:inline md:hidden">All</span>
                   {trips.length > 0 && (
-                    <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
+                    <Badge variant="secondary" className="ml-0.5 sm:ml-1 h-4 sm:h-5 px-1 sm:px-1.5 text-[10px] sm:text-xs">
                       {trips.length}
                     </Badge>
                   )}
@@ -214,9 +214,9 @@ export default function PlanYourTripContent() {
 
             {/* My Trips Tab */}
             {user && (
-              <TabsContent value="my-trips" className="mt-6">
+              <TabsContent value="my-trips" className="mt-4 sm:mt-6">
                 {userTrips.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     {userTrips.map((trip) => (
                       <Card
                         key={trip.id}
@@ -341,13 +341,13 @@ export default function PlanYourTripContent() {
             )}
 
             {/* All Trips Tab */}
-            <TabsContent value="all-trips" className="mt-6">
-              <p className="text-sm md:text-base text-muted-foreground text-center mb-6">
+            <TabsContent value="all-trips" className="mt-4 sm:mt-6">
+              <p className="text-xs sm:text-sm md:text-base text-muted-foreground text-center mb-4 sm:mb-6 px-4">
                 Explore trips designed by fellow travelers - click any trip to see full details
               </p>
 
               {trips.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                   {trips.map((trip) => (
                     <Card
                       key={trip.id}
@@ -490,32 +490,32 @@ export default function PlanYourTripContent() {
         <div className="animate-slide-up animate-delay-400">
           <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-amber-500/10 to-primary/10 shadow-2xl overflow-hidden relative">
             {/* Decorative Elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-amber-500/20 to-transparent rounded-full blur-3xl"></div>
+            <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-48 sm:w-64 h-48 sm:h-64 bg-gradient-to-tr from-amber-500/20 to-transparent rounded-full blur-3xl"></div>
 
-            <CardHeader className="text-center pb-4 md:pb-6 relative z-10 px-4">
-              <div className="flex justify-center mb-4 md:mb-6">
-                <div className="p-3 md:p-4 bg-gradient-to-br from-primary to-amber-600 rounded-2xl shadow-lg">
-                  <Plus className="w-8 h-8 md:w-10 md:h-10 text-white" />
+            <CardHeader className="text-center pb-3 sm:pb-4 md:pb-6 relative z-10 px-4 sm:px-6">
+              <div className="flex justify-center mb-3 sm:mb-4 md:mb-6">
+                <div className="p-2.5 sm:p-3 md:p-4 bg-gradient-to-br from-primary to-amber-600 rounded-2xl shadow-lg">
+                  <Plus className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white" />
                 </div>
               </div>
-              <CardTitle className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4">
+              <CardTitle className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 md:mb-4 break-words leading-tight">
                 Don't See What You Like?
               </CardTitle>
-              <CardDescription className="text-sm sm:text-base md:text-lg mt-2 md:mt-3 max-w-2xl mx-auto">
+              <CardDescription className="text-xs sm:text-sm md:text-base lg:text-lg mt-2 md:mt-3 max-w-2xl mx-auto leading-relaxed">
                 Create your own custom itinerary by selecting destinations and building your perfect Egypt adventure
               </CardDescription>
             </CardHeader>
-            <CardContent className="text-center pb-6 md:pb-8 relative z-10 px-4">
+            <CardContent className="text-center pb-4 sm:pb-6 md:pb-8 relative z-10 px-4 sm:px-6">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-2xl px-6 py-5 md:px-8 md:py-6 text-base md:text-lg hover:scale-105 transition-transform w-full sm:w-auto"
+                className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-2xl px-4 py-4 sm:px-6 sm:py-5 md:px-8 md:py-6 text-sm sm:text-base md:text-lg hover:scale-105 transition-transform w-full sm:w-auto gap-2 sm:gap-3"
                 onClick={() => router.push("/plan-your-trip/create")}
               >
-                <Plus className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3" />
-                <span className="hidden sm:inline">Create Your Own Trip</span>
-                <span className="sm:hidden">Create Trip</span>
-                <ArrowRight className="w-5 h-5 md:w-6 md:h-6 ml-2 md:ml-3" />
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 flex-shrink-0" />
+                <span className="hidden xs:inline sm:hidden md:inline">Create Your Own Trip</span>
+                <span className="xs:hidden sm:inline md:hidden">Create Trip</span>
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 flex-shrink-0" />
               </Button>
             </CardContent>
           </Card>
