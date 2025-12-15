@@ -1,35 +1,11 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Map, Sparkles, Users, Clock } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Map, Sparkles, Users, Clock } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { fetchHeroStats, type HeroStats } from "@/fetch/stats";
+import { fetchHeroStats } from "@/fetch/stats";
+import PlanTripHeroButtons from "@/components/plan-trip-hero-buttons";
 
-export default function PlanTripHero() {
-  const router = useRouter();
-  const [stats, setStats] = useState<HeroStats>({
-    totalPrograms: 0,
-    averageRating: 0,
-    totalDestinations: 0,
-  });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadStats = async () => {
-      try {
-        const data = await fetchHeroStats();
-        setStats(data);
-      } catch (error) {
-        console.error("Failed to load stats:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadStats();
-  }, []);
+export default async function PlanTripHero() {
+  // Fetch stats on the server
+  const stats = await fetchHeroStats();
 
   return (
     <div className="relative overflow-hidden bg-gradient-to-br from-amber-50 via-white to-amber-50 dark:from-amber-950/20 dark:via-background dark:to-amber-950/20 py-8 md:py-16 lg:py-24">
@@ -108,43 +84,27 @@ export default function PlanTripHero() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col md:flex-row gap-3 md:gap-4 pt-4">
-              <Button
-                size="lg"
-                className="bg-amber-600 hover:bg-amber-700 text-white shadow-lg hover:shadow-xl transition-all group text-base px-6 py-6 w-full md:w-auto"
-                onClick={() => router.push("/plan-your-trip/create")}
-              >
-                Start Planning Now
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform flex-shrink-0" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-amber-300 dark:border-amber-700 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-base px-6 py-6 w-full md:w-auto"
-              >
-                Browse Inspiration
-              </Button>
-            </div>
+            <PlanTripHeroButtons />
 
             {/* Social Proof */}
             <div className="flex items-center gap-4 md:gap-6 pt-6 border-t border-border overflow-x-auto pb-2">
               <div className="flex-shrink-0">
                 <p className="text-2xl md:text-3xl font-bold text-foreground">
-                  {loading ? "..." : `${stats.totalPrograms}+`}
+                  {stats.totalPrograms}+
                 </p>
                 <p className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">Trip Programs Available</p>
               </div>
               <div className="w-px h-12 md:h-14 bg-border flex-shrink-0"></div>
               <div className="flex-shrink-0">
                 <p className="text-2xl md:text-3xl font-bold text-foreground">
-                  {loading ? "..." : `${stats.averageRating}★`}
+                  {stats.averageRating}★
                 </p>
                 <p className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">Average Rating</p>
               </div>
               <div className="w-px h-12 md:h-14 bg-border flex-shrink-0"></div>
               <div className="flex-shrink-0">
                 <p className="text-2xl md:text-3xl font-bold text-foreground">
-                  {loading ? "..." : `${stats.totalDestinations}+`}
+                  {stats.totalDestinations}+
                 </p>
                 <p className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">Destinations Available</p>
               </div>
