@@ -4,9 +4,32 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Map, Sparkles, Users, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { fetchHeroStats, type HeroStats } from "@/fetch/stats";
 
 export default function PlanTripHero() {
   const router = useRouter();
+  const [stats, setStats] = useState<HeroStats>({
+    totalPrograms: 0,
+    averageRating: 0,
+    totalDestinations: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const data = await fetchHeroStats();
+        setStats(data);
+      } catch (error) {
+        console.error("Failed to load stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadStats();
+  }, []);
 
   return (
     <div className="relative overflow-hidden bg-gradient-to-br from-amber-50 via-white to-amber-50 dark:from-amber-950/20 dark:via-background dark:to-amber-950/20 py-8 md:py-16 lg:py-24">
@@ -106,17 +129,23 @@ export default function PlanTripHero() {
             {/* Social Proof */}
             <div className="flex items-center gap-4 md:gap-6 pt-6 border-t border-border overflow-x-auto pb-2">
               <div className="flex-shrink-0">
-                <p className="text-2xl md:text-3xl font-bold text-foreground">500+</p>
-                <p className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">Custom Trips Created</p>
+                <p className="text-2xl md:text-3xl font-bold text-foreground">
+                  {loading ? "..." : `${stats.totalPrograms}+`}
+                </p>
+                <p className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">Trip Programs Available</p>
               </div>
               <div className="w-px h-12 md:h-14 bg-border flex-shrink-0"></div>
               <div className="flex-shrink-0">
-                <p className="text-2xl md:text-3xl font-bold text-foreground">4.9★</p>
+                <p className="text-2xl md:text-3xl font-bold text-foreground">
+                  {loading ? "..." : `${stats.averageRating}★`}
+                </p>
                 <p className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">Average Rating</p>
               </div>
               <div className="w-px h-12 md:h-14 bg-border flex-shrink-0"></div>
               <div className="flex-shrink-0">
-                <p className="text-2xl md:text-3xl font-bold text-foreground">50+</p>
+                <p className="text-2xl md:text-3xl font-bold text-foreground">
+                  {loading ? "..." : `${stats.totalDestinations}+`}
+                </p>
                 <p className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">Destinations Available</p>
               </div>
             </div>
