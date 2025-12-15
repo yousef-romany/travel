@@ -190,8 +190,8 @@ export default function PlanYourTripContent() {
                 {user && (
                   <TabsTrigger value="my-trips" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
                     <User className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                    <span className="hidden xs:inline sm:hidden md:inline">My Trips</span>
-                    <span className="xs:hidden sm:inline md:hidden">Mine</span>
+                    <span className="hidden md:inline">My Trips</span>
+                    <span className="md:hidden">Mine</span>
                     {userTrips.length > 0 && (
                       <Badge variant="secondary" className="ml-0.5 sm:ml-1 h-4 sm:h-5 px-1 sm:px-1.5 text-[10px] sm:text-xs">
                         {userTrips.length}
@@ -201,8 +201,8 @@ export default function PlanYourTripContent() {
                 )}
                 <TabsTrigger value="all-trips" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
                   <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                  <span className="hidden xs:inline sm:hidden md:inline">All Trips</span>
-                  <span className="xs:hidden sm:inline md:hidden">All</span>
+                  <span className="hidden md:inline">All Trips</span>
+                  <span className="md:hidden">All</span>
                   {trips.length > 0 && (
                     <Badge variant="secondary" className="ml-0.5 sm:ml-1 h-4 sm:h-5 px-1 sm:px-1.5 text-[10px] sm:text-xs">
                       {trips.length}
@@ -513,8 +513,8 @@ export default function PlanYourTripContent() {
                 onClick={() => router.push("/plan-your-trip/create")}
               >
                 <Plus className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 flex-shrink-0" />
-                <span className="hidden xs:inline sm:hidden md:inline">Create Your Own Trip</span>
-                <span className="xs:hidden sm:inline md:hidden">Create Trip</span>
+                <span className="hidden md:inline">Create Your Own Trip</span>
+                <span className="md:hidden">Create Trip</span>
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 flex-shrink-0" />
               </Button>
             </CardContent>
