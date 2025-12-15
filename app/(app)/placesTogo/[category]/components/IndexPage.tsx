@@ -1,6 +1,3 @@
-"use client";
-import { memo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import {
   Carousel,
   CarouselContent,
@@ -8,7 +5,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { MdArrowOutward } from "react-icons/md";
 import {
@@ -16,19 +13,11 @@ import {
   PlacesToGoCategory,
   PlacesToGoSubcategories,
 } from "@/type/placesToGo";
-import { fetchPlaceToGoCategoriesOneCategory } from "@/fetch/placesToGo";
-import Loading from "@/components/Loading";
 import { NoDataPlaceholder } from "@/components/NoDataPlaceholder";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
 
-const IndexPage = ({ slug }: { slug: string }) => {
-  const { data, error, isLoading } = useQuery<PlacesToGoCategory, Error>({
-    queryKey: ["fetchPlaceToGoCategoriesOneCategory"],
-    queryFn: () => fetchPlaceToGoCategoriesOneCategory(slug),
-  });
-  if (isLoading) return <Loading />;
-  if (error instanceof Error) return <p>Error: {error.message}</p>;
+const IndexPage = ({ slug, data }: { slug: string; data: PlacesToGoCategory }) => {
   return (
     <div className="flex gap-4 flex-col h-fit justify-between bg-gradient-to-b from-background to-secondary/20 min-h-screen">
       <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
@@ -168,4 +157,5 @@ const IndexPage = ({ slug }: { slug: string }) => {
     </div>
   );
 };
-export default memo(IndexPage);
+
+export default IndexPage;

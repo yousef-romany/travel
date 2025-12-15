@@ -71,7 +71,7 @@ const PlaceToGoBlogDynamic = async ({ params }: Props) => {
   const subCategory = decodeURIComponent(resolvedParams.subCategory);
   const blogTitle = decodeURIComponent(resolvedParams["place-blog"]);
 
-  // Fetch data for schema
+  // Fetch data for schema and component
   const data = await fetchPlaceToGoOneBlog(blogTitle);
   const blogData = data?.data?.at(0);
 
@@ -133,6 +133,7 @@ const PlaceToGoBlogDynamic = async ({ params }: Props) => {
         slug={blogTitle}
         category={category}
         subCategory={subCategory}
+        data={data}
       />
     </div>
   );
