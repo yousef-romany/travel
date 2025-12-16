@@ -1,30 +1,10 @@
-"use client";
-
-import { useEffect } from "react";
 import { Newspaper, Camera, FileText, Mail, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import AnimatedSection from "@/components/AnimatedSection";
 
 export default function MediaindustryContent() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-visible");
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
-    );
-
-    const elements = document.querySelectorAll(".animate-on-scroll");
-    elements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div className="min-h-screen bg-background py-12 px-4 md:px-8">
       <div className="max-w-6xl mx-auto">
@@ -109,7 +89,7 @@ export default function MediaindustryContent() {
           </Card>
         </div>
 
-        <section className="mb-12 animate-on-scroll">
+        <AnimatedSection className="mb-12">
           <h2 className="text-3xl font-bold mb-6 text-primary">Industry Partnerships</h2>
           <div className="bg-card border border-border rounded-lg p-8">
             <p className="text-lg mb-6">
@@ -140,9 +120,9 @@ export default function MediaindustryContent() {
               <Button disabled>Become a Partner <Badge variant={"secondary"}>(Soon)</Badge></Button>
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
-        <section className="mb-12 animate-on-scroll">
+        <AnimatedSection className="mb-12">
           <h2 className="text-3xl font-bold mb-6 text-primary">Media Contact</h2>
           <div className="bg-card border border-border rounded-lg p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -189,9 +169,9 @@ export default function MediaindustryContent() {
               </div>
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
-        {/* <section className="animate-on-scroll">
+        {/* <AnimatedSection>
           <h2 className="text-3xl font-bold mb-6 text-primary">Featured in Media</h2>
           <div className="bg-card border border-border rounded-lg p-8">
             <p className="text-center text-muted-foreground mb-6">
@@ -204,7 +184,7 @@ export default function MediaindustryContent() {
               <div className="text-2xl font-bold">Global Tours</div>
             </div>
           </div>
-        </section> */}
+        </AnimatedSection> */}
       </div>
     </div>
   );

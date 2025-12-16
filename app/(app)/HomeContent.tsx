@@ -22,14 +22,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { ProgramCarousel } from "./programs/components/ProgramCarousel";
-import { useQuery } from "@tanstack/react-query";
-import { fetchHomePageData, type Program } from "@/fetch/homepage";
-import {
-  InspireSectionSkeleton,
-  PlacesSectionSkeleton,
-  ProgramsSectionSkeleton,
-  InstagramSectionSkeleton,
-} from "@/components/skeletons/HomeSkeletons";
+import { type Program, type HomePageData } from "@/fetch/homepage";
 import {
   trackProgramView,
   trackSocialShare,
@@ -40,7 +33,7 @@ import {
 import { getImageUrl } from "@/lib/utils";
 import { BackgroundVideo } from "@/components/ui/background-video";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { fetchApprovedTestimonials } from "@/fetch/testimonials";
+import { type TestimonialsResponse } from "@/fetch/testimonials";
 import { MessageSquare } from "lucide-react";
 import { InstagramPostItem } from "@/components/instagram-post-item";
 import { CompareButton } from "@/components/programs/CompareButton";
@@ -49,6 +42,7 @@ import { Gift, TrendingUp, Users, Bell, Zap, Award } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { subscribeToPushNotifications } from "@/lib/push-notifications";
 import { useState } from "react";
+import AnimatedSection from "@/components/AnimatedSection";
 
 // Lazy load heavy components below the fold for better performance
 const Testimonials = dynamic(() => import("@/components/testimonials"), {
@@ -112,26 +106,21 @@ const HERO_VIDEOS = [
   "https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922524/Escape_to_Egypt_Cinematic_Film_lfq32y.mp4",
 ];
 
-export default function HomeContent() {
+interface HomeContentProps {
+  initialData: HomePageData;
+  initialTestimonials: TestimonialsResponse;
+}
+
+export default function HomeContent({ initialData, initialTestimonials }: HomeContentProps) {
   const sectionsRef = useRef<HTMLElement[]>([]);
   const { user } = useAuth();
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
 
-  // Fetch homepage data with React Query
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["homepageData"],
-    queryFn: fetchHomePageData,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 2,
-  });
-
-  // Fetch testimonials
-  const { data: testimonialsData, isLoading: testimonialsLoading } = useQuery({
-    queryKey: ["approvedTestimonials"],
-    queryFn: () => fetchApprovedTestimonials(6), // Get 6 latest testimonials
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    retry: 2,
-  });
+  // Use server-side fetched data
+  const data = initialData;
+  const isLoading = false;
+  const isError = false;
+  const testimonialsData = initialTestimonials;
 
   useEffect(() => {
     applyHieroglyphEffect();

@@ -1,27 +1,9 @@
-"use client"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Globe, MapPin, Users } from "lucide-react";
 import OptimizedImage from "@/components/OptimizedImage";
 import { BackgroundVideo } from "@/components/ui/background-video";
-import { useEffect } from "react";
-
-// Helper function to get stagger delay class
-const getStaggerDelay = (index: number): string => {
-  const delay = Math.min(index * 100, 800);
-  const delayClasses = {
-    0: "animate-delay-0",
-    100: "animate-delay-100",
-    200: "animate-delay-200",
-    300: "animate-delay-300",
-    400: "animate-delay-400",
-    500: "animate-delay-500",
-    600: "animate-delay-600",
-    700: "animate-delay-700",
-    800: "animate-delay-800",
-  } as const;
-  return delayClasses[delay as keyof typeof delayClasses] || "animate-delay-0";
-};
+import AnimatedSection from "@/components/AnimatedSection";
 
 // Egypt travel videos from Cloudinary
 const ABOUT_HERO_VIDEOS = [
@@ -30,24 +12,6 @@ const ABOUT_HERO_VIDEOS = [
 ];
 
 export default function AboutContent() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-visible");
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
-    );
-
-    const elements = document.querySelectorAll(".animate-on-scroll");
-    elements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div className="flex flex-col min-h-screen !w-full">
       {/* Hero Section with Background Video */}
@@ -72,7 +36,7 @@ export default function AboutContent() {
         {/* History and Culture Section */}
         <section className="py-16 px-4 sm:px-6 md:px-8 lg:px-12 !w-full">
           <div className="!w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <div className="animate-on-scroll">
+            <AnimatedSection>
               <h2 className="text-3xl font-bold mb-6 font-display">
                 A Land of Rich History and Culture
               </h2>
@@ -91,63 +55,71 @@ export default function AboutContent() {
                 experiences for every traveler.
               </p>
               <Button className="mt-4 transition-smooth hover-glow">Explore Our Tours</Button>
-            </div>
-            <div className="relative h-[400px] rounded-lg overflow-hidden animate-on-scroll animate-delay-200">
+            </AnimatedSection>
+            <AnimatedSection delay={200} className="relative h-[400px] rounded-lg overflow-hidden">
               <OptimizedImage
                 src="https://res.cloudinary.com/dir8ao2mt/image/upload/v1764621217/21_Beautiful_Places_to_Travel_in_Egypt_You_Must__f6bw1r.jpg"
                 alt="Egyptian Pyramids and Sphinx at Giza"
                 className="object-cover hover-scale"
               />
-            </div>
+            </AnimatedSection>
           </div>
         </section>
 
         {/* Mission and Values Section */}
         <section className="!w-full py-16 bg-secondary/50 px-4 sm:px-6 md:px-8 lg:px-12">
           <div className="!w-full max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold mb-12 text-center font-display animate-on-scroll">
-              Our Mission and Values
-            </h2>
+            <AnimatedSection>
+              <h2 className="text-3xl font-bold mb-12 text-center font-display">
+                Our Mission and Values
+              </h2>
+            </AnimatedSection>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              <Card className="hover-lift animate-on-scroll">
-                <CardContent className="p-6">
-                  <Globe className="h-12 w-12 text-primary mb-4" />
-                  <h3 className="text-xl font-semibold mb-2 font-display">
-                    Sustainable Tourism
-                  </h3>
-                  <p className="text-muted-foreground">
-                    We are committed to promoting responsible and sustainable
-                    tourism practices that preserve Egypt&apos;s natural and cultural
-                    heritage for future generations.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="hover-lift animate-on-scroll animate-delay-200">
-                <CardContent className="p-6">
-                  <Users className="h-12 w-12 text-primary mb-4" />
-                  <h3 className="text-xl font-semibold mb-2 font-display">
-                    Cultural Exchange
-                  </h3>
-                  <p className="text-muted-foreground">
-                    We believe in fostering meaningful connections between
-                    visitors and local communities, promoting mutual
-                    understanding and respect.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="hover-lift animate-on-scroll animate-delay-400">
-                <CardContent className="p-6">
-                  <MapPin className="h-12 w-12 text-primary mb-4" />
-                  <h3 className="text-xl font-semibold mb-2 font-display">
-                    Authentic Experiences
-                  </h3>
-                  <p className="text-muted-foreground">
-                    We strive to provide authentic, immersive experiences that
-                    go beyond typical tourist attractions, allowing visitors to
-                    truly connect with Egypt&apos;s rich culture and history.
-                  </p>
-                </CardContent>
-              </Card>
+              <AnimatedSection>
+                <Card className="hover-lift">
+                  <CardContent className="p-6">
+                    <Globe className="h-12 w-12 text-primary mb-4" />
+                    <h3 className="text-xl font-semibold mb-2 font-display">
+                      Sustainable Tourism
+                    </h3>
+                    <p className="text-muted-foreground">
+                      We are committed to promoting responsible and sustainable
+                      tourism practices that preserve Egypt&apos;s natural and cultural
+                      heritage for future generations.
+                    </p>
+                  </CardContent>
+                </Card>
+              </AnimatedSection>
+              <AnimatedSection delay={200}>
+                <Card className="hover-lift">
+                  <CardContent className="p-6">
+                    <Users className="h-12 w-12 text-primary mb-4" />
+                    <h3 className="text-xl font-semibold mb-2 font-display">
+                      Cultural Exchange
+                    </h3>
+                    <p className="text-muted-foreground">
+                      We believe in fostering meaningful connections between
+                      visitors and local communities, promoting mutual
+                      understanding and respect.
+                    </p>
+                  </CardContent>
+                </Card>
+              </AnimatedSection>
+              <AnimatedSection delay={400}>
+                <Card className="hover-lift">
+                  <CardContent className="p-6">
+                    <MapPin className="h-12 w-12 text-primary mb-4" />
+                    <h3 className="text-xl font-semibold mb-2 font-display">
+                      Authentic Experiences
+                    </h3>
+                    <p className="text-muted-foreground">
+                      We strive to provide authentic, immersive experiences that
+                      go beyond typical tourist attractions, allowing visitors to
+                      truly connect with Egypt&apos;s rich culture and history.
+                    </p>
+                  </CardContent>
+                </Card>
+              </AnimatedSection>
             </div>
           </div>
         </section>
@@ -177,7 +149,7 @@ export default function AboutContent() {
       </main>
       {/* CTA Section */}
       <section className="py-16 bg-secondary text-primary-foreground px-4 sm:px-6 md:px-8 lg:px-12">
-        <div className="text-center animate-on-scroll max-w-4xl mx-auto">
+        <AnimatedSection className="text-center max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-4 font-display">
             Ready to Explore Egypt?
           </h2>
@@ -192,7 +164,7 @@ export default function AboutContent() {
           >
             Book Your Tour Now
           </Button>
-        </div>
+        </AnimatedSection>
       </section>
     </div>
   );

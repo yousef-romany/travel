@@ -68,8 +68,25 @@ const faqs = [
 ];
 
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import { fetchHomePageData } from "@/fetch/homepage";
+import { fetchApprovedTestimonials } from "@/fetch/testimonials";
 
-export default function Home() {
+export default async function Home() {
+  // Fetch data server-side for SEO
+  const [homepageData, testimonialsData] = await Promise.allSettled([
+    fetchHomePageData(),
+    fetchApprovedTestimonials(6),
+  ]);
+
+  const data = homepageData.status === 'fulfilled' ? homepageData.value : {
+    inspireBlogs: [],
+    placeCategories: [],
+    programs: [],
+    instagramPosts: [],
+  };
+
+  const testimonials = testimonialsData.status === 'fulfilled' ? testimonialsData.value : [];
+
   return (
     <>
       <WebPageSchema
@@ -90,7 +107,7 @@ export default function Home() {
         contentUrl="https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922614/Egypt_Unmatched_Diversity_fbtjmf.mp4"
         duration="PT45S"
       />
-      <HomeContent />
+      <HomeContent initialData={data} initialTestimonials={testimonials} />
     </>
   );
 }

@@ -1,29 +1,9 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2, DollarSign, FileBarChart, Globe2, TrendingUp, Users2 } from "lucide-react";
-import { useEffect } from "react";
+import AnimatedSection from "@/components/AnimatedSection";
 
 export default function TourisminvestmentContent() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-visible");
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
-    );
-
-    const elements = document.querySelectorAll(".animate-on-scroll");
-    elements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div className="min-h-screen bg-background py-12 px-4 md:px-8">
       <div className="max-w-6xl mx-auto">
@@ -39,22 +19,22 @@ export default function TourisminvestmentContent() {
             <TrendingUp className="w-32 h-32 text-primary/40" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-            <div className="animate-on-scroll">
+            <AnimatedSection>
               <p className="text-4xl font-bold text-primary mb-2">14.7M</p>
               <p className="text-muted-foreground">Annual Visitors (2023)</p>
-            </div>
-            <div className="animate-on-scroll animate-delay-200">
+            </AnimatedSection>
+            <AnimatedSection delay={200}>
               <p className="text-4xl font-bold text-primary mb-2">$13.6B</p>
               <p className="text-muted-foreground">Tourism Revenue</p>
-            </div>
-            <div className="animate-on-scroll animate-delay-400">
+            </AnimatedSection>
+            <AnimatedSection delay={400}>
               <p className="text-4xl font-bold text-primary mb-2">12%</p>
               <p className="text-muted-foreground">GDP Contribution</p>
-            </div>
+            </AnimatedSection>
           </div>
         </div>
 
-        <section className="mb-12 animate-on-scroll">
+        <AnimatedSection className="mb-12">
           <h2 className="text-3xl font-bold mb-6 text-primary">Why Invest in Egyptian Tourism?</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="border-border hover:border-primary/50 transition-all hover-lift">
@@ -117,9 +97,9 @@ export default function TourisminvestmentContent() {
               </CardContent>
             </Card>
           </div>
-        </section>
+        </AnimatedSection>
 
-        <section className="mb-12 animate-on-scroll">
+        <AnimatedSection className="mb-12">
           <h2 className="text-3xl font-bold mb-6 text-primary">Investment Opportunities</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="border-border hover:border-primary/50 transition-all hover-lift">
@@ -248,9 +228,9 @@ export default function TourisminvestmentContent() {
               </CardContent>
             </Card>
           </div>
-        </section>
+        </AnimatedSection>
 
-        <section className="mb-12 animate-on-scroll">
+        <AnimatedSection className="mb-12">
           <h2 className="text-3xl font-bold mb-6 text-primary">Investment Incentives</h2>
           <div className="bg-card border border-border rounded-lg p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -306,9 +286,9 @@ export default function TourisminvestmentContent() {
               </div>
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
-        <section className="mb-12 animate-on-scroll">
+        <AnimatedSection className="mb-12">
           <h2 className="text-3xl font-bold mb-6 text-primary">Success Stories</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="border-border hover-lift">
@@ -353,9 +333,9 @@ export default function TourisminvestmentContent() {
               </CardContent>
             </Card>
           </div>
-        </section>
+        </AnimatedSection>
 
-        <section className="animate-on-scroll">
+        <AnimatedSection>
           <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl p-8 md:p-12 text-center hover-scale transition-smooth">
             <h2 className="text-3xl font-bold mb-4 text-primary">Ready to Invest in Egyptian Tourism?</h2>
             <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
@@ -370,7 +350,7 @@ export default function TourisminvestmentContent() {
               Phone: <a href="tel:+201555100961" className="text-primary hover:underline">+20 155 510 0961</a>
             </p>
           </div>
-        </section>
+        </AnimatedSection>
       </div>
     </div>
   );
