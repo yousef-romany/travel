@@ -1,7 +1,7 @@
 import "../app/globals.css"
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import NavBar from "@/components/layout/NavBar";
+import ServerNavBar from "@/components/layout/ServerNavBar";
 import { ThemeProvider } from "@/components/Providers";
 import Script from "next/script";
 import { AuthProvider } from "@/context/AuthContext";
@@ -209,7 +209,7 @@ export default function RootLayout({
       >
         <AuthProvider>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <NavBar />
+          <ServerNavBar />
           <div className="pt-[76px]">{children}</div>
           <div id="google_translate_element"></div>
           <BackgroundAudio />

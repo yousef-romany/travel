@@ -1,8 +1,15 @@
 import { Metadata } from "next";
-import HomeContent from "./HomeContent";
 import WebPageSchema from "@/components/seo/WebPageSchema";
 import FAQSchema from "@/components/seo/FAQSchema";
 import VideoSchema from "@/components/seo/VideoSchema";
+import HeroSection from "./components/home/server/HeroSection";
+import InspireSection from "./components/home/server/InspireSection";
+import PlacesSection from "./components/home/server/PlacesSection";
+import PlanTripSection from "./components/home/server/PlanTripSection";
+import ProgramsSection from "./components/home/server/ProgramsSection";
+import FeaturesSection from "./components/home/server/FeaturesSection";
+import TestimonialsSection from "./components/home/server/TestimonialsSection";
+import InstagramSection from "./components/home/server/InstagramSection";
 
 export const metadata: Metadata = {
   title: "ZoeHoliday - Explore the Beauty of Egypt | Travel & Tour Packages",
@@ -85,10 +92,13 @@ export default async function Home() {
     instagramPosts: [],
   };
 
-  const testimonials = testimonialsData.status === 'fulfilled' ? testimonialsData.value : [];
+  const testimonials = testimonialsData.status === 'fulfilled' && testimonialsData.value?.data
+    ? testimonialsData.value.data
+    : [];
 
   return (
-    <>
+    <div className="!w-full flex-1">
+      {/* SEO Schemas */}
       <WebPageSchema
         name="ZoeHoliday - Egypt Travel & Tours"
         description="Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure with our curated travel packages."
@@ -107,7 +117,16 @@ export default async function Home() {
         contentUrl="https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922614/Egypt_Unmatched_Diversity_fbtjmf.mp4"
         duration="PT45S"
       />
-      <HomeContent initialData={data} initialTestimonials={testimonials} />
-    </>
+
+      {/* Main Content - Server-Rendered for SEO */}
+      <HeroSection />
+      <InspireSection blogs={data.inspireBlogs} />
+      <PlacesSection categories={data.placeCategories} />
+      <PlanTripSection />
+      <ProgramsSection programs={data.programs} />
+      <FeaturesSection />
+      <TestimonialsSection testimonials={testimonials} />
+      <InstagramSection posts={data.instagramPosts} />
+    </div>
   );
 }

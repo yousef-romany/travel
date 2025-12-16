@@ -9,21 +9,21 @@ import ModeToggle from "./ModeToggle";
 import { NavigationMenuDemo } from "./NavigationMenuDemo";
 import Menu from "./Menu";
 import { UserMenu } from "./UserMenu";
-import { fetchInspirationCategories } from "@/fetch/category";
-import { useQuery } from "@tanstack/react-query";
-import { InspirationCategory } from "@/type/inspiration";
+import { InspirationCategoryData } from "@/type/inspiration";
 import Link from "next/link";
-import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
-import NavBarSkeleton from "./NavBarSkeleton";
 import logo from "@/public/logo.png";
 import logoLight from "@/public/logoLight.png";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/context/AuthContext";
 import { trackButtonClick, trackNavigation } from "@/lib/analytics";
 import { getComparisonCount } from "@/lib/comparison";
-import { toast } from "sonner";
 
-const NavBar = () => {
+interface NavBarProps {
+  inspirationCategories: InspirationCategoryData[];
+  placesCategories: InspirationCategoryData[];
+}
+
+const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
   const { theme } = useTheme();
   const { user } = useAuth();
   const [comparisonCount, setComparisonCount] = useState(0);
@@ -43,70 +43,6 @@ const NavBar = () => {
       window.removeEventListener("storage", updateCount);
     };
   }, []);
-
-  // Fetch inspiration categories with improved error handling and retry logic
-  const {
-    data: inspirationData,
-    error: inspirationError,
-    isLoading: inspirationLoading,
-    refetch: refetchInspiration,
-  } = useQuery<InspirationCategory, Error>({
-    queryKey: ["InspirationCategories"],
-    queryFn: fetchInspirationCategories,
-    retry: 2,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false,
-  });
-
-  // Fetch places to go categories with improved error handling and retry logic
-  const {
-    data: placesToGoData,
-    error: placesToGoError,
-    isLoading: placesToGoLoading,
-    refetch: refetchPlacesToGo,
-  } = useQuery<{ data: InspirationCategory }>({
-    queryKey: ["PlacesToGoCategories"],
-    queryFn: fetchPlaceToGoCategories,
-    retry: 2,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false,
-  });
-
-  // Show error notifications
-  useEffect(() => {
-    if (inspirationError) {
-      toast.error("Failed to load inspiration categories", {
-        description: inspirationError.message,
-        action: {
-          label: "Retry",
-          onClick: () => refetchInspiration(),
-        },
-      });
-    }
-  }, [inspirationError, refetchInspiration]);
-
-  useEffect(() => {
-    if (placesToGoError) {
-      toast.error("Failed to load places categories", {
-        description: placesToGoError.message,
-        action: {
-          label: "Retry",
-          onClick: () => refetchPlacesToGo(),
-        },
-      });
-    }
-  }, [placesToGoError, refetchPlacesToGo]);
-
-  // Show skeleton while loading
-  if (inspirationLoading || placesToGoLoading) {
-    return <NavBarSkeleton />;
-  }
-
-  // Prepare data with fallbacks
-  const categories = inspirationData?.data || [];
-  const placesCategories = Array.isArray(placesToGoData?.data)
-    ? placesToGoData.data
-    : [];
 
   const handleWishlistClick = () => {
     trackButtonClick("Wishlist", "NavBar", user ? "/wishlist" : "/login");
@@ -130,7 +66,7 @@ const NavBar = () => {
     <nav className="z-50 w-full h-[76px] px-3 sm:px-4 md:px-6 lg:px-8 fixed top-0 left-0 border-b-2 border-primary bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 flex justify-between items-center shadow-sm">
       {/* Mobile Menu */}
       <div className="lg:hidden flex-shrink-0">
-        <Menu categories={categories} placesTogCategorie={placesCategories} />
+        <Menu categories={inspirationCategories} placesTogCategorie={placesCategories} />
       </div>
 
       {/* Logo */}
@@ -159,7 +95,7 @@ const NavBar = () => {
       {/* Desktop Navigation */}
       <div className="hidden lg:flex flex-1 justify-center">
         <NavigationMenuDemo
-          categories={categories}
+          categories={inspirationCategories}
           placesTogCategorie={placesCategories}
         />
       </div>
