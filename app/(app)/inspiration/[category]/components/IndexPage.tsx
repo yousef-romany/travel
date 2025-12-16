@@ -1,12 +1,8 @@
-"use client";
-import { memo } from "react";
 import {
   InspirationCategory,
   InspireBlogs,
   InspireSubcategories,
 } from "@/type/inspiration";
-import { useQuery } from "@tanstack/react-query";
-import { fetchInspirationOneCategory } from "@/fetch/category";
 import {
   Carousel,
   CarouselContent,
@@ -17,20 +13,13 @@ import {
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Link from "next/link";
 import { MdArrowOutward } from "react-icons/md";
-import Loading from "@/components/Loading";
 import { NoDataPlaceholder } from "@/components/NoDataPlaceholder";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
 import { Media } from "@/type/programs";
 import OptimizedImageInspireBlog from "@/components/OptimizedImageInspireBlog";
 
-const IndexPage = ({ slug }: { slug: string }) => {
-  const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
-    queryKey: ["fetchInspirationOneCategory"],
-    queryFn: () => fetchInspirationOneCategory(slug),
-  });
-  if (isLoading) return <Loading />;
-  if (error instanceof Error) return <p>Error: {error.message}</p>;
+const IndexPage = ({ slug, data }: { slug: string; data: InspirationCategory }) => {
 
   return (
     <div className="flex gap-4 flex-col h-fit justify-between bg-gradient-to-b from-background to-secondary/20 min-h-screen">
@@ -168,4 +157,5 @@ const IndexPage = ({ slug }: { slug: string }) => {
     </div>
   );
 };
-export default memo(IndexPage);
+
+export default IndexPage;

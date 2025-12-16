@@ -1,36 +1,19 @@
-
-"use client";
-import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
-import { memo, useState } from "react";
-import CardFlex from "./CardFlex";
-import CardGrid from "./CardGrid";
-import { CiGrid41 } from "react-icons/ci";
-import { CiGrid2H } from "react-icons/ci";
 import { meta } from "@/type/inspiration";
-import { fetchPlaceToOneSubCategory } from "@/fetch/placesToGo";
-import { PlacesToGoBlogs, PlacesToGoSubcategories } from "@/type/placesToGo";
-import Loading from "@/components/Loading";
+import { PlacesToGoSubcategories } from "@/type/placesToGo";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
+import SubCategoryContent from "./SubCategoryContent";
 
 const IndexPageInspireSubCategory = ({
   routes,
   slug,
+  data,
 }: {
   routes: string;
   slug: string;
+  data: { data: PlacesToGoSubcategories[]; meta: meta };
 }) => {
-  const [view, setView] = useState<string>("grid");
-  const { data, error, isLoading } = useQuery<
-    { data: PlacesToGoSubcategories[]; meta: meta },
-    Error
-  >({
-    queryKey: ["fetchPlaceToOneSubCategory"],
-    queryFn: () => fetchPlaceToOneSubCategory(slug),
-  });
-  if (isLoading) return <Loading />;
-  if (error instanceof Error) return <p>Error: {error.message}</p>;
+  const blogs = data?.data?.at(-1)?.place_to_go_blogs || [];
   return (
     <div className="flex gap-4 flex-col min-h-screen bg-gradient-to-b from-background to-secondary/20">
       <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
@@ -63,69 +46,9 @@ const IndexPageInspireSubCategory = ({
         </div>
       </div>
 
-      <div className="w-full flex flex-col gap-6 md:gap-8 px-4 sm:px-6 md:px-8 lg:px-[2em] py-8 md:py-12 relative z-10">
-        <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
-            All About {slug}
-          </h2>
-
-          <div className="flex gap-2 items-center">
-            <Button
-              onClick={() => setView("grid")}
-              className={`transition-all duration-300 ${view === "grid" ? "bg-primary text-white shadow-lg" : "bg-background hover:bg-muted text-foreground border-input"}`}
-              variant={view === "grid" ? "default" : "outline"}
-              size="sm"
-            >
-              <CiGrid41 className="w-4 h-4 md:w-5 md:h-5" />
-              <span className="ml-2 hidden sm:inline text-xs md:text-sm font-medium">Grid</span>
-            </Button>
-            <Button
-              onClick={() => setView("flex")}
-              className={`transition-all duration-300 ${view === "flex" ? "bg-primary text-white shadow-lg" : "bg-background hover:bg-muted text-foreground border-input"}`}
-              variant={view === "flex" ? "default" : "outline"}
-              size="sm"
-            >
-              <CiGrid2H className="w-4 h-4 md:w-5 md:h-5" />
-              <span className="ml-2 hidden sm:inline text-xs md:text-sm font-medium">List</span>
-            </Button>
-          </div>
-        </div>
-
-        {view == "grid" ? (
-          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {data?.data
-              ?.at(-1)
-              ?.place_to_go_blogs?.map((item: PlacesToGoBlogs) => (
-                <CardGrid
-                  key={item.id}
-                  details={item.details}
-                  title={item.title}
-                  imageUrl={item.image}
-                  routes={routes}
-                  slug={slug}
-                  link={`/placesTogo/${routes}/${slug}/${item.title}` as string}
-                />
-              ))}
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4 md:gap-6">
-            {data?.data
-              ?.at(-1)
-              ?.place_to_go_blogs?.map((item: PlacesToGoBlogs) => (
-                <CardFlex
-                  key={item.id}
-                  details={item.details}
-                  title={item.title}
-                  imageUrl={item.image}
-                  routes={routes}
-                  slug={slug}
-                  link={`/placesTogo/${routes}/${slug}/${item.title}` as string}
-                />
-              ))}
-          </div>
-        )}
-      </div>
+      <SubCategoryContent slug={slug} routes={routes} blogs={blogs} />
     </div>
   );
 };
-export default memo(IndexPageInspireSubCategory);
+
+export default IndexPageInspireSubCategory;

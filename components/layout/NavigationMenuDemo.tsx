@@ -25,14 +25,14 @@ export function NavigationMenuDemo({
   placesTogCategorie,
 }: MenuProps) {
   return (
-    <NavigationMenu className="lg:block md:hidden sm:hidden">
+    <NavigationMenu className="md:block hidden">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger className="text-[1.2rem] text-primary">
             Be inspired
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+            <ul className="grid gap-3 p-4 md:w-[400px] lg:w-full lg:max-w-[600px] md:grid-cols-2 lg:grid-cols-[.75fr_1fr]">
               {categories.length > 0
                 ? categories?.map((category: InspirationCategoryData) => (
                     <ListItem
@@ -46,12 +46,12 @@ export function NavigationMenuDemo({
                           <OptimizedImage
                             src={getImageUrl(category.image)}
                             alt={category.categoryName}
-                            className="h-[140px] min-w-[200px] rounded-xl"
+                            className="h-[120px] md:h-[140px] lg:h-[160px] w-full rounded-xl object-cover"
                           />
                         ) : (
-                          <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                          <Skeleton className="h-[120px] md:h-[140px] lg:h-[160px] w-full rounded-xl" />
                         )}
-                        {category.description.slice(0,16) + "...more"}
+                        <p className="line-clamp-2 text-sm">{category.description}</p>
                       </div>
                     </ListItem>
                   ))
@@ -64,7 +64,7 @@ export function NavigationMenuDemo({
             Places to go
           </NavigationMenuTrigger>
           <NavigationMenuContent className="">
-            <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+            <ul className="grid gap-3 p-4 md:w-[400px] lg:w-full lg:max-w-[600px] md:grid-cols-2 lg:grid-cols-[.75fr_1fr]">
               {placesTogCategorie.length > 0
                 ? placesTogCategorie?.map(
                     (category: InspirationCategoryData) => (
@@ -79,12 +79,12 @@ export function NavigationMenuDemo({
                             <OptimizedImage
                               src={getImageUrl(category.image)}
                               alt={category.categoryName}
-                              className="h-[140px] min-w-[200px] rounded-xl"
+                              className="h-[120px] md:h-[140px] lg:h-[160px] w-full rounded-xl object-cover"
                             />
                           ) : (
-                            <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                            <Skeleton className="h-[120px] md:h-[140px] lg:h-[160px] w-full rounded-xl" />
                           )}
-                          {category.description.slice(0,16) + "...more"}
+                          <p className="line-clamp-2 text-sm">{category.description}</p>
                         </div>
                       </ListItem>
                     )

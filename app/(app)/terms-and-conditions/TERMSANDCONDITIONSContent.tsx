@@ -1,33 +1,13 @@
-"use client";
-
-import { useEffect } from "react";
+import AnimatedSection from "@/components/AnimatedSection";
 
 export default function TermsandconditionsContent() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-visible");
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
-    );
-
-    const elements = document.querySelectorAll(".animate-on-scroll");
-    elements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div className="min-h-screen bg-background py-12 px-4 md:px-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-8 text-primary animate-slide-up">Terms and Conditions</h1>
 
         <div className="space-y-8 text-foreground">
-          <section className="animate-slide-up animate-delay-200">
+          <AnimatedSection delay={200}>
             <p className="text-muted-foreground mb-4">
               Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </p>
@@ -35,18 +15,18 @@ export default function TermsandconditionsContent() {
               Welcome to ZoeHoliday. By accessing and using our website and services, you agree to be bound by these
               Terms and Conditions. Please read them carefully before making any bookings or using our services.
             </p>
-          </section>
+          </AnimatedSection>
 
-          <section className="animate-on-scroll">
+          <AnimatedSection>
             <h2 className="text-2xl font-semibold mb-4 text-primary">1. Acceptance of Terms</h2>
             <p>
               By accessing or using ZoeHoliday's website and services, you acknowledge that you have read, understood,
               and agree to be bound by these Terms and Conditions, along with our Privacy Policy. If you do not agree
               with any part of these terms, please do not use our services.
             </p>
-          </section>
+          </AnimatedSection>
 
-          <section className="animate-on-scroll">
+          <AnimatedSection>
             <h2 className="text-2xl font-semibold mb-4 text-primary">2. Services Provided</h2>
             <p>
               ZoeHoliday provides travel planning and booking services for destinations in Egypt and surrounding regions.
@@ -58,9 +38,9 @@ export default function TermsandconditionsContent() {
               <li>Travel consultation and destination information</li>
               <li>Guided tours and local experiences</li>
             </ul>
-          </section>
+          </AnimatedSection>
 
-          <section className="animate-on-scroll">
+          <AnimatedSection>
             <h2 className="text-2xl font-semibold mb-4 text-primary">3. Booking and Payment</h2>
             <div className="space-y-4">
               <div>
@@ -89,9 +69,9 @@ export default function TermsandconditionsContent() {
                 </p>
               </div>
             </div>
-          </section>
+          </AnimatedSection>
 
-          <section className="animate-on-scroll">
+          <AnimatedSection>
             <h2 className="text-2xl font-semibold mb-4 text-primary">4. Cancellation and Refund Policy</h2>
             <div className="space-y-4">
               <div>
@@ -120,9 +100,9 @@ export default function TermsandconditionsContent() {
                 </p>
               </div>
             </div>
-          </section>
+          </AnimatedSection>
 
-          <section className="animate-on-scroll">
+          <AnimatedSection>
             <h2 className="text-2xl font-semibold mb-4 text-primary">5. Travel Documentation and Requirements</h2>
             <p className="mb-2">
               It is your responsibility to ensure you have:
@@ -136,18 +116,18 @@ export default function TermsandconditionsContent() {
             <p className="mt-4">
               ZoeHoliday is not responsible for any issues arising from inadequate travel documentation.
             </p>
-          </section>
+          </AnimatedSection>
 
-          <section className="animate-on-scroll">
+          <AnimatedSection>
             <h2 className="text-2xl font-semibold mb-4 text-primary">6. Travel Insurance</h2>
             <p>
               We strongly recommend purchasing comprehensive travel insurance that covers trip cancellation, medical
               emergencies, personal injury, baggage loss, and other unforeseen circumstances. ZoeHoliday is not responsible
               for any losses not covered by insurance.
             </p>
-          </section>
+          </AnimatedSection>
 
-          <section className="animate-on-scroll">
+          <AnimatedSection>
             <h2 className="text-2xl font-semibold mb-4 text-primary">7. Liability and Limitations</h2>
             <div className="space-y-4">
               <div>
@@ -166,9 +146,9 @@ export default function TermsandconditionsContent() {
                 </p>
               </div>
             </div>
-          </section>
+          </AnimatedSection>
 
-          <section className="animate-on-scroll">
+          <AnimatedSection>
             <h2 className="text-2xl font-semibold mb-4 text-primary">8. User Conduct and Responsibilities</h2>
             <p className="mb-2">When using our services, you agree to:</p>
             <ul className="list-disc list-inside ml-4 space-y-1">
@@ -178,36 +158,36 @@ export default function TermsandconditionsContent() {
               <li>Not engage in any unlawful or prohibited activities</li>
               <li>Follow the instructions of tour guides and staff</li>
             </ul>
-          </section>
+          </AnimatedSection>
 
-          <section className="animate-on-scroll">
+          <AnimatedSection>
             <h2 className="text-2xl font-semibold mb-4 text-primary">9. Intellectual Property</h2>
             <p>
               All content on the ZoeHoliday website, including text, images, logos, graphics, and software, is the property
               of ZoeHoliday or its content suppliers and is protected by copyright and intellectual property laws. You may
               not reproduce, distribute, or use any content without our express written permission.
             </p>
-          </section>
+          </AnimatedSection>
 
-          <section className="animate-on-scroll">
+          <AnimatedSection>
             <h2 className="text-2xl font-semibold mb-4 text-primary">10. Changes to Services and Terms</h2>
             <p>
               We reserve the right to modify, suspend, or discontinue any aspect of our services at any time. We may also
               update these Terms and Conditions periodically. Continued use of our services after changes constitutes
               acceptance of the modified terms.
             </p>
-          </section>
+          </AnimatedSection>
 
-          <section className="animate-on-scroll">
+          <AnimatedSection>
             <h2 className="text-2xl font-semibold mb-4 text-primary">11. Dispute Resolution</h2>
             <p>
               Any disputes arising from these Terms and Conditions or the use of our services shall be governed by the
               laws of Egypt. We encourage customers to contact us first to resolve any issues amicably before pursuing
               legal action.
             </p>
-          </section>
+          </AnimatedSection>
 
-          <section className="animate-on-scroll">
+          <AnimatedSection>
             <h2 className="text-2xl font-semibold mb-4 text-primary">12. Contact Information</h2>
             <p className="mb-2">
               For questions or concerns about these Terms and Conditions, please contact us at:
@@ -217,14 +197,14 @@ export default function TermsandconditionsContent() {
               <p><strong>Phone:</strong> +20 155 510 0961</p>
               <p><strong>Address:</strong> Egypt, Cairo</p>
             </div>
-          </section>
+          </AnimatedSection>
 
-          <section className="border-t pt-6 mt-8">
+          <AnimatedSection className="border-t pt-6 mt-8">
             <p className="text-sm text-muted-foreground">
               By using ZoeHoliday's services, you acknowledge that you have read, understood, and agree to be bound by
               these Terms and Conditions.
             </p>
-          </section>
+          </AnimatedSection>
         </div>
       </div>
     </div>

@@ -1,6 +1,3 @@
-"use client";
-
-import Loading from "@/components/Loading";
 import OptimizedImage from "@/components/OptimizedImage";
 import {
   Breadcrumb,
@@ -11,32 +8,13 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
 import {
   InspirationCategory,
   InspirationCategoryData,
 } from "@/type/inspiration";
-import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { memo, useEffect } from "react";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
-const MainContentInpiration = () => {
-  useEffect(() => {
-    applyHieroglyphEffect();
-  }, []);
-
-  const { data, error, isLoading } = useQuery<InspirationCategory, Error>({
-    queryKey: ["fetchPlaceToGoCategories2"],
-    queryFn: () => fetchPlaceToGoCategories(),
-  });
-
-  // Trigger scroll animations when data loads
-  useScrollAnimation([data]);
-
-  if (isLoading) return <Loading />;
-  if (error instanceof Error) return <p>Error: {error.message}</p>;
+const MainContentInpiration = ({ data }: { data: InspirationCategory }) => {
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-b from-background to-secondary/20">
       <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
@@ -108,4 +86,5 @@ const MainContentInpiration = () => {
     </div>
   );
 };
-export default memo(MainContentInpiration);
+
+export default MainContentInpiration;

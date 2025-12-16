@@ -1,42 +1,91 @@
-"use client";
-
-import { useParams, useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { Metadata } from "next";
 import { fetchEventBySlug } from "@/fetch/events";
-import Loading from "@/components/Loading";
 import { UnifiedBreadcrumb } from "@/components/unified-breadcrumb";
 import EventDetailContent from "./EventDetailContent";
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import { notFound } from "next/navigation";
 
-export default function EventDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const slug = params.slug as string;
+type Props = {
+  params: Promise<{ slug: string }>;
+};
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["event", slug],
-    queryFn: () => fetchEventBySlug(slug),
-    enabled: !!slug,
-  });
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  try {
+    const resolvedParams = await params;
+    const slug = decodeURIComponent(resolvedParams.slug);
+    const data = await fetchEventBySlug(slug);
+    const event = data?.data;
 
-  if (isLoading) return <Loading />;
+    if (!event) {
+      return {
+        title: "Event Not Found",
+        description: "The requested event could not be found.",
+      };
+    }
 
-  if (error || !data?.data) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Event Not Found</h1>
-          <p className="text-muted-foreground mb-6">
-            The event you're looking for doesn't exist or has been removed.
-          </p>
-          <button
-            onClick={() => router.push("/events")}
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition"
-          >
-            View All Events
-          </button>
-        </div>
-      </div>
-    );
+    const imageUrl = event.featuredImage?.url || "/og-events.jpg";
+    const fullImageUrl = imageUrl.startsWith("http")
+      ? imageUrl
+      : `${process.env.NEXT_PUBLIC_STRAPI_URL}${imageUrl}`;
+
+    return {
+      title: `${event.title} - Egypt Event | ZoeHoliday`,
+      description: event.description || `Join us for ${event.title} in ${event.location}. ${event.eventType} event happening on ${event.startDate}.`,
+      keywords: [
+        event.title,
+        event.eventType,
+        event.location || "Egypt",
+        "Egypt events",
+        "Cairo events",
+        "events in Egypt",
+      ],
+      openGraph: {
+        title: `${event.title} | ZoeHoliday`,
+        description: event.description,
+        type: "website",
+        url: `/events/${slug}`,
+        images: [
+          {
+            url: fullImageUrl,
+            width: 1200,
+            height: 630,
+            alt: event.title,
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${event.title} | ZoeHoliday`,
+        description: event.description,
+        images: [fullImageUrl],
+      },
+      alternates: {
+        canonical: `/events/${slug}`,
+      },
+    };
+  } catch (error) {
+    console.error("Error generating event metadata:", error);
+    return {
+      title: "Egypt Event",
+      description: "Discover exciting events in Egypt with ZoeHoliday.",
+    };
+  }
+}
+
+export default async function EventDetailPage({ params }: Props) {
+  const resolvedParams = await params;
+  const slug = decodeURIComponent(resolvedParams.slug);
+
+  let data;
+  try {
+    data = await fetchEventBySlug(slug);
+  } catch (error) {
+    console.error("Error fetching event:", error);
+    notFound();
+  }
+
+  if (!data?.data) {
+    notFound();
   }
 
   const event = data.data;
@@ -51,7 +100,15 @@ export default function EventDetailPage() {
         ]}
       />
 
-      <EventDetailContent event={event} />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", item: "/" },
+          { name: "Events", item: "/events" },
+          { name: event.title, item: `/events/${slug}` }
+        ]}
+      />
+
+      <EventDetailContent event={event} initialData={data} />
     </div>
   );
 }

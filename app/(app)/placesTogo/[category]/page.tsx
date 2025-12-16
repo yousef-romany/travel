@@ -41,6 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const PlacesToGoDynamic = async ({ params }: Props) => {
   const resolvedParams = await params;
   const category = decodeURIComponent(resolvedParams.category);
+  const data = await fetchPlaceToGoCategoriesOneCategory(category);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -66,7 +67,7 @@ const PlacesToGoDynamic = async ({ params }: Props) => {
         ]}
       />
 
-      <IndexPage slug={category} />
+      <IndexPage slug={category} data={data} />
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import MainContentInpiration from "./components/MainContentInpiration";
 import type { Metadata } from "next";
+import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 export const metadata: Metadata = {
   title: "Egypt Destinations & Places to Visit | ZoeHoliday",
@@ -35,9 +37,16 @@ export const metadata: Metadata = {
   },
 };
 
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+const InspirationPage = async () => {
+  let data;
+  try {
+    data = await fetchPlaceToGoCategories();
+  } catch (error) {
+    console.error("Error fetching place to go categories:", error);
+    // Return empty data structure for build time
+    data = { data: [], meta: { pagination: { page: 1, pageSize: 25, pageCount: 0, total: 0 } } };
+  }
 
-const InspirationPage = () => {
   return (
     <>
       <BreadcrumbSchema
@@ -46,7 +55,7 @@ const InspirationPage = () => {
           { name: "Places To Go", item: "/placesTogo" }
         ]}
       />
-      <MainContentInpiration />
+      <MainContentInpiration data={data} />
     </>
   );
 };

@@ -1,35 +1,19 @@
-"use client";
-import { memo, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchInspirationOneBlog } from "@/fetch/category";
 import MDXRenderer from "@/components/MDXRenderer";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
-import { PlacesToGoBlogs, instagramPostsType, meta } from "@/type/placesToGo";
-import { FaInstagram, FaYoutube } from "react-icons/fa";
-import InstagramModal from "@/components/InstagramModal";
+import { InspireBlogs, meta } from "@/type/inspiration";
+import { FaYoutube } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
-import Loading from "@/components/Loading";
-import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
 import { Media } from "@/type/programs";
 
-const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
-  useEffect(() => {
-    applyHieroglyphEffect();
-  }, []);
-
-  const { data, error, isLoading } = useQuery<
-    { data: PlacesToGoBlogs[]; meta: meta },
-    Error
-  >({
-    queryKey: ["fetchInspirationOneBlog", slug],
-    queryFn: () => fetchInspirationOneBlog(decodeURIComponent(slug)),
-  });
-
-  if (isLoading) return <Loading />;
-  if (error instanceof Error) return <p className="text-center text-red-500 py-8">Error: {error.message}</p>;
-
+const IndexPageInspireBlog = ({
+  slug,
+  data
+}: {
+  slug: string;
+  data: { data: InspireBlogs[]; meta: meta };
+}) => {
   const blog = data?.data?.at(-1);
   if (!blog) return <p className="text-center py-8">Blog not found</p>;
 
@@ -70,32 +54,6 @@ const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
           </div>
         </div>
 
-        {/* Instagram Section */}
-        {(blog.instagram_posts?.length || 0) > 0 && (
-          <section className="mb-12">
-            <div className="flex items-center gap-3 mb-6">
-              <FaInstagram className="text-4xl text-pink-500" />
-              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
-                Instagram Highlights
-              </h2>
-            </div>
-            <p className="text-muted-foreground text-lg mb-8">
-              See what travelers are sharing about {blog.title}
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(blog.instagram_posts as instagramPostsType[] | undefined)?.map((itemPost: instagramPostsType) => (
-                <div
-                  key={itemPost.id}
-                  className="transform transition-all duration-300 hover:scale-105"
-                >
-                  <InstagramModal idPost={itemPost.idPost} />
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
         {/* YouTube Section */}
         {blog.youtubeUrl && (
           <section className="mb-12">
@@ -120,4 +78,4 @@ const IndexPageInspireBlog = ({ slug }: { slug: string }) => {
   );
 };
 
-export default memo(IndexPageInspireBlog);
+export default IndexPageInspireBlog;

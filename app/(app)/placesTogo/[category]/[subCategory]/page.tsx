@@ -51,6 +51,7 @@ const PlacesToGoDynamic = async ({ params }: Props) => {
   const resolvedParams = await params;
   const category = decodeURIComponent(resolvedParams.category);
   const subCategory = decodeURIComponent(resolvedParams.subCategory);
+  const data = await fetchPlaceToOneSubCategory(subCategory);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -100,6 +101,7 @@ const PlacesToGoDynamic = async ({ params }: Props) => {
       <IndexPageInspireSubCategory
         routes={category}
         slug={subCategory}
+        data={data}
       />
     </div>
   );

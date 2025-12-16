@@ -90,7 +90,7 @@ const nextConfig: NextConfig = {
                   "font-src 'self' data: https://fonts.gstatic.com",
                   "connect-src 'self' https://dashboard.zoeholidays.com https://www.google-analytics.com https://graph.instagram.com https://*.cdninstagram.com https://*.fbcdn.net https://translate.googleapis.com",
                   "media-src 'self' blob: data: https:",
-                  "frame-src 'self' https://www.google.com https://www.instagram.com https://translate.google.com",
+                  "frame-src 'self' https://www.google.com https://www.instagram.com https://www.youtube.com https://translate.google.com",
                   "worker-src 'self' blob:",
                   "object-src 'none'",
                   "base-uri 'self'",

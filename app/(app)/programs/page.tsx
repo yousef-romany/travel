@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import PageContent from "./components/PageContent";
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import { fetchProgramsList } from "@/fetch/programs";
 
 export const metadata: Metadata = {
   title: "Egypt Travel Programs & Tour Packages | ZoeHoliday",
@@ -35,9 +37,15 @@ export const metadata: Metadata = {
   },
 };
 
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+export default async function Programs() {
+  let data;
+  try {
+    data = await fetchProgramsList(100);
+  } catch (error) {
+    console.error("Error fetching programs:", error);
+    data = { data: [], meta: { pagination: { page: 1, pageSize: 100, pageCount: 0, total: 0 } } };
+  }
 
-const Programs = () => {
   return (
     <>
       <BreadcrumbSchema
@@ -46,9 +54,7 @@ const Programs = () => {
           { name: "Programs", item: "/programs" }
         ]}
       />
-      <PageContent />
+      <PageContent initialData={data} />
     </>
   );
-};
-
-export default Programs;
+}

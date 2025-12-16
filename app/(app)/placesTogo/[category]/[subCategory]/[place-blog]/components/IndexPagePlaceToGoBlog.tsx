@@ -1,36 +1,25 @@
-"use client";
-import { memo, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import MDXRenderer from "@/components/MDXRenderer";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
-import { fetchPlaceToGoOneBlog } from "@/fetch/placesToGo";
 import MapComponent from "@/components/Map";
 import { instagramPostsType, meta, PlacesToGoBlogs } from "@/type/placesToGo";
 import { FaMapMarkerAlt, FaInstagram, FaYoutube } from "react-icons/fa";
 import InstagramModal from "@/components/InstagramModal";
 import { Separator } from "@/components/ui/separator";
-import Loading from "@/components/Loading";
-import applyHieroglyphEffect from "@/utils/applyHieroglyphEffect";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
 import RelatedPrograms from "./RelatedPrograms";
 
-const IndexPagePlaceToGoBlog = ({ slug, category, subCategory }: { slug: string; category: string; subCategory: string }) => {
-  useEffect(() => {
-    applyHieroglyphEffect();
-  }, []);
-
-  const { data, error, isLoading } = useQuery<
-    { data: PlacesToGoBlogs[]; meta: meta },
-    Error
-  >({
-    queryKey: ["fetchPlaceToGoOneBlog", slug],
-    queryFn: () => fetchPlaceToGoOneBlog(decodeURIComponent(slug)),
-  });
-
-  if (isLoading) return <Loading />;
-  if (error instanceof Error) return <p>Error: {error.message}</p>;
-
+const IndexPagePlaceToGoBlog = ({
+  slug,
+  category,
+  subCategory,
+  data
+}: {
+  slug: string;
+  category: string;
+  subCategory: string;
+  data: { data: PlacesToGoBlogs[]; meta: meta };
+}) => {
   const place = data?.data?.at(-1);
   if (!place) return <p>Place not found</p>;
 
@@ -164,4 +153,4 @@ const IndexPagePlaceToGoBlog = ({ slug, category, subCategory }: { slug: string;
   );
 };
 
-export default memo(IndexPagePlaceToGoBlog);
+export default IndexPagePlaceToGoBlog;
