@@ -1,58 +1,65 @@
-# 🚀 Quick Start - Production Fixes Applied
+# ⚡ QUICK START - Fix Google Content Issue
 
-## ⚡ Start Testing (2 Commands)
+## 🎯 The Problem
+Your website shows "No programs available" because **Strapi API token is invalid (401 errors)**.
 
+## ✅ The Solution (10 minutes)
+
+### 1. Get New Token (5 min)
+1. Go to: **https://dashboard.zoeholidays.com/admin**
+2. Settings → API Tokens → Create new
+3. Type: **Full access**, Duration: **Unlimited**
+4. Save and **COPY THE TOKEN** (shown only once!)
+
+### 2. Update .env (1 min)
 ```bash
-# Terminal 1 - Start Strapi Backend
-cd ../backend && npm run develop
-
-# Terminal 2 - Start Next.js
-npm run dev
+nano .env
 ```
 
-Then open: **https://zoeholidays.com**
+Replace line 3 with your new token:
+```
+NEXT_PUBLIC_STRAPI_TOKEN=YOUR_NEW_TOKEN_HERE
+```
 
----
+Save: `Ctrl+X`, `Y`, `Enter`
 
-## 📋 What Was Fixed
+### 3. Verify (1 min)
+```bash
+node scripts/verify-token.js
+```
 
-✅ **Bookings API 400 Error** - /me page now loads bookings correctly
-✅ **Homepage Programs** - Now shows 6 programs instead of 3
-✅ **Recently Viewed** - Tracks last 10 programs you viewed
-✅ **Performance** - 3x faster image loading with lazy loading
+Must show: `✅ SUCCESS: All API endpoints accessible!`
 
----
+### 4. Rebuild (3 min)
+```bash
+rm -rf .next
+npm run build
+```
 
-## 🧪 Quick Tests
+Watch for: NO "401" or "Error fetching..." messages
 
-### 1. Test Bookings (30 seconds)
-1. Login → Go to `/me` → Click "Bookings" tab
-2. ✅ Should load without errors
+### 5. Deploy
+Push to production however you normally deploy.
 
-### 2. Test Homepage (10 seconds)
-1. Go to homepage → Scroll to "Programs" section
-2. ✅ Should see 6 program cards
+### 6. Request Google Re-index
+- Go to: **https://search.google.com/search-console**
+- URL Inspection → Enter: `https://zoeholidays.com`
+- Click: **Request Indexing**
 
-### 3. Test Recently Viewed (1 minute)
-1. Login → View 2-3 different programs
-2. Go back to homepage
-3. ✅ Should see "Continue Exploring" section with programs you viewed
+## ⏱️ Results
+- **Today:** Site has content
+- **3-7 days:** Google re-crawls
+- **1-2 weeks:** See improved search results
 
-### 4. Test Performance (30 seconds)
-1. Open DevTools → Network → Img
-2. Go to any program page
-3. ✅ Images should load lazily as you scroll
+## 🆘 If Stuck
+Read: **COMPLETE_FIX_GUIDE.md** for detailed instructions
 
----
+## ✅ Success = No More 401 Errors!
+```bash
+# All these should work:
+node scripts/verify-token.js          # ✅ All green
+node scripts/check-strapi-content.js   # ✅ Shows item counts
+npm run build                          # ✅ No errors
+```
 
-## 📄 Read More
-
-- **PRODUCTION_FIXES_SUMMARY.md** - Full technical details
-- **TESTING_GUIDE.md** - Complete testing instructions
-- **FIXES_APPLIED.md** - Executive summary
-
----
-
-## 🎯 Status: READY FOR PRODUCTION ✅
-
-All issues resolved with high performance and high quality design!
+That's it! 🎉

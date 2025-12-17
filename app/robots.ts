@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
 
   return {
     rules: [
@@ -20,7 +20,15 @@ export default function robots(): MetadataRoute.Robots {
           '/wishlist',
         ],
       },
+      {
+        userAgent: 'Googlebot-Image',
+        allow: '/',
+        crawlDelay: 1,
+      },
     ],
-    sitemap: `${siteUrl}/sitemap.xml`,
+    sitemap: [
+      `${siteUrl}/sitemap.xml`,
+      `${siteUrl}/image-sitemap.xml`,
+    ],
   };
 }
