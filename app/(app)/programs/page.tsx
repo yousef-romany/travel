@@ -4,28 +4,36 @@ import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import CollectionPageSchema from "@/components/seo/CollectionPageSchema";
 import { fetchProgramsList } from "@/fetch/programs";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+const OG_IMAGE = `${SITE_URL}/og-programs.jpg`;
+
 export const metadata: Metadata = {
   title: "Egypt Travel Programs & Tour Packages | ZoeHoliday",
   description: "Explore our curated Egypt travel programs and tour packages. From pyramids to Nile cruises, find the perfect Egyptian adventure with expert guides, luxury accommodations, and unforgettable experiences.",
   keywords: [
     "Egypt tour packages", "Egypt travel programs", "pyramids tour", "Nile cruise packages",
     "Cairo tours", "Luxor Aswan tours", "Egypt vacation packages", "Egyptian holiday packages",
-    "luxury Egypt tours", "family Egypt tours", "honeymoon Egypt packages", "adventure tours Egypt"
+    "luxury Egypt tours", "family Egypt tours", "honeymoon Egypt packages", "adventure tours Egypt",
+    "Egypt 2025 tours", "best Egypt tours", "affordable Egypt packages"
   ],
+  authors: [{ name: "ZoeHoliday" }],
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/programs`,
+    canonical: `${SITE_URL}/programs`,
   },
   openGraph: {
     title: "Egypt Travel Programs & Tour Packages | ZoeHoliday",
     description: "Explore our curated Egypt travel programs and tour packages. From pyramids to Nile cruises, find the perfect Egyptian adventure.",
     type: "website",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/programs`,
+    url: `${SITE_URL}/programs`,
+    siteName: "ZoeHoliday",
+    locale: "en_US",
     images: [
       {
-        url: "/og-programs.jpg",
+        url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "Egypt Travel Programs",
+        alt: "Egypt Travel Programs - Pyramids, Nile Cruises & Ancient Temples",
+        type: "image/jpeg",
       },
     ],
   },
@@ -33,8 +41,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Egypt Travel Programs & Tour Packages | ZoeHoliday",
     description: "Explore our curated Egypt travel programs and tour packages. From pyramids to Nile cruises, find the perfect Egyptian adventure.",
-    images: ["/og-programs.jpg"],
+    images: [OG_IMAGE],
     creator: "@zoeholiday",
+    site: "@zoeholiday",
   },
 };
 

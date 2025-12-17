@@ -3,28 +3,36 @@ import type { Metadata } from "next";
 import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+const OG_IMAGE = `${SITE_URL}/og-places.jpg`;
+
 export const metadata: Metadata = {
   title: "Egypt Destinations & Places to Visit | ZoeHoliday",
   description: "Explore the most iconic destinations across Egypt. From the ancient pyramids of Giza to the temples of Luxor, discover the best places to visit in Egypt with ZoeHoliday travel guides.",
   keywords: [
     "Egypt destinations", "places to visit in Egypt", "Cairo attractions", "Luxor temples",
     "Aswan landmarks", "Alexandria Egypt", "Red Sea resorts", "Egyptian monuments",
-    "Egypt tourist spots", "best places in Egypt", "Egypt sightseeing", "historical places Egypt"
+    "Egypt tourist spots", "best places in Egypt", "Egypt sightseeing", "historical places Egypt",
+    "Egypt travel guide", "Egypt landmarks", "ancient Egypt sites"
   ],
+  authors: [{ name: "ZoeHoliday" }],
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesTogo`,
+    canonical: `${SITE_URL}/placesTogo`,
   },
   openGraph: {
     title: "Egypt Destinations & Places to Visit | ZoeHoliday",
     description: "Explore the most iconic destinations across Egypt. From the ancient pyramids to beautiful beaches, discover the best places to visit.",
     type: "website",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesTogo`,
+    url: `${SITE_URL}/placesTogo`,
+    siteName: "ZoeHoliday",
+    locale: "en_US",
     images: [
       {
-        url: "/og-places.jpg",
+        url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "Egypt Destinations",
+        alt: "Egypt Destinations - Pyramids, Temples, Museums & Historical Sites",
+        type: "image/jpeg",
       },
     ],
   },
@@ -32,8 +40,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Egypt Destinations & Places to Visit | ZoeHoliday",
     description: "Explore the most iconic destinations across Egypt. From the ancient pyramids to beautiful beaches, discover the best places to visit.",
-    images: ["/og-places.jpg"],
+    images: [OG_IMAGE],
     creator: "@zoeholiday",
+    site: "@zoeholiday",
   },
 };
 

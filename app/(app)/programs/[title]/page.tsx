@@ -7,6 +7,7 @@ import TourPackageSchema from "@/components/seo/TourPackageSchema";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import ProgramFAQGenerator from "@/components/seo/ProgramFAQGenerator";
 import ImageObjectSchema from "@/components/seo/ImageObjectSchema";
+import ReviewSchema from "@/components/seo/ReviewSchema";
 import { fetchProgramTestimonials } from "@/fetch/testimonials";
 import { ContentStep } from "@/type/programs";
 import { ProgramImageCarousel } from "./components/ProgramImageCarousel";
@@ -164,6 +165,27 @@ export default async function ProgramPage({ params }: Props) {
           description={program.descraption || program.overView}
           width={1200}
           height={630}
+        />
+      )}
+      {/* Review Schema */}
+      {testimonials?.data && testimonials.data.length > 0 && (
+        <ReviewSchema
+          itemName={program.title || "Egypt Tour"}
+          itemType="TouristTrip"
+          itemUrl={`/programs/${program.documentId}`}
+          itemImage={imageUrl}
+          reviews={testimonials.data.map((testimonial) => ({
+            author: testimonial.reviewerName || testimonial.user?.profile?.firstName || testimonial.user?.username || "Anonymous",
+            rating: testimonial.rating,
+            reviewBody: testimonial.comment,
+            datePublished: testimonial.reviewDate || testimonial.createdAt,
+          }))}
+          aggregateRating={{
+            ratingValue: Number(program.rating) || 5,
+            reviewCount: testimonials.data.length,
+            bestRating: 5,
+            worstRating: 1,
+          }}
         />
       )}
 

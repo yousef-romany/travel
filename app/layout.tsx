@@ -7,6 +7,8 @@ import Script from "next/script";
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "@/components/ui/sonner";
 import OrganizationSchema from "@/components/seo/OrganizationSchema";
+import WebSiteSchema from "@/components/seo/WebSiteSchema";
+import ServiceSchema from "@/components/seo/ServiceSchema";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import BackgroundAudio from "@/components/BackgroundAudio";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
@@ -127,11 +129,26 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <head>
+        {/* DNS Prefetch & Preconnect for Performance */}
+        <link rel="preconnect" href="https://dashboard.zoeholidays.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://dashboard.zoeholidays.com" />
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="preconnect" href="https://translate.google.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://translate.google.com" />
+        <link rel="preconnect" href="https://cdninstagram.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdninstagram.com" />
+        <link rel="dns-prefetch" href="https://unpkg.com" />
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>
         <OrganizationSchema />
+        <WebSiteSchema />
+        <ServiceSchema />
 
+        <meta name="google-site-verification" content="lPn8MP-8chhi7XKEZeAbSyMqBcRpx4khZK6aKDqS4vs" />
         {/* PWA Meta Tags */}
         <meta name="application-name" content="ZoeHoliday" />
         <meta name="mobile-web-app-capable" content="yes" />

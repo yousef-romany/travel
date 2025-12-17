@@ -10,6 +10,11 @@ interface Program {
   title: string;
   updatedAt?: string;
   Location?: string;
+  images?: Array<{
+    image?: string;
+    url?: string;
+    imageUrl?: string;
+  }>;
 }
 
 interface Event {
@@ -27,7 +32,7 @@ interface PlaceCategory {
 
 async function getPrograms(): Promise<Program[]> {
   try {
-    const response = await axios.get(`${API_URL}/api/programs`, {
+    const response = await axios.get(`${API_URL}/api/programs?populate=images`, {
       headers: {
         Authorization: `Bearer ${API_TOKEN}`,
       },
@@ -130,6 +135,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
+      url: `${SITE_URL}/promo-codes`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.8,
+    },
+    {
       url: `${SITE_URL}/about`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -143,13 +154,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Dynamic program pages
-  const programPages: MetadataRoute.Sitemap = programs.map((program) => ({
-    url: `${SITE_URL}/programs/${program.documentId}`,
-    lastModified: program.updatedAt ? new Date(program.updatedAt) : new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }));
+  // Dynamic program pages with images
+  const programPages: MetadataRoute.Sitemap = programs.map((program) => {
+    const firstImage = program.images?.[0];
+    const imageUrl = firstImage?.image || firstImage?.url || firstImage?.imageUrl;
+    const fullImageUrl = imageUrl?.startsWith('http')
+      ? imageUrl
+      : imageUrl
+        ? `${API_URL}${imageUrl}`
+        : undefined;
+
+    return {
+      url: `${SITE_URL}/programs/${program.documentId}`,
+      lastModified: program.updatedAt ? new Date(program.updatedAt) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+      images: fullImageUrl ? [fullImageUrl] : undefined,
+    };
+  });
 
   // Dynamic event pages
   const eventPages: MetadataRoute.Sitemap = events.map((event) => ({
