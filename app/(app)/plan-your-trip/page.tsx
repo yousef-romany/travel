@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import PlanYourTripContent from "./PlanYourTripContent";
+import PlanTripHero from "@/components/plan-trip-hero";
 
 export const metadata: Metadata = {
   title: "Plan Your Egypt Trip - Custom Itinerary Builder",
@@ -28,5 +29,10 @@ export const metadata: Metadata = {
 };
 
 export default function PlanYourTripPage() {
-  return <PlanYourTripContent />;
+  return (
+    <>
+      <PlanTripHero />
+      <PlanYourTripContent />
+    </>
+  );
 }

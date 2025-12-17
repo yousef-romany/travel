@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PageContent from "./components/PageContent";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import CollectionPageSchema from "@/components/seo/CollectionPageSchema";
 import { fetchProgramsList } from "@/fetch/programs";
 
 export const metadata: Metadata = {
@@ -46,6 +47,14 @@ export default async function Programs() {
     data = { data: [], meta: { pagination: { page: 1, pageSize: 100, pageCount: 0, total: 0 } } };
   }
 
+  // Prepare items for CollectionPageSchema
+  const programItems = data.data.map((program) => ({
+    name: program.title,
+    url: `/programs/${program.documentId}`,
+    description: program.descraption,
+    image: program.images?.[0]?.url || '',
+  }));
+
   return (
     <>
       <BreadcrumbSchema
@@ -53,6 +62,12 @@ export default async function Programs() {
           { name: "Home", item: "/" },
           { name: "Programs", item: "/programs" }
         ]}
+      />
+      <CollectionPageSchema
+        name="Egypt Travel Programs & Tour Packages"
+        description="Explore our curated collection of Egypt travel programs and tour packages. From pyramids to Nile cruises, find the perfect Egyptian adventure."
+        url="/programs"
+        items={programItems.slice(0, 20)}
       />
       <PageContent initialData={data} />
     </>

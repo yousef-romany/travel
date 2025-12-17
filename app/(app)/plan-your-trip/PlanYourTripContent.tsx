@@ -24,7 +24,6 @@ import { useAuth } from "@/context/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import { getImageUrl } from "@/lib/utils";
-import PlanTripHero from "@/components/plan-trip-hero";
 
 export default function PlanYourTripContent() {
   const router = useRouter();
@@ -116,9 +115,6 @@ export default function PlanYourTripContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
-      {/* Hero Section */}
-      <PlanTripHero />
-
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 max-w-7xl relative z-10">
         {/* Trips Section */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12 animate-slide-up">
