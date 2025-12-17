@@ -34,7 +34,7 @@ export function NavigationMenuDemo({
             Be inspired
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-4 p-6 md:w-[450px] lg:w-full lg:max-w-[700px] md:grid-cols-2 lg:grid-cols-2">
+            <ul className="grid gap-4 p-6 md:w-[500px] lg:w-full lg:max-w-[900px] xl:max-w-[1100px] md:grid-cols-2 lg:grid-cols-3">
               {categories.length > 0
                 ? categories?.map((category: InspirationCategoryData) => (
                     <ListItem
@@ -70,7 +70,7 @@ export function NavigationMenuDemo({
             Places to go
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-4 p-6 md:w-[450px] lg:w-full lg:max-w-[700px] md:grid-cols-2 lg:grid-cols-2">
+            <ul className="grid gap-4 p-6 md:w-[500px] lg:w-full lg:max-w-[900px] xl:max-w-[1100px] md:grid-cols-2 lg:grid-cols-3">
               {placesTogCategorie.length > 0
                 ? placesTogCategorie?.map(
                     (category: InspirationCategoryData) => (

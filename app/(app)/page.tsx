@@ -12,8 +12,8 @@ import TestimonialsSection from "./components/home/server/TestimonialsSection";
 import InstagramSection from "./components/home/server/InstagramSection";
 
 export const metadata: Metadata = {
-  title: "ZoeHoliday - Explore the Beauty of Egypt | Travel & Tour Packages",
-  description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure. Book your Egyptian journey today with our curated travel packages and tours. Explore pyramids, Nile cruises, and ancient temples.",
+  title: "Egypt Tours & Travel Packages | ZoeHoliday - Pyramids, Nile Cruises & Ancient Temples",
+  description: "Explore Egypt with ZoeHoliday! Visit Pyramids of Giza, Luxor temples, Nile cruises & Red Sea. Best time: October-April with perfect weather. Expert local guides, custom tours, best prices. Book your Egyptian adventure today!",
   keywords: [
     "Egypt travel", "Egypt tours", "Egyptian vacation", "pyramids tour", "Nile cruise",
     "Cairo tours", "Luxor travel", "Egyptian holidays", "travel packages Egypt", "Egypt tourism",
@@ -21,31 +21,32 @@ export const metadata: Metadata = {
     "Egypt tour operator", "Egyptian adventure", "ancient Egypt tours", "Karnak Temple",
     "Abu Simbel", "Egypt cultural tours", "Egypt family vacation", "Egypt honeymoon packages",
     "luxury Egypt tours", "Egypt vacation packages 2025", "best Egypt travel agency",
+    "best time to visit Egypt", "Egypt October to April", "Egypt weather", "Egypt winter travel",
     "ZoeHoliday"
   ],
   alternates: {
     canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com',
   },
   openGraph: {
-    title: "ZoeHoliday - Explore the Beauty of Egypt",
-    description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure.",
+    title: "Egypt Tours & Packages | Pyramids, Nile Cruises & Temples | ZoeHoliday",
+    description: "Visit Egypt's Pyramids, Luxor temples, Nile cruises & Red Sea. Best time: October-April. Expert guides, custom tours, 24/7 support. Book your adventure with ZoeHoliday!",
     type: "website",
     url: process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com",
-    siteName: "ZoeHoliday",
+    siteName: "ZoeHoliday - Egypt Travel & Tours",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "https://res.cloudinary.com/dir8ao2mt/image/upload/v1764631854/__1_l2obyo.jpg",
         width: 1200,
         height: 630,
-        alt: "ZoeHoliday - Egypt Travel",
+        alt: "ZoeHoliday Egypt Tours - Pyramids of Giza, Nile River Cruises, Luxor Temples and Red Sea Adventures",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ZoeHoliday - Explore the Beauty of Egypt",
-    description: "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure.",
-    images: ["/og-image.jpg"],
+    title: "Egypt Tours & Travel Packages | Pyramids, Nile & Temples | ZoeHoliday",
+    description: "Explore Egypt's Pyramids, Nile cruises & temples. Best time: October-April. Expert guides, custom tours. Book with ZoeHoliday!",
+    images: ["https://res.cloudinary.com/dir8ao2mt/image/upload/v1764631854/__1_l2obyo.jpg"],
     creator: "@zoeholiday",
   },
 };
