@@ -51,13 +51,4 @@ export default function GoogleAnalytics() {
   );
 }
 
-// Extend the Window interface for TypeScript
-declare global {
-  interface Window {
-    gtag: (
-      command: string,
-      targetId: string,
-      config?: Record<string, unknown>
-    ) => void;
-  }
-}
+// Global gtag type is defined in types/global.d.ts

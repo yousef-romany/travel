@@ -54,7 +54,7 @@ export interface ProgramsResponse {
  */
 export const fetchProgramsList = async (limit = 100): Promise<ProgramsResponse> => {
   const retries = 2;
-  let lastError: Error;
+  let lastError: Error = new Error('Failed to fetch programs');
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
@@ -71,9 +71,10 @@ export const fetchProgramsList = async (limit = 100): Promise<ProgramsResponse> 
       return response.data;
     } catch (error) {
       lastError = error as Error;
+      const axiosError = error as any;
 
       // Don't retry on client errors (4xx)
-      if (error.response?.status >= 400 && error.response?.status < 500) {
+      if (axiosError.response?.status >= 400 && axiosError.response?.status < 500) {
         break;
       }
 

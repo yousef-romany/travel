@@ -1,5 +1,10 @@
 import Script from "next/script";
 
+/**
+ * Enhanced ImageObject Schema with Detailed Metadata
+ * Improves image search rankings, attribution, and copyright protection
+ */
+
 interface ImageObjectSchemaProps {
   url: string;
   name: string;
@@ -11,6 +16,25 @@ interface ImageObjectSchemaProps {
   thumbnail?: string;
   uploadDate?: string;
   author?: string;
+  encodingFormat?: string;
+  creator?: {
+    name: string;
+    url?: string;
+  };
+  creditText?: string;
+  copyrightHolder?: string;
+  copyrightYear?: number;
+  license?: string;
+  acquireLicensePage?: string;
+  representativeOfPage?: boolean;
+  exifData?: {
+    camera?: string;
+    lens?: string;
+    focalLength?: string;
+    aperture?: string;
+    iso?: string;
+    exposureTime?: string;
+  };
 }
 
 export default function ImageObjectSchema({
@@ -24,6 +48,15 @@ export default function ImageObjectSchema({
   thumbnail,
   uploadDate,
   author = "ZoeHoliday",
+  encodingFormat = 'image/jpeg',
+  creator,
+  creditText,
+  copyrightHolder = 'ZoeHoliday',
+  copyrightYear = new Date().getFullYear(),
+  license,
+  acquireLicensePage,
+  representativeOfPage = false,
+  exifData,
 }: ImageObjectSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
@@ -33,14 +66,27 @@ export default function ImageObjectSchema({
     "name": name,
     "caption": caption || name,
     "description": description || caption || name,
+    "encodingFormat": encodingFormat,
     "author": {
       "@type": "Organization",
       "name": author,
     },
+    ...(creator && {
+      "creator": {
+        "@type": creator.url ? "Organization" : "Person",
+        "name": creator.name,
+        ...(creator.url && { "url": creator.url }),
+      },
+    }),
+    ...(creditText && { "creditText": creditText }),
     "copyrightHolder": {
       "@type": "Organization",
-      "name": author,
+      "name": copyrightHolder,
     },
+    "copyrightYear": copyrightYear,
+    ...(license && { "license": license }),
+    ...(acquireLicensePage && { "acquireLicensePage": acquireLicensePage }),
+    "representativeOfPage": representativeOfPage,
     ...(width && height && {
       "width": width,
       "height": height,
@@ -54,6 +100,7 @@ export default function ImageObjectSchema({
     ...(uploadDate && {
       "uploadDate": uploadDate,
     }),
+    ...(exifData && { "exifData": exifData }),
   };
 
   return (

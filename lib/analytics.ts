@@ -431,13 +431,4 @@ export const trackThemeToggle = (theme: "light" | "dark") => {
   });
 };
 
-// Extend Window interface
-declare global {
-  interface Window {
-    gtag: (
-      command: string,
-      targetIdOrEventName: string,
-      config?: Record<string, unknown>
-    ) => void;
-  }
-}
+// Global gtag type is defined in types/global.d.ts

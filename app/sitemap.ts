@@ -154,7 +154,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Dynamic program pages with images
+  // Dynamic program pages with intelligent priority and changefreq
   const programPages: MetadataRoute.Sitemap = programs.map((program) => {
     const firstImage = program.images?.[0];
     const imageUrl = firstImage?.image || firstImage?.url || firstImage?.imageUrl;
@@ -164,22 +164,57 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ? `${API_URL}${imageUrl}`
         : undefined;
 
+    // Calculate intelligent priority based on freshness
+    const lastModified = program.updatedAt ? new Date(program.updatedAt) : new Date();
+    const daysSinceUpdate = Math.floor((Date.now() - lastModified.getTime()) / (1000 * 60 * 60 * 24));
+
+    // Priority: 0.95 for new/recently updated, decreases with age
+    let priority = 0.95;
+    if (daysSinceUpdate > 30) priority = 0.85;
+    if (daysSinceUpdate > 90) priority = 0.8;
+    if (daysSinceUpdate > 180) priority = 0.75;
+
+    // Change frequency based on update recency
+    let changeFrequency: 'daily' | 'weekly' | 'monthly' = 'weekly';
+    if (daysSinceUpdate < 7) changeFrequency = 'daily';
+    if (daysSinceUpdate > 90) changeFrequency = 'monthly';
+
     return {
       url: `${SITE_URL}/programs/${program.documentId}`,
-      lastModified: program.updatedAt ? new Date(program.updatedAt) : new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
+      lastModified,
+      changeFrequency,
+      priority,
       images: fullImageUrl ? [fullImageUrl] : undefined,
     };
   });
 
-  // Dynamic event pages
-  const eventPages: MetadataRoute.Sitemap = events.map((event) => ({
-    url: `${SITE_URL}/events/${event.documentId}`,
-    lastModified: event.updatedAt ? new Date(event.updatedAt) : new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }));
+  // Dynamic event pages with time-sensitive priority
+  const eventPages: MetadataRoute.Sitemap = events.map((event) => {
+    const lastModified = event.updatedAt ? new Date(event.updatedAt) : new Date();
+    const daysSinceUpdate = Math.floor((Date.now() - lastModified.getTime()) / (1000 * 60 * 60 * 24));
+
+    // Events are time-sensitive, higher priority for recent ones
+    let priority = 0.9;
+    let changeFrequency: 'daily' | 'weekly' | 'monthly' = 'daily';
+
+    if (daysSinceUpdate < 14) {
+      priority = 0.95;
+      changeFrequency = 'daily';
+    } else if (daysSinceUpdate < 30) {
+      priority = 0.85;
+      changeFrequency = 'weekly';
+    } else {
+      priority = 0.7;
+      changeFrequency = 'monthly';
+    }
+
+    return {
+      url: `${SITE_URL}/events/${event.documentId}`,
+      lastModified,
+      changeFrequency,
+      priority,
+    };
+  });
 
   // Dynamic destination hub pages
   const destinationPages: MetadataRoute.Sitemap = Array.from(locations).map((location) => ({
