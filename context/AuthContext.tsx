@@ -2,12 +2,28 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
+type UserProfile = {
+  id: number;
+  documentId?: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  email?: string;
+  city?: string;
+  country?: string;
+  isProfileCompleted?: boolean;
+  role?: string;
+  avatar?: {
+    url: string;
+  } | string;
+};
+
 type User = {
   id: number;
   documentId?: string;
   email: string;
   username: string;
-  profile?: any;
+  profile?: UserProfile;
   createdAt?: string;
   token: string; // ✅ مهم
 };
@@ -126,8 +142,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }),
         });
       } catch (error) {
-        console.error("Failed to apply referral code:", error);
         // Don't fail signup if referral code fails
+        // Silently continue - referral code is optional
       }
     }
 

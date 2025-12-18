@@ -39,7 +39,7 @@ async function getPrograms(): Promise<Program[]> {
     });
     return response.data.data || [];
   } catch (error) {
-    console.error('Error fetching programs for sitemap:', error);
+    // Silently fail for sitemap generation
     return [];
   }
 }
@@ -53,7 +53,7 @@ async function getEvents(): Promise<Event[]> {
     });
     return response.data.data || [];
   } catch (error) {
-    console.error('Error fetching events for sitemap:', error);
+    // Silently fail for sitemap generation
     return [];
   }
 }
@@ -67,7 +67,7 @@ async function getPlaceCategories(): Promise<PlaceCategory[]> {
     });
     return response.data.data || [];
   } catch (error) {
-    console.error('Error fetching place categories for sitemap:', error);
+    // Silently fail for sitemap generation
     return [];
   }
 }

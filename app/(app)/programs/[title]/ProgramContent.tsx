@@ -99,8 +99,6 @@ export default function ProgramContent({
 
   const program = data?.data?.at(0);
 
-  console.log("data : ", data);
-
   if (!program) return <p>Program not found</p>;
 
   // Handle both old format (images[].imageUrl) and new format (images[] as Media objects)

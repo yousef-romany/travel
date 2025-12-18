@@ -39,7 +39,10 @@ export const UserMenu = () => {
           className="relative h-10 w-10 rounded-full hover:bg-primary/10 transition-colors"
         >
           <Avatar className="h-9 w-9">
-            <AvatarImage src={user.profile?.avatar?.url} alt={user.username} />
+            <AvatarImage
+              src={typeof user.profile?.avatar === 'string' ? user.profile.avatar : user.profile?.avatar?.url}
+              alt={user.username}
+            />
             <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
               {initials}
             </AvatarFallback>

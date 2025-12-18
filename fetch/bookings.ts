@@ -107,18 +107,17 @@ export const fetchUserBookings = async (
     });
 
     return response.data;
-  } catch (error: any) {
-    console.error("Error fetching bookings:", error);
-
+  } catch (error) {
+    const axiosError = error as any;
     // Handle specific error types
-    if (error.code === 'ECONNREFUSED') {
+    if (axiosError.code === 'ECONNREFUSED') {
       throw new Error("Unable to connect to the server. Please check if the backend is running.");
     }
 
-    if (error.response) {
+    if (axiosError.response) {
       // Server responded with error status
-      const status = error.response.status;
-      const message = error.response.data?.error?.message || "An error occurred";
+      const status = axiosError.response.status;
+      const message = axiosError.response.data?.error?.message || "An error occurred";
 
       if (status === 400) {
         throw new Error(`Invalid request: ${message}`);
@@ -135,7 +134,7 @@ export const fetchUserBookings = async (
       throw new Error(message);
     }
 
-    if (error.request) {
+    if (axiosError.request) {
       // Request made but no response received
       throw new Error("No response from server. Please check your internet connection.");
     }
@@ -168,7 +167,7 @@ export const createBooking = async (bookingData: {
     const authToken =
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
-    const payload: any = {
+    const payload: Record<string, unknown> = {
       fullName: bookingData.fullName,
       email: bookingData.email,
       phone: bookingData.phone,
@@ -203,9 +202,6 @@ export const createBooking = async (bookingData: {
       payload.user = bookingData.userId;
     }
 
-    console.log("Creating booking with payload:", payload);
-    console.log("Auth token present:", !!authToken);
-
     const response = await axios.post(
       `${API_URL}/api/bookings`,
       {
@@ -221,9 +217,6 @@ export const createBooking = async (bookingData: {
 
     return response.data;
   } catch (error: any) {
-    console.error("Error creating booking:", error);
-    console.error("Error response:", error.response?.data);
-    console.error("Error status:", error.response?.status);
     throw error;
   }
 };
@@ -247,7 +240,6 @@ export const fetchBookingById = async (
 
     return response.data;
   } catch (error) {
-    console.error("Error fetching booking:", error);
     throw error;
   }
 };
@@ -276,8 +268,6 @@ export const updateBookingStatus = async (
 
     return response.data;
   } catch (error: any) {
-    console.error("Error updating booking:", error);
-    console.error("Error response:", error.response?.data);
     throw error;
   }
 };
@@ -307,13 +297,11 @@ export const cancelBooking = async (
       const { updateInvoiceStatusByBookingId } = await import("@/fetch/invoices");
       await updateInvoiceStatusByBookingId(bookingId, "cancelled");
     } catch (invoiceError) {
-      console.error("Error updating invoice status:", invoiceError);
       // Don't throw error here - booking cancellation should succeed even if invoice update fails
     }
 
     return bookingResponse;
-  } catch (error: any) {
-    console.error("Error cancelling booking:", error);
+  } catch (error) {
     throw error;
   }
 };

@@ -24,7 +24,15 @@ export default function robots(): MetadataRoute.Robots {
           '/videos/*',
           '/*?video=*',
           '/seo-dashboard',
+          '/dashboard',
+          '/dashboard/*',
+          '/edit-profile',
+          '/wishlist',
+          '/compare',
+          '/invoices/*',
+          '/book-custom-trip/*',
         ],
+        crawlDelay: 1, // Be respectful to servers
       },
       {
         userAgent: 'Googlebot',
@@ -69,7 +77,12 @@ export default function robots(): MetadataRoute.Robots {
         disallow: '/',
       },
     ],
-    sitemap: `${SITE_URL}/sitemap.xml`,
+    sitemap: [
+      `${SITE_URL}/sitemap.xml`,
+      `${SITE_URL}/image-sitemap.xml`,
+      `${SITE_URL}/video-sitemap.xml`,
+      `${SITE_URL}/news-sitemap.xml`,
+    ],
     host: SITE_URL,
   };
 }

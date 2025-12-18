@@ -111,10 +111,9 @@ export const getUserProfile = async (userId: number, token: string): Promise<Use
     }
 
     // Return the profile that matches the userId
-    const userProfile = response.data.data.find((profile: any) => profile.user?.id === userId);
+    const userProfile = response.data.data.find((profile: UserProfile) => profile.user?.id === userId);
     return userProfile || response.data.data[0];
   } catch (error) {
-    console.error("Error fetching user profile:", error);
     throw error;
   }
 };
@@ -139,9 +138,8 @@ export const getUserTrips = async (userId: number, token: string): Promise<UserT
 
     // Filter client-side to get only this user's bookings
     const allBookings = response.data.data || [];
-    return allBookings.filter((booking: any) => booking.user?.id === userId);
+    return allBookings.filter((booking: UserTrip) => (booking as any).user?.id === userId);
   } catch (error) {
-    console.error("Error fetching user trips:", error);
     // Return empty array if bookings collection doesn't exist yet
     return [];
   }
@@ -163,7 +161,6 @@ export const getUserWishlist = async (token: string): Promise<UserWishlistItem[]
 
     return response.data.data || [];
   } catch (error) {
-    console.error("Error fetching user wishlist:", error);
     return [];
   }
 };
@@ -185,9 +182,8 @@ export const getUserInvoices = async (userId: number, token: string): Promise<Us
 
     // Filter client-side to get only this user's invoices
     const allInvoices = response.data.data || [];
-    return allInvoices.filter((invoice: any) => invoice.user?.id === userId);
+    return allInvoices.filter((invoice: UserInvoice) => (invoice as any).user?.id === userId);
   } catch (error) {
-    console.error("Error fetching user invoices:", error);
     // Return empty array if invoices collection doesn't exist yet
     return [];
   }
@@ -214,7 +210,6 @@ export const getUserStats = async (userId: number, token: string): Promise<UserS
       upcomingTrips: upcomingTrips.length,
     };
   } catch (error) {
-    console.error("Error calculating user stats:", error);
     return {
       totalTrips: 0,
       totalSpent: 0,
@@ -237,7 +232,6 @@ export const removeFromWishlist = async (wishlistItemId: string, token: string):
       },
     });
   } catch (error) {
-    console.error("Error removing from wishlist:", error);
     throw error;
   }
 };
@@ -270,9 +264,6 @@ export const updateUserProfile = async (
   try {
     const url = `${API_URL}/api/profiles/${profileDocumentId}`;
 
-    console.log("Updating profile with documentId:", profileDocumentId);
-    console.log("Update data:", data);
-
     const response = await axios.put(
       url,
       { data },
@@ -285,10 +276,7 @@ export const updateUserProfile = async (
     );
 
     return response.data.data;
-  } catch (error: any) {
-    console.error("Error updating user profile:", error);
-    console.error("Error response:", error.response?.data);
-    console.error("Error status:", error.response?.status);
+  } catch (error) {
     throw error;
   }
 };

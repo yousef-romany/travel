@@ -37,7 +37,14 @@ export default function ProfileHeader() {
               <div className="absolute inset-0 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full blur-md opacity-60"></div>
               
               <Avatar className="h-28 w-28 border-4 border-amber-500/50 relative z-10">
-                <AvatarImage src={user.profile?.avatar || "/default-avatar.png"} alt={user.username} />
+                <AvatarImage
+                  src={
+                    typeof user.profile?.avatar === 'string'
+                      ? user.profile.avatar
+                      : user.profile?.avatar?.url || "/default-avatar.png"
+                  }
+                  alt={user.username}
+                />
                 <AvatarFallback className="bg-amber-600 text-white text-lg font-bold">
                   {user.username?.slice(0, 2).toUpperCase()}
                 </AvatarFallback>

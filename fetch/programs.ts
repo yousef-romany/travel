@@ -54,7 +54,7 @@ export interface ProgramsResponse {
  */
 export const fetchProgramsList = async (limit = 100): Promise<ProgramsResponse> => {
   const retries = 2;
-  let lastError: any;
+  let lastError: Error;
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
@@ -69,9 +69,8 @@ export const fetchProgramsList = async (limit = 100): Promise<ProgramsResponse> 
       });
 
       return response.data;
-    } catch (error: any) {
-      lastError = error;
-      console.error(`Error fetching programs list (attempt ${attempt + 1}/${retries + 1}):`, error);
+    } catch (error) {
+      lastError = error as Error;
 
       // Don't retry on client errors (4xx)
       if (error.response?.status >= 400 && error.response?.status < 500) {
@@ -87,16 +86,17 @@ export const fetchProgramsList = async (limit = 100): Promise<ProgramsResponse> 
   }
 
   // Handle the error after all retries
-  if (lastError.code === 'ECONNREFUSED') {
+  const axiosError = lastError as any;
+  if (axiosError.code === 'ECONNREFUSED') {
     throw new Error("Cannot connect to Strapi backend. Please ensure it's running on port 1337.");
   }
 
-  if (lastError.code === 'ETIMEDOUT' || lastError.code === 'ECONNABORTED') {
+  if (axiosError.code === 'ETIMEDOUT' || axiosError.code === 'ECONNABORTED') {
     throw new Error("Request timed out. The server is not responding.");
   }
 
-  if (lastError.response) {
-    const status = lastError.response.status;
+  if (axiosError.response) {
+    const status = axiosError.response.status;
     if (status === 404) {
       throw new Error("Programs not found. Please check your Strapi content.");
     } else if (status >= 500) {
@@ -157,8 +157,7 @@ export const fetchProgramOne = async (titleOrId: string) => {
 
     // If still not found, throw error
     throw new Error(`Program not found with identifier: ${cleanInput}`);
-  } catch (error: any) {
-    console.error("Error fetching program by title or ID:", error);
+  } catch (error) {
     throw error;
   }
 };
@@ -179,7 +178,6 @@ export const fetchProgramById = async (documentId: string): Promise<ProgramType>
 
     return response.data.data;
   } catch (error) {
-    console.error("Error fetching program by ID:", error);
     throw error;
   }
 };
@@ -210,7 +208,6 @@ export const searchPrograms = async (query: string, limit: number = 10): Promise
 
     return response.data;
   } catch (error) {
-    console.error("Error searching programs:", error);
     throw error;
   }
 };
@@ -234,7 +231,6 @@ export const filterProgramsByPrice = async (
 
     return response.data;
   } catch (error) {
-    console.error("Error filtering programs by price:", error);
     throw error;
   }
 };
@@ -271,7 +267,6 @@ export const fetchProgramDetails = async (titleOrId: string) => {
 
     return responseById.data.data;
   } catch (error) {
-    console.error("Error fetching program details:", error);
     throw error;
   }
 };

@@ -108,6 +108,69 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* ==================== Accessibility Improvements ==================== */
+
+  /* Enhanced focus visible styles for keyboard navigation */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+
+  /* Button and interactive element focus styles */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    @apply ring-2 ring-primary ring-offset-2;
+  }
+
+  /* Skip to main content link for screen readers */
+  .skip-to-main {
+    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    * {
+      border-width: 2px;
+    }
+  }
+
+  /* Screen reader only utility (already in Tailwind but ensuring it's defined) */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Ensure sufficient color contrast for text */
+  p, span, div {
+    @apply text-foreground;
+  }
+
+  /* Improve link accessibility */
+  a:not([class]) {
+    text-decoration: underline;
+    text-decoration-skip-ink: auto;
+  }
+
+  /* Ensure interactive elements have minimum touch target size (44x44px) */
+  button,
+  [role="button"],
+  input[type="submit"],
+  input[type="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 .mdx-container {

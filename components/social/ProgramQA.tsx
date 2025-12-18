@@ -112,7 +112,7 @@ export function ProgramQA({ programId, programTitle }: ProgramQAProps) {
       id: Date.now().toString(),
       userId: user.id,
       userName: user.username,
-      userAvatar: user.profile?.avatar,
+      userAvatar: typeof user.profile?.avatar === 'string' ? user.profile.avatar : user.profile?.avatar?.url,
       question: newQuestion,
       likes: 0,
       hasLiked: false,

@@ -12,6 +12,9 @@ import ServiceSchema from "@/components/seo/ServiceSchema";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import BackgroundAudio from "@/components/BackgroundAudio";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import LocalBusinessSchema from "@/components/seo/LocalBusinessSchema";
+import CriticalResourcePreload from "@/components/seo/CriticalResourcePreload";
 
 // Using system fonts to avoid Google Fonts network dependency during build
 const fontVariables = {
@@ -147,6 +150,7 @@ export default function RootLayout({
         <OrganizationSchema />
         <WebSiteSchema />
         <ServiceSchema />
+        <LocalBusinessSchema />
 
         <meta name="google-site-verification" content="lPn8MP-8chhi7XKEZeAbSyMqBcRpx4khZK6aKDqS4vs" />
         {/* PWA Meta Tags */}
@@ -232,16 +236,18 @@ export default function RootLayout({
           fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
         }}
       >
-        <AuthProvider>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <ServerNavBar />
-          <div className="pt-[76px]">{children}</div>
-          <div id="google_translate_element"></div>
-          <BackgroundAudio />
-          <InstallPrompt />
-          <Toaster />
-        </ThemeProvider>
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+              <ServerNavBar />
+              <div className="pt-[76px]">{children}</div>
+              <div id="google_translate_element"></div>
+              <BackgroundAudio />
+              <InstallPrompt />
+              <Toaster />
+            </ThemeProvider>
+          </AuthProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );
