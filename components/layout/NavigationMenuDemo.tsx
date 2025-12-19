@@ -17,6 +17,127 @@ import { Skeleton } from "../ui/skeleton";
 import OptimizedImage from "../OptimizedImage";
 import { Sparkles, MapPin } from "lucide-react";
 
+const ScrollProgressBar = ({ containerRef }: { containerRef: React.RefObject<HTMLUListElement | null> }) => {
+  const [scrollProgress, setScrollProgress] = React.useState(0);
+
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollTop = container.scrollTop;
+      const scrollHeight = container.scrollHeight - container.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      setScrollProgress(progress);
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    handleScroll(); // Initial calculation
+
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [containerRef]);
+
+  return (
+    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 overflow-hidden z-10 rounded-t-xl">
+      <div
+        className="h-full bg-gradient-to-r from-primary via-primary/80 to-primary transition-all duration-300 ease-out shadow-lg shadow-primary/50 relative overflow-hidden"
+        style={{
+          width: `${scrollProgress}%`,
+          boxShadow: `0 0 12px 2px rgba(var(--primary), ${scrollProgress / 100})`
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
+      </div>
+    </div>
+  );
+};
+
+const InspiredMenuContent = ({ categories }: { categories: InspirationCategoryData[] }) => {
+  const scrollRef = React.useRef<HTMLUListElement>(null);
+
+  return (
+    <div className="relative">
+      <ScrollProgressBar containerRef={scrollRef} />
+      <ul
+        ref={scrollRef}
+        className="grid gap-4 p-6 pt-8 w-[600px] md:w-[680px] lg:w-[900px] md:grid-cols-2 lg:grid-cols-3 max-h-[70vh] overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent hover:scrollbar-thumb-primary/40"
+      >
+        {categories.length > 0
+          ? categories?.map((category: InspirationCategoryData) => (
+              <ListItem
+                key={category.id}
+                href={`/inspiration/${category.categoryName}`}
+                title={category.categoryName}
+                className="text-primary group"
+              >
+                <div className="flex flex-col gap-3 text-primary">
+                  {category?.image ? (
+                    <div className="relative overflow-hidden rounded-xl">
+                      <OptimizedImage
+                        src={getImageUrl(category.image)}
+                        alt={category.categoryName}
+                        className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl object-cover transform group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                  ) : (
+                    <Skeleton className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl" />
+                  )}
+                  <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
+                    {category.description}
+                  </p>
+                </div>
+              </ListItem>
+            ))
+          : "No Data found."}
+      </ul>
+    </div>
+  );
+};
+
+const PlacesToGoMenuContent = ({ categories }: { categories: InspirationCategoryData[] }) => {
+  const scrollRef = React.useRef<HTMLUListElement>(null);
+
+  return (
+    <div className="relative">
+      <ScrollProgressBar containerRef={scrollRef} />
+      <ul
+        ref={scrollRef}
+        className="grid gap-4 p-6 pt-8 w-[600px] md:w-[680px] lg:w-[900px] md:grid-cols-2 lg:grid-cols-3 max-h-[70vh] overflow-y-auto overflow-x-hidden scroll-smooth scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent hover:scrollbar-thumb-primary/40"
+      >
+        {categories.length > 0
+          ? categories?.map((category: InspirationCategoryData) => (
+              <ListItem
+                key={category.id}
+                href={`/placesTogo/${category.categoryName}`}
+                title={category.categoryName}
+                className="text-primary group"
+              >
+                <div className="flex flex-col gap-3 text-primary">
+                  {category?.image ? (
+                    <div className="relative overflow-hidden rounded-xl">
+                      <OptimizedImage
+                        src={getImageUrl(category.image)}
+                        alt={category.categoryName}
+                        className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl object-cover transform group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                  ) : (
+                    <Skeleton className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl" />
+                  )}
+                  <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
+                    {category.description}
+                  </p>
+                </div>
+              </ListItem>
+            ))
+          : "No Data found."}
+      </ul>
+    </div>
+  );
+};
+
 interface MenuProps {
   categories: InspirationCategoryData[];
   placesTogCategorie: InspirationCategoryData[];
@@ -34,34 +155,7 @@ export function NavigationMenuDemo({
             Be inspired
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-4 p-6 w-[600px] md:w-[680px] lg:w-[900px] md:grid-cols-2 lg:grid-cols-3">
-              {categories.length > 0
-                ? categories?.map((category: InspirationCategoryData) => (
-                    <ListItem
-                      key={category.id}
-                      href={`/inspiration/${category.categoryName}`}
-                      title={category.categoryName}
-                      className="text-primary group"
-                    >
-                      <div className="flex flex-col gap-3 text-primary">
-                        {category?.image ? (
-                          <div className="relative overflow-hidden rounded-xl">
-                            <OptimizedImage
-                              src={getImageUrl(category.image)}
-                              alt={category.categoryName}
-                              className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl object-cover transform group-hover:scale-110 transition-transform duration-500"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          </div>
-                        ) : (
-                          <Skeleton className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl" />
-                        )}
-                        <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">{category.description}</p>
-                      </div>
-                    </ListItem>
-                  ))
-                : "No Data found ."}
-            </ul>
+            <InspiredMenuContent categories={categories} />
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
@@ -70,36 +164,7 @@ export function NavigationMenuDemo({
             Places to go
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-4 p-6 w-[600px] md:w-[680px] lg:w-[900px] md:grid-cols-2 lg:grid-cols-3">
-              {placesTogCategorie.length > 0
-                ? placesTogCategorie?.map(
-                    (category: InspirationCategoryData) => (
-                      <ListItem
-                        key={category.id}
-                        href={`/placesTogo/${category.categoryName}`}
-                        title={category.categoryName}
-                        className="text-primary group"
-                      >
-                        <div className="flex flex-col gap-3 text-primary">
-                          {category?.image ? (
-                            <div className="relative overflow-hidden rounded-xl">
-                              <OptimizedImage
-                                src={getImageUrl(category.image)}
-                                alt={category.categoryName}
-                                className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl object-cover transform group-hover:scale-110 transition-transform duration-500"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            </div>
-                          ) : (
-                            <Skeleton className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl" />
-                          )}
-                          <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">{category.description}</p>
-                        </div>
-                      </ListItem>
-                    )
-                  )
-                : "No Data found ."}
-            </ul>
+            <PlacesToGoMenuContent categories={placesTogCategorie} />
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
