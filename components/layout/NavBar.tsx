@@ -39,20 +39,15 @@ const PageScrollProgressBar = () => {
   }, []);
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-muted/20 overflow-hidden">
+    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 overflow-hidden z-10">
       <div
-        className="h-full bg-gradient-to-r from-primary/80 via-primary to-primary/80 transition-all duration-150 ease-out relative"
+        className="h-full bg-gradient-to-r from-primary via-primary/90 to-primary transition-all duration-200 ease-out shadow-lg shadow-primary/50 relative overflow-hidden"
         style={{
           width: `${scrollProgress}%`,
-          boxShadow: `0 0 12px 2px hsl(var(--primary) / 0.4)`,
+          boxShadow: `0 0 10px 2px rgba(var(--primary), ${scrollProgress / 100})`
         }}
       >
-        <div
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
-          style={{
-            animation: 'shimmer 2s infinite',
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
       </div>
     </div>
   );
@@ -67,14 +62,12 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
   const { theme } = useTheme();
   const { user } = useAuth();
   const [comparisonCount, setComparisonCount] = useState(0);
-  const [isFixed, setIsFixed] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  // Handle scroll effect - navbar becomes fixed after scrolling down a bit
+  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      // Navbar becomes fixed after scrolling 100px
-      const shouldBeFixed = window.scrollY > 100;
-      setIsFixed(shouldBeFixed);
+      setIsScrolled(window.scrollY > 20);
     };
 
     // Check initial scroll position
@@ -119,13 +112,11 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
   };
 
   return (
-    <nav
-      className={`fixed top-0 left-0 z-50 w-full px-3 sm:px-4 md:px-6 lg:px-8 flex justify-between items-center relative transition-all duration-300 ease-in-out ${
-        isFixed
-          ? "h-[64px] bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/90 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-b border-border/50"
-          : "h-[72px] bg-background/80 backdrop-blur-sm shadow-sm border-b border-border"
-      }`}
-    >
+    <nav className={`z-50 w-full h-[76px] px-3 sm:px-4 md:px-6 lg:px-8 fixed top-0 left-0 border-b-2 border-primary flex justify-between items-center transition-all duration-300 relative ${
+      isScrolled
+        ? "bg-card/98 backdrop-blur-md supports-[backdrop-filter]:bg-card/95 shadow-lg"
+        : "bg-card/90 backdrop-blur supports-[backdrop-filter]:bg-card/70 shadow-sm"
+    }`}>
       {/* Mobile Menu */}
       <div className="lg:hidden flex-shrink-0">
         <Menu categories={inspirationCategories} placesTogCategorie={placesCategories} />
@@ -163,20 +154,20 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
       </div>
 
       {/* Right Actions */}
-      <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+      <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-shrink-0">
         {/* Comparison */}
         <Link href="/compare" onClick={handleComparisonClick}>
           <Button
             size="icon"
-            variant="ghost"
-            className="hover:bg-primary/10 hover:scale-105 transition-all duration-200 h-9 w-9 sm:h-10 sm:w-10 relative rounded-full"
+            variant="outline"
+            className="hover:bg-primary/10 transition-colors h-9 w-9 sm:h-10 sm:w-10 relative"
             title="Compare Programs"
           >
             <GitCompare size={18} className="text-primary sm:w-5 sm:h-5" />
             {comparisonCount > 0 && (
               <Badge
                 variant="destructive"
-                className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-[10px] font-bold animate-in zoom-in"
+                className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-[10px] font-bold"
               >
                 {comparisonCount}
               </Badge>
@@ -188,9 +179,9 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
         {!user && (
           <Button
             size="icon"
-            variant="ghost"
+            variant="outline"
             onClick={handleWishlistClick}
-            className="hover:bg-primary/10 hover:scale-105 transition-all duration-200 h-9 w-9 sm:h-10 sm:w-10 sm:hidden lg:flex md:flex rounded-full"
+            className="hover:bg-primary/10 transition-colors h-9 w-9 sm:h-10 sm:w-10 sm:hidden lg:flex md:flex"
             title="Wishlist"
           >
             <FaRegHeart size={18} className="text-primary sm:w-5 sm:h-5" />
@@ -205,7 +196,7 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
         {/* Auth Section */}
         {!user ? (
           <Link href="/login" onClick={handleLoginClick}>
-            <Button className="px-3 sm:px-4 md:px-6 text-sm sm:text-base h-9 sm:h-10 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md">
+            <Button className="px-3 sm:px-4 md:px-6 text-sm sm:text-base h-9 sm:h-10">
               Login
             </Button>
           </Link>
@@ -214,8 +205,8 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
         )}
       </div>
 
-      {/* Page Scroll Progress Bar - Only visible when navbar is fixed */}
-      {isFixed && <PageScrollProgressBar />}
+      {/* Page Scroll Progress Bar */}
+      <PageScrollProgressBar />
     </nav>
   );
 };
