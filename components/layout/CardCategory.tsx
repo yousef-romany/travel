@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Skeleton } from "../ui/skeleton";
-import Image from "next/image";
+import ProgressiveImage from "../ProgressiveImage";
 import Link from "next/link";
 
 interface props {
@@ -14,13 +14,18 @@ const CardCategory = ({ categoryName, imageUrl, url }: props) => {
     <Link href={url}>
       <div className="w-[210px] h-[210px] flex flex-col rounded-xl bg-sidebar gap-6">
         {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt="name"
-            className="h-[140px] rounded-xl"
-            height={140}
-            width={200}
-          />
+          <div className="relative h-[140px] w-full rounded-xl overflow-hidden">
+            <ProgressiveImage
+              src={imageUrl}
+              alt={categoryName}
+              fill
+              sizes="210px"
+              quality={80}
+              priority={false}
+              objectFit="cover"
+              className="rounded-xl"
+            />
+          </div>
         ) : (
           <Skeleton className="h-[125px] w-[250px] rounded-xl" />
         )}

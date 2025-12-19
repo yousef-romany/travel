@@ -79,6 +79,7 @@ const faqs = [
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { fetchHomePageData } from "@/fetch/homepage";
 import { fetchApprovedTestimonials } from "@/fetch/testimonials";
+import { LazySection } from "@/components/LazySection";
 
 export default async function Home() {
   // Fetch data server-side for SEO
@@ -121,33 +122,51 @@ export default async function Home() {
       />
 
       {/* Main Content - Server-Rendered for SEO */}
+      {/* Above-fold: Load immediately */}
       <HeroSection />
       <InspireSection blogs={data.inspireBlogs} />
       <PlacesSection categories={data.placeCategories} />
-      <PlanTripSection />
-      <ProgramsSection programs={data.programs} />
-      <FeaturesSection />
+
+      {/* Below-fold: Progressive lazy loading */}
+      <LazySection minHeight="500px" rootMargin="100px">
+        <PlanTripSection />
+      </LazySection>
+
+      <LazySection minHeight="600px" rootMargin="100px">
+        <ProgramsSection programs={data.programs} />
+      </LazySection>
+
+      <LazySection minHeight="400px" rootMargin="100px">
+        <FeaturesSection />
+      </LazySection>
 
       {/* Promo Codes Section */}
-      <section className="py-16 bg-gradient-to-br from-background via-primary/5 to-background">
-        <div className="container mx-auto px-4">
-          <PromoCodesShowcase limit={3} variant="grid" />
-          <div className="text-center mt-8">
-            <a
-              href="/promo-codes"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-amber-500 hover:from-primary/90 hover:to-amber-500/90 text-white rounded-full font-semibold transition-all hover:scale-105"
-            >
-              View All Promo Codes
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
+      <LazySection minHeight="400px" rootMargin="100px">
+        <section className="py-16 bg-gradient-to-br from-background via-primary/5 to-background">
+          <div className="container mx-auto px-4">
+            <PromoCodesShowcase limit={3} variant="grid" />
+            <div className="text-center mt-8">
+              <a
+                href="/promo-codes"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-amber-500 hover:from-primary/90 hover:to-amber-500/90 text-white rounded-full font-semibold transition-all hover:scale-105"
+              >
+                View All Promo Codes
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </LazySection>
 
-      <TestimonialsSection testimonials={testimonials} />
-      <InstagramSection posts={data.instagramPosts} />
+      <LazySection minHeight="500px" rootMargin="100px">
+        <TestimonialsSection testimonials={testimonials} />
+      </LazySection>
+
+      <LazySection minHeight="400px" rootMargin="100px">
+        <InstagramSection posts={data.instagramPosts} />
+      </LazySection>
     </div>
   );
 }

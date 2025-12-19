@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProgramType } from "@/fetch/programs";
 import { getRecommendedPrograms } from "@/lib/recommendations";
 import Link from "next/link";
-import Image from "next/image";
+import ProgressiveImage from "@/components/ProgressiveImage";
 import { Sparkles, MapPin, Star, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,8 +42,8 @@ export function RecommendedPrograms({
             >
               <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-all hover:border-primary">
                 {program.images && program.images.length > 0 && (
-                  <div className="relative h-48 bg-muted">
-                    <Image
+                  <div className="relative h-48 bg-muted overflow-hidden">
+                    <ProgressiveImage
                       src={
                         program.images[0].formats?.medium?.url ||
                         program.images[0].url
@@ -51,9 +51,12 @@ export function RecommendedPrograms({
                       alt={program.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 25vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      quality={80}
+                      priority={false}
+                      objectFit="cover"
+                      className="group-hover:scale-105 transition-transform duration-300"
                     />
-                    <div className="absolute top-2 right-2">
+                    <div className="absolute top-2 right-2 z-10">
                       <Badge className="bg-primary/90">
                         <Star className="h-3 w-3 fill-white mr-1" />
                         {program.rating}

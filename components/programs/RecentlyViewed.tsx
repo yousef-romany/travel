@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getRecentlyViewed, RecentlyViewedProgram } from "@/lib/recently-viewed";
 import Link from "next/link";
-import Image from "next/image";
+import ProgressiveImage from "@/components/ProgressiveImage";
 import { Clock, MapPin, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -51,13 +51,16 @@ export function RecentlyViewed() {
             >
               <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
                 {program.imageUrl && (
-                  <div className="relative h-32 bg-muted">
-                    <Image
+                  <div className="relative h-32 bg-muted overflow-hidden">
+                    <ProgressiveImage
                       src={program.imageUrl}
                       alt={program.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      quality={80}
+                      priority={false}
+                      objectFit="cover"
+                      className="group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 )}

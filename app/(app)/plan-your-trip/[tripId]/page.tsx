@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   title: "Trip Details - Custom Itinerary",
   description: "View custom trip itinerary details, destinations, pricing, and booking information for this Egypt travel plan.",
   keywords: ["Egypt trip details", "custom itinerary", "trip planner", "Egypt travel"],
+  robots: {
+    index: false, // Don't index individual trip pages
+    follow: false,
+  },
 };
 
 export default async function TripDetailsPage({ params }: { params: Promise<{ tripId: string }> }) {

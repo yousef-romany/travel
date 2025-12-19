@@ -15,6 +15,7 @@ import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import LocalBusinessSchema from "@/components/seo/LocalBusinessSchema";
 import CriticalResourcePreload from "@/components/seo/CriticalResourcePreload";
+import { PerformanceMonitor } from "@/components/performance/PerformanceMonitor";
 
 // Using system fonts to avoid Google Fonts network dependency during build
 const fontVariables = {
@@ -239,6 +240,7 @@ export default function RootLayout({
         <ErrorBoundary>
           <AuthProvider>
             <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+              <PerformanceMonitor />
               <ServerNavBar />
               <div className="pt-[76px]">{children}</div>
               <div id="google_translate_element"></div>

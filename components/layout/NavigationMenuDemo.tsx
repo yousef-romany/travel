@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { InspirationCategoryData } from "@/type/inspiration";
 import { Skeleton } from "../ui/skeleton";
-import OptimizedImage from "../OptimizedImage";
+import ProgressiveImage from "../ProgressiveImage";
 import { Sparkles, MapPin } from "lucide-react";
 
 const ScrollProgressBar = ({ containerRef }: { containerRef: React.RefObject<HTMLUListElement | null> }) => {
@@ -72,13 +72,18 @@ const InspiredMenuContent = ({ categories }: { categories: InspirationCategoryDa
               >
                 <div className="flex flex-col gap-3 text-primary">
                   {category?.image ? (
-                    <div className="relative overflow-hidden rounded-xl">
-                      <OptimizedImage
+                    <div className="relative overflow-hidden rounded-xl h-[140px] md:h-[150px] lg:h-[160px] w-full">
+                      <ProgressiveImage
                         src={getImageUrl(category.image)}
                         alt={category.categoryName}
-                        className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl object-cover transform group-hover:scale-110 transition-transform duration-500"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 900px) 50vw, 300px"
+                        quality={80}
+                        priority={false}
+                        objectFit="cover"
+                        className="rounded-xl transform group-hover:scale-110 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
                     </div>
                   ) : (
                     <Skeleton className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl" />
@@ -115,13 +120,18 @@ const PlacesToGoMenuContent = ({ categories }: { categories: InspirationCategory
               >
                 <div className="flex flex-col gap-3 text-primary">
                   {category?.image ? (
-                    <div className="relative overflow-hidden rounded-xl">
-                      <OptimizedImage
+                    <div className="relative overflow-hidden rounded-xl h-[140px] md:h-[150px] lg:h-[160px] w-full">
+                      <ProgressiveImage
                         src={getImageUrl(category.image)}
                         alt={category.categoryName}
-                        className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl object-cover transform group-hover:scale-110 transition-transform duration-500"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 900px) 50vw, 300px"
+                        quality={80}
+                        priority={false}
+                        objectFit="cover"
+                        className="rounded-xl transform group-hover:scale-110 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
                     </div>
                   ) : (
                     <Skeleton className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl" />

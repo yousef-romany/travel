@@ -1,6 +1,6 @@
 "use client";
 
-import OptimizedImage from "@/components/OptimizedImage";
+import ProgressiveImage from "@/components/ProgressiveImage";
 import { getImageUrl } from "@/lib/utils";
 import { Media } from "@/type/programs";
 import Autoplay from "embla-carousel-autoplay";
@@ -41,10 +41,15 @@ export function ProgramCarousel({ images }: ProgramCarouselProps) {
           {images.map((image: Media, index: number) => (
             <div className="flex-[0_0_100%] min-w-0" key={image?.id}>
               <div className="relative h-48 w-full group">
-                <OptimizedImage
+                <ProgressiveImage
                   src={getImageUrl(image)}
                   alt={image?.name || `Travel destination ${index + 1}`}
-                  className="object-cover rounded-tl-xl rounded-tr-xl transition-transform duration-700 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                  quality={85}
+                  priority={index === 0} // First image priority for LCP
+                  objectFit="cover"
+                  className="rounded-tl-xl rounded-tr-xl transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
             </div>
