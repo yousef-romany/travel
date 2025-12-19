@@ -39,15 +39,14 @@ const PageScrollProgressBar = () => {
   }, []);
 
   return (
-    <div className="absolute -bottom-[2px] left-0 right-0 h-[3px] bg-transparent overflow-visible z-50">
+    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 overflow-hidden">
       <div
-        className="h-full bg-gradient-to-r from-primary via-primary to-primary transition-all duration-200 ease-out relative"
+        className="h-full bg-gradient-to-r from-primary via-primary/90 to-primary transition-all duration-200 ease-out shadow-lg shadow-primary/50 relative overflow-hidden"
         style={{
           width: `${scrollProgress}%`,
-          boxShadow: '0 0 8px 1px hsl(var(--primary) / 0.6)'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
       </div>
     </div>
   );
@@ -62,12 +61,14 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
   const { theme } = useTheme();
   const { user } = useAuth();
   const [comparisonCount, setComparisonCount] = useState(0);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isFixed, setIsFixed] = useState(false);
 
-  // Handle scroll effect
+  // Handle scroll effect - navbar becomes fixed after scrolling past hero section
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      // Assume hero section is around 600-700px, adjust threshold as needed
+      const heroHeight = 650;
+      setIsFixed(window.scrollY > heroHeight);
     };
 
     // Check initial scroll position
@@ -112,9 +113,9 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
   };
 
   return (
-    <nav className={`z-50 w-full h-[76px] px-3 sm:px-4 md:px-6 lg:px-8 fixed top-0 left-0 border-b-2 border-primary flex justify-between items-center transition-all duration-300 relative overflow-visible ${
-      isScrolled
-        ? "bg-card/98 backdrop-blur-md supports-[backdrop-filter]:bg-card/95 shadow-lg"
+    <nav className={`z-50 w-full h-[76px] px-3 sm:px-4 md:px-6 lg:px-8 border-b-2 border-primary flex justify-between items-center transition-all duration-300 relative ${
+      isFixed
+        ? "fixed top-0 left-0 bg-card/98 backdrop-blur-md supports-[backdrop-filter]:bg-card/95 shadow-lg animate-in slide-in-from-top"
         : "bg-card/90 backdrop-blur supports-[backdrop-filter]:bg-card/70 shadow-sm"
     }`}>
       {/* Mobile Menu */}
@@ -205,8 +206,8 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
         )}
       </div>
 
-      {/* Page Scroll Progress Bar */}
-      <PageScrollProgressBar />
+      {/* Page Scroll Progress Bar - Only visible when navbar is fixed */}
+      {isFixed && <PageScrollProgressBar />}
     </nav>
   );
 };
