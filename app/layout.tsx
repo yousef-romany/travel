@@ -242,7 +242,7 @@ export default function RootLayout({
             <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
               <PerformanceMonitor />
               <ServerNavBar />
-              <div className="pt-[72px]">{children}</div>
+              <div className="pt-[70px]">{children}</div>
               <div id="google_translate_element" className="hidden"></div>
               <BackgroundAudio />
               <InstallPrompt />

@@ -39,16 +39,11 @@ const PageScrollProgressBar = () => {
   }, []);
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 overflow-hidden z-10">
+    <div className="absolute bottom-0 left-0 right-0 h-[2px] overflow-hidden">
       <div
-        className="h-full bg-gradient-to-r from-primary via-primary/90 to-primary transition-all duration-200 ease-out shadow-lg shadow-primary/50 relative overflow-hidden"
-        style={{
-          width: `${scrollProgress}%`,
-          boxShadow: `0 0 10px 2px rgba(var(--primary), ${scrollProgress / 100})`
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
-      </div>
+        className="h-full bg-primary transition-all duration-150 ease-out"
+        style={{ width: `${scrollProgress}%` }}
+      />
     </div>
   );
 };
@@ -112,10 +107,10 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
   };
 
   return (
-    <nav className={`z-50 w-full h-[76px] px-3 sm:px-4 md:px-6 lg:px-8 fixed top-0 left-0 border-b-2 border-primary flex justify-between items-center transition-all duration-300 relative ${
+    <nav className={`z-50 w-full h-[70px] px-3 sm:px-4 md:px-6 lg:px-8 fixed top-0 left-0 flex justify-between items-center transition-all duration-300 relative ${
       isScrolled
-        ? "bg-card/98 backdrop-blur-md supports-[backdrop-filter]:bg-card/95 shadow-lg"
-        : "bg-card/90 backdrop-blur supports-[backdrop-filter]:bg-card/70 shadow-sm"
+        ? "bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/90 shadow-lg border-b border-border"
+        : "bg-background/80 backdrop-blur-sm shadow-sm border-b border-border/50"
     }`}>
       {/* Mobile Menu */}
       <div className="lg:hidden flex-shrink-0">
