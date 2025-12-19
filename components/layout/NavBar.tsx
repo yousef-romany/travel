@@ -27,6 +27,20 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
   const { theme } = useTheme();
   const { user } = useAuth();
   const [comparisonCount, setComparisonCount] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    // Check initial scroll position
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Update comparison count
   useEffect(() => {
@@ -63,7 +77,11 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
   };
 
   return (
-    <nav className="z-50 w-full h-[76px] px-3 sm:px-4 md:px-6 lg:px-8 fixed top-0 left-0 border-b-2 border-primary bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 flex justify-between items-center shadow-sm">
+    <nav className={`z-50 w-full h-[76px] px-3 sm:px-4 md:px-6 lg:px-8 fixed top-0 left-0 border-b-2 border-primary flex justify-between items-center transition-all duration-300 ${
+      isScrolled
+        ? "bg-card/98 backdrop-blur-md supports-[backdrop-filter]:bg-card/95 shadow-lg"
+        : "bg-card/90 backdrop-blur supports-[backdrop-filter]:bg-card/70 shadow-sm"
+    }`}>
       {/* Mobile Menu */}
       <div className="lg:hidden flex-shrink-0">
         <Menu categories={inspirationCategories} placesTogCategorie={placesCategories} />
