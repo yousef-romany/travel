@@ -18,6 +18,41 @@ import { useAuth } from "@/context/AuthContext";
 import { trackButtonClick, trackNavigation } from "@/lib/analytics";
 import { getComparisonCount } from "@/lib/comparison";
 
+// Page Scroll Progress Bar Component
+const PageScrollProgressBar = () => {
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      const scrollHeight = documentHeight - windowHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      setScrollProgress(progress);
+    };
+
+    handleScroll(); // Initial calculation
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 overflow-hidden z-10">
+      <div
+        className="h-full bg-gradient-to-r from-primary via-primary/90 to-primary transition-all duration-200 ease-out shadow-lg shadow-primary/50 relative overflow-hidden"
+        style={{
+          width: `${scrollProgress}%`,
+          boxShadow: `0 0 10px 2px rgba(var(--primary), ${scrollProgress / 100})`
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+      </div>
+    </div>
+  );
+};
+
 interface NavBarProps {
   inspirationCategories: InspirationCategoryData[];
   placesCategories: InspirationCategoryData[];
@@ -77,7 +112,7 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
   };
 
   return (
-    <nav className={`z-50 w-full h-[76px] px-3 sm:px-4 md:px-6 lg:px-8 fixed top-0 left-0 border-b-2 border-primary flex justify-between items-center transition-all duration-300 ${
+    <nav className={`z-50 w-full h-[76px] px-3 sm:px-4 md:px-6 lg:px-8 fixed top-0 left-0 border-b-2 border-primary flex justify-between items-center transition-all duration-300 relative ${
       isScrolled
         ? "bg-card/98 backdrop-blur-md supports-[backdrop-filter]:bg-card/95 shadow-lg"
         : "bg-card/90 backdrop-blur supports-[backdrop-filter]:bg-card/70 shadow-sm"
@@ -169,6 +204,9 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
           <UserMenu />
         )}
       </div>
+
+      {/* Page Scroll Progress Bar */}
+      <PageScrollProgressBar />
     </nav>
   );
 };

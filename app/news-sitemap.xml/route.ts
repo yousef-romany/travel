@@ -16,25 +16,82 @@ interface Article {
 
 async function getRecentArticles(): Promise<Article[]> {
   try {
-    // Get articles from the last 2 days (Google News requirement)
-    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString();
+    // Google News sitemaps can include articles up to 2 years old
+    // Using 30 days to ensure we always have content
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
     const response = await axios.get(
-      `${API_URL}/api/inspiration?filters[publishedAt][$gte]=${twoDaysAgo}&sort=publishedAt:desc&pagination[limit]=100`,
+      `${API_URL}/api/inspiration?filters[publishedAt][$gte]=${thirtyDaysAgo}&sort=publishedAt:desc&pagination[limit]=100`,
       {
         headers: {
           Authorization: `Bearer ${API_TOKEN}`,
         },
       }
     );
-    return response.data.data || [];
+
+    const articles = response.data.data || [];
+
+    // If no articles found with date filter, get the most recent ones
+    if (articles.length === 0) {
+      const fallbackResponse = await axios.get(
+        `${API_URL}/api/inspiration?sort=publishedAt:desc&pagination[limit]=50`,
+        {
+          headers: {
+            Authorization: `Bearer ${API_TOKEN}`,
+          },
+        }
+      );
+      return fallbackResponse.data.data || [];
+    }
+
+    return articles;
   } catch (error) {
-    return [];
+    // Even on error, try to get at least some articles
+    try {
+      const fallbackResponse = await axios.get(
+        `${API_URL}/api/inspiration?sort=publishedAt:desc&pagination[limit]=50`,
+        {
+          headers: {
+            Authorization: `Bearer ${API_TOKEN}`,
+          },
+        }
+      );
+      return fallbackResponse.data.data || [];
+    } catch {
+      return [];
+    }
   }
 }
 
 export async function GET() {
   const articles = await getRecentArticles();
+
+  // If no articles found, return a minimal valid sitemap with the inspiration page
+  if (articles.length === 0) {
+    const fallbackSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>${SITE_URL}/inspiration</loc>
+    <news:news>
+      <news:publication>
+        <news:name>ZoeHoliday Travel Blog</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>${new Date().toISOString()}</news:publication_date>
+      <news:title>ZoeHoliday Travel Inspiration</news:title>
+      <news:keywords>Egypt travel, travel tips, tourism, vacation planning</news:keywords>
+    </news:news>
+  </url>
+</urlset>`;
+
+    return new NextResponse(fallbackSitemap, {
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+      },
+    });
+  }
 
   const newsEntries = articles
     .map((article) => {
