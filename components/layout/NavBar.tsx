@@ -120,10 +120,10 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
 
   return (
     <nav
-      className={`z-50 w-full px-3 sm:px-4 md:px-6 lg:px-8 flex justify-between items-center relative transition-all duration-500 ease-in-out ${
+      className={`fixed top-0 left-0 z-50 w-full px-3 sm:px-4 md:px-6 lg:px-8 flex justify-between items-center relative transition-all duration-300 ease-in-out ${
         isFixed
-          ? "fixed top-0 left-0 h-[68px] bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/90 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-b border-border/50"
-          : "h-[76px] bg-background/80 backdrop-blur-sm shadow-sm border-b border-border"
+          ? "h-[64px] bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/90 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-b border-border/50"
+          : "h-[72px] bg-background/80 backdrop-blur-sm shadow-sm border-b border-border"
       }`}
     >
       {/* Mobile Menu */}
@@ -134,9 +134,7 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
       {/* Logo */}
       <Link
         href={"/"}
-        className={`flex-shrink-0 mx-auto lg:mx-0 transition-all duration-500 ${
-          isFixed ? "scale-95" : "scale-100"
-        }`}
+        className="flex-shrink-0 mx-auto lg:mx-0"
         onClick={handleLogoClick}
       >
         {theme == "light" ? (
