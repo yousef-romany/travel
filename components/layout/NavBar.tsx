@@ -39,10 +39,13 @@ const PageScrollProgressBar = () => {
   }, []);
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-[2px] overflow-hidden">
+    <div className="absolute bottom-0 left-0 right-0 h-[3px] overflow-hidden pointer-events-none z-50">
       <div
-        className="h-full bg-primary transition-all duration-150 ease-out"
-        style={{ width: `${scrollProgress}%` }}
+        className="h-full bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_10px_rgba(var(--primary),0.5)] transition-all duration-100 ease-out"
+        style={{
+          width: "100%",
+          transform: `translateX(${scrollProgress - 100}%)`,
+        }}
       />
     </div>
   );
@@ -107,41 +110,52 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
   };
 
   return (
-    <nav className={`z-50 w-full h-[70px] px-3 sm:px-4 md:px-6 lg:px-8 fixed top-0 left-0 flex justify-between items-center transition-all duration-300 relative ${
-      isScrolled
-        ? "bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/90 shadow-lg border-b border-border"
-        : "bg-background/80 backdrop-blur-sm shadow-sm border-b border-border/50"
-    }`}>
+    <nav
+      className={`z-50 w-full fixed top-0 left-0 flex justify-between items-center transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${isScrolled
+          ? "h-[65px] bg-background/70 backdrop-blur-xl border-b border-border/40 shadow-sm supports-[backdrop-filter]:bg-background/60"
+          : "h-[80px] bg-transparent border-b border-transparent"
+        } px-4 sm:px-6 md:px-8 lg:px-10`}
+    >
+      {/* Background Gradient Mesh for Premium Feel (Optional but Recommended) */}
+      <div
+        className={`absolute inset-0 bg-gradient-to-r from-background/0 via-background/50 to-background/0 pointer-events-none transition-opacity duration-500 ${isScrolled ? "opacity-100" : "opacity-0"
+          }`}
+      />
+
       {/* Mobile Menu */}
-      <div className="lg:hidden flex-shrink-0">
-        <Menu categories={inspirationCategories} placesTogCategorie={placesCategories} />
+      <div className="lg:hidden flex-shrink-0 z-10">
+        <Menu
+          categories={inspirationCategories}
+          placesTogCategorie={placesCategories}
+        />
       </div>
 
       {/* Logo */}
       <Link
         href={"/"}
-        className="flex-shrink-0 mx-auto lg:mx-0"
+        className={`flex-shrink-0 mx-auto lg:mx-0 z-10 transition-transform duration-500 ${isScrolled ? "scale-95" : "scale-100"
+          }`}
         onClick={handleLogoClick}
       >
         {theme == "light" ? (
           <Image
             src={logoLight}
             alt="ZoeHoliday Logo"
-            className="!w-[120px] sm:!w-[150px] md:!w-[180px] lg:!w-[200px] !max-w-[200px] h-auto"
+            className="w-[120px] sm:w-[140px] md:w-[160px] h-auto object-contain"
             priority
           />
         ) : (
           <Image
             src={logo}
             alt="ZoeHoliday Logo"
-            className="!w-[120px] sm:!w-[150px] md:!w-[180px] lg:!w-[200px] !max-w-[200px] h-auto"
+            className="w-[120px] sm:w-[140px] md:w-[160px] h-auto object-contain"
             priority
           />
         )}
       </Link>
 
       {/* Desktop Navigation */}
-      <div className="hidden lg:flex flex-1 justify-center">
+      <div className="hidden lg:flex flex-1 justify-center z-10">
         <NavigationMenuDemo
           categories={inspirationCategories}
           placesTogCategorie={placesCategories}
@@ -149,20 +163,23 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
       </div>
 
       {/* Right Actions */}
-      <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-shrink-0">
+      <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 z-10">
         {/* Comparison */}
         <Link href="/compare" onClick={handleComparisonClick}>
           <Button
             size="icon"
-            variant="outline"
-            className="hover:bg-primary/10 transition-colors h-9 w-9 sm:h-10 sm:w-10 relative"
+            variant="ghost"
+            className="hover:bg-primary/10 hover:text-primary transition-all duration-300 h-9 w-9 sm:h-10 sm:w-10 relative group rounded-full"
             title="Compare Programs"
           >
-            <GitCompare size={18} className="text-primary sm:w-5 sm:h-5" />
+            <GitCompare
+              size={18}
+              className="text-foreground/80 group-hover:text-primary transition-colors sm:w-5 sm:h-5"
+            />
             {comparisonCount > 0 && (
               <Badge
                 variant="destructive"
-                className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-[10px] font-bold"
+                className="absolute -top-0.5 -right-0.5 h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center p-0 text-[10px] font-bold ring-2 ring-background animate-in zoom-in"
               >
                 {comparisonCount}
               </Badge>
@@ -174,12 +191,15 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
         {!user && (
           <Button
             size="icon"
-            variant="outline"
+            variant="ghost"
             onClick={handleWishlistClick}
-            className="hover:bg-primary/10 transition-colors h-9 w-9 sm:h-10 sm:w-10 sm:hidden lg:flex md:flex"
+            className="hover:bg-primary/10 hover:text-primary transition-all duration-300 h-9 w-9 sm:h-10 sm:w-10 sm:hidden lg:flex md:flex rounded-full group"
             title="Wishlist"
           >
-            <FaRegHeart size={18} className="text-primary sm:w-5 sm:h-5" />
+            <FaRegHeart
+              size={18}
+              className="text-foreground/80 group-hover:text-primary transition-colors sm:w-5 sm:h-5"
+            />
           </Button>
         )}
 
@@ -191,7 +211,7 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
         {/* Auth Section */}
         {!user ? (
           <Link href="/login" onClick={handleLoginClick}>
-            <Button className="px-3 sm:px-4 md:px-6 text-sm sm:text-base h-9 sm:h-10">
+            <Button className="px-5 sm:px-6 rounded-full text-sm sm:text-base h-9 sm:h-10 font-medium shadow-md hover:shadow-lg transition-all decoration-0 transform hover:-translate-y-0.5 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white border-0">
               Login
             </Button>
           </Link>

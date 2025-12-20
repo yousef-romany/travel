@@ -64,36 +64,36 @@ const InspiredMenuContent = ({ categories }: { categories: InspirationCategoryDa
       >
         {categories.length > 0
           ? categories?.map((category: InspirationCategoryData) => (
-              <ListItem
-                key={category.id}
-                href={`/inspiration/${category.categoryName}`}
-                title={category.categoryName}
-                className="text-primary group"
-              >
-                <div className="flex flex-col gap-3 text-primary">
-                  {category?.image ? (
-                    <div className="relative overflow-hidden rounded-xl h-[140px] md:h-[150px] lg:h-[160px] w-full">
-                      <ProgressiveImage
-                        src={getImageUrl(category.image)}
-                        alt={category.categoryName}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 900px) 50vw, 300px"
-                        quality={80}
-                        priority={false}
-                        objectFit="cover"
-                        className="rounded-xl transform group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
-                    </div>
-                  ) : (
-                    <Skeleton className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl" />
-                  )}
-                  <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
-                    {category.description}
-                  </p>
-                </div>
-              </ListItem>
-            ))
+            <ListItem
+              key={category.id}
+              href={`/inspiration/${category.categoryName}`}
+              title={category.categoryName}
+              className="text-primary group"
+            >
+              <div className="flex flex-col gap-3 text-primary">
+                {category?.image ? (
+                  <div className="relative overflow-hidden rounded-xl h-[140px] md:h-[150px] lg:h-[160px] w-full">
+                    <ProgressiveImage
+                      src={getImageUrl(category.image)}
+                      alt={category.categoryName}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 900px) 50vw, 300px"
+                      quality={80}
+                      priority={false}
+                      objectFit="cover"
+                      className="rounded-xl transform group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+                  </div>
+                ) : (
+                  <Skeleton className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl" />
+                )}
+                <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
+                  {category.description}
+                </p>
+              </div>
+            </ListItem>
+          ))
           : "No Data found."}
       </ul>
     </div>
@@ -112,36 +112,36 @@ const PlacesToGoMenuContent = ({ categories }: { categories: InspirationCategory
       >
         {categories.length > 0
           ? categories?.map((category: InspirationCategoryData) => (
-              <ListItem
-                key={category.id}
-                href={`/placesTogo/${category.categoryName}`}
-                title={category.categoryName}
-                className="text-primary group"
-              >
-                <div className="flex flex-col gap-3 text-primary">
-                  {category?.image ? (
-                    <div className="relative overflow-hidden rounded-xl h-[140px] md:h-[150px] lg:h-[160px] w-full">
-                      <ProgressiveImage
-                        src={getImageUrl(category.image)}
-                        alt={category.categoryName}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 900px) 50vw, 300px"
-                        quality={80}
-                        priority={false}
-                        objectFit="cover"
-                        className="rounded-xl transform group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
-                    </div>
-                  ) : (
-                    <Skeleton className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl" />
-                  )}
-                  <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
-                    {category.description}
-                  </p>
-                </div>
-              </ListItem>
-            ))
+            <ListItem
+              key={category.id}
+              href={`/placesTogo/${category.categoryName}`}
+              title={category.categoryName}
+              className="text-primary group"
+            >
+              <div className="flex flex-col gap-3 text-primary">
+                {category?.image ? (
+                  <div className="relative overflow-hidden rounded-xl h-[140px] md:h-[150px] lg:h-[160px] w-full">
+                    <ProgressiveImage
+                      src={getImageUrl(category.image)}
+                      alt={category.categoryName}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 900px) 50vw, 300px"
+                      quality={80}
+                      priority={false}
+                      objectFit="cover"
+                      className="rounded-xl transform group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+                  </div>
+                ) : (
+                  <Skeleton className="h-[140px] md:h-[150px] lg:h-[160px] w-full rounded-xl" />
+                )}
+                <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
+                  {category.description}
+                </p>
+              </div>
+            </ListItem>
+          ))
           : "No Data found."}
       </ul>
     </div>
@@ -160,8 +160,8 @@ export function NavigationMenuDemo({
     <NavigationMenu className="md:block hidden">
       <NavigationMenuList className="gap-2">
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="text-[1.2rem] text-primary font-semibold hover:text-primary/80 transition-all duration-300 group">
-            <Sparkles className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+          <NavigationMenuTrigger className="text-[1.05rem] text-foreground/90 font-medium hover:text-primary transition-all duration-300 group bg-transparent hover:bg-primary/5 data-[state=open]:bg-primary/5">
+            <Sparkles className="w-4 h-4 mr-2 group-hover:text-amber-500 transition-colors duration-300" />
             Be inspired
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -169,8 +169,8 @@ export function NavigationMenuDemo({
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="text-[1.2rem] text-primary font-semibold hover:text-primary/80 transition-all duration-300 group">
-            <MapPin className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+          <NavigationMenuTrigger className="text-[1.05rem] text-foreground/90 font-medium hover:text-primary transition-all duration-300 group bg-transparent hover:bg-primary/5 data-[state=open]:bg-primary/5">
+            <MapPin className="w-4 h-4 mr-2 group-hover:text-emerald-500 transition-colors duration-300" />
             Places to go
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -181,12 +181,11 @@ export function NavigationMenuDemo({
           <Link href="/plan-your-trip" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
-                "!text-[1.2rem] text-primary font-semibold hover:text-primary/80 transition-all duration-300 relative group",
+                "text-[1.05rem] text-foreground/90 font-medium hover:text-primary transition-all duration-300 group bg-transparent hover:bg-primary/5",
                 navigationMenuTriggerStyle()
               )}
             >
               Plan Your Trip
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
@@ -194,12 +193,11 @@ export function NavigationMenuDemo({
           <Link href="/programs" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
-                "!text-[1.2rem] text-primary font-semibold hover:text-primary/80 transition-all duration-300 relative group",
+                "text-[1.05rem] text-foreground/90 font-medium hover:text-primary transition-all duration-300 group bg-transparent hover:bg-primary/5",
                 navigationMenuTriggerStyle()
               )}
             >
               Programs
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
@@ -207,12 +205,11 @@ export function NavigationMenuDemo({
           <Link href="/events" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
-                "!text-[1.2rem] text-primary font-semibold hover:text-primary/80 transition-all duration-300 relative group",
+                "text-[1.05rem] text-foreground/90 font-medium hover:text-primary transition-all duration-300 group bg-transparent hover:bg-primary/5",
                 navigationMenuTriggerStyle()
               )}
             >
               Events
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
@@ -231,13 +228,17 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none space-y-2 rounded-xl p-3 leading-none no-underline outline-none transition-all duration-300 hover:bg-gradient-to-br hover:from-primary/5 hover:to-primary/10 hover:shadow-xl hover:shadow-primary/5 focus:bg-gradient-to-br focus:from-primary/5 focus:to-primary/10 border border-border/10 hover:border-primary/30 transform hover:-translate-y-0.5 bg-background/50",
+            "block select-none space-y-2 rounded-xl p-3 leading-none no-underline outline-none transition-all duration-300 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground group relative overflow-hidden",
             className
           )}
           {...props}
         >
-          <div className="text-sm font-semibold leading-tight mb-2 group-hover:text-primary transition-colors duration-300">{title}</div>
-          {children}
+          <div className="text-sm font-semibold leading-tight mb-2 group-hover:text-primary transition-colors duration-300 relative z-10 flex items-center justify-between">
+            {title}
+            <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-primary">→</span>
+          </div>
+          <div className="relative z-10">{children}</div>
+          <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-300" />
         </a>
       </NavigationMenuLink>
     </li>
