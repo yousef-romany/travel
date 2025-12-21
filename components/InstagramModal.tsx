@@ -154,32 +154,33 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
         )}
       </div>
 
-      {/* Modal with Improved Layout - Mobile Responsive */}
+      {/* Modal - Fully Robust Grid Layout */}
       {isModalOpen && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-6 lg:p-10 animate-in fade-in duration-500"
-          onClick={() => {
-            setIsModalOpen(false);
-            trackClose("backdrop-click");
-          }}
-        >
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 lg:p-10 animate-in fade-in duration-500">
           {/* Backdrop Blur Layer */}
-          <div className="absolute inset-0 bg-black/85 backdrop-blur-2xl" />
-
           <div
-            className="relative w-full max-w-[1600px] h-full sm:h-[92vh] max-h-[1000px] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] animate-in zoom-in-95 duration-500 border border-gray-200/50 dark:border-gray-800/50"
+            className="absolute inset-0 bg-black/90 backdrop-blur-2xl"
+            onClick={() => {
+              setIsModalOpen(false);
+              trackClose("backdrop-click");
+            }}
+          />
+
+          {/* Modal Container */}
+          <div
+            className="relative w-full max-w-[1400px] h-full sm:h-[90vh] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-[0_0_100px_-20px_rgba(0,0,0,0.7)] animate-in zoom-in-95 duration-500 border border-gray-200/30 dark:border-gray-800/30 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-[#D4AF37] to-amber-600 flex items-center justify-center shadow-md">
-                  <span className="text-white text-xs sm:text-base font-bold">ZH</span>
+            {/* Header - Fixed height */}
+            <div className="flex-shrink-0 flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/80 backdrop-blur-md">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-[#D4AF37] to-amber-600 flex items-center justify-center shadow-md">
+                  <span className="text-white text-sm sm:text-base font-bold">ZH</span>
                 </div>
                 <div>
                   <span className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white flex items-center gap-2">
                     @ZoeHolidays
-                    <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-medium">
+                    <span className="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-medium border border-[#D4AF37]/30">
                       Official
                     </span>
                   </span>
@@ -191,16 +192,17 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                   setIsModalOpen(false);
                   trackClose("close-button");
                 }}
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-all bg-gray-50 dark:bg-gray-800/50"
                 aria-label="Close Instagram post modal"
               >
-                <X className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
+                <X className="w-5 h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
               </button>
             </div>
 
-            <div className="flex flex-col md:flex-row h-[calc(100%-60px)] sm:h-[calc(100%-73px)] w-full overflow-hidden">
-              {/* Media - Expanded and balanced */}
-              <div className="relative flex-1 bg-black w-full flex items-center justify-center overflow-hidden min-h-[40vh] md:min-h-0">
+            {/* Content Area - Grid for Desktop, Flex for Mobile */}
+            <div className="flex-1 min-h-0 flex flex-col md:grid md:grid-cols-[1fr_380px] lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px]">
+              {/* Media Section - Fills remaining grid space */}
+              <div className="relative bg-black flex items-center justify-center overflow-hidden h-[40vh] md:h-auto border-b md:border-b-0">
                 <div className="w-full h-full flex items-center justify-center">
                   <MediaContent
                     media_type={data?.media_type}
@@ -210,47 +212,52 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                 </div>
               </div>
 
-              {/* Sidebar - Fixed width on desktop for stability */}
-              <div className="w-full md:w-[380px] lg:w-[420px] xl:w-[460px] flex flex-col bg-white dark:bg-gray-900 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-800 flex-shrink-0">
-                {/* Caption and Info with Better Spacing */}
-                <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-3 sm:py-6 space-y-3 sm:space-y-4">
-                  {/* Caption with Read More */}
-                  <div className="space-y-2">
-                    <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
-                      <span className="font-bold text-[#D4AF37]">@ZoeHolidays</span>{" "}
-                      <span className="text-gray-800 dark:text-gray-100">{displayCaption}</span>
-                    </p>
-                    {caption.length > 150 && (
-                      <button
-                        onClick={() => setShowFullCaption(!showFullCaption)}
-                        className="text-xs font-medium text-[#D4AF37] hover:text-amber-600 transition-colors"
-                      >
-                        {showFullCaption ? "Show less" : "Read more"}
-                      </button>
-                    )}
+              {/* Sidebar Section - Forced width on desktop */}
+              <div className="flex flex-col bg-white dark:bg-gray-900 md:border-l border-gray-200 dark:border-gray-800 min-h-0">
+                {/* Scrollable Caption Area */}
+                <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6">
+                  {/* Caption */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[#D4AF37]/10 flex items-center justify-center">
+                        <Instagram className="w-4 h-4 text-[#D4AF37]" />
+                      </div>
+                      <span className="font-bold text-[#D4AF37]">@ZoeHolidays</span>
+                    </div>
+                    <div>
+                      <p className="text-sm sm:text-base leading-relaxed text-gray-800 dark:text-gray-100 whitespace-pre-wrap">
+                        {displayCaption}
+                      </p>
+                      {caption.length > 150 && (
+                        <button
+                          onClick={() => setShowFullCaption(!showFullCaption)}
+                          className="mt-2 text-xs font-bold text-[#D4AF37] hover:text-amber-500 transition-colors uppercase tracking-wider"
+                        >
+                          {showFullCaption ? "Show less" : "Read more"}
+                        </button>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Divider */}
-                  <div className="border-t border-gray-200 dark:border-gray-800"></div>
+                  <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent"></div>
 
-                  {/* Media Info with Better Contrast */}
-                  <div className="space-y-2 sm:space-y-3">
-                    <div className="flex items-center justify-between text-xs sm:text-sm">
-                      <span className="text-gray-600 dark:text-gray-400 font-medium">Type</span>
-                      <span className="font-semibold px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm rounded-full bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20">
+                  {/* Metadata */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-500 dark:text-gray-400 font-medium">Content Type</span>
+                      <span className="font-bold px-3 py-1 text-xs rounded-full bg-primary/10 text-primary border border-primary/20">
                         {data?.media_type}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between text-xs sm:text-sm">
-                      <span className="text-gray-600 dark:text-gray-400 font-medium">Posted</span>
-                      <span className="font-semibold text-gray-900 dark:text-white">{formattedDate}</span>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-500 dark:text-gray-400 font-medium">Publish Date</span>
+                      <span className="font-bold text-gray-900 dark:text-white uppercase tracking-tight">{formattedDate}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Actions with Branded Button */}
-                <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 space-y-2 sm:space-y-3">
-                  {/* Instagram Link with Branded Colors */}
+                {/* Footer Actions - Fixed at bottom */}
+                <div className="flex-shrink-0 p-4 sm:p-6 border-t border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 space-y-4">
                   <a
                     href={data?.permalink}
                     target="_blank"
@@ -258,23 +265,25 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                     className="block"
                   >
                     <Button
-                      className="w-full bg-gradient-to-r from-[#D4AF37] to-amber-600 hover:from-[#C49F2F] hover:to-amber-700 text-white shadow-lg hover:shadow-xl transition-all font-semibold text-sm sm:text-base"
+                      className="w-full bg-gradient-to-r from-[#D4AF37] to-amber-600 hover:from-[#C49F2F] hover:to-amber-700 text-white shadow-lg hover:shadow-xl transition-all h-12 text-base font-bold"
                       size="lg"
                     >
-                      <Instagram className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                      <Instagram className="w-5 h-5 mr-3" />
                       View on Instagram
-                      <ExternalLink className="w-4 h-4 ml-2" />
+                      <ExternalLink className="w-4 h-4 ml-3 opacity-70" />
                     </Button>
                   </a>
 
-                  {/* Secondary Actions */}
-                  <div className="flex gap-2 justify-center">
-                    <Button variant="ghost" size="icon" className="hover:text-red-500 dark:hover:text-red-400 text-gray-600 dark:text-gray-400" aria-label="Like post">
-                      <Heart className="w-5 h-5" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="hover:text-blue-500 dark:hover:text-blue-400 text-gray-600 dark:text-gray-400" aria-label="Comment on post">
-                      <MessageCircle className="w-5 h-5" />
-                    </Button>
+                  <div className="flex gap-4 justify-center items-center">
+                    <button className="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors" aria-label="Like post">
+                      <Heart className="w-6 h-6" />
+                      <span className="text-xs font-medium">Like</span>
+                    </button>
+                    <div className="w-px h-4 bg-gray-300 dark:bg-gray-700"></div>
+                    <button className="flex items-center gap-2 text-gray-400 hover:text-blue-500 transition-colors" aria-label="Comment on post">
+                      <MessageCircle className="w-6 h-6" />
+                      <span className="text-xs font-medium">Comment</span>
+                    </button>
                   </div>
                 </div>
               </div>
