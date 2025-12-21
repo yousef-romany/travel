@@ -180,10 +180,10 @@ export default function MediaContent({
 
             {/* Video player */}
             {isPlaying && (
-              <div className="relative w-full h-full max-h-[80vh]">
+              <div className="relative w-full h-full max-h-[78vh] md:max-h-[82vh] lg:max-h-[85vh]">
                 <video
                   ref={videoRef}
-                  className="w-full h-full max-h-[80vh] object-contain transition-opacity duration-300"
+                  className="w-full h-full max-h-[78vh] md:max-h-[82vh] lg:max-h-[85vh] object-contain transition-opacity duration-300"
                   style={{ maxWidth: '100%' }}
                   poster={thumbnail_url}
                   playsInline
@@ -320,7 +320,7 @@ export default function MediaContent({
           <div className="relative w-full h-full flex items-center justify-center bg-black">
             <video
               ref={videoRef}
-              className="w-full h-full max-h-[80vh] object-contain transition-opacity duration-300"
+              className="w-full h-full max-h-[78vh] md:max-h-[82vh] lg:max-h-[85vh] object-contain transition-opacity duration-300"
               style={{
                 opacity: isLoading ? 0 : 1,
                 maxWidth: '100%'
@@ -417,14 +417,13 @@ export default function MediaContent({
           </p>
         </div>
       )}
-      <div className="relative max-w-full max-h-full" style={{ maxHeight: '85vh' }}>
+      <div className="relative max-w-full max-h-[78vh] md:max-h-[82vh] lg:max-h-[85vh]">
         <Image
           src={imageUrl || "/placeholder.svg"}
           alt={media_type === "CAROUSEL_ALBUM" ? "Instagram carousel album" : "Instagram photo"}
           width={1200}
           height={1200}
-          className="object-contain w-auto h-auto max-w-full max-h-full"
-          style={{ maxHeight: '85vh' }}
+          className="object-contain w-auto h-auto max-w-full max-h-[78vh] md:max-h-[82vh] lg:max-h-[85vh]"
           priority
         />
       </div>

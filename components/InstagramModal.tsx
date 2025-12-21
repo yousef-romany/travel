@@ -164,7 +164,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
           }}
         >
           <div
-            className="relative w-full max-w-sm sm:max-w-md md:max-w-4xl lg:max-w-6xl xl:max-w-7xl h-[95vh] sm:h-[90vh] bg-white dark:bg-gray-900 rounded-lg sm:rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800"
+            className="relative w-full max-w-sm sm:max-w-md md:max-w-5xl lg:max-w-7xl xl:max-w-[90vw] 2xl:max-w-[85vw] h-[95vh] sm:h-[90vh] bg-white dark:bg-gray-900 rounded-lg sm:rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -197,8 +197,8 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
 
             {/* Content with Better Balance */}
             <div className="flex flex-col md:flex-row h-[calc(95vh-57px)] sm:h-[calc(90vh-73px)] w-full">
-              {/* Media - Full width on mobile, 65% on desktop for better balance */}
-              <div className="relative flex-1 md:flex-[65] bg-black w-full flex items-center justify-center overflow-hidden h-[50vh] md:h-auto">
+              {/* Media - Full width on mobile, 70% on medium, 75% on large screens */}
+              <div className="relative flex-1 md:flex-[70] lg:flex-[75] xl:flex-[78] bg-black w-full flex items-center justify-center overflow-hidden h-[50vh] md:h-auto">
                 <div className="w-full h-full flex items-center justify-center max-w-full">
                   <MediaContent
                     media_type={data?.media_type}
@@ -208,8 +208,8 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                 </div>
               </div>
 
-              {/* Sidebar - Full width on mobile, 35% on desktop */}
-              <div className="flex-1 md:flex-[35] w-full md:max-w-md lg:max-w-lg flex flex-col bg-white dark:bg-gray-900 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-800">
+              {/* Sidebar - Full width on mobile, 30% on medium, 25% on large screens */}
+              <div className="flex-1 md:flex-[30] lg:flex-[25] xl:flex-[22] w-full md:min-w-[320px] md:max-w-md lg:max-w-lg xl:max-w-xl flex flex-col bg-white dark:bg-gray-900 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-800">
                 {/* Caption and Info with Better Spacing */}
                 <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-3 sm:py-6 space-y-3 sm:space-y-4">
                   {/* Caption with Read More */}
