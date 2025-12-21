@@ -157,14 +157,17 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
       {/* Modal with Improved Layout - Mobile Responsive */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-2 sm:p-4 animate-in fade-in duration-300"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-6 lg:p-10 animate-in fade-in duration-500"
           onClick={() => {
             setIsModalOpen(false);
             trackClose("backdrop-click");
           }}
         >
+          {/* Backdrop Blur Layer */}
+          <div className="absolute inset-0 bg-black/85 backdrop-blur-2xl" />
+
           <div
-            className="relative w-full max-w-sm sm:max-w-md md:max-w-5xl lg:max-w-7xl xl:max-w-[90vw] 2xl:max-w-[85vw] h-[95vh] sm:h-[90vh] bg-white dark:bg-gray-900 rounded-lg sm:rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800"
+            className="relative w-full max-w-[1600px] h-full sm:h-[92vh] max-h-[1000px] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] animate-in zoom-in-95 duration-500 border border-gray-200/50 dark:border-gray-800/50"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -195,11 +198,10 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
               </button>
             </div>
 
-            {/* Content with Better Balance */}
-            <div className="flex flex-col md:flex-row h-[calc(95vh-57px)] sm:h-[calc(90vh-73px)] w-full">
-              {/* Media - Full width on mobile, 70% on medium, 75% on large screens */}
-              <div className="relative flex-1 md:flex-[70] lg:flex-[75] xl:flex-[78] bg-black w-full flex items-center justify-center overflow-hidden h-[50vh] md:h-auto">
-                <div className="w-full h-full flex items-center justify-center max-w-full">
+            <div className="flex flex-col md:flex-row h-[calc(100%-60px)] sm:h-[calc(100%-73px)] w-full overflow-hidden">
+              {/* Media - Expanded and balanced */}
+              <div className="relative flex-1 bg-black w-full flex items-center justify-center overflow-hidden min-h-[40vh] md:min-h-0">
+                <div className="w-full h-full flex items-center justify-center">
                   <MediaContent
                     media_type={data?.media_type}
                     imageUrl={data?.media_url}
@@ -208,8 +210,8 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                 </div>
               </div>
 
-              {/* Sidebar - Full width on mobile, 30% on medium, 25% on large screens */}
-              <div className="flex-1 md:flex-[30] lg:flex-[25] xl:flex-[22] w-full md:min-w-[320px] md:max-w-md lg:max-w-lg xl:max-w-xl flex flex-col bg-white dark:bg-gray-900 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-800">
+              {/* Sidebar - Fixed width on desktop for stability */}
+              <div className="w-full md:w-[380px] lg:w-[420px] xl:w-[460px] flex flex-col bg-white dark:bg-gray-900 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-800 flex-shrink-0">
                 {/* Caption and Info with Better Spacing */}
                 <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-3 sm:py-6 space-y-3 sm:space-y-4">
                   {/* Caption with Read More */}
