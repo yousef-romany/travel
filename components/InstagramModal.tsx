@@ -68,7 +68,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
           setIsModalOpen(true);
           trackOpen("thumbnail-click");
         }}
-        className="group w-full max-w-md mx-auto rounded-2xl cursor-pointer overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:scale-[1.02]"
+        className="group w-full max-w-sm rounded-2xl cursor-pointer overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:scale-[1.02]"
       >
         {isLoading ? (
           <div className="w-full aspect-square bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-orange-900/20 animate-pulse flex items-center justify-center">
@@ -164,7 +164,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
           }}
         >
           <div
-            className="relative w-full max-w-sm sm:max-w-md md:max-w-3xl lg:max-w-7xl xl:max-w-[90vw] h-[95vh] sm:h-[90vh] bg-white dark:bg-gray-900 rounded-lg sm:rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800"
+            className="relative w-full max-w-sm sm:max-w-md md:max-w-4xl lg:max-w-6xl xl:max-w-7xl h-[95vh] sm:h-[90vh] bg-white dark:bg-gray-900 rounded-lg sm:rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 border border-gray-200 dark:border-gray-800"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -197,9 +197,9 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
 
             {/* Content with Better Balance */}
             <div className="flex flex-col md:flex-row h-[calc(95vh-57px)] sm:h-[calc(90vh-73px)] w-full">
-              {/* Media - Full width on mobile, 70% on desktop for larger video */}
-              <div className="relative flex-1 md:flex-[7] lg:flex-[8] bg-black w-full flex items-center justify-center overflow-hidden h-[50vh] md:h-auto">
-                <div className="w-full h-full flex items-center justify-center">
+              {/* Media - Full width on mobile, 65% on desktop for better balance */}
+              <div className="relative flex-1 md:flex-[65] bg-black w-full flex items-center justify-center overflow-hidden h-[50vh] md:h-auto">
+                <div className="w-full h-full flex items-center justify-center max-w-full">
                   <MediaContent
                     media_type={data?.media_type}
                     imageUrl={data?.media_url}
@@ -208,8 +208,8 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                 </div>
               </div>
 
-              {/* Sidebar - Full width on mobile, 30% on desktop */}
-              <div className="flex-1 md:flex-[3] lg:flex-[2] w-full md:max-w-sm lg:max-w-xs flex flex-col bg-white dark:bg-gray-900 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-800">
+              {/* Sidebar - Full width on mobile, 35% on desktop */}
+              <div className="flex-1 md:flex-[35] w-full md:max-w-md lg:max-w-lg flex flex-col bg-white dark:bg-gray-900 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-800">
                 {/* Caption and Info with Better Spacing */}
                 <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-3 sm:py-6 space-y-3 sm:space-y-4">
                   {/* Caption with Read More */}

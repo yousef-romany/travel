@@ -180,10 +180,11 @@ export default function MediaContent({
 
             {/* Video player */}
             {isPlaying && (
-              <div className="relative w-full h-full max-h-[85vh]">
+              <div className="relative w-full h-full max-h-[80vh]">
                 <video
                   ref={videoRef}
-                  className="w-full h-full object-contain rounded-lg transition-opacity duration-300"
+                  className="w-full h-full max-h-[80vh] object-contain transition-opacity duration-300"
+                  style={{ maxWidth: '100%' }}
                   poster={thumbnail_url}
                   playsInline
                   controls={false}
@@ -319,9 +320,10 @@ export default function MediaContent({
           <div className="relative w-full h-full flex items-center justify-center bg-black">
             <video
               ref={videoRef}
-              className="w-full h-full max-h-[85vh] object-contain rounded-lg transition-opacity duration-300"
+              className="w-full h-full max-h-[80vh] object-contain transition-opacity duration-300"
               style={{
-                opacity: isLoading ? 0 : 1
+                opacity: isLoading ? 0 : 1,
+                maxWidth: '100%'
               }}
               poster={thumbnail_url}
               playsInline
