@@ -156,7 +156,7 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
 
       {/* Modal - Fully Robust Grid Layout */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 lg:p-10 animate-in fade-in duration-500">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 md:p-6 lg:p-8 animate-in fade-in duration-500">
           {/* Backdrop Blur Layer */}
           <div
             className="absolute inset-0 bg-black/90 backdrop-blur-2xl"
@@ -168,23 +168,23 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
 
           {/* Modal Container */}
           <div
-            className="relative w-full max-w-[1400px] h-full sm:h-[90vh] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-[0_0_100px_-20px_rgba(0,0,0,0.7)] animate-in zoom-in-95 duration-500 border border-gray-200/30 dark:border-gray-800/30 flex flex-col"
+            className="relative w-full max-w-[1600px] h-full sm:h-[92vh] md:h-[95vh] bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_0_100px_-20px_rgba(0,0,0,0.7)] animate-in zoom-in-95 duration-500 border border-gray-200/30 dark:border-gray-800/30 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header - Fixed height */}
-            <div className="flex-shrink-0 flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/80 backdrop-blur-md">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-[#D4AF37] to-amber-600 flex items-center justify-center shadow-md">
-                  <span className="text-white text-sm sm:text-base font-bold">ZH</span>
+            <div className="flex-shrink-0 flex items-center justify-between px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 md:py-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/80 backdrop-blur-md">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-11 md:h-11 rounded-full bg-gradient-to-br from-[#D4AF37] to-amber-600 flex items-center justify-center shadow-md">
+                  <span className="text-white text-xs sm:text-sm md:text-base font-bold">ZH</span>
                 </div>
                 <div>
-                  <span className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white flex items-center gap-2">
+                  <span className="font-semibold text-xs sm:text-sm md:text-base text-gray-900 dark:text-white flex items-center gap-1.5 sm:gap-2">
                     @ZoeHolidays
-                    <span className="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-medium border border-[#D4AF37]/30">
+                    <span className="text-[9px] sm:text-[10px] md:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-medium border border-[#D4AF37]/30">
                       Official
                     </span>
                   </span>
-                  <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">{formattedDate}</p>
+                  <p className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 dark:text-gray-400">{formattedDate}</p>
                 </div>
               </div>
               <button
@@ -192,18 +192,18 @@ export default function InstagramModal({ idPost }: instagramPostsType) {
                   setIsModalOpen(false);
                   trackClose("close-button");
                 }}
-                className="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-all bg-gray-50 dark:bg-gray-800/50"
+                className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-all bg-gray-50 dark:bg-gray-800/50"
                 aria-label="Close Instagram post modal"
               >
-                <X className="w-5 h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" />
               </button>
             </div>
 
             {/* Content Area - Grid for Desktop, Flex for Mobile */}
-            <div className="flex-1 min-h-0 flex flex-col md:grid md:grid-cols-[1fr_380px] lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px]">
+            <div className="flex-1 min-h-0 flex flex-col md:grid md:grid-cols-[1.2fr_360px] lg:grid-cols-[1.5fr_400px] xl:grid-cols-[2fr_450px]">
               {/* Media Section - Fills remaining grid space */}
-              <div className="relative bg-black flex items-center justify-center overflow-hidden h-[40vh] md:h-auto border-b md:border-b-0">
-                <div className="w-full h-full flex items-center justify-center">
+              <div className="relative bg-black flex items-center justify-center overflow-hidden h-[55vh] sm:h-[60vh] md:h-auto border-b md:border-b-0">
+                <div className="w-full h-full flex items-center justify-center p-2 sm:p-4">
                   <MediaContent
                     media_type={data?.media_type}
                     imageUrl={data?.media_url}

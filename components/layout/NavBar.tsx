@@ -123,10 +123,10 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
       />
 
       {/* NavBar Content Container */}
-      <div className="h-full w-full flex items-center justify-between px-3 sm:px-4 md:px-6 lg:px-10 max-w-[1920px] mx-auto">
+      <div className="h-full w-full flex items-center justify-between px-3 sm:px-4 md:px-6 lg:px-10 max-w-[1920px] mx-auto relative">
 
         {/* Left Section - Mobile Menu (Mobile Only) */}
-        <div className="flex items-center gap-2 lg:hidden z-10">
+        <div className="flex items-center gap-2 lg:hidden z-10 flex-shrink-0">
           <Menu
             categories={inspirationCategories}
             placesTogCategorie={placesCategories}
@@ -138,7 +138,7 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
           href={"/"}
           className={`flex-shrink-0 z-10 transition-transform duration-500 lg:mr-auto ${
             isScrolled ? "scale-90 sm:scale-95" : "scale-100"
-          } absolute left-1/2 -translate-x-1/2 lg:relative lg:left-auto lg:translate-x-0`}
+          } lg:relative lg:left-auto lg:translate-x-0 mx-auto lg:mx-0`}
           onClick={handleLogoClick}
         >
           {theme === "light" ? (
@@ -159,7 +159,7 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
         </Link>
 
         {/* Center Section - Desktop Navigation (Desktop Only) */}
-        <div className="hidden lg:flex flex-1 justify-center z-10 max-w-3xl">
+        <div className="hidden lg:flex flex-1 justify-center z-10 max-w-3xl absolute left-1/2 -translate-x-1/2">
           <NavigationMenuDemo
             categories={inspirationCategories}
             placesTogCategorie={placesCategories}
@@ -167,7 +167,7 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
         </div>
 
         {/* Right Section - Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-shrink-0 z-10 ml-auto lg:ml-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-shrink-0 z-10">
           {/* Comparison Button */}
           <Link href="/compare" onClick={handleComparisonClick}>
             <Button
