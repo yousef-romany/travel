@@ -32,6 +32,7 @@ interface MenuProps {
 
 const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
   const [comparisonCount, setComparisonCount] = useState(0);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const updateCount = () => {
@@ -48,8 +49,12 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
     };
   }, []);
 
+  const handleLinkClick = () => {
+    setOpen(false);
+  };
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"
@@ -96,6 +101,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                           <Link
                             key={category.id}
                             href={`/inspiration/${category.categoryName}`}
+                            onClick={handleLinkClick}
                             className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors group"
                           >
                             <div className="relative w-10 h-10 rounded-md overflow-hidden flex-shrink-0 border border-border/20">
@@ -144,6 +150,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                             <Link
                               key={category.id}
                               href={`/placesTogo/${category.categoryName}`}
+                              onClick={handleLinkClick}
                               className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-500/5 transition-colors group"
                             >
                               <div className="relative w-10 h-10 rounded-md overflow-hidden flex-shrink-0 border border-border/20">
@@ -178,6 +185,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                 <Link
                   href="/plan-your-trip"
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-500/5 transition-all group border border-transparent hover:border-blue-500/10"
+                      onClick={handleLinkClick}
                 >
                   <div className="p-2 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition-colors">
                     <Compass className="h-4 w-4 text-blue-600" />
@@ -190,6 +198,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                 <Link
                   href="/programs"
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-green-500/5 transition-all group border border-transparent hover:border-green-500/10"
+                  onClick={handleLinkClick}
                 >
                   <div className="p-2 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors">
                     <Calendar className="h-4 w-4 text-green-600" />
@@ -202,6 +211,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                 <Link
                   href="/compare"
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-orange-500/5 transition-all group border border-transparent hover:border-orange-500/10"
+                  onClick={handleLinkClick}
                 >
                   <div className="p-2 bg-orange-500/10 rounded-lg group-hover:bg-orange-500/20 transition-colors">
                     <GitCompare className="h-4 w-4 text-orange-600" />
@@ -222,6 +232,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                 <Link
                   href="/events"
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-500/5 transition-all group border border-transparent hover:border-purple-500/10"
+                  onClick={handleLinkClick}
                 >
                   <div className="p-2 bg-purple-500/10 rounded-lg group-hover:bg-purple-500/20 transition-colors">
                     <Calendar className="h-4 w-4 text-purple-600" />
