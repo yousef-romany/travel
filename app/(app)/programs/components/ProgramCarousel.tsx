@@ -76,12 +76,12 @@ export function ProgramCarousel({ images }: ProgramCarouselProps) {
           </button>
 
           {/* Dots Navigation */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
             {images.map((_, index) => (
               <button
                 key={index}
-                className={`w-2 h-2 rounded-full transition-all duration-300 hover:scale-125 ${
-                  index === selectedIndex ? "bg-background w-6" : "bg-background/50"
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 hover:scale-110 ${
+                  index === selectedIndex ? "bg-background w-4" : "bg-background/50"
                 }`}
                 onClick={() => emblaApi?.scrollTo(index)}
                 aria-label={`Go to image ${index + 1}`}
