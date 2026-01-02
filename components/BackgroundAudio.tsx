@@ -1,10 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 import { Volume2, VolumeX } from "lucide-react";
 import { FaArrowUp } from "react-icons/fa6";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 
 export default function BackgroundAudio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -14,8 +20,8 @@ export default function BackgroundAudio() {
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const pathname = usePathname();
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const [showAudioDialog, setShowAudioDialog] = useState(false);
 
   // Array of background music tracks - rotates between both
   const audioTracks = [
@@ -65,37 +71,20 @@ export default function BackgroundAudio() {
     audio.addEventListener("pause", handlePause);
     audio.addEventListener("ended", handleEnded);
 
-    // Only autoplay on home page and only once per session
-    if (pathname === "/" && !hasPlayedRef.current) {
+    // Autoplay on all pages, only once per session
+    if (!hasPlayedRef.current) {
       hasPlayedRef.current = true;
 
       // Attempt to play immediately
       const playAudio = async () => {
         try {
           await audio.play();
-          console.log("Background audio started automatically on home page");
+          console.log("Background audio started automatically");
         } catch (error) {
-          console.log("Autoplay blocked, will play on first user interaction");
+          console.log("Autoplay blocked, showing dialog to user");
 
-          // If autoplay is blocked, play on first user interaction
-          const handleFirstInteraction = async () => {
-            try {
-              await audio.play();
-              console.log("Background audio started after user interaction");
-              // Remove listeners after successful play
-              document.removeEventListener("click", handleFirstInteraction);
-              document.removeEventListener("touchstart", handleFirstInteraction);
-              document.removeEventListener("keydown", handleFirstInteraction);
-              document.removeEventListener("scroll", handleFirstInteraction);
-            } catch (err) {
-              console.error("Error playing audio:", err);
-            }
-          };
-
-          document.addEventListener("click", handleFirstInteraction, { once: true });
-          document.addEventListener("touchstart", handleFirstInteraction, { once: true });
-          document.addEventListener("keydown", handleFirstInteraction, { once: true });
-          document.addEventListener("scroll", handleFirstInteraction, { once: true });
+          // Show dialog asking user to enable audio
+          setShowAudioDialog(true);
         }
       };
 
@@ -164,61 +153,111 @@ export default function BackgroundAudio() {
     }
   };
 
-  if (!showControls) return null;
+  const handleEnableAudio = async () => {
+    if (!audioRef.current) return;
+
+    try {
+      await audioRef.current.play();
+      setShowAudioDialog(false);
+      console.log("Background audio started after user permission");
+    } catch (error) {
+      console.error("Error playing audio:", error);
+    }
+  };
+
+  const handleDeclineAudio = () => {
+    setShowAudioDialog(false);
+    console.log("User declined background audio");
+  };
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex gap-2 flex flex-col">
-      {/* Mute/Unmute Button */}
-      <Button
-        onClick={toggleMute}
-        size="icon"
-        className="rounded-full h-12 w-12 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
-        title={isMuted ? "Unmute" : "Mute"}
-      >
-        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-      </Button>
+    <>
+      {/* Audio Permission Dialog */}
+      <Dialog open={showAudioDialog} onOpenChange={setShowAudioDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Volume2 className="w-5 h-5 text-primary" />
+              Enable Background Music?
+            </DialogTitle>
+            <DialogDescription>
+              Would you like to play ambient background music to enhance your browsing experience?
+              You can control the volume or mute it anytime using the controls at the bottom right.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-3 justify-end mt-4">
+            <Button
+              variant="outline"
+              onClick={handleDeclineAudio}
+            >
+              No, Thanks
+            </Button>
+            <Button
+              onClick={handleEnableAudio}
+              className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
+            >
+              Yes, Play Music
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
-      {/* Play/Pause Button */}
-      <Button
-        onClick={toggleAudio}
-        size="icon"
-        className="rounded-full h-12 w-12 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
-        title={isPlaying ? "Pause Background Music" : "Play Background Music"}
-      >
-        {isPlaying ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="currentColor"
+      {/* Audio Controls */}
+      {showControls && (
+        <div className="fixed bottom-6 right-6 z-40 flex gap-2 flex flex-col">
+          {/* Mute/Unmute Button */}
+          <Button
+            onClick={toggleMute}
+            size="icon"
+            className="rounded-full h-12 w-12 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
+            title={isMuted ? "Unmute" : "Mute"}
           >
-            <rect x="6" y="4" width="4" height="16" />
-            <rect x="14" y="4" width="4" height="16" />
-          </svg>
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <polygon points="5,3 19,12 5,21" />
-          </svg>
-        )}
-      </Button>
+            {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+          </Button>
 
-      {isVisible && (
-        <Button
-          onClick={scrollToTop}
-          className="rounded-full h-12 w-12 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
-          aria-label="Scroll to top"
-          title="Scroll to top"
-        >
-          <FaArrowUp size={24} />
-        </Button>
+          {/* Play/Pause Button */}
+          <Button
+            onClick={toggleAudio}
+            size="icon"
+            className="rounded-full h-12 w-12 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
+            title={isPlaying ? "Pause Background Music" : "Play Background Music"}
+          >
+            {isPlaying ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <polygon points="5,3 19,12 5,21" />
+              </svg>
+            )}
+          </Button>
+
+          {isVisible && (
+            <Button
+              onClick={scrollToTop}
+              className="rounded-full h-12 w-12 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
+              aria-label="Scroll to top"
+              title="Scroll to top"
+            >
+              <FaArrowUp size={24} />
+            </Button>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }
