@@ -74,7 +74,7 @@ export function RecommendedPrograms({
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Clock className="h-4 w-4 flex-shrink-0" />
-                    <span>{program.duration} days</span>
+                    <span>{program.duration} {program.duration === 1 ? 'day' : 'days'}</span>
                   </div>
                   <div className="flex items-center justify-between pt-2 border-t">
                     <p className="text-xl font-bold text-primary">

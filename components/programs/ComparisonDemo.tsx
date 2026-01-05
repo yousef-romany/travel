@@ -173,7 +173,7 @@ export function ComparisonDemo() {
                   </div>
                   <div className="flex items-center gap-1">
                     <Clock className="h-4 w-4 text-blue-600" />
-                    <span>{program.duration} days</span>
+                    <span>{program.duration} {program.duration === 1 ? 'day' : 'days'}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />

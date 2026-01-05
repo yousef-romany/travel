@@ -344,7 +344,7 @@ export default function DashboardPage() {
                           <h4 className="font-semibold line-clamp-1">{program.title}</h4>
                           <div className="flex items-center justify-between mt-2 text-sm">
                             <span className="text-muted-foreground">
-                              {program.duration} days
+                              {program.duration} {program.duration === 1 ? 'day' : 'days'}
                             </span>
                             <span className="font-bold text-primary">
                               ${program.price.toLocaleString()}

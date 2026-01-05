@@ -148,7 +148,7 @@ export default function CompareContent() {
                     {programs.map((program) => (
                         <div key={`duration-${program.documentId}`} className="flex items-center justify-center py-4 bg-card border rounded-lg">
                             <span className="text-lg font-medium">
-                                {program.duration} days
+                                {program.duration} {program.duration === 1 ? 'day' : 'days'}
                             </span>
                         </div>
                     ))}
@@ -241,7 +241,7 @@ export default function CompareContent() {
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground mb-1">Duration</p>
-                                    <p className="text-lg font-semibold">{program.duration} days</p>
+                                    <p className="text-lg font-semibold">{program.duration} {program.duration === 1 ? 'day' : 'days'}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground mb-1">Rating</p>

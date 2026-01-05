@@ -77,7 +77,7 @@ export function RecentlyViewed() {
                       <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                       <span className="text-sm font-medium">{program.rating}</span>
                     </div>
-                    <Badge variant="secondary">{program.duration} days</Badge>
+                    <Badge variant="secondary">{program.duration} {program.duration === 1 ? 'day' : 'days'}</Badge>
                   </div>
                   <p className="text-lg font-bold text-primary">
                     ${program.price.toLocaleString()}

@@ -83,7 +83,7 @@ export default function ProgramsSection({ programs }: ProgramsSectionProps) {
                   {program.duration && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4 bg-muted/30 p-2 rounded-lg w-fit">
                       <Clock className="h-4 w-4 text-primary" />
-                      <span className="font-medium">{program.duration} days adventure</span>
+                      <span className="font-medium">{program.duration} {program.duration === 1 ? 'day' : 'days'} adventure</span>
                     </div>
                   )}
                   <div className="flex flex-col gap-4 mt-auto">
