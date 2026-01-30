@@ -26,7 +26,7 @@ import AverageRating from "@/components/review/AverageRating";
 import TestimonialsWithFilters from "@/components/review/TestimonialsWithFilters";
 import ReviewStatistics from "@/components/review/ReviewStatistics";
 import FeaturedReviews from "@/components/review/FeaturedReviews";
-import ReviewAnalytics from "@/components/review/ReviewAnalytics";
+import MDXRenderer from "@/components/MDXRenderer";
 import ExportReviews from "@/components/review/ExportReviews";
 import { ShareButtonCompact } from "@/components/social/ShareButtons";
 import { generateProgramShareText, generateTravelHashtags } from "@/lib/social-sharing";
@@ -552,10 +552,13 @@ export default function ProgramContent({
               <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
                 Overview
               </h2>
+
               <div
                 className="text-muted-foreground text-lg leading-relaxed prose prose-slate dark:prose-invert max-w-none [&>p]:mb-4 [&>ul]:mb-4 [&>ol]:mb-4 [&>h1]:text-2xl [&>h2]:text-xl [&>h3]:text-lg [&>strong]:font-bold [&>em]:italic"
-                dangerouslySetInnerHTML={{ __html: program.overView || program.descraption || 'No overview available' }}
-              />
+                // dangerouslySetInnerHTML={{ __html: program.overView || program.descraption || 'No overview available' }}
+              >
+              <MDXRenderer mdxString={program.overView as string} />
+                </div>
             </div>
           </div>
 
