@@ -104,14 +104,16 @@ const CardTravels = ({
             <span className="text-muted-foreground font-medium">{Location}</span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-amber-500/10 rounded-lg">
-              <Clock className="w-4 h-4 text-amber-600" />
+          {duration > 0 && (
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-amber-500/10 rounded-lg">
+                <Clock className="w-4 h-4 text-amber-600" />
+              </div>
+              <span className="text-muted-foreground font-medium">
+                {duration} {duration === 1 ? 'Day' : 'Days'}
+              </span>
             </div>
-            <span className="text-muted-foreground font-medium">
-              {duration} {duration === 1 ? 'Day' : 'Days'}
-            </span>
-          </div>
+          )}
         </div>
 
         <div className="pt-3 border-t border-primary/10">

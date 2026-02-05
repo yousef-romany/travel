@@ -160,23 +160,25 @@ export default function ProgramContent({
                 ✨ Curated Travel Experience
               </span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent leading-tight">
               {program.title}
             </h1>
             {/* Total Duration Badge */}
-            <div className="inline-block">
-              <div className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary/10 to-amber-600/10 border border-primary/20 rounded-full">
-                <Clock className="w-5 h-5 text-primary" />
-                <span className="text-lg font-semibold text-foreground">
-                  Total Duration: {program.tripType === "single-day" || Number(program.duration) === 1
-                    ? "1 Day"
-                    : `${program.duration} Days`}
-                </span>
+            {program.duration && Number(program.duration) > 0 && (
+              <div className="inline-block">
+                <div className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary/10 to-amber-600/10 border border-primary/20 rounded-full">
+                  <Clock className="w-5 h-5 text-primary" />
+                  <span className="text-lg font-semibold text-foreground">
+                    Total Duration: {program.tripType === "single-day" || Number(program.duration) === 1
+                      ? "1 Day"
+                      : `${program.duration} Days`}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-12 animate-slide-up animate-delay-200">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 mb-12 animate-slide-up animate-delay-200">
             <div className="space-y-4">
               <div className="relative aspect-video rounded-2xl overflow-hidden bg-muted shadow-2xl border border-primary/20">
                 {program.images && program.images.length > 0 ? (
@@ -231,8 +233,11 @@ export default function ProgramContent({
             </div>
 
             <div className="space-y-6">
-              <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-2xl p-6 shadow-xl">
-                <p className="text-muted-foreground text-lg leading-relaxed mb-6">{program.descraption}</p>
+              <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-2xl p-5 md:p-6 shadow-xl">
+                <div className="text-muted-foreground text-base md:text-lg leading-relaxed mb-6">
+                  {/* Using refined logic to handle description if needed, currently leaving as text but ensuring mobile font size is good */}
+                  {program.descraption}
+                </div>
 
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
@@ -245,19 +250,21 @@ export default function ProgramContent({
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-amber-500/10 rounded-xl">
-                      <Clock className="w-6 h-6 text-amber-600" aria-hidden="true" />
+                  {program.duration && Number(program.duration) > 0 && (
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 bg-amber-500/10 rounded-xl">
+                        <Clock className="w-6 h-6 text-amber-600" aria-hidden="true" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground font-semibold">Duration</p>
+                        <span className="text-lg font-bold text-foreground">
+                          {program.tripType === "single-day" || Number(program.duration) === 1
+                            ? "Single Day Trip"
+                            : `${program.duration} Days`}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground font-semibold">Duration</p>
-                      <span className="text-lg font-bold text-foreground">
-                        {program.tripType === "single-day" || Number(program.duration) === 1
-                          ? "Single Day Trip"
-                          : `${program.duration} Days`}
-                      </span>
-                    </div>
-                  </div>
+                  )}
 
                   <div className="flex items-center gap-3">
                     <div className="p-2.5 bg-yellow-400/10 rounded-xl">
@@ -370,7 +377,7 @@ export default function ProgramContent({
           </div>
 
           <div className="mb-12 animate-slide-up animate-delay-300">
-            <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-2xl p-8 shadow-xl">
+            <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-2xl p-5 md:p-8 shadow-xl">
               <div className="flex items-center gap-3 mb-8">
                 <div className="p-3 bg-gradient-to-r from-primary to-amber-600 rounded-xl">
                   <MapPin className="h-7 w-7 text-white" />
@@ -383,12 +390,14 @@ export default function ProgramContent({
                     {program.content_steps?.length} amazing destinations to explore
                   </p>
                 </div>
-                <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/20 to-primary/20 border border-primary/30 rounded-lg">
-                  <Clock className="w-5 h-5 text-primary" />
-                  <span className="text-base font-bold text-foreground">
-                    Total: {program.tripType === "single-day" || Number(program.duration) === 1 ? "1 Day" : `${program.duration} Days`}
-                  </span>
-                </div>
+                {program.duration && Number(program.duration) > 0 && (
+                  <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/20 to-primary/20 border border-primary/30 rounded-lg">
+                    <Clock className="w-5 h-5 text-primary" />
+                    <span className="text-base font-bold text-foreground">
+                      Total: {program.tripType === "single-day" || Number(program.duration) === 1 ? "1 Day" : `${program.duration} Days`}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="relative">
@@ -405,11 +414,11 @@ export default function ProgramContent({
                       return (
                         <li
                           key={index}
-                          className="relative pl-12 md:pl-16 group animate-slide-up"
+                          className="relative pl-8 md:pl-16 group animate-slide-up"
                           style={{ animationDelay: `${index * 100}ms` }}
                         >
                           {/* Timeline dot */}
-                          <div className="absolute left-0 flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-primary to-amber-600 text-white font-bold text-base md:text-lg shadow-lg z-10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                          <div className="absolute left-0 flex items-center justify-center w-8 h-8 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-primary to-amber-600 text-white font-bold text-sm md:text-lg shadow-lg z-10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                             {index + 1}
                           </div>
 
@@ -421,7 +430,7 @@ export default function ProgramContent({
                                   src={imageUrl}
                                   alt={step.title}
                                   fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 80vw, 1200px"
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1440px) 80vw, 1200px"
                                   className="object-cover group-hover:scale-110 transition-transform duration-700"
                                   loading="lazy"
                                   quality={80}
@@ -496,7 +505,7 @@ export default function ProgramContent({
                                             src={getImageUrl(imageUrl)}
                                             alt={step.title}
                                             fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 80vw, 1200px"
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1440px) 80vw, 1200px"
                                             className="object-cover"
                                           />
                                         </div>
@@ -532,10 +541,14 @@ export default function ProgramContent({
               {/* Summary footer */}
               <div className="mt-8 pt-6 border-t border-primary/10 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <Clock className="h-5 w-5" />
-                  <span className="text-sm">
-                    Total duration: <span className="font-bold text-foreground">{program.duration} {Number(program.duration) === 1 ? 'Day' : 'Days'}</span>
-                  </span>
+                  {program.duration && Number(program.duration) > 0 && (
+                    <>
+                      <Clock className="h-5 w-5" />
+                      <span className="text-sm">
+                        Total duration: <span className="font-bold text-foreground">{program.duration} {Number(program.duration) === 1 ? 'Day' : 'Days'}</span>
+                      </span>
+                    </>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <MapPin className="h-5 w-5" />
@@ -554,11 +567,18 @@ export default function ProgramContent({
               </h2>
 
               <div
-                className="text-muted-foreground text-lg leading-relaxed prose prose-slate dark:prose-invert max-w-none [&>p]:mb-4 [&>ul]:mb-4 [&>ol]:mb-4 [&>h1]:text-2xl [&>h2]:text-xl [&>h3]:text-lg [&>strong]:font-bold [&>em]:italic"
-                // dangerouslySetInnerHTML={{ __html: program.overView || program.descraption || 'No overview available' }}
+                className="prose prose-base md:prose-lg dark:prose-invert max-w-none 
+                prose-headings:font-bold prose-headings:text-foreground 
+                prose-p:text-muted-foreground prose-p:leading-relaxed 
+                prose-li:text-muted-foreground
+                prose-img:rounded-xl prose-img:w-full prose-img:shadow-lg
+                [&>p]:mb-4 [&>ul]:mb-4 [&>ol]:mb-4 
+                [&>h1]:text-2xl md:[&>h1]:text-3xl 
+                [&>h2]:text-xl md:[&>h2]:text-2xl 
+                [&>h3]:text-lg md:[&>h3]:text-xl"
               >
-              <MDXRenderer mdxString={program.overView as string} />
-                </div>
+                <MDXRenderer mdxString={program.overView as string} />
+              </div>
             </div>
           </div>
 

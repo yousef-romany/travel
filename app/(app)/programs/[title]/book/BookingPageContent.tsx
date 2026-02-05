@@ -41,6 +41,9 @@ import { trackWhatsAppBooking } from "@/lib/analytics";
 import { fetchProgramAvailability } from "@/fetch/availability";
 import { PromoCodeInput } from "@/components/booking/PromoCodeInput";
 import { PromoCode, incrementPromoCodeUsage } from "@/fetch/promo-codes";
+import PayPalPayment from "@/components/booking/PayPalPayment";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 interface BookingPageContentProps {
   program: {
@@ -83,6 +86,8 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     discountAmount: number;
     finalPrice: number;
   } | null>(null);
+  const [paymentStep, setPaymentStep] = useState<"details" | "payment">("details");
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<BookingFormData>({
     fullName: "",
@@ -202,7 +207,28 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
         }
 
         // Create invoice
-        await createInvoice({ ...invoiceData, pdfUrl });
+        await createInvoice({
+          ...invoiceData,
+          pdfUrl,
+          // If we are in payment step (PayPal flow), marking as paid would be ideal, 
+          // but relying on backend verification is safer. 
+          // For now, we update the status if the trigger was from payment success.
+        });
+
+        // Force update status if it was paid via PayPal
+        // Note: The createInvoice function sets default 'pending'. 
+        // If we want it 'paid', we should update it immediately or pass it if createInvoice allowed it.
+        // Checking createInvoice sig (fetch/invoices.ts), it forces 'pending'. 
+        // We will call updateInvoiceStatus if needed, or just let it be pending until verified.
+        // Actually, let's update it to 'paid' since we captured the payment.
+        try {
+          const { updateInvoiceStatusByBookingId } = await import("@/fetch/invoices");
+          await updateInvoiceStatusByBookingId(data.data.documentId, "paid");
+        } catch (statusError) {
+          console.error("Failed to update invoice status to paid", statusError);
+        }
+
+        // Download PDF
 
         // Download PDF
         await downloadInvoicePDF(invoiceData, `invoice-${invoiceNumber}.pdf`);
@@ -235,49 +261,9 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!formData.fullName || !formData.email || !formData.phone) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    if (!formData.travelDate) {
-      toast.error("Please select a travel date");
-      return;
-    }
-
-    if (!user) {
-      toast.error("Please log in to make a booking");
-      return;
-    }
-
-    // Check availability for selected date
-    if (formData.travelDate) {
-      const dateStr = formData.travelDate.toISOString().split("T")[0];
-      // Only check if we have availability data loaded
-      if (Object.keys(availabilityMap).length > 0) {
-        const availability = availabilityMap[dateStr];
-        if (!availability) {
-          toast.error("Selected date is not available");
-          return;
-        }
-        if (availability.status === "sold-out") {
-          toast.error("This date is sold out. Please select another date.");
-          return;
-        }
-        if (availability.status === "cancelled") {
-          toast.error("This date has been cancelled. Please select another date.");
-          return;
-        }
-        if (formData.numberOfTravelers > availability.spots) {
-          toast.error(`Only ${availability.spots} spot${availability.spots === 1 ? '' : 's'} available for this date`);
-          return;
-        }
-      }
-    }
-
+  const handlePaymentSuccess = (details: any) => {
+    // Payment approved!
+    toast.success("Payment successful! Finalizing booking...");
     const totalAmount = program.price * formData.numberOfTravelers;
     const finalAmount = appliedPromo ? appliedPromo.finalPrice : totalAmount;
 
@@ -296,6 +282,62 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
       finalPrice: appliedPromo?.finalPrice,
     });
   };
+
+  const handlePaymentError = (error: any) => {
+    console.error("PayPal Error:", error);
+    setPaymentError("Payment failed or was cancelled. Please try again.");
+    toast.error("Payment failed. Please try again.");
+  };
+
+  const handleProceedToPayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPaymentError(null);
+
+    // Validate fields
+    if (!formData.fullName || !formData.email || !formData.phone) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    if (!formData.travelDate) {
+      toast.error("Please select a travel date");
+      return;
+    }
+
+    if (!user) {
+      toast.error("Please log in");
+      return;
+    }
+
+    // Validate availability
+    if (formData.travelDate) {
+      const dateStr = formData.travelDate.toISOString().split("T")[0];
+      if (Object.keys(availabilityMap).length > 0) {
+        const availability = availabilityMap[dateStr];
+        if (!availability) {
+          toast.error("Selected date is not available");
+          return;
+        }
+        if (availability.status === "sold-out" || availability.status === "cancelled") {
+          toast.error("Date is not available");
+          return;
+        }
+        if (formData.numberOfTravelers > availability.spots) {
+          toast.error(`Only ${availability.spots} spots available`);
+          return;
+        }
+      }
+    }
+
+    // Set step to payment
+    setPaymentStep("payment");
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Legacy submit (if we kept purely offline booking, but user wants PayPal)
+  // We will keep this function references if needed, but primary flow is now Proceed -> Pay
+  const handleSubmit = handleProceedToPayment;
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -398,14 +440,49 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
         <div className="grid md:grid-cols-3 gap-8">
           {/* Left Column - Form */}
           <div className="md:col-span-2">
-            <PaymentComingSoonBanner />
+            {paymentStep === "payment" && (
+              <div className="mb-6 animate-in slide-in-from-top-4 fade-in duration-500">
+                <Card className="border-primary/20 shadow-xl border-l-4 border-l-primary bg-primary/5">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-2">Review & Pay</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Please review your details on the right and proceed with payment to confirm your booking.
+                    </p>
+
+                    {paymentError && (
+                      <Alert variant="destructive" className="mb-4">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertTitle>Payment Error</AlertTitle>
+                        <AlertDescription>{paymentError}</AlertDescription>
+                      </Alert>
+                    )}
+
+                    <div className="max-w-md mx-auto mt-6">
+                      <PayPalPayment
+                        amount={finalAmount}
+                        currency="USD"
+                        onSuccess={handlePaymentSuccess}
+                        onError={handlePaymentError}
+                      />
+                      <Button
+                        variant="ghost"
+                        onClick={() => setPaymentStep("details")}
+                        className="w-full mt-4"
+                      >
+                        Back to Details
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
 
             <Card className="border-primary/20 shadow-xl mt-6">
               <CardHeader>
                 <CardTitle>Booking Information</CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleProceedToPayment} className={`space-y-6 ${paymentStep === "payment" ? "opacity-50 pointer-events-none grayscale" : ""}`}>
                   {/* Personal Information */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -579,15 +656,19 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                     {createBookingMutation.isPending ? (
                       <>
                         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Processing Booking...
+                        Processing...
                       </>
                     ) : (
                       <>
-                        <Check className="mr-2 h-5 w-5" />
-                        Confirm Booking
+                        <span className="font-bold">Proceed to Payment</span>
                       </>
                     )}
                   </Button>
+
+                  {/* Info Text */}
+                  <div className="text-center text-sm text-muted-foreground mt-4">
+                    <p>Secure payment processing via PayPal</p>
+                  </div>
                 </form>
               </CardContent>
             </Card>
@@ -603,7 +684,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                     src={imageUrl}
                     alt={program.title}
                     fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                     className="object-cover"
                   />
                 </div>
@@ -683,6 +764,6 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

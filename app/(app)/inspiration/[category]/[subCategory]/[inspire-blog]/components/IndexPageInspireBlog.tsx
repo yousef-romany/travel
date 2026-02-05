@@ -37,7 +37,7 @@ const IndexPageInspireBlog = ({
                 ✨ Get Inspired
               </span>
             </div>
-            <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-white mb-6 drop-shadow-2xl tracking-tight animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100 leading-tight">
+            <h1 className="text-3xl md:text-5xl lg:text-7xl font-black text-white mb-6 drop-shadow-2xl tracking-tight animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100 leading-tight">
               {blog.title}
             </h1>
           </div>
@@ -49,7 +49,13 @@ const IndexPageInspireBlog = ({
 
         {/* Content Section */}
         <div className="mb-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-          <div className="prose prose-lg md:prose-xl max-w-none dark:prose-invert prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-strong:text-foreground prose-a:text-primary prose-img:rounded-3xl prose-img:shadow-xl">
+          <div className="prose prose-base md:prose-lg lg:prose-xl max-w-none dark:prose-invert 
+            prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground 
+            prose-p:text-muted-foreground prose-p:leading-relaxed 
+            prose-strong:text-foreground prose-a:text-primary 
+            prose-img:rounded-3xl prose-img:shadow-xl prose-img:w-full
+            [&>h1]:text-2xl md:[&>h1]:text-4xl 
+            [&>h2]:text-xl md:[&>h2]:text-3xl">
             <MDXRenderer mdxString={blog.details as string} />
           </div>
         </div>
@@ -60,7 +66,7 @@ const IndexPageInspireBlog = ({
             <Separator className="mb-8" />
             <div className="flex items-center gap-3 mb-6">
               <FaYoutube className="text-4xl text-red-600" />
-              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+              <h2 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
                 Video Tour
               </h2>
             </div>

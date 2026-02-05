@@ -17,7 +17,9 @@ import { createBooking } from "@/fetch/bookings";
 import { createInvoice } from "@/fetch/invoices";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import PaymentComingSoonBanner from "@/components/payment-coming-soon-banner";
+import PayPalPayment from "@/components/booking/PayPalPayment";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 interface BookCustomTripContentProps {
   trip: PlanTripType;
@@ -36,6 +38,9 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
     travelDate: undefined as Date | undefined,
     specialRequests: "",
   });
+
+  const [paymentStep, setPaymentStep] = useState<"details" | "payment">("details");
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   const bookingMutation = useMutation({
     mutationFn: async () => {
@@ -81,7 +86,18 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
         userId: user?.documentId,
       };
 
-      await createInvoice(invoiceData);
+      // Create invoice
+      await createInvoice({
+        ...invoiceData,
+        // Handle 'paid' status similarly to BookingPageContent
+      });
+
+      try {
+        const { updateInvoiceStatusByBookingId } = await import("@/fetch/invoices");
+        await updateInvoiceStatusByBookingId(booking.data.documentId, "paid");
+      } catch (statusError) {
+        console.error("Failed to update invoice status to paid", statusError);
+      }
 
       return booking;
     },
@@ -97,17 +113,40 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
 
-    if (!user) {
-      toast.error("Please login to book this trip");
-      router.push("/login");
+
+  const handleProceedToPayment = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPaymentError(null);
+
+    // Form Validation
+    if (!formData.fullName || !formData.email || !formData.phone || !formData.travelDate) {
+      toast.error("Please fill in all required fields");
       return;
     }
 
+    if (!user) {
+      toast.error("Please login to book this trip");
+      router.push(`/login?redirect=/book-custom-trip/${trip.documentId}`);
+      return;
+    }
+
+    setPaymentStep("payment");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handlePaymentSuccess = (details: any) => {
+    toast.success("Payment successful! Finalizing booking...");
     bookingMutation.mutate();
   };
+
+  const handlePaymentError = (error: any) => {
+    console.error("PayPal Error:", error);
+    setPaymentError("Payment failed or was cancelled. Please try again.");
+    toast.error("Payment failed. Please try again.");
+  };
+
+  const handleSubmit = handleProceedToPayment;
 
   const handleChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -126,7 +165,42 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Booking Form - Left Side */}
         <div className="lg:col-span-2">
-          <PaymentComingSoonBanner />
+          {paymentStep === "payment" && (
+            <div className="mb-6 animate-in slide-in-from-top-4 fade-in duration-500">
+              <Card className="border-primary/20 shadow-xl border-l-4 border-l-primary bg-primary/5">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2">Review & Pay</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Please review your details on the right and proceed with payment to confirm your booking.
+                  </p>
+
+                  {paymentError && (
+                    <Alert variant="destructive" className="mb-4">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertTitle>Payment Error</AlertTitle>
+                      <AlertDescription>{paymentError}</AlertDescription>
+                    </Alert>
+                  )}
+
+                  <div className="max-w-md mx-auto mt-6">
+                    <PayPalPayment
+                      amount={totalCost}
+                      currency="USD"
+                      onSuccess={handlePaymentSuccess}
+                      onError={handlePaymentError}
+                    />
+                    <Button
+                      variant="ghost"
+                      onClick={() => setPaymentStep("details")}
+                      className="w-full mt-4"
+                    >
+                      Back to Details
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
 
           <Card className="border-primary/20 shadow-xl mt-6">
             <CardHeader>
@@ -138,7 +212,7 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleProceedToPayment} className={`space-y-6 ${paymentStep === "payment" ? "opacity-50 pointer-events-none grayscale" : ""}`}>
                 {/* Personal Information */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-foreground">Personal Information</h3>
@@ -249,12 +323,12 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
                   {bookingMutation.isPending ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Processing Booking...
+                      Processing...
                     </>
                   ) : (
                     <>
                       <CheckCircle className="w-5 h-5 mr-2" />
-                      Confirm Booking - ${totalCost.toLocaleString()}
+                      Proceed to Payment - ${totalCost.toLocaleString()}
                     </>
                   )}
                 </Button>
