@@ -133,7 +133,9 @@ export default function WishlistSection() {
   if (wishlistItems.length === 0) {
     return (
       <div className="text-center py-12">
-        <Heart className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-20" />
+        <div className="animate-float">
+          <Heart className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-20" />
+        </div>
         <h3 className="text-xl font-semibold text-foreground mb-2">
           Your wishlist is empty
         </h3>
@@ -169,66 +171,72 @@ export default function WishlistSection() {
 
       {/* Wishlist Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {wishlistItems.slice(0, 4).filter((item) => item?.program).map((item) => (
-          <Card
-            key={item.id}
-            className="border border-border bg-card overflow-hidden hover:border-primary/50 transition-all shadow-sm hover:shadow-lg group"
-          >
-            <div className="relative h-44 bg-muted overflow-hidden">
-              <Image
-                src={getProgramImageUrl(item.program, 0, "/placeholder.svg?height=176&width=320")}
-                alt={`${item.program.title} - Egypt tour`}
-                fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => removeFromWishlist(item.program.id, item.program.title)}
-                disabled={removingId === item.program.id}
-                className="absolute top-3 right-3 bg-white/90 hover:bg-white dark:bg-slate-800/90 hover:dark:bg-slate-800 rounded-full p-2 h-9 w-9 z-10"
-              >
-                {removingId === item.program.id ? (
-                  <Loader2 className="w-4 h-4 animate-spin text-red-500" />
-                ) : (
-                  <Heart className="w-4 h-4 fill-red-500 text-red-500 transition-transform hover:scale-110" />
-                )}
-              </Button>
-            </div>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base line-clamp-2">{item.program.title}</CardTitle>
-              <div className="flex items-center gap-2 mt-1">
-                <MapPin className="w-3 h-3 text-primary" />
-                <CardDescription className="text-xs line-clamp-1">{item.program.Location}</CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                  <span className="text-sm font-semibold">{item.program.rating}</span>
-                </div>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Clock className="w-3 h-3" />
-                  {item.program.duration}d
-                </div>
-              </div>
+        {wishlistItems.slice(0, 4).filter((item) => item?.program).map((item, index) => {
+          const delayClass = `animate-delay-${index * 100}` as const;
+          return (
+            <Card
+              key={item.id}
+              className={`group border border-primary/20 bg-gradient-to-br from-card to-card/50 overflow-hidden hover:border-primary/40 transition-all shadow-sm hover:shadow-xl hover:-translate-y-1 duration-300 animate-card-enter ${delayClass}`}
+            >
+              <div className="relative h-44 bg-muted overflow-hidden">
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-[1]" />
 
-              <div className="pt-2 border-t border-border space-y-2">
-                <div className="flex items-baseline justify-between">
-                  <span className="text-xs text-muted-foreground">From</span>
-                  <span className="text-xl font-bold text-primary">${item.program.price}</span>
-                </div>
-                <Link href={`/programs/${item.program.documentId}`} className="block">
-                  <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                    View Details
-                  </Button>
-                </Link>
+                <Image
+                  src={getProgramImageUrl(item.program, 0, "/placeholder.svg?height=176&width=320")}
+                  alt={`${item.program.title} - Egypt tour`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeFromWishlist(item.program.id, item.program.title)}
+                  disabled={removingId === item.program.id}
+                  className="absolute top-3 right-3 bg-white/90 hover:bg-white dark:bg-slate-800/90 hover:dark:bg-slate-800 rounded-full p-2 h-9 w-9 z-10 hover:scale-110 transition-transform"
+                >
+                  {removingId === item.program.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin text-red-500" />
+                  ) : (
+                    <Heart className="w-4 h-4 fill-red-500 text-red-500 transition-transform hover:scale-110" />
+                  )}
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-        ))}
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base line-clamp-2">{item.program.title}</CardTitle>
+                <div className="flex items-center gap-2 mt-1">
+                  <MapPin className="w-3 h-3 text-primary" />
+                  <CardDescription className="text-xs line-clamp-1">{item.program.Location}</CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    <span className="text-sm font-semibold">{item.program.rating}</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Clock className="w-3 h-3" />
+                    {item.program.duration}d
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-border space-y-2">
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-xs text-muted-foreground">From</span>
+                    <span className="text-xl font-bold text-primary">${item.program.price}</span>
+                  </div>
+                  <Link href={`/programs/${item.program.documentId}`} className="block">
+                    <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                      View Details
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Show more if there are more than 4 items */}

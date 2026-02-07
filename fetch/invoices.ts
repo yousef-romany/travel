@@ -21,6 +21,13 @@ export interface InvoiceType {
   pdfUrl?: string;
   invoiceStatus: "pending" | "paid" | "cancelled";
   bookingType?: "program" | "custom-trip" | "event";
+  booking?: {
+    id: number;
+    documentId: string;
+    discountAmount?: number;
+    promoCodeId?: string;
+    finalPrice?: number;
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -47,7 +54,7 @@ export const fetchUserInvoices = async (
     const authToken =
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
-    let url = `${API_URL}/api/invoices?populate=*&sort=createdAt:desc`;
+    let url = `${API_URL}/api/invoices?populate[booking][fields][0]=discountAmount&populate[booking][fields][1]=promoCodeId&populate[booking][fields][2]=finalPrice&sort=createdAt:desc`;
 
     if (userId) {
       url += `&filters[user][documentId][$eq]=${userId}`;

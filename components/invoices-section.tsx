@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Download, Eye, Loader2 } from "lucide-react"
+import { Download, Eye, Loader2, Tag } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useAuth } from "@/context/AuthContext"
 import { useQuery } from "@tanstack/react-query"
@@ -92,7 +92,7 @@ export default function InvoicesSection() {
 
   return (
     <div className="space-y-4">
-      <Card className="border border-border bg-card shadow-sm">
+      <Card className="border border-primary/20 bg-gradient-to-br from-card to-card/50 shadow-sm hover:shadow-md transition-all duration-300">
         <CardHeader>
           <CardTitle>Invoice History</CardTitle>
         </CardHeader>
@@ -106,6 +106,7 @@ export default function InvoicesSection() {
                   <TableHead>Type</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Amount</TableHead>
+                  <TableHead>Discount</TableHead>
                   <TableHead>Due Date</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -114,7 +115,7 @@ export default function InvoicesSection() {
               <TableBody>
                 {invoices.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                       No invoices found. Start by booking a tour!
                     </TableCell>
                   </TableRow>
@@ -129,8 +130,8 @@ export default function InvoicesSection() {
                           : "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300";
 
                     return (
-                      <TableRow key={invoice.id} className="hover:bg-muted/50 border-b border-border">
-                        <TableCell className="font-semibold text-foreground">
+                      <TableRow key={invoice.id} className="hover:bg-muted/50 border-b border-border transition-colors duration-200 group">
+                        <TableCell className="font-semibold text-foreground group-hover:text-primary transition-colors">
                           {invoice.invoiceNumber}
                         </TableCell>
                         <TableCell className="text-foreground">
@@ -145,7 +146,28 @@ export default function InvoicesSection() {
                           {formatDate(invoice.createdAt)}
                         </TableCell>
                         <TableCell className="font-semibold text-foreground">
-                          ${invoice.totalAmount?.toFixed(2)}
+                          {invoice.booking?.discountAmount && invoice.booking.discountAmount > 0 ? (
+                            <div className="space-y-1">
+                              <div className="text-sm text-muted-foreground line-through">
+                                ${(invoice.totalAmount + (invoice.booking.discountAmount || 0)).toFixed(2)}
+                              </div>
+                              <div className="text-green-600 dark:text-green-400 font-bold">
+                                ${invoice.totalAmount?.toFixed(2)}
+                              </div>
+                            </div>
+                          ) : (
+                            <div>${invoice.totalAmount?.toFixed(2)}</div>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {invoice.booking?.discountAmount && invoice.booking.discountAmount > 0 ? (
+                            <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                              <Tag className="w-3 h-3" />
+                              <span className="text-sm font-semibold">-${invoice.booking.discountAmount.toFixed(2)}</span>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground text-sm">—</span>
+                          )}
                         </TableCell>
                         <TableCell className="text-muted-foreground">
                           {formatDate(invoice.tripDate)}

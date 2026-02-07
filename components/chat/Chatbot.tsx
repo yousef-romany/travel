@@ -146,7 +146,7 @@ export default function Chatbot() {
                 onClick={() => setIsOpen(!isOpen)}
                 size="icon"
                 className={cn(
-                    "fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-2xl transition-all duration-300 hover:scale-110",
+                    "fixed bottom-4 right-6 z-50 h-14 w-14 rounded-full shadow-2xl transition-all duration-300 hover:scale-110",
                     isOpen ? "bg-destructive rotate-90" : "bg-gradient-to-r from-primary to-amber-600 animate-in zoom-in slide-in-from-bottom-5"
                 )}
             >

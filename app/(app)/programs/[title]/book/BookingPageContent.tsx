@@ -639,6 +639,8 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                     <PromoCodeInput
                       totalAmount={totalAmount}
                       programId={program.documentId}
+                      userEmail={formData.email || user?.email}
+                      userId={user?.documentId}
                       onPromoApplied={handlePromoApplied}
                       onPromoRemoved={handlePromoRemoved}
                     />

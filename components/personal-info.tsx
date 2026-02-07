@@ -120,22 +120,26 @@ export default function PersonalInfo() {
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map((stat) => {
+        {statCards.map((stat, index) => {
           const IconComponent = stat.icon;
+          const delayClass = `animate-delay-${index * 100}` as const;
           return (
-            <Card key={stat.label} className="border border-border bg-card">
+            <Card
+              key={stat.label}
+              className={`group border border-primary/20 bg-gradient-to-br from-card to-card/50 hover:border-primary/40 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-card-enter ${delayClass}`}
+            >
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                       {stat.label}
                     </p>
                     <p className="text-3xl font-bold text-foreground mt-2">
                       {stat.value}
                     </p>
                   </div>
-                  <div className={`${stat.color} opacity-60`}>
-                    <IconComponent className="w-8 h-8" />
+                  <div className={`${stat.color} opacity-60 group-hover:opacity-100 group-hover:animate-icon-bounce transition-opacity bg-gradient-to-br from-primary/10 to-amber-500/10 p-3 rounded-full`}>
+                    <IconComponent className="w-6 h-6" />
                   </div>
                 </div>
               </CardContent>

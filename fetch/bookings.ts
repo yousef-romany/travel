@@ -17,6 +17,9 @@ export interface BookingType {
   totalAmount: number;
   bookingType?: "program" | "custom-trip" | "event";
   customTripName?: string;
+  promoCodeId?: string;
+  discountAmount?: number;
+  finalPrice?: number;
   program?: {
     id: number;
     documentId: string;
