@@ -74,4 +74,5 @@ export interface ProgramType {
   rating: number;
   overView: string;
   images: Media[];
+  status?: "best-seller" | "new" | "popular" | "limited-offer";
 }

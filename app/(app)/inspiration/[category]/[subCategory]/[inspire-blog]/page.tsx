@@ -87,6 +87,8 @@ const InspirationDynamic = async ({ params }: Props) => {
 
       <IndexPageInspireBlog
         slug={blogTitle}
+        category={category}
+        subCategory={subCategory}
         data={data}
       />
     </div>

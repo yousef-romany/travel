@@ -40,13 +40,13 @@ export default function CardGrid({
         </div>
         <div className="flex flex-col flex-grow p-6">
           <CardHeader className="p-0 mb-3">
-            <CardTitle className="text-lg font-bold line-clamp-2 group-hover:text-primary transition-colors duration-300">
+            <CardTitle className="text-lg font-bold line-clamp-2 leading-tight group-hover:text-primary transition-colors duration-300">
               {title}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0 flex-grow">
-            <div className="text-sm text-muted-foreground line-clamp-2">
-              <MDXRenderer mdxString={details.slice(0, 100) + "..."} />
+            <div className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+              {details.replace(/[*#_`]/g, '').slice(0, 150)}...
             </div>
           </CardContent>
           <CardFooter className="p-0 mt-4 pt-4 border-t border-border/50">

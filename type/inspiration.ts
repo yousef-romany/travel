@@ -25,6 +25,7 @@ export interface InspireSubcategories {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
+  description?: string;
   inspire_blogs?: InspireBlogs[]
 }
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CardTravels from "./CardTravels";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProgramsList } from "@/fetch/programs";
@@ -56,6 +57,7 @@ export interface ProgramType {
   rating: number;
   overView: string;
   images: Media[];
+  status?: "best-seller" | "new" | "popular" | "limited-offer";
 }
 
 interface Meta {
@@ -74,6 +76,7 @@ export default function PageContent({
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [priceRange, setPriceRange] = useState([0, 5000]);
+  const [selectedStatus, setSelectedStatus] = useState<string>("all");
 
   const { data, error, isLoading } = useQuery<
     { data: ProgramType[]; meta: Meta },
@@ -93,7 +96,7 @@ export default function PageContent({
     }
   }, [data]);
 
-  // Filter programs based on search term and price range
+  // Filter programs based on search term, price range, and status
   useEffect(() => {
     if (data?.data) {
       const filtered = data.data.filter(
@@ -103,11 +106,12 @@ export default function PageContent({
               searchTerm.toLowerCase()
             )) &&
           Number(program.price) >= priceRange[0] &&
-          Number(program.price) <= priceRange[1]
+          Number(program.price) <= priceRange[1] &&
+          (selectedStatus === "all" || program.status === selectedStatus)
       );
       setFilteredPrograms(filtered);
     }
-  }, [searchTerm, priceRange, data]);
+  }, [searchTerm, priceRange, selectedStatus, data]);
 
   // Trigger scroll animations when filtered programs change
   useScrollAnimation([filteredPrograms]);
@@ -142,6 +146,20 @@ export default function PageContent({
         {/* Filters Section */}
         <div className="mb-12 animate-slide-up animate-delay-200">
           <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-2xl shadow-xl p-6">
+            {/* Status Filter Tabs */}
+            <div className="mb-6">
+              <label className="block text-sm font-semibold mb-3">Filter by Status</label>
+              <Tabs value={selectedStatus} onValueChange={setSelectedStatus} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 gap-2">
+                  <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-white">All</TabsTrigger>
+                  <TabsTrigger value="best-seller" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-500 data-[state=active]:to-amber-600 data-[state=active]:text-white">Best Seller</TabsTrigger>
+                  <TabsTrigger value="new" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-600 data-[state=active]:text-white">New</TabsTrigger>
+                  <TabsTrigger value="popular" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-indigo-600 data-[state=active]:text-white">Popular</TabsTrigger>
+                  <TabsTrigger value="limited-offer" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-blue-600 data-[state=active]:text-white">Limited Offer</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
               <div className="flex-1 w-full">
                 <label className="block text-sm font-semibold mb-2">Search Programs</label>
@@ -191,6 +209,7 @@ export default function PageContent({
                   price={program.price}
                   images={program.images}
                   overView={program.overView}
+                  status={program.status}
                 />
               </div>
             ))

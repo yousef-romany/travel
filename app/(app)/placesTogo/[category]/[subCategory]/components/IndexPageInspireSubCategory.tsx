@@ -40,8 +40,8 @@ const IndexPageInspireSubCategory = ({
           >
             {slug}
           </h1>
-          <p className="text-white/80 text-sm sm:text-base md:text-lg max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-            Discover everything about {slug}
+          <p className="text-white/80 text-sm sm:text-base md:text-lg max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 line-clamp-3">
+            {data?.data?.at(-1)?.description || `Discover everything about ${slug}`}
           </p>
         </div>
       </div>

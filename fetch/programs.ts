@@ -22,18 +22,8 @@ interface Media {
   };
 }
 
-export interface ProgramType {
-  id: number;
-  documentId: string;
-  title: string;
-  descraption: string;
-  Location: string;
-  duration: number;
-  price: number;
-  rating: number;
-  overView: string;
-  images: Media[];
-}
+import { ProgramType } from "@/type/programs";
+export type { ProgramType };
 
 interface Meta {
   pagination: {
@@ -198,6 +188,7 @@ export const searchPrograms = async (query: string, limit: number = 10): Promise
       `&filters[$or][1][Location][$containsi]=${query}` +
       `&filters[$or][2][content_steps][place_to_go_categories][categoryName][$containsi]=${query}` +
       `&filters[$or][3][content_steps][place_to_go_subcategories][place_to_go_categories][categoryName][$containsi]=${query}` +
+      `&filters[$or][4][content_steps][place_to_go_subcategories][categoryName][$containsi]=${query}` +
       `&pagination[limit]=${limit}`;
 
     const response = await axios.get(url, {

@@ -6,12 +6,17 @@ import { Separator } from "@/components/ui/separator";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
 import { Media } from "@/type/programs";
+import RelatedProgramsClient from "@/components/programs/RelatedProgramsClient";
 
 const IndexPageInspireBlog = ({
   slug,
+  category,
+  subCategory,
   data
 }: {
   slug: string;
+  category: string;
+  subCategory: string;
   data: { data: InspireBlogs[]; meta: meta };
 }) => {
   const blog = data?.data?.at(-1);
@@ -79,6 +84,13 @@ const IndexPageInspireBlog = ({
             </div>
           </section>
         )}
+        {/* Related Programs Section */}
+        <Separator className="mb-8" />
+        <RelatedProgramsClient
+          placeTitle={blog.title as string}
+          location={subCategory}
+          query={category}
+        />
       </div>
     </div>
   );

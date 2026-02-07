@@ -25,6 +25,7 @@ export interface PlacesToGoSubcategories {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
+  description?: string;
   place_to_go_blogs?: PlacesToGoBlogs[];
 }
 

@@ -7,7 +7,7 @@ import InstagramModal from "@/components/InstagramModal";
 import { Separator } from "@/components/ui/separator";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
-import RelatedPrograms from "./RelatedPrograms";
+import RelatedProgramsClient from "@/components/programs/RelatedProgramsClient";
 
 const IndexPagePlaceToGoBlog = ({
   slug,
@@ -149,7 +149,7 @@ const IndexPagePlaceToGoBlog = ({
 
         {/* Related Programs Section */}
         <Separator className="mb-8" />
-        <RelatedPrograms
+        <RelatedProgramsClient
           placeTitle={place.title as string}
           location={subCategory}
           query={category}

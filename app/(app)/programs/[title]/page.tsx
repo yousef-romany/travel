@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { fetchProgramOne, fetchProgramsList, fetchRelatedPrograms } from "@/fetch/programs";
+import { fetchProgramOne, fetchProgramsList } from "@/fetch/programs";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { Clock, MapPin, Check, X, HelpCircle } from "lucide-react";
 import Image from "next/image";
@@ -17,7 +17,7 @@ import { ProgramReviewsSection } from "./components/ProgramReviewsSection";
 import { ProgramTracking } from "./components/ProgramTracking";
 import { ProgramMobileAction } from "./components/ProgramMobileAction";
 import { ProgramItinerary } from "./components/ProgramItinerary";
-import { RelatedPrograms } from "./components/RelatedPrograms";
+import RelatedProgramsClient from "@/components/programs/RelatedProgramsClient";
 
 type Props = {
   params: Promise<{ title: string }>;
@@ -139,12 +139,6 @@ export default async function ProgramPage({ params }: Props) {
     ? getImageUrl(firstImageObj.imageUrl)
     : (firstImageObj ? getImageUrl(firstImageObj as any) : "/placeholder.svg");
 
-  // Fetch related programs
-  const relatedPrograms = await fetchRelatedPrograms(
-    program.documentId || "",
-    program.Location || "",
-    3
-  );
 
   return (
     <>
@@ -357,7 +351,11 @@ export default async function ProgramPage({ params }: Props) {
           </section>
 
           {/* Related Programs */}
-          <RelatedPrograms programs={relatedPrograms} />
+          <RelatedProgramsClient
+            placeTitle={program.title}
+            location={program.Location}
+            query={program.title}
+          />
 
           {/* Reviews Section - Client Component for interactivity */}
           <ProgramReviewsSection

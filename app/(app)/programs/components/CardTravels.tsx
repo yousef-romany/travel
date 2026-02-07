@@ -47,6 +47,7 @@ interface CardTravelsProps {
   price: number;
   rating: number;
   overView: string;
+  status?: "best-seller" | "new" | "popular" | "limited-offer";
 }
 
 const CardTravels = ({
@@ -59,6 +60,7 @@ const CardTravels = ({
   duration,
   price,
   rating,
+  status,
 }: CardTravelsProps) => {
   const router = useRouter();
 
@@ -73,8 +75,22 @@ const CardTravels = ({
       <CardHeader className="p-0 relative">
         {images && <ProgramCarousel images={images} />}
 
-        {/* Wishlist Button */}
-        <div className="absolute top-3 right-3 z-10">
+        {/* Status Badge */}
+        {status && (
+          <Badge className={`absolute top-3 right-3 backdrop-blur-sm shadow-lg border-0 z-20 ${status === 'best-seller' ? 'bg-gradient-to-r from-yellow-500 to-amber-600' :
+            status === 'new' ? 'bg-gradient-to-r from-green-500 to-emerald-600' :
+              status === 'popular' ? 'bg-gradient-to-r from-purple-500 to-indigo-600' :
+                'bg-gradient-to-r from-primary to-blue-600'
+            }`}>
+            {status === 'best-seller' ? 'Best Seller' :
+              status === 'new' ? 'New Arrival' :
+                status === 'popular' ? 'Popular' :
+                  status === 'limited-offer' ? 'Limited Offer' : status}
+          </Badge>
+        )}
+
+        {/* Wishlist Button - Moved down if status present, otherwise keep at top-3 right-3 */}
+        <div className={`absolute ${status ? 'top-12' : 'top-3'} right-3 z-10 transition-all duration-300`}>
           <WishlistButton
             programId={id}
             className="bg-background/95 hover:bg-background hover:text-primary hover:scale-110 shadow-lg transition-all duration-200"

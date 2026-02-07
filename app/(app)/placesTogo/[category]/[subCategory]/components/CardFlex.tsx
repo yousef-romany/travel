@@ -41,13 +41,13 @@ const CardFlex = ({
           <div className="flex flex-col justify-between flex-1 p-6 sm:p-8">
             <div>
               <CardHeader className="p-0 mb-3">
-                <CardTitle className="text-xl sm:text-2xl font-bold line-clamp-2 group-hover:text-primary transition-colors duration-300">
+                <CardTitle className="text-xl sm:text-2xl font-bold line-clamp-2 leading-tight group-hover:text-primary transition-colors duration-300">
                   {title}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="text-sm text-muted-foreground line-clamp-2">
-                  <MDXRenderer mdxString={details.slice(0, 100) + "..."} />
+                <div className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                  {details.replace(/[*#_`]/g, '').slice(0, 150)}...
                 </div>
               </CardContent>
             </div>
