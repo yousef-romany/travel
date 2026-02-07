@@ -1,5 +1,6 @@
 import { Metadata } from "next";
-import { fetchProgramOne, fetchProgramsList } from "@/fetch/programs";
+import { fetchProgramOne, fetchProgramsList, fetchRelatedPrograms } from "@/fetch/programs";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { Clock, MapPin, Check, X, HelpCircle } from "lucide-react";
 import Image from "next/image";
 import { getImageUrl } from "@/lib/utils";
@@ -14,6 +15,9 @@ import { ProgramImageCarousel } from "./components/ProgramImageCarousel";
 import { ProgramBookingCard } from "./components/ProgramBookingCard";
 import { ProgramReviewsSection } from "./components/ProgramReviewsSection";
 import { ProgramTracking } from "./components/ProgramTracking";
+import { ProgramMobileAction } from "./components/ProgramMobileAction";
+import { ProgramItinerary } from "./components/ProgramItinerary";
+import { RelatedPrograms } from "./components/RelatedPrograms";
 
 type Props = {
   params: Promise<{ title: string }>;
@@ -102,6 +106,9 @@ export async function generateStaticParams() {
   }
 }
 
+// Revalidate program details page every 30 minutes
+export const revalidate = 1800; // 30 minutes in seconds
+
 export default async function ProgramPage({ params }: Props) {
   const resolvedParams = await params;
   const titleOrId = decodeURIComponent(resolvedParams.title);
@@ -131,6 +138,13 @@ export default async function ProgramPage({ params }: Props) {
   const imageUrl = firstImageObj?.imageUrl
     ? getImageUrl(firstImageObj.imageUrl)
     : (firstImageObj ? getImageUrl(firstImageObj as any) : "/placeholder.svg");
+
+  // Fetch related programs
+  const relatedPrograms = await fetchRelatedPrograms(
+    program.documentId || "",
+    program.Location || "",
+    3
+  );
 
   return (
     <>
@@ -225,7 +239,9 @@ export default async function ProgramPage({ params }: Props) {
             <ProgramImageCarousel program={program} />
 
             {/* Right: Booking Card (Client Component with tracking) */}
-            <ProgramBookingCard program={program} />
+            <div className="md:sticky md:top-24 self-start space-y-6">
+              <ProgramBookingCard program={program} />
+            </div>
           </div>
 
           {/* Itinerary Section - Server-rendered for SEO */}
@@ -246,57 +262,7 @@ export default async function ProgramPage({ params }: Props) {
               </div>
 
               <div className="relative">
-                <div className="absolute left-[19px] md:left-[23px] top-4 bottom-4 w-0.5 bg-gradient-to-b from-primary via-amber-500 to-primary/20" aria-hidden="true" />
-
-                <ol className="space-y-6 md:space-y-8">
-                  {program.content_steps?.map((step: ContentStep, index: number) => {
-                    const stepImage = step.image || step.imageUrl || null;
-                    const stepImageUrl = stepImage ? getImageUrl(stepImage) : null;
-
-                    return (
-                      <li key={index} className="relative pl-12 md:pl-16 group animate-slide-up" itemScope itemType="https://schema.org/TouristAttraction">
-                        <div className="absolute left-0 flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-primary to-amber-600 text-white font-bold text-base md:text-lg shadow-lg z-10 group-hover:scale-110 transition-all duration-300" aria-label={`Day ${index + 1}`}>
-                          {index + 1}
-                        </div>
-
-                        <div className="bg-gradient-to-br from-background via-background/90 to-primary/5 rounded-xl border border-primary/10 overflow-hidden hover:border-primary/30 hover:shadow-2xl transition-all duration-500">
-                          {stepImageUrl && (
-                            <div className="relative w-full h-48 md:h-64 overflow-hidden bg-gradient-to-br from-primary/5 to-amber-500/5">
-                              <Image
-                                src={stepImageUrl}
-                                alt={step.title}
-                                fill
-                                sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 600px"
-                                className="object-cover"
-                                loading="lazy"
-                                quality={80}
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent opacity-80" aria-hidden="true" />
-                              <div className="absolute top-4 right-4 bg-gradient-to-r from-primary to-amber-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                                Day {index + 1}
-                              </div>
-                            </div>
-                          )}
-
-                          <div className="p-5 md:p-6">
-                            <h3 className="text-foreground font-bold text-xl md:text-2xl mb-3 leading-tight" itemProp="name">
-                              {step.title}
-                            </h3>
-
-                            {step.place_to_go_subcategories && step.place_to_go_subcategories.length > 0 && (
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4 bg-muted/30 px-3 py-2 rounded-lg w-fit" itemProp="address">
-                                <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
-                                <span className="font-medium">
-                                  {step.place_to_go_subcategories.at(-1)?.categoryName || "Egypt"}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ol>
+                <ProgramItinerary steps={program.content_steps || []} />
               </div>
 
               <footer className="mt-8 pt-6 border-t border-primary/10 flex items-center justify-between">
@@ -322,11 +288,9 @@ export default async function ProgramPage({ params }: Props) {
               <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
                 Overview
               </h2>
-              <div
-                className="text-muted-foreground text-lg leading-relaxed prose prose-slate dark:prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: program.overView || program.descraption || 'No overview available' }}
-                itemProp="description"
-              />
+              <MarkdownRenderer className="text-lg leading-relaxed">
+                {program.overView || program.descraption || 'No overview available'}
+              </MarkdownRenderer>
             </div>
           </section>
 
@@ -392,6 +356,9 @@ export default async function ProgramPage({ params }: Props) {
             </div>
           </section>
 
+          {/* Related Programs */}
+          <RelatedPrograms programs={relatedPrograms} />
+
           {/* Reviews Section - Client Component for interactivity */}
           <ProgramReviewsSection
             program={program}
@@ -399,6 +366,7 @@ export default async function ProgramPage({ params }: Props) {
           />
         </article>
       </div>
+      <ProgramMobileAction program={program} />
     </>
   );
 }

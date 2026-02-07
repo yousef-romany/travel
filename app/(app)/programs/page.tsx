@@ -48,7 +48,8 @@ export const metadata: Metadata = {
 };
 
 // Revalidate programs page every 2 hours (programs change less frequently than homepage)
-export const revalidate = 3600; // 2 hours in seconds
+// Revalidate programs page every 30 minutes
+export const revalidate = 1800; // 30 minutes in seconds
 
 export default async function Programs() {
   let data;

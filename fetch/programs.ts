@@ -271,3 +271,53 @@ export const fetchProgramDetails = async (titleOrId: string) => {
     throw error;
   }
 };
+
+/**
+ * Fetch related programs (same location or just random others)
+ */
+export const fetchRelatedPrograms = async (currentId: string, location?: string, limit: number = 3): Promise<ProgramType[]> => {
+  try {
+    let url = `${API_URL}/api/programs?populate=images&filters[documentId][$ne]=${currentId}&pagination[limit]=${limit}`;
+
+    // If location is provided, prioritize same location
+    if (location) {
+      url += `&filters[Location][$containsi]=${encodeURIComponent(location)}`;
+    }
+
+    url += `&sort=rating:desc`;
+
+    const response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${API_TOKEN}`,
+      },
+    });
+
+    let programs = response.data.data;
+
+    // If we didn't get enough related programs by location, fetch generic ones
+    if (!programs || programs.length < limit) {
+      const remainingLimit = limit - (programs?.length || 0);
+      const fallbackUrl = `${API_URL}/api/programs?populate=images&filters[documentId][$ne]=${currentId}&pagination[limit]=${remainingLimit}&sort=rating:desc`;
+
+      const fallbackResponse = await axios.get(fallbackUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${API_TOKEN}`,
+        },
+      });
+
+      if (fallbackResponse.data.data) {
+        // Filter out duplicates just in case
+        const existingIds = new Set(programs.map((p: any) => p.documentId));
+        const newPrograms = fallbackResponse.data.data.filter((p: any) => !existingIds.has(p.documentId));
+        programs = [...programs, ...newPrograms];
+      }
+    }
+
+    return programs;
+  } catch (error) {
+    console.error("Error fetching related programs:", error);
+    return [];
+  }
+};

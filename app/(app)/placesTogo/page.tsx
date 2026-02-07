@@ -47,7 +47,8 @@ export const metadata: Metadata = {
 };
 
 // Revalidate places page every 6 hours (destinations change infrequently)
-export const revalidate = 3600; // 6 hours in seconds
+// Revalidate places page every 30 minutes
+export const revalidate = 1800; // 30 minutes in seconds
 
 const InspirationPage = async () => {
   let data;

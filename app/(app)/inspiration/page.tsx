@@ -38,7 +38,8 @@ export const metadata: Metadata = {
 };
 
 // Revalidate inspiration page every 4 hours (content changes less frequently)
-export const revalidate = 3600; // 4 hours in seconds
+// Revalidate inspiration page every 30 minutes
+export const revalidate = 1800; // 30 minutes in seconds
 
 const InspirationPage = async () => {
   let data;

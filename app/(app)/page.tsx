@@ -171,5 +171,5 @@ export default async function Home() {
   );
 }
 
-// Revalidate page every hour to get fresh data without full rebuilds
-export const revalidate = 3600; // 1 hour in seconds
+// Revalidate page every 30 minutes
+export const revalidate = 1800; // 30 minutes in seconds

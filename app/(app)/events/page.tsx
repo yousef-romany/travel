@@ -35,7 +35,8 @@ export const metadata: Metadata = {
 };
 
 // Revalidate events page every 3 hours (events change more frequently than static content)
-export const revalidate = 3600; // 3 hours in seconds
+// Revalidate events page every 30 minutes
+export const revalidate = 1800; // 30 minutes in seconds
 
 export default async function EventsPage() {
   let data;

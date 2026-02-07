@@ -3,9 +3,16 @@ export interface ContentStep {
   imageUrl?: string;
   image?: Media;
   price?: number;
+  description?: string;
   place_to_go_subcategories?: {
+    id: number;
+    documentId: string;
     categoryName: string;
-    place_to_go_categories?: { categoryName: string }[];
+    place_to_go_categories?: {
+      id: number;
+      documentId: string;
+      categoryName: string;
+    }[];
   }[];
 }
 
