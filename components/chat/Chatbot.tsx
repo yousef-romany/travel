@@ -58,6 +58,22 @@ export default function Chatbot() {
         if (chatbotState === "true") {
             setIsOpen(true);
         }
+
+        // Restore chat messages from localStorage
+        const savedMessages = localStorage.getItem("zoe_chat_messages");
+        if (savedMessages) {
+            try {
+                const parsedMessages = JSON.parse(savedMessages);
+                // Convert timestamp strings back to Date objects
+                const messagesWithDates = parsedMessages.map((msg: any) => ({
+                    ...msg,
+                    timestamp: new Date(msg.timestamp)
+                }));
+                setMessages(messagesWithDates);
+            } catch (error) {
+                console.error("Failed to restore messages:", error);
+            }
+        }
     }, []);
 
     // Persist chatbot open state to localStorage
@@ -65,11 +81,28 @@ export default function Chatbot() {
         localStorage.setItem("zoe_chatbot_open", isOpen.toString());
     }, [isOpen]);
 
-    // Sync chatbot state across tabs
+    // Persist chat messages to localStorage
+    useEffect(() => {
+        localStorage.setItem("zoe_chat_messages", JSON.stringify(messages));
+    }, [messages]);
+
+    // Sync chatbot state and messages across tabs
     useEffect(() => {
         const handleStorageChange = (e: StorageEvent) => {
             if (e.key === "zoe_chatbot_open" && e.newValue !== null) {
                 setIsOpen(e.newValue === "true");
+            }
+            if (e.key === "zoe_chat_messages" && e.newValue !== null) {
+                try {
+                    const parsedMessages = JSON.parse(e.newValue);
+                    const messagesWithDates = parsedMessages.map((msg: any) => ({
+                        ...msg,
+                        timestamp: new Date(msg.timestamp)
+                    }));
+                    setMessages(messagesWithDates);
+                } catch (error) {
+                    console.error("Failed to sync messages:", error);
+                }
             }
         };
 
@@ -225,16 +258,17 @@ export default function Chatbot() {
     };
 
     const handleClearChat = () => {
-        setMessages([
-            {
-                id: "welcome",
-                sender: "bot",
-                text: userInfo
-                    ? `👋 Hi ${userInfo.name}! I'm Zoe, your AI travel assistant. How can I help you plan your perfect trip to Egypt?`
-                    : "👋 Hi! I'm Zoe, your AI travel assistant. How can I help you plan your perfect trip to Egypt?",
-                timestamp: new Date()
-            }
-        ]);
+        const welcomeMessage = {
+            id: "welcome",
+            sender: "bot" as const,
+            text: userInfo
+                ? `👋 Hi ${userInfo.name}! I'm Zoe, your AI travel assistant. How can I help you plan your perfect trip to Egypt?`
+                : "👋 Hi! I'm Zoe, your AI travel assistant. How can I help you plan your perfect trip to Egypt?",
+            timestamp: new Date()
+        };
+
+        setMessages([welcomeMessage]);
+        localStorage.setItem("zoe_chat_messages", JSON.stringify([welcomeMessage])); // Clear localStorage too
         sessionStorage.setItem("zoe_chat_session", uuidv4()); // Reset session
     };
 
@@ -254,56 +288,80 @@ export default function Chatbot() {
                 onClick={() => setIsOpen(!isOpen)}
                 size="icon"
                 className={cn(
-                    "fixed bottom-4 right-6 z-50 h-14 w-14 rounded-full shadow-2xl transition-all duration-300 hover:scale-110",
+                    "fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-16 sm:w-16 rounded-full shadow-2xl transition-all duration-300 hover:scale-110",
                     isOpen ? "bg-destructive rotate-90" : "bg-gradient-to-r from-primary to-amber-600 animate-in zoom-in slide-in-from-bottom-5"
                 )}
             >
-                {isOpen ? <X className="h-6 w-6 text-white" /> : <MessageSquare className="h-7 w-7 text-white" />}
+                {isOpen ? <X className="h-6 w-6 sm:h-7 sm:w-7 text-white" /> : <MessageSquare className="h-7 w-7 sm:h-8 sm:w-8 text-white" />}
             </Button>
+
+            {/* Backdrop for mobile */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden animate-in fade-in duration-300"
+                    onClick={() => setIsOpen(false)}
+                />
+            )}
 
             {/* Chat Window */}
             {isOpen && (
-                <div className="fixed bottom-24 right-6 z-50 w-[90vw] md:w-[400px] h-[500px] md:h-[600px] bg-background border border-primary/20 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
+                <div className={cn(
+                    "fixed z-50 bg-background border shadow-2xl flex flex-col overflow-hidden animate-in fade-in duration-300",
+                    "inset-0 rounded-none border-0",
+                    "md:inset-auto md:bottom-24 md:right-6 md:w-[420px] md:h-[650px] md:rounded-2xl md:border-primary/20 md:slide-in-from-bottom-10",
+                    "lg:w-[480px] lg:h-[700px]"
+                )}>
                     {/* Header */}
-                    <div className="p-4 bg-gradient-to-r from-primary/10 to-amber-500/10 border-b border-primary/10 flex items-center gap-3">
-                        <div className="p-2 bg-gradient-to-r from-primary to-amber-600 rounded-full">
-                            <Bot className="h-5 w-5 text-white" />
+                    <div className="p-4 sm:p-5 bg-gradient-to-r from-primary/10 to-amber-500/10 border-b border-primary/10 flex items-center gap-3 shrink-0">
+                        <div className="p-2 sm:p-2.5 bg-gradient-to-r from-primary to-amber-600 rounded-full">
+                            <Bot className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                         </div>
-                        <div className="flex-1 flex items-center justify-between">
-                            <div>
-                                <h3 className="font-bold text-foreground">Zoe Assistant</h3>
-                                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <div className="flex-1 flex items-center justify-between min-w-0">
+                            <div className="min-w-0">
+                                <h3 className="font-bold text-foreground text-base sm:text-lg truncate">Zoe Assistant</h3>
+                                <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1">
                                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                                     Online
                                 </p>
                             </div>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={handleClearChat}
-                                className="ml-auto h-8 w-8 text-muted-foreground hover:text-destructive"
-                                title="Clear Chat"
-                            >
-                                <Trash2 className="h-4 w-4" />
-                            </Button>
+                            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={handleClearChat}
+                                    className="h-8 w-8 sm:h-9 sm:w-9 text-muted-foreground hover:text-destructive"
+                                    title="Clear Chat"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => setIsOpen(false)}
+                                    className="h-8 w-8 sm:h-9 sm:w-9 text-muted-foreground hover:text-destructive md:hidden"
+                                    title="Close Chat"
+                                >
+                                    <X className="h-4 w-4" />
+                                </Button>
+                            </div>
                         </div>
                     </div>
 
                     {/* Contact Form */}
                     {showContactForm ? (
-                        <div className="flex-1 flex items-center justify-center p-6 bg-muted/20">
-                            <div className="w-full max-w-sm space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                                <div className="text-center space-y-2">
-                                    <div className="mx-auto w-16 h-16 bg-gradient-to-r from-primary to-amber-600 rounded-full flex items-center justify-center">
-                                        <User className="h-8 w-8 text-white" />
+                        <div className="flex-1 flex items-center justify-center p-4 sm:p-6 bg-muted/20 overflow-y-auto">
+                            <div className="w-full max-w-sm space-y-4 sm:space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                                <div className="text-center space-y-2 sm:space-y-3">
+                                    <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-primary to-amber-600 rounded-full flex items-center justify-center">
+                                        <User className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
                                     </div>
-                                    <h3 className="text-lg font-bold text-foreground">Welcome to Zoe!</h3>
-                                    <p className="text-sm text-muted-foreground">Please share your contact details to get started</p>
+                                    <h3 className="text-lg sm:text-xl font-bold text-foreground">Welcome to Zoe!</h3>
+                                    <p className="text-sm sm:text-base text-muted-foreground">Please share your contact details to get started</p>
                                 </div>
 
-                                <form onSubmit={handleContactFormSubmit} className="space-y-4">
+                                <form onSubmit={handleContactFormSubmit} className="space-y-4 sm:space-y-5">
                                     <div className="space-y-2">
-                                        <Label htmlFor="name" className="text-sm font-medium">
+                                        <Label htmlFor="name" className="text-sm sm:text-base font-medium">
                                             Full Name <span className="text-destructive">*</span>
                                         </Label>
                                         <Input
@@ -316,19 +374,19 @@ export default function Chatbot() {
                                                 setFormErrors({ ...formErrors, name: "" });
                                             }}
                                             className={cn(
-                                                "border-primary/20 focus-visible:ring-primary/30",
+                                                "h-11 sm:h-12 text-base border-primary/20 focus-visible:ring-primary/30",
                                                 formErrors.name && "border-destructive focus-visible:ring-destructive/30"
                                             )}
                                         />
                                         {formErrors.name && (
-                                            <p className="text-xs text-destructive animate-in fade-in slide-in-from-top-1 duration-200">
+                                            <p className="text-xs sm:text-sm text-destructive animate-in fade-in slide-in-from-top-1 duration-200">
                                                 {formErrors.name}
                                             </p>
                                         )}
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="phone" className="text-sm font-medium">
+                                        <Label htmlFor="phone" className="text-sm sm:text-base font-medium">
                                             Phone Number <span className="text-destructive">*</span>
                                         </Label>
                                         <Input
@@ -341,12 +399,12 @@ export default function Chatbot() {
                                                 setFormErrors({ ...formErrors, phone: "" });
                                             }}
                                             className={cn(
-                                                "border-primary/20 focus-visible:ring-primary/30",
+                                                "h-11 sm:h-12 text-base border-primary/20 focus-visible:ring-primary/30",
                                                 formErrors.phone && "border-destructive focus-visible:ring-destructive/30"
                                             )}
                                         />
                                         {formErrors.phone && (
-                                            <p className="text-xs text-destructive animate-in fade-in slide-in-from-top-1 duration-200">
+                                            <p className="text-xs sm:text-sm text-destructive animate-in fade-in slide-in-from-top-1 duration-200">
                                                 {formErrors.phone}
                                             </p>
                                         )}
@@ -354,7 +412,7 @@ export default function Chatbot() {
 
                                     <Button
                                         type="submit"
-                                        className="w-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
+                                        className="w-full h-11 sm:h-12 text-base bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
                                     >
                                         Start Chatting
                                     </Button>
@@ -365,15 +423,15 @@ export default function Chatbot() {
                         <>
                             {/* User Info Badge */}
                             {userInfo && (
-                                <div className="px-4 py-2 bg-muted/30 border-b border-primary/10 flex items-center justify-between text-xs">
-                                    <span className="text-muted-foreground">
+                                <div className="px-4 py-2 sm:py-2.5 bg-muted/30 border-b border-primary/10 flex items-center justify-between text-xs sm:text-sm shrink-0">
+                                    <span className="text-muted-foreground truncate">
                                         Chatting as: <span className="font-medium text-foreground">{userInfo.name}</span>
                                     </span>
                                     <Button
                                         variant="ghost"
                                         size="sm"
                                         onClick={handleResetUserInfo}
-                                        className="h-6 text-xs text-muted-foreground hover:text-primary"
+                                        className="h-6 sm:h-7 text-xs sm:text-sm text-muted-foreground hover:text-primary shrink-0"
                                     >
                                         Change
                                     </Button>
@@ -381,8 +439,8 @@ export default function Chatbot() {
                             )}
 
                             {/* Messages Area */}
-                            <ScrollArea ref={scrollRef} className="flex-1 p-4 bg-muted/20">
-                                <div className="space-y-4">
+                            <ScrollArea ref={scrollRef} className="flex-1 p-3 sm:p-4 bg-muted/20">
+                                <div className="space-y-3 sm:space-y-4">
                                     {messages.map((msg) => (
                                         <div
                                             key={msg.id}
@@ -392,21 +450,21 @@ export default function Chatbot() {
                                             )}
                                         >
                                             <div className={cn(
-                                                "max-w-[85%] p-3 rounded-2xl text-sm shadow-sm",
+                                                "max-w-[85%] sm:max-w-[80%] p-3 sm:p-3.5 rounded-2xl text-sm sm:text-base shadow-sm",
                                                 msg.sender === "user"
                                                     ? "bg-primary text-primary-foreground rounded-br-none"
                                                     : "bg-card border border-primary/10 text-foreground rounded-bl-none"
                                             )}>
                                                 {msg.sender === "bot" ? (
-                                                    <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-muted prose-pre:p-2 prose-pre:rounded-lg">
+                                                    <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-muted prose-pre:p-2 prose-pre:rounded-lg">
                                                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                                             {msg.text}
                                                         </ReactMarkdown>
                                                     </div>
                                                 ) : (
-                                                    msg.text
+                                                    <div className="break-words">{msg.text}</div>
                                                 )}
-                                                <span className="text-[10px] opacity-70 block mt-1 text-right">
+                                                <span className="text-[10px] sm:text-xs opacity-70 block mt-1 text-right">
                                                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 </span>
                                             </div>
@@ -414,7 +472,7 @@ export default function Chatbot() {
                                     ))}
                                     {isLoading && (
                                         <div className="flex justify-start">
-                                            <div className="bg-card border border-primary/10 p-4 rounded-2xl rounded-bl-none shadow-sm">
+                                            <div className="bg-card border border-primary/10 p-3 sm:p-4 rounded-2xl rounded-bl-none shadow-sm">
                                                 <div className="flex gap-1.5 items-center h-full">
                                                     <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                                                     <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
@@ -426,23 +484,24 @@ export default function Chatbot() {
                                 </div>
                             </ScrollArea>
 
+
                             {/* Input Area */}
-                            <div className="p-3 border-t bg-background/50 backdrop-blur-sm">
+                            <div className="p-3 sm:p-4 border-t bg-background/50 backdrop-blur-sm shrink-0">
                                 <form onSubmit={handleSendMessage} className="flex gap-2">
                                     <Input
                                         ref={inputRef}
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
                                         placeholder="Type your message..."
-                                        className="flex-1 rounded-full border-primary/20 focus-visible:ring-primary/30"
+                                        className="flex-1 h-11 sm:h-12 text-base rounded-full border-primary/20 focus-visible:ring-primary/30"
                                     />
                                     <Button
                                         type="submit"
                                         size="icon"
                                         disabled={!inputValue.trim() || isLoading}
-                                        className="rounded-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90"
+                                        className="h-11 w-11 sm:h-12 sm:w-12 rounded-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 shrink-0"
                                     >
-                                        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                                        {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                                     </Button>
                                 </form>
                             </div>

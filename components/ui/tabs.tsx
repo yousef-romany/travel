@@ -14,7 +14,14 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground",
+      "inline-flex h-11 sm:h-12 items-center justify-center",
+      "rounded-xl bg-muted/50 backdrop-blur-sm",
+      "p-1 sm:p-1.5",
+      "border border-primary/10",
+      "shadow-sm",
+      "text-muted-foreground",
+      "overflow-x-auto scrollbar-hide",
+      "gap-1",
       className
     )}
     {...props}
@@ -29,7 +36,18 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow",
+      "inline-flex items-center justify-center whitespace-nowrap",
+      "rounded-lg px-3 sm:px-4 md:px-5 py-2 sm:py-2.5",
+      "text-xs sm:text-sm md:text-base font-medium",
+      "ring-offset-background transition-all duration-200",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      "disabled:pointer-events-none disabled:opacity-50",
+      "hover:text-foreground hover:bg-muted/30 hover:scale-[1.02]",
+      "data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/15 data-[state=active]:to-amber-500/15",
+      "data-[state=active]:text-primary data-[state=active]:font-semibold",
+      "data-[state=active]:shadow-lg data-[state=active]:shadow-primary/25",
+      "data-[state=active]:border data-[state=active]:border-primary/30",
+      "data-[state=active]:scale-[1.05]",
       className
     )}
     {...props}
@@ -44,7 +62,11 @@ const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      "mt-2 sm:mt-3",
+      "ring-offset-background",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      "data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-1",
+      "transition-all duration-200",
       className
     )}
     {...props}

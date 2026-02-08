@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SignJWT } from "jose";
 
-const N8N_WEBHOOK_URL = process.env.N8N_CHAT_WEBHOOK_URL || "https://n8n.zoeholidays.com/webhook/zoeholidays-website-portal";
+const N8N_WEBHOOK_URL = process.env.N8N_CHAT_WEBHOOK_URL || "https://n8n.zoeholidays.com/webhook-test/zoeholidays-website-portal";
 const N8N_SECRET = process.env.N8N_CHAT_SECRET || "Z@9Lx3#WmA1qF!7^C8H6EJrS$0n5kP2yB4eD@M%VfQKXhRz&UjT*";
 
 export async function POST(req: NextRequest) {
