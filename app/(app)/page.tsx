@@ -1,3 +1,4 @@
+
 import { Metadata } from "next";
 import WebPageSchema from "@/components/seo/WebPageSchema";
 import FAQSchema from "@/components/seo/FAQSchema";
@@ -11,6 +12,13 @@ import FeaturesSection from "./components/home/server/FeaturesSection";
 import TestimonialsSection from "./components/home/server/TestimonialsSection";
 import InstagramSection from "./components/home/server/InstagramSection";
 import { PromoCodesShowcase } from "@/components/promo/PromoCodesShowcase";
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import { fetchHomePageData } from "@/fetch/homepage";
+import { fetchApprovedTestimonials } from "@/fetch/testimonials";
+import { LazySection } from "@/components/LazySection";
+import ProgramsGridSkeleton from "@/components/loading/ProgramsGridSkeleton";
+import PlacesGridSkeleton from "@/components/loading/PlacesGridSkeleton";
+import BlogGridSkeleton from "@/components/loading/BlogGridSkeleton";
 
 export const metadata: Metadata = {
   title: "Egypt Tours & Travel Packages | ZoeHoliday - Pyramids, Nile Cruises & Ancient Temples",
@@ -76,11 +84,6 @@ const faqs = [
   }
 ];
 
-import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
-import { fetchHomePageData } from "@/fetch/homepage";
-import { fetchApprovedTestimonials } from "@/fetch/testimonials";
-import { LazySection } from "@/components/LazySection";
-
 export default async function Home() {
   // Fetch data server-side for SEO
   const [homepageData, testimonialsData] = await Promise.allSettled([
@@ -124,15 +127,21 @@ export default async function Home() {
       {/* Main Content - Server-Rendered for SEO */}
       {/* Above-fold: Load immediately */}
       <HeroSection />
-      <InspireSection blogs={data.inspireBlogs} />
-      <PlacesSection categories={data.placeCategories} />
 
       {/* Below-fold: Progressive lazy loading */}
+      <LazySection minHeight="500px" rootMargin="200px" fallback={<BlogGridSkeleton />}>
+        <InspireSection blogs={data.inspireBlogs} />
+      </LazySection>
+
+      <LazySection minHeight="500px" rootMargin="200px" fallback={<PlacesGridSkeleton />}>
+        <PlacesSection categories={data.placeCategories} />
+      </LazySection>
+
       <LazySection minHeight="500px" rootMargin="100px">
         <PlanTripSection />
       </LazySection>
 
-      <LazySection minHeight="600px" rootMargin="100px">
+      <LazySection minHeight="600px" rootMargin="100px" fallback={<ProgramsGridSkeleton />}>
         <ProgramsSection programs={data.programs} />
       </LazySection>
 

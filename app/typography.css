@@ -1,0 +1,134 @@
+/* Enhanced Typography Hierarchy */
+
+@layer base {
+
+    /* Improved heading hierarchy with better spacing and weights */
+    h1 {
+        @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
+        letter-spacing: -0.02em;
+    }
+
+    h2 {
+        @apply scroll-m-20 text-3xl font-bold tracking-tight lg:text-4xl;
+        letter-spacing: -0.015em;
+    }
+
+    h3 {
+        @apply scroll-m-20 text-2xl font-semibold tracking-tight lg:text-3xl;
+        letter-spacing: -0.01em;
+    }
+
+    h4 {
+        @apply scroll-m-20 text-xl font-semibold tracking-tight lg:text-2xl;
+    }
+
+    h5 {
+        @apply scroll-m-20 text-lg font-semibold tracking-tight;
+    }
+
+    h6 {
+        @apply scroll-m-20 text-base font-semibold tracking-tight;
+    }
+
+    /* Improved paragraph spacing and line height */
+    p {
+        @apply leading-7;
+    }
+
+    /* Better list styling */
+    ul,
+    ol {
+        @apply my-6 ml-6 list-disc;
+    }
+
+    ol {
+        @apply list-decimal;
+    }
+
+    li {
+        @apply mt-2;
+    }
+
+    /* Blockquote styling */
+    blockquote {
+        @apply mt-6 border-l-4 border-primary pl-6 italic;
+    }
+
+    /* Code blocks */
+    code {
+        @apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
+    }
+
+    /* Links */
+    a {
+        @apply font-medium text-primary underline-offset-4 hover:underline;
+    }
+
+    /* Small text */
+    small {
+        @apply text-sm font-medium leading-none;
+    }
+
+    /* Lead text for introductions */
+    .lead {
+        @apply text-xl text-muted-foreground;
+    }
+
+    /* Large text */
+    .text-large {
+        @apply text-lg font-semibold;
+    }
+
+    /* Muted text */
+    .text-muted {
+        @apply text-sm text-muted-foreground;
+    }
+}
+
+/* Typography utilities */
+@layer utilities {
+
+    /* Better line heights for different contexts */
+    .line-height-tight {
+        line-height: 1.2;
+    }
+
+    .line-height-normal {
+        line-height: 1.5;
+    }
+
+    .line-height-relaxed {
+        line-height: 1.75;
+    }
+
+    /* Letter spacing utilities */
+    .tracking-tighter {
+        letter-spacing: -0.05em;
+    }
+
+    .tracking-tight {
+        letter-spacing: -0.025em;
+    }
+
+    .tracking-normal {
+        letter-spacing: 0;
+    }
+
+    .tracking-wide {
+        letter-spacing: 0.025em;
+    }
+
+    .tracking-wider {
+        letter-spacing: 0.05em;
+    }
+
+    /* Text balance for better line wrapping */
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    /* Prevent orphans */
+    .text-pretty {
+        text-wrap: pretty;
+    }
+}

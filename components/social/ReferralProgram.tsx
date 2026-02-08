@@ -50,22 +50,43 @@ export function ReferralProgram() {
     }
   }, [user]);
 
+
   const loadReferralData = async () => {
     try {
       setIsLoadingStats(true);
-      const [statsData, historyData] = await Promise.all([
-        getReferralStats(),
-        getReferralHistory(),
-      ]);
-      setStats(statsData);
-      setHistory(historyData);
-      if (statsData.activeCode) {
-        setReferralCode(statsData.activeCode);
+      // Dynamically import to avoid circular dependencies if any
+      const { getMyReferralCode } = await import("@/fetch/user");
+      const token = localStorage.getItem("authToken");
+
+      if (!token) return;
+
+      const referralData = await getMyReferralCode(token);
+
+      if (referralData) {
+        setStats({
+          totalReferrals: referralData.usageCount || 0,
+          pendingReferrals: 0, // Granular status not yet implemented in backend aggregation
+          completedReferrals: referralData.usageCount || 0,
+          totalEarned: referralData.earnings || 0,
+          activeCode: referralData.code,
+        });
+        setReferralCode(referralData.code);
+      } else {
+        // No referral code yet
+        setStats({
+          totalReferrals: 0,
+          pendingReferrals: 0,
+          completedReferrals: 0,
+          totalEarned: 0,
+          activeCode: null,
+        });
       }
+
+      // History is still mock/empty for now until we implement relation mapping
+      setHistory([]);
+
     } catch (error) {
       console.error("Error loading referral data:", error);
-      // Don't show error toast - the fetch functions already handle missing endpoints gracefully
-      // Set default data instead
       setStats({
         totalReferrals: 0,
         pendingReferrals: 0,
@@ -79,6 +100,7 @@ export function ReferralProgram() {
     }
   };
 
+
   const handleGenerateCode = async () => {
     if (!user) {
       toast.error("Please log in to generate a referral code");
@@ -87,13 +109,22 @@ export function ReferralProgram() {
 
     try {
       setIsGenerating(true);
-      const result = await generateReferralCode();
-      setReferralCode(result.referralCode);
-      toast.success(result.message);
-      loadReferralData(); // Reload stats
+      // getMyReferralCode lazy-generates the code if it doesn't exist
+      const { getMyReferralCode } = await import("@/fetch/user");
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        const result = await getMyReferralCode(token);
+        if (result) {
+          setReferralCode(result.code);
+          toast.success("Referral code generated successfully!");
+          loadReferralData();
+        } else {
+          throw new Error("Failed to retrieve code");
+        }
+      }
     } catch (error: any) {
       console.error("Error generating code:", error);
-      toast.error(error.response?.data?.error?.message || "Failed to generate referral code");
+      toast.error("Failed to generate referral code");
     } finally {
       setIsGenerating(false);
     }

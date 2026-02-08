@@ -13,9 +13,13 @@ import Link from "next/link"
 import { toast } from "sonner"
 import { useState } from "react"
 import BookingCancelDialog from "@/components/booking-cancel-dialog"
+import { BookingListSkeleton } from "@/components/loading/ProfileSkeletons"
+import { NoBookingsEmpty } from "@/components/ui/EmptyState"
+import { useRouter } from "next/navigation"
 
 export default function TripsSection() {
   const { user } = useAuth();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [cancelDialogData, setCancelDialogData] = useState<{
     bookingId: string;
@@ -71,11 +75,7 @@ export default function TripsSection() {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <BookingListSkeleton />;
   }
 
   if (isError) {
@@ -106,26 +106,9 @@ export default function TripsSection() {
 
   if (!trips || trips.length === 0) {
     return (
-      <Card className="border border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 overflow-hidden">
-        <CardContent className="flex flex-col items-center justify-center py-16 px-4">
-          <div className="relative mb-6 animate-float">
-            <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
-            <div className="relative bg-gradient-to-br from-primary/10 to-amber-500/10 p-6 rounded-full">
-              <MapPin className="h-16 w-16 text-primary" />
-            </div>
-          </div>
-          <h3 className="text-2xl font-bold text-foreground mb-2">No Bookings Yet</h3>
-          <p className="text-muted-foreground mb-6 text-center max-w-md">
-            Start your Egyptian adventure today! Explore our curated programs and create unforgettable memories.
-          </p>
-          <Button asChild size="lg" className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90">
-            <Link href="/programs">
-              <MapPin className="w-4 h-4 mr-2" />
-              Browse Programs
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
+      <NoBookingsEmpty
+        onExplore={() => router.push("/programs")}
+      />
     );
   }
 

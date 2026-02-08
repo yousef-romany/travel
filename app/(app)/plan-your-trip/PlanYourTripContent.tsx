@@ -5,6 +5,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBestCustomTrips, fetchUserPlanTrips } from "@/fetch/plan-trip";
 import Loading from "@/components/Loading";
+import PlanTripSkeleton from "@/components/loading/PlanTripSkeleton";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -92,7 +93,7 @@ export default function PlanYourTripContent() {
     }
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <PlanTripSkeleton />;
 
   if (error) {
     return (
@@ -226,7 +227,7 @@ export default function PlanYourTripContent() {
                               src={getImageUrl(trip.destinations[0].image) || "/placeholder.svg"}
                               alt={trip.tripName}
                               fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                               className="object-cover group-hover:scale-110 transition-transform duration-500"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
@@ -357,7 +358,7 @@ export default function PlanYourTripContent() {
                             src={getImageUrl(trip.destinations[0].image) || "/placeholder.svg"}
                             alt={trip.tripName}
                             fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                             className="object-cover group-hover:scale-110 transition-transform duration-500"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />

@@ -10,7 +10,7 @@
 } */
 
 * {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 @layer base {
@@ -105,8 +105,11 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+    /* Prevent horizontal scroll on mobile */
   }
 
   /* ==================== Accessibility Improvements ==================== */
@@ -153,7 +156,9 @@
   }
 
   /* Ensure sufficient color contrast for text */
-  p, span, div {
+  p,
+  span,
+  div {
     @apply text-foreground;
   }
 
@@ -174,7 +179,8 @@
 }
 
 .mdx-container {
-  font-size: 1rem; /* Increases the font size for the entire MDX content */
+  font-size: 1rem;
+  /* Increases the font size for the entire MDX content */
   font-weight: 700;
   display: flex;
   flex-direction: column;
@@ -187,29 +193,35 @@
 
 /* For specific elements */
 .mdx-container p {
-  font-size: 1.1rem; /* Increase font size of paragraphs */
+  font-size: 1.1rem;
+  /* Increase font size of paragraphs */
   font-weight: 700;
   color: hsl(var(--primary));
 }
+
 h1,
 h2,
 h3 {
   color: hsl(var(--primary)) !important;
   text-shadow: 2px 2px 4px hsl(var(--primary), 0.5);
 }
+
 p {
   color: hsl(var(--primary)) !important;
 }
+
 .mdx-container h1,
 .mdx-container h2,
 .mdx-container h3 {
-  font-size: 2.4rem; /* Increase font size for headings */
+  font-size: 2.4rem;
+  /* Increase font size for headings */
   font-weight: 900;
 }
 
 .mdx-container pre,
 .mdx-container code {
-  font-size: 1rem; /* Increase font size for code blocks */
+  font-size: 1rem;
+  /* Increase font size for code blocks */
   font-weight: 700;
 }
 
@@ -255,6 +267,7 @@ p {
 .mdx-container tr:hover {
   background-color: hsl(var(--ring));
 }
+
 /* IGAAIeGhFnnCxBZAE5pMU9hRU9iQUJiYUEySFE0eC03RjlIRzJnRWdEZAlZAiZAmhwMWhqVUFNR2dUYXlJeFV6Y21KQW1wMXdWOFZAfQThzdGJOa0UwR0c4Wnc1eTBoVU00OXpxZA0RZATTZAOM3ZA4UXBXd1FoQ1IzdE5USVE3OHFMNFZAHawZDZD */
 /* 8886910461377481 */
 /* https://graph.instagram.com/8886910461377481/media?access_token=IGAAIeGhFnnCxBZAE5pMU9hRU9iQUJiYUEySFE0eC03RjlIRzJnRWdEZAlZAiZAmhwMWhqVUFNR2dUYXlJeFV6Y21KQW1wMXdWOFZAfQThzdGJOa0UwR0c4Wnc1eTBoVU00OXpxZA0RZATTZAOM3ZA4UXBXd1FoQ1IzdE5USVE3OHFMNFZAHawZDZD&fields=id,media_type,media_url,caption,permalink,thumbnail_url */
@@ -309,6 +322,7 @@ p {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -319,6 +333,7 @@ p {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -330,6 +345,7 @@ p {
     opacity: 0;
     transform: translateY(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -341,6 +357,7 @@ p {
     opacity: 0;
     transform: translateX(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -352,6 +369,7 @@ p {
     opacity: 0;
     transform: translateX(30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -363,6 +381,7 @@ p {
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -370,9 +389,12 @@ p {
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.8;
   }
@@ -382,6 +404,7 @@ p {
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }
@@ -392,6 +415,7 @@ p {
     opacity: 0;
     transform: translateY(20px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -399,28 +423,37 @@ p {
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
 }
 
 @keyframes iconBounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.2);
   }
 }
 
 @keyframes badgePulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.05);
     opacity: 0.9;
@@ -431,6 +464,7 @@ p {
   0% {
     background-position: -200% center;
   }
+
   100% {
     background-position: 200% center;
   }
@@ -587,6 +621,7 @@ p {
 
 /* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -663,4 +698,6 @@ p {
   background: hsl(var(--primary) / 0.4);
 }
 
-.st0{fill:#000000 !important}
+.st0 {
+  fill: #000000 !important
+}

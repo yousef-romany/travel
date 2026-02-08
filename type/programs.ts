@@ -8,6 +8,7 @@ export interface ContentStep {
     id: number;
     documentId: string;
     categoryName: string;
+    image?: Media;
     place_to_go_categories?: {
       id: number;
       documentId: string;
@@ -51,6 +52,17 @@ interface MediaFormat {
   height: number;
 }
 
+export interface Service {
+  id: number;
+  documentId: string;
+  name: string;
+  price: number;
+  type: "per_person" | "per_booking";
+  description?: string;
+  icon?: string;
+  image?: Media;
+}
+
 export interface Media {
   id: number;
   name: string;
@@ -72,7 +84,9 @@ export interface ProgramType {
   duration: number;
   price: number;
   rating: number;
+
   overView: string;
   images: Media[];
+  services?: Service[];
   status?: "best-seller" | "new" | "popular" | "limited-offer";
 }

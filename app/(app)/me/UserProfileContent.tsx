@@ -11,10 +11,10 @@ import PlannedTripsSection from "@/components/planned-trips-section";
 import TestimonialsSection from "@/components/testimonials-section";
 import { LoyaltyDashboard } from "@/components/loyalty/LoyaltyDashboard";
 import { ReferralProgram } from "@/components/social/ReferralProgram";
+import { LoyaltyDashboardSkeleton, ReferralProgramSkeleton } from "@/components/loading/ProfileSkeletons";
 import { useAuth } from "@/context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserLoyalty } from "@/fetch/loyalty";
-import { Loader2 } from "lucide-react";
 
 export default function UserProfileContent() {
     const [activeTab, setActiveTab] = useState("overview");
@@ -123,9 +123,7 @@ export default function UserProfileContent() {
 
                     <TabsContent value="loyalty" className="space-y-6 tab-content-enter">
                         {loyaltyLoading ? (
-                            <div className="flex items-center justify-center py-20">
-                                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                            </div>
+                            <LoyaltyDashboardSkeleton />
                         ) : loyaltyData && user ? (
                             <LoyaltyDashboard
                                 userId={user.id}

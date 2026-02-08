@@ -81,14 +81,23 @@ export default function WishlistSection() {
     }
   }, [user?.token])
 
-  // Remove from wishlist
-  const removeFromWishlist = async (programId: number, programTitle: string) => {
+  // Remove item from wishlist with optimistic update
+  const removeFromWishlist = async (wishlistId: number, programTitle: string) => {
     if (!user?.token) return
 
-    try {
-      setRemovingId(programId)
+    // Store the current state for rollback
+    const previousItems = [...wishlistItems]
 
-      const response = await fetch(`${API_URL}/api/wishlists/remove/${programId}`, {
+    // Optimistically remove the item from UI
+    setWishlistItems(prev => prev.filter(item => item.id !== wishlistId))
+
+    // Show optimistic toast
+    const loadingToast = toast.loading("Removing from wishlist...")
+
+    try {
+      setRemovingId(wishlistId)
+
+      const response = await fetch(`${API_URL}/api/wishlists/${wishlistId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -100,14 +109,16 @@ export default function WishlistSection() {
       }
 
       // Track analytics
-      trackWishlistAction("remove", programTitle)
+      trackWishlistAction('remove', programTitle)
 
-      // Update local state
-      setWishlistItems((prev) => prev.filter((item) => item.program.id !== programId))
-      toast.success("Removed from wishlist")
+      // Update toast to success
+      toast.success("Removed from wishlist", { id: loadingToast })
     } catch (error) {
       console.error("Error removing from wishlist:", error)
-      toast.error("Failed to remove from wishlist")
+
+      // Rollback on error
+      setWishlistItems(previousItems)
+      toast.error("Failed to remove from wishlist", { id: loadingToast })
     } finally {
       setRemovingId(null)
     }

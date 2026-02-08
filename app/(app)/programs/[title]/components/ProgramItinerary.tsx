@@ -25,7 +25,7 @@ export function ProgramItinerary({ steps }: ProgramItineraryProps) {
 
             <Accordion type="single" collapsible className="space-y-4" defaultValue="item-0">
                 {steps.map((step, index) => {
-                    const stepImage = step.image || step.imageUrl || null;
+                    const stepImage = step.image || step.imageUrl || step.place_to_go_subcategories?.at(0)?.image || null;
                     const stepImageUrl = stepImage ? getImageUrl(stepImage) : null;
 
                     // Construct link to place page if available

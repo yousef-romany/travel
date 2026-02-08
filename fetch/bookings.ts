@@ -163,7 +163,9 @@ export const createBooking = async (bookingData: {
   totalAmount: number;
   promoCodeId?: string;
   discountAmount?: number;
+
   finalPrice?: number;
+  selectedServices?: string[];
 }): Promise<{ data: BookingType }> => {
   try {
     // Get auth token from localStorage
@@ -183,6 +185,7 @@ export const createBooking = async (bookingData: {
       ...(bookingData.promoCodeId && { promoCode: bookingData.promoCodeId }),
       ...(bookingData.discountAmount && { discountAmount: bookingData.discountAmount }),
       ...(bookingData.finalPrice && { finalPrice: bookingData.finalPrice }),
+      ...(bookingData.selectedServices && { selectedServices: bookingData.selectedServices }),
     };
 
     // Add custom trip name if provided
@@ -233,7 +236,7 @@ export const fetchBookingById = async (
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
     const response = await axios.get(
-      `${API_URL}/api/bookings/${bookingId}?populate=program`,
+      `${API_URL}/api/bookings/${bookingId}?populate[program][populate][0]=images&populate[plan_trip][fields][0]=tripName&populate[plan_trip][fields][1]=totalPrice&populate[event][populate][0]=featuredImage`,
       {
         headers: {
           Authorization: `Bearer ${authToken || API_TOKEN}`,
@@ -305,6 +308,74 @@ export const cancelBooking = async (
 
     return bookingResponse;
   } catch (error) {
+    throw error;
+  }
+};
+
+// Verify payment and create booking
+export const verifyBookingPayment = async (
+  orderID: string,
+  bookingData: {
+    fullName: string;
+    email: string;
+    phone: string;
+    numberOfTravelers: number;
+    travelDate: string;
+    specialRequests?: string;
+    programId?: string;
+    planTripId?: string;
+    customTripName?: string;
+    bookingType?: "program" | "custom-trip" | "event";
+    userId?: string;
+    totalAmount: number;
+    promoCodeId?: string;
+    discountAmount?: number;
+    finalPrice?: number;
+    selectedServices?: string[];
+  }
+): Promise<{ data: BookingType }> => {
+  try {
+    const authToken =
+      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+
+    const payload: Record<string, unknown> = {
+      fullName: bookingData.fullName,
+      email: bookingData.email,
+      phone: bookingData.phone,
+      numberOfTravelers: bookingData.numberOfTravelers,
+      travelDate: bookingData.travelDate,
+      specialRequests: bookingData.specialRequests,
+      totalAmount: bookingData.totalAmount,
+      bookingStatus: "pending",
+      bookingType: bookingData.bookingType || "program",
+      ...(bookingData.promoCodeId && { promoCode: bookingData.promoCodeId }),
+      ...(bookingData.discountAmount && { discountAmount: bookingData.discountAmount }),
+      ...(bookingData.finalPrice && { finalPrice: bookingData.finalPrice }),
+      ...(bookingData.selectedServices && { selectedServices: bookingData.selectedServices }),
+    };
+
+    // Add relations
+    if (bookingData.programId) payload.program = bookingData.programId;
+    if (bookingData.planTripId) payload.plan_trip = bookingData.planTripId;
+    if (bookingData.userId) payload.user = bookingData.userId;
+    if (bookingData.customTripName) payload.customTripName = bookingData.customTripName;
+
+    const response = await axios.post(
+      `${API_URL}/api/bookings/verify-payment`,
+      {
+        orderID,
+        bookingData: payload,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken || API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
     throw error;
   }
 };

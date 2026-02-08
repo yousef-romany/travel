@@ -260,3 +260,32 @@ export const updateInvoiceStatusByBookingId = async (
     throw error;
   }
 };
+
+
+// Fetch invoice by booking ID
+export const fetchInvoiceByBookingId = async (
+  bookingId: string
+): Promise<{ data: InvoiceType }> => {
+  try {
+    const authToken =
+      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+
+    const response = await axios.get(
+      `${API_URL}/api/invoices?filters[bookingId][$eq]=${bookingId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken || API_TOKEN}`,
+        },
+      }
+    );
+
+    if (response.data.data && response.data.data.length > 0) {
+      return { data: response.data.data[0] };
+    }
+
+    throw new Error("Invoice not found");
+  } catch (error) {
+    console.error("Error fetching invoice by booking ID:", error);
+    throw error;
+  }
+};

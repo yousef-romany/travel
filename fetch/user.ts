@@ -280,3 +280,81 @@ export const updateUserProfile = async (
     throw error;
   }
 };
+
+export interface LoyaltyData {
+  id: number;
+  documentId: string;
+  points: number;
+  lifetimePoints: number;
+  tier: "Explorer" | "Adventurer" | "Globetrotter";
+  history: Array<{
+    date: string;
+    amount: number;
+    reason: string;
+    type: "earned" | "redeemed";
+  }>;
+}
+
+/**
+ * Get user loyalty data
+ */
+export const getLoyaltyData = async (token: string): Promise<LoyaltyData | null> => {
+  try {
+    // Fetch loyalty record for the authenticated user
+    // We assume the user relation is properly set up so we can filter by user.id or use /me if custom endpoint exists
+    // But since this is a standard collection, we filter by user in the query
+    // Note: In Strapi v5, filtering by relation usually requires populated fields or knowing the user ID structure
+
+    // Better approach: fetch all loyalties and filter client side (for safety if we can't filter by 'me')
+    // OR: use a filter query. 'filters[user][id][$eq]=ID'
+
+    const userProfile = await axios.get(`${API_URL}/api/users/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const userId = userProfile.data.id;
+
+    const url = `${API_URL}/api/loyalties?filters[user][id][$eq]=${userId}`;
+
+    const response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.data.data && response.data.data.length > 0) {
+      return response.data.data[0];
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
+};
+
+export interface ReferralData {
+  id: number;
+  documentId: string;
+  code: string;
+  usageCount: number;
+  earnings: number;
+}
+
+/**
+ * Get user referral code (lazy load)
+ */
+export const getMyReferralCode = async (token: string): Promise<ReferralData | null> => {
+  try {
+    const url = `${API_URL}/api/referrals/me`;
+
+    const response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data.data;
+  } catch (error) {
+    return null;
+  }
+};

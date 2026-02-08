@@ -49,7 +49,7 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
     }
   }, [user?.token, programId])
 
-  // Toggle wishlist
+  // Toggle wishlist with optimistic update
   const toggleWishlist = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -61,10 +61,19 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
       return
     }
 
+    // Store previous state for rollback
+    const previousState = inWishlist
+
+    // Optimistically update UI
+    setInWishlist(!inWishlist)
+
+    // Show loading toast
+    const loadingToast = toast.loading(inWishlist ? "Removing from wishlist..." : "Adding to wishlist...")
+
     try {
       setLoading(true)
 
-      if (inWishlist) {
+      if (previousState) {
         // Remove from wishlist
         const response = await fetch(`${API_URL}/api/wishlists/remove/${programId}`, {
           method: "DELETE",
@@ -74,19 +83,13 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
         })
 
         if (response.ok) {
-          setInWishlist(false)
-          toast.success("Removed from wishlist")
-
-          // Track wishlist removal
+          toast.success("Removed from wishlist", { id: loadingToast })
           trackWishlistAction("remove", `Program ${programId}`)
         } else {
-          const errorData = await response.json().catch(() => ({}))
-          console.error("Remove failed:", response.status, errorData)
-          throw new Error(errorData.error?.message || "Failed to remove from wishlist")
+          throw new Error("Failed to remove from wishlist")
         }
       } else {
         // Add to wishlist
-        console.log("Adding to wishlist, programId:", programId)
         const response = await fetch(`${API_URL}/api/wishlists/add`, {
           method: "POST",
           headers: {
@@ -97,21 +100,20 @@ export default function WishlistButton({ programId, className = "" }: WishlistBu
         })
 
         const responseData = await response.json()
-        console.log("Add wishlist response:", response.status, responseData)
 
         if (response.ok) {
-          setInWishlist(true)
-          toast.success("Added to wishlist")
-
-          // Track wishlist addition
+          toast.success("Added to wishlist", { id: loadingToast })
           trackWishlistAction("add", `Program ${programId}`)
         } else {
-          throw new Error(responseData.error?.message || responseData.message || "Failed to add to wishlist")
+          throw new Error(responseData.error?.message || "Failed to add to wishlist")
         }
       }
     } catch (error) {
       console.error("Error toggling wishlist:", error)
-      toast.error(error instanceof Error ? error.message : "Failed to update wishlist")
+
+      // Rollback on error
+      setInWishlist(previousState)
+      toast.error(error instanceof Error ? error.message : "Failed to update wishlist", { id: loadingToast })
     } finally {
       setLoading(false)
     }

@@ -1,4 +1,4 @@
-"use client";
+import { Service } from "@/type/programs";
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -27,7 +27,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { format } from "date-fns";
-import { createBooking } from "@/fetch/bookings";
+import { createBooking, verifyBookingPayment } from "@/fetch/bookings";
 import { createInvoice } from "@/fetch/invoices";
 import { generateInvoicePDF, downloadInvoicePDF } from "@/lib/pdf-generator";
 import { uploadFileToStrapi } from "@/lib/upload-file";
@@ -59,6 +59,7 @@ interface BookingPageContentProps {
     returnLocation?: string;
     Location?: string;
     images?: any[];
+    services?: Service[];
   };
 }
 
@@ -87,7 +88,9 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     finalPrice: number;
   } | null>(null);
   const [paymentStep, setPaymentStep] = useState<"details" | "payment">("details");
+
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
   const [formData, setFormData] = useState<BookingFormData>({
     fullName: "",
@@ -193,6 +196,12 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
           bookingType: "program" as const,
           userId: user?.documentId,
           bookingDate: new Date().toISOString(),
+          services: (program.services || [])
+            .filter(s => selectedServices.includes(s.documentId))
+            .map(s => ({
+              name: s.name,
+              price: s.type === 'per_person' ? s.price * formData.numberOfTravelers : s.price
+            })),
         };
 
         // Generate PDF
@@ -235,7 +244,14 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
 
         // WhatsApp message with discount info
         const discountText = appliedPromo ? `\n• Discount: -$${appliedPromo.discountAmount.toFixed(2)} (${appliedPromo.code.code})` : "";
-        const whatsAppMessage = `🎉 *New Booking Request*\n\n📋 *Booking Details:*\n• Tour: ${program.title}\n• Customer: ${formData.fullName}\n• Email: ${formData.email}\n• Phone: ${formData.phone}\n• Number of Travelers: ${formData.numberOfTravelers}\n• Travel Date: ${format(formData.travelDate!, "PPP")}${discountText}\n• Total Amount: $${finalAmount.toFixed(2)}\n\n${formData.specialRequests ? `📝 *Special Requests:*\n${formData.specialRequests}\n` : ""}Please confirm this booking as soon as possible.\n\nThank you! 🙏`;
+        const servicesText = selectedServices.length > 0
+          ? `\n• Services: ${(program.services || [])
+            .filter(s => selectedServices.includes(s.documentId))
+            .map(s => `${s.name} ($${s.price})`)
+            .join(", ")}`
+          : "";
+
+        const whatsAppMessage = `🎉 *New Booking Request*\n\n📋 *Booking Details:*\n• Tour: ${program.title}\n• Customer: ${formData.fullName}\n• Email: ${formData.email}\n• Phone: ${formData.phone}\n• Number of Travelers: ${formData.numberOfTravelers}\n• Travel Date: ${format(formData.travelDate!, "PPP")}${servicesText}${discountText}\n• Total Amount: $${finalAmount.toFixed(2)}\n\n${formData.specialRequests ? `📝 *Special Requests:*\n${formData.specialRequests}\n` : ""}Please confirm this booking as soon as possible.\n\nThank you! 🙏`;
 
         const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsAppMessage)}`;
 
@@ -245,7 +261,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
         window.open(whatsappUrl, "_blank");
 
         toast.success("Booking submitted successfully! Invoice PDF downloaded.");
-        router.push("/me?tab=bookings");
+        router.push(`/booking/success?bookingId=${data.data.documentId}`);
       } catch (error) {
         console.error("Invoice generation error:", error);
         toast.error("Booking created but invoice generation failed.");
@@ -261,27 +277,134 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     },
   });
 
+
+  const verifyBookingMutation = useMutation({
+    mutationFn: (data: { orderID: string; bookingData: any }) =>
+      verifyBookingPayment(data.orderID, data.bookingData),
+    onSuccess: async (data: any) => {
+      // Reuse the success logic from createBookingMutation
+      // We can just extract the success logic into a helper function or copy it
+      // For simplicity/robustness, let's copy the essential success logic here
+      // or trigger the onSuccess of the other mutation if possible (not easily).
+      // Let's refactor the success logic to a constant
+      await handleBookingSuccess(data);
+    },
+    onError: (error: any) => {
+      console.error("Verification error:", error);
+      setPaymentError("Payment verification failed. Please contact support.");
+      toast.error("Payment verification failed.");
+    }
+  });
+
+  const handleBookingSuccess = async (data: any) => {
+    queryClient.invalidateQueries({ queryKey: ["userBookings"] });
+
+    try {
+      if (appliedPromo) {
+        await incrementPromoCodeUsage(appliedPromo.code.documentId);
+      }
+
+      const invoiceNumber = `INV-${Date.now()}-${data.data.documentId}`;
+      const finalAmount = appliedPromo ? appliedPromo.finalPrice : (program.price * formData.numberOfTravelers);
+
+      const invoiceData = {
+        invoiceNumber,
+        bookingId: data.data.documentId,
+        customerName: formData.fullName,
+        customerEmail: formData.email,
+        customerPhone: formData.phone,
+        tripName: program.title,
+        tripDate: formData.travelDate!.toISOString(),
+        tripDuration: program.duration,
+        numberOfTravelers: formData.numberOfTravelers,
+        pricePerPerson: program.price,
+        totalAmount: finalAmount,
+        bookingType: "program" as const,
+        userId: user?.documentId,
+        bookingDate: new Date().toISOString(),
+        services: (program.services || [])
+          .filter(s => selectedServices.includes(s.documentId))
+          .map(s => ({
+            name: s.name,
+            price: s.type === 'per_person' ? s.price * formData.numberOfTravelers : s.price
+          })),
+      };
+
+      const pdfBlob = await generateInvoicePDF(invoiceData);
+      let pdfUrl: string | undefined;
+      try {
+        pdfUrl = await uploadFileToStrapi(pdfBlob, `invoice-${invoiceNumber}.pdf`);
+      } catch (uploadError) {
+        console.error("PDF upload failed:", uploadError);
+      }
+
+      await createInvoice({
+        ...invoiceData,
+        pdfUrl,
+      });
+
+      // Update invoice to paid since this came from PayPal
+      try {
+        const { updateInvoiceStatusByBookingId } = await import("@/fetch/invoices");
+        await updateInvoiceStatusByBookingId(data.data.documentId, "paid");
+      } catch (statusError) {
+        console.error("Failed to update invoice status", statusError);
+      }
+
+      await downloadInvoicePDF(invoiceData, `invoice-${invoiceNumber}.pdf`);
+
+      const discountText = appliedPromo ? `\n• Discount: -$${appliedPromo.discountAmount.toFixed(2)} (${appliedPromo.code.code})` : "";
+      const servicesText = selectedServices.length > 0
+        ? `\n• Services: ${(program.services || [])
+          .filter(s => selectedServices.includes(s.documentId))
+          .map(s => `${s.name} ($${s.price})`)
+          .join(", ")}`
+        : "";
+
+      const whatsAppMessage = `🎉 *New Booking Request*\n\n📋 *Booking Details:*\n• Tour: ${program.title}\n• Customer: ${formData.fullName}\n• Email: ${formData.email}\n• Phone: ${formData.phone}\n• Number of Travelers: ${formData.numberOfTravelers}\n• Travel Date: ${format(formData.travelDate!, "PPP")}${servicesText}${discountText}\n• Total Amount: $${finalAmount.toFixed(2)}\n\n${formData.specialRequests ? `📝 *Special Requests:*\n${formData.specialRequests}\n` : ""}Please confirm this booking as soon as possible.\n\nThank you! 🙏`;
+
+      const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsAppMessage)}`;
+
+      trackWhatsAppBooking(program.title, program.documentId, finalAmount);
+      window.open(whatsappUrl, "_blank");
+
+      toast.success("Booking confirmed! Invoice downloaded.");
+      router.push(`/booking/success?bookingId=${data.data.documentId}`);
+    } catch (error) {
+      console.error("Post-booking processing error:", error);
+      // Even if PDF/Invoice fails, booking is done
+      router.push(`/booking/success?bookingId=${data.data.documentId}`);
+    }
+  };
+
+
   const handlePaymentSuccess = (details: any) => {
     // Payment approved!
-    toast.success("Payment successful! Finalizing booking...");
+    toast.success("Payment successful! Verifying and finalizing booking...");
     const totalAmount = program.price * formData.numberOfTravelers;
     const finalAmount = appliedPromo ? appliedPromo.finalPrice : totalAmount;
 
-    createBookingMutation.mutate({
-      fullName: formData.fullName,
-      email: formData.email,
-      phone: formData.phone,
-      numberOfTravelers: formData.numberOfTravelers,
-      travelDate: formData.travelDate!.toISOString(),
-      specialRequests: formData.specialRequests,
-      programId: program.documentId,
-      userId: user!.documentId,
-      totalAmount: finalAmount,
-      promoCodeId: appliedPromo?.code.documentId,
-      discountAmount: appliedPromo?.discountAmount,
-      finalPrice: appliedPromo?.finalPrice,
+    // Call verify endpoint
+    verifyBookingMutation.mutate({
+      orderID: details.id, // PayPal returns 'id' as order ID
+      bookingData: {
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        numberOfTravelers: formData.numberOfTravelers,
+        travelDate: formData.travelDate!.toISOString(),
+        specialRequests: formData.specialRequests,
+        programId: program.documentId,
+        userId: user!.documentId,
+        totalAmount: finalAmount,
+        promoCodeId: appliedPromo?.code.documentId,
+        discountAmount: appliedPromo?.discountAmount,
+        finalPrice: appliedPromo?.finalPrice,
+        selectedServices,
+      }
     });
   };
+
 
   const handlePaymentError = (error: any) => {
     console.error("PayPal Error:", error);
@@ -406,8 +529,26 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     setAppliedPromo(null);
   };
 
-  const totalAmount = program.price * formData.numberOfTravelers;
-  const finalAmount = appliedPromo ? appliedPromo.finalPrice : totalAmount;
+
+
+  const handleServiceToggle = (serviceId: string) => {
+    setSelectedServices(prev =>
+      prev.includes(serviceId)
+        ? prev.filter(id => id !== serviceId)
+        : [...prev, serviceId]
+    );
+  };
+
+  const servicesTotal = (program.services || [])
+    .filter(s => selectedServices.includes(s.documentId))
+    .reduce((total, s) => {
+      if (s.type === 'per_person') return total + (s.price * formData.numberOfTravelers);
+      return total + s.price;
+    }, 0);
+
+  const baseTotal = program.price * formData.numberOfTravelers;
+  const totalAmount = baseTotal + servicesTotal;
+  const finalAmount = appliedPromo ? (appliedPromo.finalPrice + servicesTotal) : totalAmount;
   const firstImage = program.images?.[0];
   const imageUrl = firstImage?.imageUrl
     ? getImageUrl(firstImage.imageUrl as string)
@@ -540,7 +681,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                   <Separator />
 
                   {/* Trip Details */}
-                  <div className="space-y-4">
+                  <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
                     <h3 className="text-lg font-semibold flex items-center gap-2">
                       <CalendarIcon className="w-5 h-5 text-primary" />
                       Trip Details
@@ -551,16 +692,43 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                         <Label htmlFor="numberOfTravelers">
                           Number of Travelers <span className="text-red-500">*</span>
                         </Label>
-                        <Input
-                          id="numberOfTravelers"
-                          name="numberOfTravelers"
-                          type="number"
-                          min="1"
-                          max="50"
-                          value={formData.numberOfTravelers}
-                          onChange={handleInputChange}
-                          required
-                        />
+                        <div className="flex items-center gap-3">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => {
+                              const currentVal = parseInt(String(formData.numberOfTravelers));
+                              const newValue = Math.max(1, currentVal - 1);
+                              setFormData(prev => ({ ...prev, numberOfTravelers: newValue }));
+                            }}
+                            className="h-10 w-10 rounded-full border-primary/20 hover:bg-primary/10 hover:text-primary transition-colors"
+                          >
+                            <span className="text-xl font-medium">-</span>
+                          </Button>
+                          <div className="flex-1 max-w-[80px] text-center">
+                            <span className="text-xl font-bold text-primary">{formData.numberOfTravelers}</span>
+                            <p className="text-xs text-muted-foreground">Person{Number(formData.numberOfTravelers) !== 1 ? 's' : ''}</p>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => {
+                              const currentVal = parseInt(String(formData.numberOfTravelers));
+                              const newValue = Math.min(50, currentVal + 1);
+                              setFormData(prev => ({ ...prev, numberOfTravelers: newValue }));
+                            }}
+                            className="h-10 w-10 rounded-full border-primary/20 hover:bg-primary/10 hover:text-primary transition-colors"
+                          >
+                            <span className="text-xl font-medium">+</span>
+                          </Button>
+                          <input
+                            type="hidden"
+                            name="numberOfTravelers"
+                            value={formData.numberOfTravelers}
+                          />
+                        </div>
                       </div>
 
                       <div className="space-y-2">
@@ -620,6 +788,71 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                     </div>
                   </div>
 
+                  {/* Services Selection */}
+                  {program.services && program.services.length > 0 && (
+                    <>
+                      <Separator />
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold flex items-center gap-2">
+                          <Check className="w-5 h-5 text-primary" />
+                          Enhance Your Trip
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {program.services.map((service) => {
+                            const isSelected = selectedServices.includes(service.documentId);
+                            return (
+                              <div
+                                key={service.documentId}
+                                onClick={() => handleServiceToggle(service.documentId)}
+                                className={`relative flex flex-col p-4 border rounded-xl cursor-pointer transition-all duration-300 hover:shadow-md ${isSelected
+                                  ? "border-primary bg-primary/5 shadow-sm"
+                                  : "border-border hover:border-primary/50 bg-card"
+                                  }`}
+                              >
+                                {isSelected && (
+                                  <div className="absolute top-3 right-3 text-primary bg-background rounded-full p-1 shadow-sm">
+                                    <Check className="w-4 h-4" />
+                                  </div>
+                                )}
+
+                                <div className="flex gap-4 items-start mb-3">
+                                  {service.image ? (
+                                    <div className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
+                                      <Image
+                                        src={getImageUrl(service.image)}
+                                        alt={service.name}
+                                        fill
+                                        className="object-cover transition-transform hover:scale-105"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <div className="w-20 h-20 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                                      <DollarSign className="w-8 h-8 text-muted-foreground/50" />
+                                    </div>
+                                  )}
+
+                                  <div className="flex-1 min-w-0">
+                                    <h4 className="font-semibold text-base leading-tight mb-1 pr-6">{service.name}</h4>
+                                    <p className="text-sm font-bold text-primary">
+                                      +${service.price}
+                                      <span className="text-xs font-normal text-muted-foreground ml-1">
+                                        {service.type === 'per_person' ? '/ person' : '/ booking'}
+                                      </span>
+                                    </p>
+                                  </div>
+                                </div>
+
+                                {service.description && (
+                                  <div className="text-sm text-muted-foreground line-clamp-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: service.description }} />
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
                   <div className="space-y-2">
                     <Label htmlFor="specialRequests">Special Requests (Optional)</Label>
                     <Textarea
@@ -678,25 +911,27 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
 
           {/* Right Column - Summary */}
           <div className="md:col-span-1">
-            <div className="sticky top-24 space-y-6">
+            <div className="sticky top-24 space-y-6 z-10">
               {/* Program Summary */}
-              <Card className="border-primary/20 shadow-xl overflow-hidden">
-                <div className="relative h-48">
+              <Card className="border-primary/20 shadow-2xl overflow-hidden backdrop-blur-sm bg-card/95 sticky top-24 transition-all duration-300 hover:shadow-primary/10">
+                <div className="relative h-48 group">
                   <Image
                     src={imageUrl}
                     alt={program.title}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
-                    className="object-cover"
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4 text-white">
+                    <h3 className="text-lg font-bold line-clamp-2 leading-tight drop-shadow-md">{program.title}</h3>
+                  </div>
                 </div>
                 <CardContent className="p-6 space-y-4">
-                  <h3 className="text-xl font-bold">{program.title}</h3>
-
                   {program.Location && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <MapPin className="w-4 h-4" />
-                      {program.Location}
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground bg-secondary/50 p-2 rounded-md">
+                      <MapPin className="w-4 h-4 text-primary" />
+                      <span className="font-medium text-foreground">{program.Location}</span>
                     </div>
                   )}
 
@@ -726,6 +961,26 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                       <span>Number of travelers:</span>
                       <span className="font-semibold">{formData.numberOfTravelers}</span>
                     </div>
+
+                    {/* Selected Services Summary */}
+                    {selectedServices.length > 0 && (
+                      <div className="pt-2 pb-2 space-y-1">
+                        <p className="text-xs font-semibold text-muted-foreground">Add-ons:</p>
+                        {(program.services || [])
+                          .filter(s => selectedServices.includes(s.documentId))
+                          .map(service => (
+                            <div key={service.documentId} className="flex justify-between text-sm text-muted-foreground">
+                              <span>+ {service.name}</span>
+                              <span>${service.type === 'per_person'
+                                ? (service.price * formData.numberOfTravelers).toFixed(2)
+                                : service.price.toFixed(2)}
+                              </span>
+                            </div>
+                          ))
+                        }
+                      </div>
+                    )}
+
                     {appliedPromo && (
                       <>
                         <div className="flex justify-between text-sm">
@@ -738,6 +993,14 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                         </div>
                       </>
                     )}
+
+                    {servicesTotal > 0 && (
+                      <div className="flex justify-between text-sm text-blue-600">
+                        <span>Services:</span>
+                        <span className="font-semibold">+${servicesTotal.toFixed(2)}</span>
+                      </div>
+                    )}
+
                     <Separator />
                     <div className="flex justify-between text-lg font-bold">
                       <span className="flex items-center gap-2">

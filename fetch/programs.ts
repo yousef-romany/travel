@@ -108,7 +108,7 @@ export const fetchProgramOne = async (titleOrId: string) => {
 
     // First try to fetch by documentId (most efficient)
     try {
-      const urlById = `${API_URL}/api/programs/${encodeURIComponent(cleanInput)}?populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true`;
+      const urlById = `${API_URL}/api/programs/${encodeURIComponent(cleanInput)}?populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=*&populate[includes]=true&populate[images]=true&populate[excludes]=true&populate[services][populate]=image`;
 
       const responseById = await axios.get(urlById, {
         headers: {
@@ -132,7 +132,7 @@ export const fetchProgramOne = async (titleOrId: string) => {
     }
 
     // If not found by ID, try to fetch by title
-    const urlByTitle = `${API_URL}/api/programs?populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories&populate[includes]=true&populate[images]=true&populate[excludes]=true&filters[title][$eq]=${encodeURIComponent(cleanInput)}`;
+    const urlByTitle = `${API_URL}/api/programs?populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=*&populate[includes]=true&populate[images]=true&populate[excludes]=true&populate[services][populate]=image&filters[title][$eq]=${encodeURIComponent(cleanInput)}`;
 
     const responseByTitle = await axios.get(urlByTitle, {
       headers: {
@@ -158,7 +158,7 @@ export const fetchProgramOne = async (titleOrId: string) => {
  */
 export const fetchProgramById = async (documentId: string): Promise<ProgramType> => {
   try {
-    const url = `${API_URL}/api/programs/${documentId}?populate[images]=*&populate[includes]=*&populate[excludes]=*&populate[content_steps][populate][place_to_go_subcategories][populate]=place_to_go_categories`;
+    const url = `${API_URL}/api/programs/${documentId}?populate[images]=*&populate[includes]=*&populate[excludes]=*&populate[services][populate]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=*`;
 
     const response = await axios.get(url, {
       headers: {

@@ -16,6 +16,7 @@ export interface InvoiceData {
   destinations?: string[]; // For custom trips
   eventLocation?: string; // For events
   eventTime?: string; // For events
+  services?: Array<{ name: string; price: number }>;
 }
 
 // Helper to create a styled PDF matching the EgyptInvoice Card design
@@ -189,14 +190,32 @@ const createStyledInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   doc.text("Number of Travelers:", 25, yPos + 25);
   doc.text(`${invoiceData.numberOfTravelers}`, 165, yPos + 25, { align: "right" });
 
+  // Services Section
+  if (invoiceData.services && invoiceData.services.length > 0) {
+    yPos += 8;
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text("Add-on Services:", 25, yPos);
+
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    yPos += 6;
+
+    invoiceData.services.forEach((service) => {
+      doc.text(`• ${service.name}`, 30, yPos);
+      doc.text(`$${service.price.toFixed(2)}`, 165, yPos, { align: "right" });
+      yPos += 6;
+    });
+  }
+
   // Grand Total
   doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-  doc.roundedRect(105, yPos + 28, 85, 12, 3, 3, "F");
+  doc.roundedRect(105, yPos + 10, 85, 12, 3, 3, "F");
   doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(white[0], white[1], white[2]);
-  doc.text("Total Amount:", 110, yPos + 36);
-  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 185, yPos + 36, { align: "right" });
+  doc.text("Total Amount:", 110, yPos + 18);
+  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 185, yPos + 18, { align: "right" });
 
   // Footer
   yPos = 270;

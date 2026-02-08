@@ -1,5 +1,7 @@
 "use client";
 
+import DashboardSkeleton from "@/components/loading/DashboardSkeleton";
+
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +19,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUserBookings, type BookingType } from "@/fetch/bookings";
 import { getUserStats, getUserWishlist } from "@/fetch/user";
 import { getImageUrl } from "@/lib/utils";
+import TripsSection from "@/components/trips-section";
+import WishlistSection from "@/components/wishlist-section";
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
@@ -62,25 +66,52 @@ export default function DashboardPage() {
       return;
     }
 
+
     if (user) {
-      // Load loyalty data (keep mock for now until backend is ready)
-      const data = getMockLoyaltyData(user.id);
-      setLoyaltyData(data);
+      // Load loyalty data
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        import("@/fetch/user").then(async ({ getLoyaltyData }) => {
+          const fetchedLoyalty = await getLoyaltyData(token);
+
+          if (fetchedLoyalty) {
+            // Calculate earned this month
+            const now = new Date();
+            const earnedThisMonth = (fetchedLoyalty.history || [])
+              .filter(h => {
+                const d = new Date(h.date);
+                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && h.type === 'earned';
+              })
+              .reduce((sum, h) => sum + h.amount, 0);
+
+            setLoyaltyData({
+              totalPoints: fetchedLoyalty.points,
+              lifetimeSpent: userStats?.totalSpent || 0, // Using stats from other query
+              bookingsCount: userStats?.totalTrips || 0,
+              earnedThisMonth: earnedThisMonth,
+              history: fetchedLoyalty.history || [],
+              currentTier: fetchedLoyalty.tier
+            });
+          } else {
+            // Fallback to empty/mock if no record yet
+            const data = getMockLoyaltyData(user.id);
+            setLoyaltyData({
+              ...data,
+              lifetimeSpent: userStats?.totalSpent || 0,
+              bookingsCount: userStats?.totalTrips || 0
+            });
+          }
+        });
+      }
 
       // Load recently viewed
       const viewed = getRecentlyViewed();
       setRecentlyViewed(viewed);
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, userStats]);
 
   if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (!user) {
@@ -259,7 +290,7 @@ export default function DashboardPage() {
                               src={imageUrl}
                               alt={title}
                               fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                               className="object-cover"
                             />
                           )}
@@ -277,8 +308,8 @@ export default function DashboardPage() {
                             </span>
                           </div>
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${booking.bookingStatus === 'confirmed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-                              booking.bookingStatus === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                                'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
+                            booking.bookingStatus === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                              'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
                             }`}>
                             {booking.bookingStatus}
                           </span>
@@ -335,7 +366,7 @@ export default function DashboardPage() {
                               src={program.imageUrl}
                               alt={program.title}
                               fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
                               className="object-cover group-hover:scale-105 transition-transform"
                             />
                           </div>
@@ -362,22 +393,7 @@ export default function DashboardPage() {
 
         {/* Bookings Tab */}
         <TabsContent value="bookings">
-          <Card>
-            <CardHeader>
-              <CardTitle>My Bookings</CardTitle>
-              <CardDescription>View and manage your travel bookings</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-center py-8">
-                Booking management coming soon with payment integration
-              </p>
-              <div className="text-center">
-                <Link href="/programs">
-                  <Button>Browse Programs</Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+          <TripsSection />
         </TabsContent>
 
         {/* Loyalty Tab */}
@@ -401,25 +417,7 @@ export default function DashboardPage() {
 
         {/* Wishlist Tab */}
         <TabsContent value="wishlist">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Heart className="h-5 w-5" />
-                My Wishlist
-              </CardTitle>
-              <CardDescription>Programs you want to book</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-center py-8">
-                Your wishlist will appear here
-              </p>
-              <div className="text-center">
-                <Link href="/programs">
-                  <Button>Discover Programs</Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+          <WishlistSection />
         </TabsContent>
       </Tabs>
     </div>

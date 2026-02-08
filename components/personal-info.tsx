@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Edit2, TrendingUp, Plane, Heart, Calendar, Loader2, MapPin, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
+import { ProfileStatsSkeleton } from "@/components/loading/ProfileSkeletons";
+
 export default function PersonalInfo() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
@@ -50,18 +52,10 @@ export default function PersonalInfo() {
     if (!authLoading && !user) {
       router.push("/login");
     }
-
-    if (!authLoading && user && profile && !profile.isProfileCompleted) {
-      router.push("/complete-profile");
-    }
-  }, [user, authLoading, router, profile]);
+  }, [user, authLoading, router]);
 
   if (authLoading || profileLoading || statsLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <ProfileStatsSkeleton />;
   }
 
   if (!profile) {
@@ -118,6 +112,36 @@ export default function PersonalInfo() {
 
   return (
     <div className="space-y-6">
+      {/* Incomplete Profile Warning */}
+      {profile && !profile.isProfileCompleted && (
+        <Card className="border-amber-500/50 bg-amber-50 dark:bg-amber-950/20">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <div className="bg-amber-500 p-2 rounded-full">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-amber-900 dark:text-amber-100 mb-1">
+                  Complete Your Profile
+                </h3>
+                <p className="text-sm text-amber-800 dark:text-amber-200 mb-3">
+                  Your profile is incomplete. Complete it to unlock all features and ensure smooth bookings.
+                </p>
+                <Button
+                  size="sm"
+                  className="bg-amber-600 hover:bg-amber-700 text-white"
+                  onClick={() => router.push("/complete-profile")}
+                >
+                  Complete Profile Now
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((stat, index) => {

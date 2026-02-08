@@ -223,19 +223,16 @@ export default function RootLayout({
         <Script
           src="https://www.instagram.com/embed.js"
           strategy="lazyOnload"
-          // onLoad={() => {
-          //   console.log("Instagram embed script loaded");
-          //   if (window?.instgrm) {
-          //     window?.instgrm.Embeds.process(); // Manually process embeds
-          //   }
-          // }}
+        // onLoad={() => {
+        //   console.log("Instagram embed script loaded");
+        //   if (window?.instgrm) {
+        //     window?.instgrm.Embeds.process(); // Manually process embeds
+        //   }
+        // }}
         />
       </head>
       <body
-        className="antialiased relative"
-        style={{
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-        }}
+        className={`antialiased relative ${fontVariables.sans} ${fontVariables.mono}`}
       >
         <ErrorBoundary>
           <AuthProvider>
