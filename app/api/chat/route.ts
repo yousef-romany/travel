@@ -7,7 +7,7 @@ const N8N_SECRET = process.env.N8N_CHAT_SECRET || "Z@9Lx3#WmA1qF!7^C8H6EJrS$0n5k
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { message, session } = body;
+        const { message, session, userInfo } = body;
 
         if (!message || !session) {
             return NextResponse.json({ error: "Missing message or session" }, { status: 400 });
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
         // 1. Generate JWT with HS256 signature
         const secret = new TextEncoder().encode(N8N_SECRET);
-        const token = await new SignJWT({ message, session, ip, location })
+        const token = await new SignJWT({ message, session, ip, location, userInfo })
             .setProtectedHeader({ alg: "HS256" })
             .setIssuedAt()
             .setExpirationTime("2m") // Token valid for 2 minutes
@@ -72,7 +72,8 @@ export async function POST(req: NextRequest) {
                 message,
                 session,
                 ip,
-                location
+                location,
+                userInfo: userInfo || null
             }),
         });
 
