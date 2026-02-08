@@ -13,9 +13,49 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Missing message or session" }, { status: 400 });
         }
 
+        // Extract user's IP address
+        const forwardedFor = req.headers.get("x-forwarded-for");
+        const realIp = req.headers.get("x-real-ip");
+        const ip = forwardedFor?.split(",")[0].trim() || realIp || "unknown";
+
+        // Get geolocation data from IP address
+        let location = {
+            country: "Unknown",
+            countryCode: "Unknown",
+            region: "Unknown",
+            city: "Unknown",
+            timezone: "Unknown",
+            lat: null as number | null,
+            lon: null as number | null
+        };
+
+        if (ip !== "unknown") {
+            try {
+                // Using ip-api.com free service (no API key required, 45 requests/minute limit)
+                const geoResponse = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,countryCode,region,regionName,city,timezone,lat,lon`);
+                if (geoResponse.ok) {
+                    const geoData = await geoResponse.json();
+                    if (geoData.status === "success") {
+                        location = {
+                            country: geoData.country || "Unknown",
+                            countryCode: geoData.countryCode || "Unknown",
+                            region: geoData.regionName || "Unknown",
+                            city: geoData.city || "Unknown",
+                            timezone: geoData.timezone || "Unknown",
+                            lat: geoData.lat || null,
+                            lon: geoData.lon || null
+                        };
+                    }
+                }
+            } catch (geoError) {
+                console.error("Geolocation lookup failed:", geoError);
+                // Continue with unknown location
+            }
+        }
+
         // 1. Generate JWT with HS256 signature
         const secret = new TextEncoder().encode(N8N_SECRET);
-        const token = await new SignJWT({ message, session })
+        const token = await new SignJWT({ message, session, ip, location })
             .setProtectedHeader({ alg: "HS256" })
             .setIssuedAt()
             .setExpirationTime("2m") // Token valid for 2 minutes
@@ -26,20 +66,13 @@ export async function POST(req: NextRequest) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`, // Create a logical header, n8n might expect body logic or header. 
-                // Based on "Key Type Passphrase and Algorithm HS256", usually implies JWT auth.
-                // However, the prompt says "give u the structure {message, session}". 
-                // We will send the structure in body, and if n8n needs to verify, it might verify a header.
-                // Let's send the plain structure as requested, AND the token in header if they configured an auth trigger.
-                // OR if they want strict payload structure. 
-                // "I will give u the structure {message, session} ... Key Type Passphrase ... HS256"
-                // This implies the entire payload might need to be the JWT? Or authenticated by it.
-                // Usually, webhooks with "Key Type" in n8n are for "Webhook (Header Auth)" or similar.
-                // Let's send the JSON body as requested, and add "X-Zoe-Auth": token or standard "Authorization": Bearer <jwt>.
+                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify({
                 message,
-                session
+                session,
+                ip,
+                location
             }),
         });
 
