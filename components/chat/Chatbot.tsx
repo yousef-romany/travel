@@ -218,22 +218,76 @@ export default function Chatbot() {
             if (!response.ok) throw new Error("Failed to send message");
 
             const data = await response.json();
-
-            // Handle n8n response structure. Assuming { output: "text" } or check actual response
-            // Commonly n8n webhook response node returns array or object.
-            // We'll try to find a text field. If it returns simple text in body, great.
-            // Adjust this based on actual n8n output.
-            // Defaulting to assuming 'output' or 'text' property or just the whole body if string.
+            console.log("Chatbot response:", data);
 
             let botText = "Sorry, I didn't catch that.";
 
-            if (typeof data === 'string') botText = data;
-            else if (data.output) botText = data.output;
-            else if (data.text) botText = data.text;
-            else if (data.message) botText = data.message;
-            else if (data.response) botText = data.response;
+            // Handle various n8n response formats
+            // The API route now tries to parse stringified JSON, so we should get an object here.
+
+            // Case 1: Direct text property (common in simple responses)
+            if (typeof data.output === 'string') botText = data.output;
+            else if (typeof data.text === 'string') botText = data.text;
+            else if (typeof data.message === 'string') botText = data.message;
+            else if (typeof data.response === 'string') botText = data.response;
+
+            // Case 2: Nested structure (sometimes n8n returns { output: { content: "..." } } or similar)
+            else if (data.output && typeof data.output === 'object' && data.output.content) botText = data.output.content;
+
+            // Case 3: Array (if API didn't unwrap it)
             else if (Array.isArray(data) && data[0]?.output) botText = data[0].output;
-            else botText = JSON.stringify(data); // Fallback debug
+
+            // Case 4: It's just a string
+            else if (typeof data === 'string') {
+                // Try to see if it's double-encoded JSON that the API missed (unlikely but safe)
+                try {
+                    const parsed = JSON.parse(data);
+                    if (parsed.output) botText = parsed.output;
+                    else botText = data; // use raw string if parsing fails to find structure
+                } catch {
+                    botText = data;
+                }
+            }
+            // Case 5: Complex object that got stringified in the error message user saw
+            // The user saw: {"Hello! ...": {"output": "..."}} which suggests the key itself was the message or something weird.
+            // Wait, looking at the user request: 
+            // "{"Hello! ...": {"output": "..."}}"
+            // This looks like key-value pair where the key is the text?? 
+            // Or maybe: { "response": "{\"output\": \"Hello...\"}" } 
+            // The user said: look in chatbot "{"Hello! ...": {"output": "..."}}"
+            // This suggests data might be { "someKey": { "output": "Hello..." } } ? 
+            // ACTUAL ISSUE DIAGNOSIS from User Screenshot/Text:
+            // "{"Hello! ...":{...}}"
+            // It looks like the response body IS the JSON text the user sees.
+            // If the user sees `{"output": "Hello..."}` literally, then `data` is that object, but `botText` is being set to `JSON.stringify(data)`.
+            // The previous code had: `else botText = JSON.stringify(data);` as a fallback.
+            // If `data.output` exists, it should have been picked up.
+            // The user's example: 
+            // `{"Hello! ... ...": {"output": "..."}}` 
+            // This looks like the n8n node might be returning the WHOLE CONTEXT as a JSON object where the key is the prompt? 
+            // Or maybe the Previous Node's output is being merged?
+            // Let's rely on the `output` property. If `data.output` is there, use it.
+
+            // Refined Logic based on typical n8n "Respond to Webhook" node:
+            // If the node responds with JSON, we get that object.
+
+            if (data && typeof data === 'object') {
+                if (data.output) botText = typeof data.output === 'string' ? data.output : JSON.stringify(data.output);
+                else if (data.text) botText = data.text;
+                else if (data.message) botText = data.message;
+                else if (Object.keys(data).length === 1 && typeof Object.values(data)[0] === 'string') {
+                    // Single key object, maybe just the value is the text?
+                    botText = Object.values(data)[0] as string;
+                }
+            }
+
+            // Cleanup: remove quotes if it looks like a stringified string "..."
+            if (botText.startsWith('"') && botText.endsWith('"')) {
+                botText = botText.slice(1, -1);
+            }
+
+            // Cleanup: Unescape newlines
+            botText = botText.replace(/\\n/g, '\n');
 
             const botMsg: Message = {
                 id: uuidv4(),
@@ -284,15 +338,31 @@ export default function Chatbot() {
     return (
         <>
             {/* Trigger Button */}
+            {/* Trigger Button */}
             <Button
                 onClick={() => setIsOpen(!isOpen)}
                 size="icon"
                 className={cn(
-                    "fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-14 w-14 sm:h-16 sm:w-16 rounded-full shadow-2xl transition-all duration-300 hover:scale-110",
-                    isOpen ? "bg-destructive rotate-90" : "bg-gradient-to-r from-primary to-amber-600 animate-in zoom-in slide-in-from-bottom-5"
+                    "fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-2xl transition-all duration-300 hover:scale-110",
+                    isOpen
+                        ? "bg-destructive rotate-0 scale-100"
+                        : "bg-gradient-to-r from-primary to-amber-600 hover:shadow-primary/50"
                 )}
             >
-                {isOpen ? <X className="h-6 w-6 sm:h-7 sm:w-7 text-white" /> : <MessageSquare className="h-7 w-7 sm:h-8 sm:w-8 text-white" />}
+                <div className="relative w-full h-full flex items-center justify-center">
+                    <MessageSquare
+                        className={cn(
+                            "absolute h-7 w-7 text-white transition-all duration-300",
+                            isOpen ? "opacity-0 rotate-90 scale-50" : "opacity-100 rotate-0 scale-100"
+                        )}
+                    />
+                    <X
+                        className={cn(
+                            "absolute h-7 w-7 text-white transition-all duration-300",
+                            isOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-50"
+                        )}
+                    />
+                </div>
             </Button>
 
             {/* Backdrop for mobile */}
