@@ -222,63 +222,82 @@ export default function Chatbot() {
 
             let botText = "Sorry, I didn't catch that.";
 
+            // Helper function to recursively find the 'output' property in nested objects
+            const findOutputInNestedObject = (obj: any, depth: number = 0): string | null => {
+                if (!obj || typeof obj !== 'object' || depth > 10) return null;
+
+                // Check if current object has 'output' property
+                if (obj.output && typeof obj.output === 'string') {
+                    return obj.output;
+                }
+
+                // Check for other common message properties
+                if (obj.text && typeof obj.text === 'string') return obj.text;
+                if (obj.message && typeof obj.message === 'string') return obj.message;
+                if (obj.response && typeof obj.response === 'string') return obj.response;
+
+                // Recursively search in nested objects
+                for (const key in obj) {
+                    const value = obj[key];
+                    if (typeof value === 'object' && value !== null) {
+                        const result = findOutputInNestedObject(value, depth + 1);
+                        if (result) return result;
+                    }
+                }
+
+                return null;
+            };
+
             // Handle various n8n response formats
-            // The API route now tries to parse stringified JSON, so we should get an object here.
+            console.log("Raw response data:", JSON.stringify(data, null, 2));
 
-            // Case 1: Direct text property (common in simple responses)
-            if (typeof data.output === 'string') botText = data.output;
-            else if (typeof data.text === 'string') botText = data.text;
-            else if (typeof data.message === 'string') botText = data.message;
-            else if (typeof data.response === 'string') botText = data.response;
-
-            // Case 2: Nested structure (sometimes n8n returns { output: { content: "..." } } or similar)
-            else if (data.output && typeof data.output === 'object' && data.output.content) botText = data.output.content;
-
-            // Case 3: Array (if API didn't unwrap it)
-            else if (Array.isArray(data) && data[0]?.output) botText = data[0].output;
-
-            // Case 4: It's just a string
-            else if (typeof data === 'string') {
-                // Try to see if it's double-encoded JSON that the API missed (unlikely but safe)
-                try {
-                    const parsed = JSON.parse(data);
-                    if (parsed.output) botText = parsed.output;
-                    else botText = data; // use raw string if parsing fails to find structure
-                } catch {
-                    botText = data;
+            // Case 1: Direct string response
+            if (typeof data === 'string') {
+                botText = data;
+            }
+            // Case 2: Object with direct properties
+            else if (data && typeof data === 'object') {
+                // Try to find output in nested structure first
+                const nestedOutput = findOutputInNestedObject(data);
+                if (nestedOutput) {
+                    botText = nestedOutput;
+                }
+                // Fallback to direct properties
+                else if (data.output && typeof data.output === 'string') {
+                    botText = data.output;
+                }
+                else if (data.output && typeof data.output === 'object' && data.output.content) {
+                    botText = data.output.content;
+                }
+                else if (data.text && typeof data.text === 'string') {
+                    botText = data.text;
+                }
+                else if (data.message && typeof data.message === 'string') {
+                    botText = data.message;
+                }
+                else if (data.response && typeof data.response === 'string') {
+                    botText = data.response;
+                }
+                // Case: Single key object where the value might be the message
+                else if (Object.keys(data).length === 1) {
+                    const value = Object.values(data)[0];
+                    if (typeof value === 'string') {
+                        botText = value;
+                    } else if (value && typeof value === 'object' && 'output' in value) {
+                        const valWithOutput = value as { output: any };
+                        botText = typeof valWithOutput.output === 'string' ? valWithOutput.output : JSON.stringify(valWithOutput.output);
+                    }
+                }
+                // Last resort: stringify the whole object
+                else {
+                    console.warn("Could not extract message from response:", data);
+                    botText = JSON.stringify(data);
                 }
             }
-            // Case 5: Complex object that got stringified in the error message user saw
-            // The user saw: {"Hello! ...": {"output": "..."}} which suggests the key itself was the message or something weird.
-            // Wait, looking at the user request: 
-            // "{"Hello! ...": {"output": "..."}}"
-            // This looks like key-value pair where the key is the text?? 
-            // Or maybe: { "response": "{\"output\": \"Hello...\"}" } 
-            // The user said: look in chatbot "{"Hello! ...": {"output": "..."}}"
-            // This suggests data might be { "someKey": { "output": "Hello..." } } ? 
-            // ACTUAL ISSUE DIAGNOSIS from User Screenshot/Text:
-            // "{"Hello! ...":{...}}"
-            // It looks like the response body IS the JSON text the user sees.
-            // If the user sees `{"output": "Hello..."}` literally, then `data` is that object, but `botText` is being set to `JSON.stringify(data)`.
-            // The previous code had: `else botText = JSON.stringify(data);` as a fallback.
-            // If `data.output` exists, it should have been picked up.
-            // The user's example: 
-            // `{"Hello! ... ...": {"output": "..."}}` 
-            // This looks like the n8n node might be returning the WHOLE CONTEXT as a JSON object where the key is the prompt? 
-            // Or maybe the Previous Node's output is being merged?
-            // Let's rely on the `output` property. If `data.output` is there, use it.
-
-            // Refined Logic based on typical n8n "Respond to Webhook" node:
-            // If the node responds with JSON, we get that object.
-
-            if (data && typeof data === 'object') {
-                if (data.output) botText = typeof data.output === 'string' ? data.output : JSON.stringify(data.output);
-                else if (data.text) botText = data.text;
-                else if (data.message) botText = data.message;
-                else if (Object.keys(data).length === 1 && typeof Object.values(data)[0] === 'string') {
-                    // Single key object, maybe just the value is the text?
-                    botText = Object.values(data)[0] as string;
-                }
+            // Case 3: Array (if API didn't unwrap it)
+            else if (Array.isArray(data) && data.length > 0) {
+                const nestedOutput = findOutputInNestedObject(data[0]);
+                botText = nestedOutput || (data[0]?.output ? data[0].output : JSON.stringify(data));
             }
 
             // Cleanup: remove quotes if it looks like a stringified string "..."
@@ -288,6 +307,8 @@ export default function Chatbot() {
 
             // Cleanup: Unescape newlines
             botText = botText.replace(/\\n/g, '\n');
+
+            console.log("Extracted bot text:", botText);
 
             const botMsg: Message = {
                 id: uuidv4(),
