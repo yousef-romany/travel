@@ -174,27 +174,30 @@ export default function BackgroundAudio() {
     <>
       {/* Audio Permission Dialog */}
       <Dialog open={showAudioDialog} onOpenChange={setShowAudioDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md rounded-2xl border-primary/20">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Volume2 className="w-5 h-5 text-primary" />
+            <DialogTitle className="flex items-center gap-3 text-xl">
+              <div className="p-2.5 bg-gradient-to-br from-primary to-amber-600 rounded-xl">
+                <Volume2 className="w-5 h-5 text-white" />
+              </div>
               Enable Background Music?
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-base pt-2">
               Would you like to play ambient background music to enhance your browsing experience?
-              You can control the volume or mute it anytime using the controls at the bottom right.
+              You can control the volume or mute it anytime using the controls at the bottom left.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex gap-3 justify-end mt-4">
+          <div className="flex gap-3 justify-end mt-6">
             <Button
               variant="outline"
               onClick={handleDeclineAudio}
+              className="rounded-xl px-6 py-2.5 h-auto"
             >
               No, Thanks
             </Button>
             <Button
               onClick={handleEnableAudio}
-              className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
+              className="bg-gradient-to-br from-primary via-primary/90 to-amber-600 hover:from-primary/90 hover:to-amber-600/90 rounded-xl px-6 py-2.5 h-auto shadow-lg shadow-primary/20"
             >
               Yes, Play Music
             </Button>
@@ -204,22 +207,24 @@ export default function BackgroundAudio() {
 
       {/* Audio Controls */}
       {showControls && (
-        <div className="fixed bottom-6 right-6 z-40 flex gap-2 flex flex-col">
-          {/* Mute/Unmute Button */}
-          <Button
-            onClick={toggleMute}
-            size="icon"
-            className="rounded-full h-12 w-12 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
-            title={isMuted ? "Unmute" : "Mute"}
-          >
-            {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-          </Button>
+        <div className="fixed bottom-6 left-6 z-30 flex gap-3 flex-col">
+          {/* Scroll to Top Button */}
+          {isVisible && (
+            <Button
+              onClick={scrollToTop}
+              className="rounded-2xl h-12 w-12 shadow-xl transition-all duration-500 hover:scale-110 active:scale-95 bg-gradient-to-br from-primary via-primary/90 to-amber-600 hover:from-primary/90 hover:to-amber-600/90 shadow-primary/20"
+              aria-label="Scroll to top"
+              title="Scroll to top"
+            >
+              <FaArrowUp size={20} />
+            </Button>
+          )}
 
           {/* Play/Pause Button */}
           <Button
             onClick={toggleAudio}
             size="icon"
-            className="rounded-full h-12 w-12 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
+            className="rounded-2xl h-12 w-12 shadow-xl transition-all duration-500 hover:scale-110 active:scale-95 bg-gradient-to-br from-primary via-primary/90 to-amber-600 hover:from-primary/90 hover:to-amber-600/90 shadow-primary/20"
             title={isPlaying ? "Pause Background Music" : "Play Background Music"}
           >
             {isPlaying ? (
@@ -230,8 +235,8 @@ export default function BackgroundAudio() {
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
-                <rect x="6" y="4" width="4" height="16" />
-                <rect x="14" y="4" width="4" height="16" />
+                <rect x="6" y="4" width="4" height="16" rx="1" />
+                <rect x="14" y="4" width="4" height="16" rx="1" />
               </svg>
             ) : (
               <svg
@@ -241,21 +246,20 @@ export default function BackgroundAudio() {
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
-                <polygon points="5,3 19,12 5,21" />
+                <polygon points="5,3 19,12 5,21" rx="1" />
               </svg>
             )}
           </Button>
 
-          {isVisible && (
-            <Button
-              onClick={scrollToTop}
-              className="rounded-full h-12 w-12 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
-              aria-label="Scroll to top"
-              title="Scroll to top"
-            >
-              <FaArrowUp size={24} />
-            </Button>
-          )}
+          {/* Mute/Unmute Button */}
+          <Button
+            onClick={toggleMute}
+            size="icon"
+            className="rounded-2xl h-12 w-12 shadow-xl transition-all duration-500 hover:scale-110 active:scale-95 bg-gradient-to-br from-primary via-primary/90 to-amber-600 hover:from-primary/90 hover:to-amber-600/90 shadow-primary/20"
+            title={isMuted ? "Unmute" : "Mute"}
+          >
+            {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+          </Button>
         </div>
       )}
     </>

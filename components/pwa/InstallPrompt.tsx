@@ -124,15 +124,15 @@ export function InstallPrompt() {
             onClick={(e) => e.stopPropagation()}
             className="max-w-md w-full"
           >
-            <Card className="border-2 border-primary">
+            <Card className="border-2 border-primary/20 shadow-2xl bg-card/95 backdrop-blur-xl rounded-2xl">
               <CardContent className="p-6">
                 <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-bold">Install on iOS</h3>
+                  <h3 className="text-xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">Install on iOS</h3>
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={handleIOSInstructionsClose}
-                    className="h-8 w-8"
+                    className="h-9 w-9 rounded-xl"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -145,7 +145,7 @@ export function InstallPrompt() {
 
                   <div className="space-y-3">
                     <div className="flex gap-3 items-start">
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-primary/10 to-amber-500/10 flex items-center justify-center text-primary font-bold">
                         1
                       </div>
                       <div className="flex-1">
@@ -156,7 +156,7 @@ export function InstallPrompt() {
                     </div>
 
                     <div className="flex gap-3 items-start">
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-primary/10 to-amber-500/10 flex items-center justify-center text-primary font-bold">
                         2
                       </div>
                       <div className="flex-1">
@@ -167,7 +167,7 @@ export function InstallPrompt() {
                     </div>
 
                     <div className="flex gap-3 items-start">
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-primary/10 to-amber-500/10 flex items-center justify-center text-primary font-bold">
                         3
                       </div>
                       <div className="flex-1">
@@ -178,8 +178,8 @@ export function InstallPrompt() {
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t">
-                    <Button onClick={handleIOSInstructionsClose} className="w-full">
+                  <div className="pt-4 border-t border-primary/10">
+                    <Button onClick={handleIOSInstructionsClose} className="w-full bg-gradient-to-br from-primary via-primary/90 to-amber-600 hover:from-primary/90 hover:to-amber-600/90 shadow-lg shadow-primary/20 rounded-xl">
                       Got it!
                     </Button>
                   </div>
@@ -200,13 +200,13 @@ export function InstallPrompt() {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-[100]"
+        className="fixed bottom-4 left-4 right-4 md:left-auto md:right-28 md:max-w-md z-[100]"
       >
-        <Card className="border-2 border-primary shadow-2xl bg-card/95 backdrop-blur-lg">
+        <Card className="border-2 border-primary/20 shadow-2xl bg-card/95 backdrop-blur-xl rounded-2xl">
           <CardContent className="p-6">
             <button
               onClick={handleDismiss}
-              className="absolute top-2 right-2 p-1 rounded-full hover:bg-muted transition-colors"
+              className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-muted/80 transition-colors"
               aria-label="Close"
             >
               <X className="h-4 w-4" />
@@ -214,13 +214,13 @@ export function InstallPrompt() {
 
             <div className="flex gap-4 mb-4">
               <div className="flex-shrink-0">
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-amber-500/10 flex items-center justify-center">
                   <Smartphone className="h-8 w-8 text-primary" />
                 </div>
               </div>
 
               <div className="flex-1">
-                <h3 className="text-lg font-bold mb-1">Install ZoeHoliday</h3>
+                <h3 className="text-lg font-bold mb-1 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">Install ZoeHoliday</h3>
                 <p className="text-sm text-muted-foreground">
                   Get instant access to Egypt's best tours with one tap
                 </p>
@@ -228,21 +228,21 @@ export function InstallPrompt() {
             </div>
 
             {/* Benefits */}
-            <div className="grid grid-cols-3 gap-2 mb-4 pb-4 border-b">
-              <div className="flex flex-col items-center gap-1 text-center">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="grid grid-cols-3 gap-2 mb-4 pb-4 border-b border-primary/10">
+              <div className="flex flex-col items-center gap-1.5 text-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/10 to-amber-500/10 flex items-center justify-center">
                   <Zap className="h-5 w-5 text-primary" />
                 </div>
                 <span className="text-xs font-medium">Fast Access</span>
               </div>
-              <div className="flex flex-col items-center gap-1 text-center">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="flex flex-col items-center gap-1.5 text-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/10 to-amber-500/10 flex items-center justify-center">
                   <Wifi className="h-5 w-5 text-primary" />
                 </div>
                 <span className="text-xs font-medium">Works Offline</span>
               </div>
-              <div className="flex flex-col items-center gap-1 text-center">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="flex flex-col items-center gap-1.5 text-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/10 to-amber-500/10 flex items-center justify-center">
                   <Bell className="h-5 w-5 text-primary" />
                 </div>
                 <span className="text-xs font-medium">Get Updates</span>
@@ -253,7 +253,7 @@ export function InstallPrompt() {
             <div className="flex gap-2">
               <Button
                 onClick={handleInstall}
-                className="flex-1 gap-2 h-11 text-base font-semibold"
+                className="flex-1 gap-2 h-11 text-base font-semibold bg-gradient-to-br from-primary via-primary/90 to-amber-600 hover:from-primary/90 hover:to-amber-600/90 shadow-lg shadow-primary/20"
               >
                 <Download className="h-5 w-5" />
                 {isIOS ? "How to Install" : "Install App"}
@@ -261,7 +261,7 @@ export function InstallPrompt() {
               <Button
                 onClick={handleDismiss}
                 variant="outline"
-                className="px-4"
+                className="px-4 rounded-xl"
               >
                 Not Now
               </Button>

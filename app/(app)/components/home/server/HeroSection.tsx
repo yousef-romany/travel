@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import HeroClient from "../client/HeroClient";
+import { Ticket, MapPin, Calendar, GitCompare } from "lucide-react";
 
 /**
  * Hero Section - Server Component
@@ -29,6 +30,50 @@ export default function HeroSection() {
               Start Your Journey
             </Button>
           </Link>
+
+          {/* Quick Access Buttons */}
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mt-6 sm:mt-8 animate-slide-up animate-delay-600">
+            <Link href="/programs" className="group">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border-white/30 text-white hover:text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 gap-2"
+              >
+                <Ticket className="h-4 w-4" />
+                <span className="text-xs sm:text-sm">All Programs</span>
+              </Button>
+            </Link>
+            <Link href="/plan-your-trip" className="group">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border-white/30 text-white hover:text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 gap-2"
+              >
+                <Calendar className="h-4 w-4" />
+                <span className="text-xs sm:text-sm">Plan Trip</span>
+              </Button>
+            </Link>
+            <Link href="/placesTogo" className="group">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border-white/30 text-white hover:text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 gap-2"
+              >
+                <MapPin className="h-4 w-4" />
+                <span className="text-xs sm:text-sm">Places</span>
+              </Button>
+            </Link>
+            <Link href="/compare" className="group">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border-white/30 text-white hover:text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 gap-2"
+              >
+                <GitCompare className="h-4 w-4" />
+                <span className="text-xs sm:text-sm">Compare</span>
+              </Button>
+            </Link>
+          </div>
         </div>
       </HeroClient>
     </section>

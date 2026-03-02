@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, X, Send, Loader2, Bot, User, Trash2 } from "lucide-react";
+import { MessageSquare, X, Send, Loader2, Bot, User, Trash2, Ticket, MapPin, Calendar, Compass } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
 
 interface Message {
     id: string;
@@ -33,7 +34,7 @@ export default function Chatbot() {
         {
             id: "welcome",
             sender: "bot",
-            text: "👋 Hi! I'm Zoe, your AI travel assistant. How can I help you plan your perfect trip to Egypt?",
+            text: "👋 Hi! I'm Zoe, your AI travel assistant. How can I help you plan your perfect trip to Egypt?\n\nYou can also browse our popular programs below:",
             timestamp: new Date()
         }
     ]);
@@ -359,31 +360,34 @@ export default function Chatbot() {
     return (
         <>
             {/* Trigger Button */}
-            {/* Trigger Button */}
             <Button
                 onClick={() => setIsOpen(!isOpen)}
                 size="icon"
                 className={cn(
-                    "fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-2xl transition-all duration-300 hover:scale-110",
+                    "fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full shadow-2xl transition-all duration-500 hover:scale-110",
                     isOpen
-                        ? "bg-destructive rotate-0 scale-100"
-                        : "bg-gradient-to-r from-primary to-amber-600 hover:shadow-primary/50"
+                        ? "bg-gradient-to-r from-red-500 to-rose-600 rotate-0 scale-100"
+                        : "bg-gradient-to-br from-primary via-primary/90 to-amber-600 hover:shadow-primary/50 hover:shadow-2xl"
                 )}
             >
                 <div className="relative w-full h-full flex items-center justify-center">
                     <MessageSquare
                         className={cn(
-                            "absolute h-7 w-7 text-white transition-all duration-300",
-                            isOpen ? "opacity-0 rotate-90 scale-50" : "opacity-100 rotate-0 scale-100"
+                            "absolute h-8 w-8 text-white transition-all duration-500 ease-in-out",
+                            isOpen ? "opacity-0 rotate-180 scale-0" : "opacity-100 rotate-0 scale-100"
                         )}
                     />
                     <X
                         className={cn(
-                            "absolute h-7 w-7 text-white transition-all duration-300",
-                            isOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-50"
+                            "absolute h-8 w-8 text-white transition-all duration-500 ease-in-out",
+                            isOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-180 scale-0"
                         )}
                     />
                 </div>
+                {/* Pulse animation when closed */}
+                {!isOpen && (
+                    <span className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-amber-600 animate-ping opacity-20" />
+                )}
             </Button>
 
             {/* Backdrop for mobile */}
@@ -397,42 +401,48 @@ export default function Chatbot() {
             {/* Chat Window */}
             {isOpen && (
                 <div className={cn(
-                    "fixed z-50 bg-background border shadow-2xl flex flex-col overflow-hidden animate-in fade-in duration-300",
+                    "fixed z-50 bg-background/95 backdrop-blur-xl border shadow-2xl flex flex-col overflow-hidden animate-in fade-in duration-500 ease-out",
                     "inset-0 rounded-none border-0",
-                    "md:inset-auto md:bottom-24 md:right-6 md:w-[420px] md:h-[650px] md:rounded-2xl md:border-primary/20 md:slide-in-from-bottom-10",
-                    "lg:w-[480px] lg:h-[700px]"
+                    "md:inset-auto md:bottom-24 md:right-6 md:w-[440px] md:h-[680px] md:rounded-3xl md:border-primary/20 md:slide-in-from-bottom-10 md:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]",
+                    "lg:w-[500px] lg:h-[730px]"
                 )}>
                     {/* Header */}
-                    <div className="p-4 sm:p-5 bg-gradient-to-r from-primary/10 to-amber-500/10 border-b border-primary/10 flex items-center gap-3 shrink-0">
-                        <div className="p-2 sm:p-2.5 bg-gradient-to-r from-primary to-amber-600 rounded-full">
-                            <Bot className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                    <div className="p-4 sm:p-5 bg-gradient-to-br from-primary/15 via-primary/10 to-amber-500/15 border-b border-primary/20 flex items-center gap-3 shrink-0">
+                        <div className="relative">
+                            <div className="p-2.5 sm:p-3 bg-gradient-to-br from-primary via-primary/90 to-amber-600 rounded-2xl shadow-lg">
+                                <Bot className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                            </div>
+                            <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
                         </div>
                         <div className="flex-1 flex items-center justify-between min-w-0">
                             <div className="min-w-0">
-                                <h3 className="font-bold text-foreground text-base sm:text-lg truncate">Zoe Assistant</h3>
-                                <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1">
-                                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                    Online
+                                <h3 className="font-bold text-foreground text-base sm:text-lg truncate bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">Zoe Assistant</h3>
+                                <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                    </span>
+                                    Online • Ready to help
                                 </p>
                             </div>
-                            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+                            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                                 <Button
                                     variant="ghost"
                                     size="icon"
                                     onClick={handleClearChat}
-                                    className="h-8 w-8 sm:h-9 sm:w-9 text-muted-foreground hover:text-destructive"
+                                    className="h-9 w-9 sm:h-10 sm:w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all"
                                     title="Clear Chat"
                                 >
-                                    <Trash2 className="h-4 w-4" />
+                                    <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </Button>
                                 <Button
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => setIsOpen(false)}
-                                    className="h-8 w-8 sm:h-9 sm:w-9 text-muted-foreground hover:text-destructive md:hidden"
+                                    className="h-9 w-9 sm:h-10 sm:w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all md:hidden"
                                     title="Close Chat"
                                 >
-                                    <X className="h-4 w-4" />
+                                    <X className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </Button>
                             </div>
                         </div>
@@ -440,19 +450,21 @@ export default function Chatbot() {
 
                     {/* Contact Form */}
                     {showContactForm ? (
-                        <div className="flex-1 flex items-center justify-center p-4 sm:p-6 bg-muted/20 overflow-y-auto">
-                            <div className="w-full max-w-sm space-y-4 sm:space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                                <div className="text-center space-y-2 sm:space-y-3">
-                                    <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-primary to-amber-600 rounded-full flex items-center justify-center">
-                                        <User className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
+                        <div className="flex-1 flex items-center justify-center p-4 sm:p-6 bg-gradient-to-b from-muted/30 to-muted/10 overflow-y-auto">
+                            <div className="w-full max-w-sm space-y-5 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+                                <div className="text-center space-y-3 sm:space-y-4">
+                                    <div className="mx-auto w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-primary via-primary/90 to-amber-600 rounded-3xl flex items-center justify-center shadow-xl shadow-primary/20">
+                                        <User className="h-10 w-10 sm:h-12 sm:w-12 text-white" />
                                     </div>
-                                    <h3 className="text-lg sm:text-xl font-bold text-foreground">Welcome to Zoe!</h3>
-                                    <p className="text-sm sm:text-base text-muted-foreground">Please share your contact details to get started</p>
+                                    <div>
+                                        <h3 className="text-xl sm:text-2xl font-bold text-foreground bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">Welcome to Zoe!</h3>
+                                        <p className="text-sm sm:text-base text-muted-foreground mt-2">Please share your contact details to get started</p>
+                                    </div>
                                 </div>
 
                                 <form onSubmit={handleContactFormSubmit} className="space-y-4 sm:space-y-5">
                                     <div className="space-y-2">
-                                        <Label htmlFor="name" className="text-sm sm:text-base font-medium">
+                                        <Label htmlFor="name" className="text-sm sm:text-base font-medium text-foreground">
                                             Full Name <span className="text-destructive">*</span>
                                         </Label>
                                         <Input
@@ -465,19 +477,20 @@ export default function Chatbot() {
                                                 setFormErrors({ ...formErrors, name: "" });
                                             }}
                                             className={cn(
-                                                "h-11 sm:h-12 text-base border-primary/20 focus-visible:ring-primary/30",
-                                                formErrors.name && "border-destructive focus-visible:ring-destructive/30"
+                                                "h-12 sm:h-13 text-base border-primary/20 focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:border-primary/50 rounded-xl transition-all",
+                                                formErrors.name && "border-destructive focus-visible:ring-destructive/30 focus-visible:border-destructive/50"
                                             )}
                                         />
                                         {formErrors.name && (
-                                            <p className="text-xs sm:text-sm text-destructive animate-in fade-in slide-in-from-top-1 duration-200">
+                                            <p className="text-xs sm:text-sm text-destructive animate-in fade-in slide-in-from-top-1 duration-200 flex items-center gap-1">
+                                                <span className="w-1 h-1 bg-destructive rounded-full" />
                                                 {formErrors.name}
                                             </p>
                                         )}
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="phone" className="text-sm sm:text-base font-medium">
+                                        <Label htmlFor="phone" className="text-sm sm:text-base font-medium text-foreground">
                                             Phone Number <span className="text-destructive">*</span>
                                         </Label>
                                         <Input
@@ -490,12 +503,13 @@ export default function Chatbot() {
                                                 setFormErrors({ ...formErrors, phone: "" });
                                             }}
                                             className={cn(
-                                                "h-11 sm:h-12 text-base border-primary/20 focus-visible:ring-primary/30",
-                                                formErrors.phone && "border-destructive focus-visible:ring-destructive/30"
+                                                "h-12 sm:h-13 text-base border-primary/20 focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:border-primary/50 rounded-xl transition-all",
+                                                formErrors.phone && "border-destructive focus-visible:ring-destructive/30 focus-visible:border-destructive/50"
                                             )}
                                         />
                                         {formErrors.phone && (
-                                            <p className="text-xs sm:text-sm text-destructive animate-in fade-in slide-in-from-top-1 duration-200">
+                                            <p className="text-xs sm:text-sm text-destructive animate-in fade-in slide-in-from-top-1 duration-200 flex items-center gap-1">
+                                                <span className="w-1 h-1 bg-destructive rounded-full" />
                                                 {formErrors.phone}
                                             </p>
                                         )}
@@ -503,7 +517,7 @@ export default function Chatbot() {
 
                                     <Button
                                         type="submit"
-                                        className="w-full h-11 sm:h-12 text-base bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90"
+                                        className="w-full h-12 sm:h-13 text-base bg-gradient-to-br from-primary via-primary/90 to-amber-600 hover:from-primary/90 hover:to-amber-600/90 shadow-lg shadow-primary/20 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
                                     >
                                         Start Chatting
                                     </Button>
@@ -514,15 +528,16 @@ export default function Chatbot() {
                         <>
                             {/* User Info Badge */}
                             {userInfo && (
-                                <div className="px-4 py-2 sm:py-2.5 bg-muted/30 border-b border-primary/10 flex items-center justify-between text-xs sm:text-sm shrink-0">
-                                    <span className="text-muted-foreground truncate">
-                                        Chatting as: <span className="font-medium text-foreground">{userInfo.name}</span>
+                                <div className="px-4 py-2.5 sm:py-3 bg-gradient-to-r from-primary/5 to-amber-500/5 border-b border-primary/15 flex items-center justify-between text-xs sm:text-sm shrink-0">
+                                    <span className="text-muted-foreground truncate flex items-center gap-2">
+                                        <span className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-amber-600" />
+                                        Chatting as: <span className="font-semibold text-foreground bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">{userInfo.name}</span>
                                     </span>
                                     <Button
                                         variant="ghost"
                                         size="sm"
                                         onClick={handleResetUserInfo}
-                                        className="h-6 sm:h-7 text-xs sm:text-sm text-muted-foreground hover:text-primary shrink-0"
+                                        className="h-7 sm:h-8 text-xs sm:text-sm text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                                     >
                                         Change
                                     </Button>
@@ -530,44 +545,47 @@ export default function Chatbot() {
                             )}
 
                             {/* Messages Area */}
-                            <ScrollArea ref={scrollRef} className="flex-1 p-3 sm:p-4 bg-muted/20">
-                                <div className="space-y-3 sm:space-y-4">
+                            <ScrollArea ref={scrollRef} className="flex-1 p-4 sm:p-5 bg-gradient-to-b from-muted/20 to-muted/10">
+                                <div className="space-y-4 sm:space-y-5">
                                     {messages.map((msg) => (
                                         <div
                                             key={msg.id}
                                             className={cn(
-                                                "flex w-full",
+                                                "flex w-full animate-in fade-in slide-in-from-bottom-2 duration-300",
                                                 msg.sender === "user" ? "justify-end" : "justify-start"
                                             )}
                                         >
                                             <div className={cn(
-                                                "max-w-[85%] sm:max-w-[80%] p-3 sm:p-3.5 rounded-2xl text-sm sm:text-base shadow-sm",
+                                                "max-w-[85%] sm:max-w-[80%] p-3.5 sm:p-4 rounded-2xl text-sm sm:text-base shadow-md",
                                                 msg.sender === "user"
-                                                    ? "bg-primary text-primary-foreground rounded-br-none"
-                                                    : "bg-card border border-primary/10 text-foreground rounded-bl-none"
+                                                    ? "bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-primary-foreground rounded-br-2xl shadow-primary/20"
+                                                    : "bg-card border border-primary/10 text-foreground rounded-bl-2xl shadow-sm"
                                             )}>
                                                 {msg.sender === "bot" ? (
-                                                    <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-muted prose-pre:p-2 prose-pre:rounded-lg">
+                                                    <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-muted prose-pre:p-2.5 prose-pre:rounded-lg prose-headings:font-semibold prose-a:text-primary prose-a:no-underline hover:prose-a:underline">
                                                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                                             {msg.text}
                                                         </ReactMarkdown>
                                                     </div>
                                                 ) : (
-                                                    <div className="break-words">{msg.text}</div>
+                                                    <div className="break-words font-medium">{msg.text}</div>
                                                 )}
-                                                <span className="text-[10px] sm:text-xs opacity-70 block mt-1 text-right">
+                                                <span className={cn(
+                                                    "text-[10px] sm:text-xs block mt-1.5",
+                                                    msg.sender === "user" ? "text-primary-foreground/70 text-right" : "text-muted-foreground text-right"
+                                                )}>
                                                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 </span>
                                             </div>
                                         </div>
                                     ))}
                                     {isLoading && (
-                                        <div className="flex justify-start">
-                                            <div className="bg-card border border-primary/10 p-3 sm:p-4 rounded-2xl rounded-bl-none shadow-sm">
-                                                <div className="flex gap-1.5 items-center h-full">
-                                                    <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                                                    <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                                                    <span className="w-2 h-2 bg-primary/40 rounded-full animate-bounce"></span>
+                                        <div className="flex justify-start animate-in fade-in slide-in-from-bottom-2 duration-300">
+                                            <div className="bg-card border border-primary/10 p-4 sm:p-5 rounded-2xl rounded-bl-2xl shadow-sm">
+                                                <div className="flex gap-2 items-center h-full">
+                                                    <span className="w-2.5 h-2.5 bg-gradient-to-r from-primary to-amber-600 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                                                    <span className="w-2.5 h-2.5 bg-gradient-to-r from-primary to-amber-600 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                                                    <span className="w-2.5 h-2.5 bg-gradient-to-r from-primary to-amber-600 rounded-full animate-bounce"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -575,24 +593,80 @@ export default function Chatbot() {
                                 </div>
                             </ScrollArea>
 
+                            {/* Quick Programs Access */}
+                            {!isLoading && messages.length <= 2 && (
+                                <div className="px-4 pb-3 sm:px-5 sm:pb-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                    <div className="bg-gradient-to-br from-primary/5 to-amber-500/5 rounded-2xl p-3 sm:p-4 border border-primary/10">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <Ticket className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                                            <span className="text-xs sm:text-sm font-semibold text-foreground">Quick Programs Access</span>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <Link href="/programs" className="group">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="w-full h-auto py-2.5 sm:py-3 px-3 flex flex-col items-center gap-1.5 border-primary/20 hover:border-primary/50 hover:bg-primary/10 transition-all rounded-xl"
+                                                >
+                                                    <Compass className="h-4 w-4 sm:h-5 sm:w-5 text-primary group-hover:scale-110 transition-transform" />
+                                                    <span className="text-[10px] sm:text-xs font-medium">All Programs</span>
+                                                </Button>
+                                            </Link>
+                                            <Link href="/plan-your-trip" className="group">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="w-full h-auto py-2.5 sm:py-3 px-3 flex flex-col items-center gap-1.5 border-primary/20 hover:border-primary/50 hover:bg-primary/10 transition-all rounded-xl"
+                                                >
+                                                    <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-primary group-hover:scale-110 transition-transform" />
+                                                    <span className="text-[10px] sm:text-xs font-medium">Plan Trip</span>
+                                                </Button>
+                                            </Link>
+                                            <Link href="/placesTogo" className="group">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="w-full h-auto py-2.5 sm:py-3 px-3 flex flex-col items-center gap-1.5 border-primary/20 hover:border-primary/50 hover:bg-primary/10 transition-all rounded-xl"
+                                                >
+                                                    <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary group-hover:scale-110 transition-transform" />
+                                                    <span className="text-[10px] sm:text-xs font-medium">Places</span>
+                                                </Button>
+                                            </Link>
+                                            <Link href="/compare" className="group">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="w-full h-auto py-2.5 sm:py-3 px-3 flex flex-col items-center gap-1.5 border-primary/20 hover:border-primary/50 hover:bg-primary/10 transition-all rounded-xl"
+                                                >
+                                                    <svg className="h-4 w-4 sm:h-5 sm:w-5 text-primary group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                                    </svg>
+                                                    <span className="text-[10px] sm:text-xs font-medium">Compare</span>
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
 
                             {/* Input Area */}
-                            <div className="p-3 sm:p-4 border-t bg-background/50 backdrop-blur-sm shrink-0">
-                                <form onSubmit={handleSendMessage} className="flex gap-2">
+                            <div className="p-4 sm:p-5 border-t border-primary/10 bg-gradient-to-t from-background/80 to-background/50 backdrop-blur-sm shrink-0">
+                                <form onSubmit={handleSendMessage} className="flex gap-3">
                                     <Input
                                         ref={inputRef}
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
                                         placeholder="Type your message..."
-                                        className="flex-1 h-11 sm:h-12 text-base rounded-full border-primary/20 focus-visible:ring-primary/30"
+                                        className="flex-1 h-12 sm:h-13 text-base rounded-2xl border-primary/20 focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:border-primary/50 bg-background/80 backdrop-blur-sm transition-all"
                                     />
                                     <Button
                                         type="submit"
                                         size="icon"
                                         disabled={!inputValue.trim() || isLoading}
-                                        className="h-11 w-11 sm:h-12 sm:w-12 rounded-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 shrink-0"
+                                        className="h-12 w-12 sm:h-13 sm:w-13 rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-amber-600 hover:from-primary/90 hover:to-amber-600/90 shadow-lg shadow-primary/20 shrink-0 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                                     >
-                                        {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
+                                        {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5 sm:h-6 sm:w-6" />}
                                     </Button>
                                 </form>
                             </div>

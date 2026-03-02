@@ -193,11 +193,13 @@ export function NavigationMenuDemo({
           <Link href="/programs" legacyBehavior passHref>
             <NavigationMenuLink
               className={cn(
-                "text-[1.05rem] text-foreground/90 font-medium hover:text-primary transition-all duration-300 group bg-transparent hover:bg-primary/5",
+                "text-[1.05rem] text-foreground/90 font-medium hover:text-primary transition-all duration-300 group bg-transparent hover:bg-primary/5 relative",
                 navigationMenuTriggerStyle()
               )}
             >
-              Programs
+              <span className="relative z-10">Programs</span>
+              <span className="absolute inset-0 bg-gradient-to-r from-primary/10 to-amber-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-primary to-amber-600 rounded-full animate-pulse" />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>

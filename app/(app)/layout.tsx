@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Footer from "@/components/layout/Footer";
 import Chatbot from "@/components/chat/Chatbot";
+import QuickProgramsButton from "@/components/programs/QuickProgramsButton";
 
 export const metadata: Metadata = {
   title: {
@@ -22,6 +23,7 @@ export default function RootLayout({
       </main>
       <Footer />
       <Chatbot />
+      <QuickProgramsButton />
     </div>
   );
 }

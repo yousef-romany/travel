@@ -379,3 +379,47 @@ export const verifyBookingPayment = async (
     throw error;
   }
 };
+
+// Validate price before payment
+export const validateBookingPrice = async (
+  expectedPrice: number,
+  numberOfTravelers: number,
+  programId?: string,
+  eventId?: string,
+  planTripId?: string
+): Promise<{ valid: boolean; currentPrice: number; expectedPrice: number; message?: string }> => {
+  try {
+    const authToken =
+      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+
+    const response = await axios.post(
+      `${API_URL}/api/bookings/validate-price`,
+      {
+        programId,
+        eventId,
+        planTripId,
+        expectedPrice,
+        numberOfTravelers
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken || API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    if (error.response?.status === 400) {
+      // Price has changed
+      return {
+        valid: false,
+        currentPrice: error.response?.data?.currentPrice || 0,
+        expectedPrice: error.response?.data?.expectedPrice || expectedPrice,
+        message: error.response?.data?.message || 'Price validation failed'
+      };
+    }
+    throw error;
+  }
+};
