@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { X } from "lucide-react";
-import  { PlacesToGoBlogs }  from "@/type/placesToGo";
+import { PlacesToGoBlogs } from "@/type/placesToGo";
 
 interface TravelPlanItemProps {
   place: PlacesToGoBlogs;
@@ -32,13 +32,14 @@ export default function TravelPlanItem({
       style={style}
       {...attributes}
       {...listeners}
-      className={`flex items-center justify-between p-3 mb-2 bg-muted rounded-lg cursor-move hover:bg-gray-200 transition duration-200 ${
-        isDragging ? "opacity-50" : ""
-      }`}
+      className={`flex items-center justify-between p-3 mb-2 bg-muted rounded-lg cursor-move hover:bg-gray-200 transition duration-200 ${isDragging ? "opacity-50" : ""
+        }`}
     >
       <span className="text-primary font-medium">{place?.title}</span>
       <div className="flex items-center">
-        <span className="text-primary mr-2">${place?.price}</span>
+        <span className="text-primary mr-2 text-sm font-semibold">
+          {place?.price && place.price > 0 ? `$${place.price}` : "Free / Variable"}
+        </span>
         <button
           onClick={(e) => {
             e.stopPropagation();

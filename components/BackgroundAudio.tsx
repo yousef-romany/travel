@@ -187,17 +187,17 @@ export default function BackgroundAudio() {
               You can control the volume or mute it anytime using the controls at the bottom left.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex gap-3 justify-end mt-6">
+          <div className="flex flex-col sm:flex-row gap-3 justify-end mt-auto pt-6 sm:mt-6">
             <Button
               variant="outline"
               onClick={handleDeclineAudio}
-              className="rounded-xl px-6 py-2.5 h-auto"
+              className="rounded-xl px-6 py-2.5"
             >
               No, Thanks
             </Button>
             <Button
               onClick={handleEnableAudio}
-              className="bg-gradient-to-br from-primary via-primary/90 to-amber-600 hover:from-primary/90 hover:to-amber-600/90 rounded-xl px-6 py-2.5 h-auto shadow-lg shadow-primary/20"
+              className="bg-gradient-to-br from-primary via-primary/90 to-amber-600 hover:from-primary/90 hover:to-amber-600/90 rounded-xl px-6 py-2.5 shadow-lg shadow-primary/20"
             >
               Yes, Play Music
             </Button>

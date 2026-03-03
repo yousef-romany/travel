@@ -18,8 +18,8 @@ export default function PlaceCard({ place, isInPlan }: PlaceCardProps) {
 
   const style = transform
     ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
+      transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+    }
     : undefined;
 
   return (
@@ -28,9 +28,8 @@ export default function PlaceCard({ place, isInPlan }: PlaceCardProps) {
       style={style}
       {...listeners}
       {...attributes}
-      className={`relative bg-muted shadow-md rounded-lg overflow-hidden cursor-move hover:shadow-lg transition duration-200 ${
-        isDragging ? "opacity-50" : ""
-      } ${isInPlan ? "border-2 border-green-500" : ""}`}
+      className={`relative bg-muted shadow-md rounded-lg overflow-hidden cursor-move hover:shadow-lg transition duration-200 ${isDragging ? "opacity-50" : ""
+        } ${isInPlan ? "border-2 border-green-500" : ""}`}
     >
       <OptimizedImage
         src={getImageUrl(place?.image) || "/placeholder.svg"}
@@ -39,7 +38,9 @@ export default function PlaceCard({ place, isInPlan }: PlaceCardProps) {
       />
       <div className="p-3 sm:p-4">
         <h3 className="font-semibold text-sm sm:text-base md:text-lg mb-1 sm:mb-2 line-clamp-2 leading-tight">{place?.title}</h3>
-        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">${place?.price}</p>
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">
+          {place?.price && place.price > 0 ? `$${place.price}` : "Price varies / Free"}
+        </p>
       </div>
       {isInPlan && (
         <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 bg-green-500 text-white p-1 sm:p-1.5 rounded-full shadow-lg">

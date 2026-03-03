@@ -16,6 +16,7 @@ interface Program {
   rating?: number;
   Location?: string;
   images?: any[];
+  status?: "best-seller" | "new" | "popular" | "limited-offer" | string;
 }
 
 interface ProgramsSectionProps {
@@ -60,22 +61,26 @@ export default function ProgramsSection({ programs }: ProgramsSectionProps) {
                     )}
 
                     {/* Floating Badges */}
-                    <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
-                      {index === 0 && (
-                        <div className="bg-white/95 backdrop-blur-md text-slate-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-2 select-none">
-                          <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                          </span>
-                          Best Seller
+                    {program.status && (
+                      <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+                        <div className={`backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-2 select-none ${program.status === 'best-seller' ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white' :
+                          program.status === 'new' ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white' :
+                            program.status === 'popular' ? 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white' :
+                              'bg-gradient-to-r from-primary to-blue-600 text-white'
+                          }`}
+                        >
+                          {program.status === 'best-seller' && (
+                            <span className="relative flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                            </span>
+                          )}
+                          {program.status === 'best-seller' ? 'Best Seller' :
+                            program.status === 'new' ? 'New Arrival' :
+                              program.status === 'popular' ? 'Popular' : 'Limited Offer'}
                         </div>
-                      )}
-                      {index === 2 && (
-                        <div className="bg-rose-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg select-none">
-                          New Arrival
-                        </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     {/* Rating Badge */}
                     {program.rating && (
