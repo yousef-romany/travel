@@ -86,7 +86,7 @@ export default function ProgramsSection({ programs }: ProgramsSectionProps) {
                     {program.rating && (
                       <div className="absolute bottom-4 right-4 z-20 bg-black/50 backdrop-blur-md border border-white/10 text-white px-3 py-1.5 rounded-2xl flex items-center gap-1.5 shadow-lg select-none transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                         <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                        <span className="font-bold text-sm leading-none pt-0.5">{program.rating.toFixed(1)}</span>
+                        <span className="font-bold text-sm leading-none pt-0.5">{Number(program.rating).toFixed(1)}</span>
                       </div>
                     )}
                   </div>

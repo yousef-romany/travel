@@ -74,7 +74,7 @@ export default function TourPackageSchema({
     },
     "aggregateRating": rating && reviewCount > 0 ? {
       "@type": "AggregateRating",
-      "ratingValue": rating.toFixed(1),
+      "ratingValue": Number(rating).toFixed(1),
       "bestRating": "5",
       "worstRating": "1",
       "ratingCount": reviewCount.toString(),

@@ -157,7 +157,7 @@ export default function RelatedContentWidget({
                   {item.rating && (
                     <div className="flex items-center text-sm">
                       <span className="text-yellow-500 mr-1">★</span>
-                      <span>{item.rating.toFixed(1)}</span>
+                      <span>{Number(item.rating).toFixed(1)}</span>
                     </div>
                   )}
                 </div>
