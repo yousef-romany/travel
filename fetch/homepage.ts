@@ -102,7 +102,7 @@ export const fetchInspireBlogs = async (limit = 3): Promise<{ data: InspireBlog[
 /**
  * Fetch place to go categories for homepage
  */
-export const fetchPlaceCategories = async (limit = 4): Promise<{ data: PlaceToGoCategory[]; meta: Meta }> => {
+export const fetchPlaceCategories = async (limit = 100): Promise<{ data: PlaceToGoCategory[]; meta: Meta }> => {
   try {
     const url = `${API_URL}/api/place-to-go-categories?populate=*&pagination[limit]=${limit}&sort=createdAt:desc`;
 
@@ -188,7 +188,7 @@ export const fetchHomePageData = async (): Promise<HomePageData> => {
     // Fetch all data in parallel with individual error handling
     const [inspireRes, placesRes, programsRes, instaRes] = await Promise.allSettled([
       fetchInspireBlogs(3),
-      fetchPlaceCategories(4),
+      fetchPlaceCategories(100),
       fetchFeaturedPrograms(6),
       fetchInstagramPosts(6),
     ]);
