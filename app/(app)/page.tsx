@@ -128,21 +128,22 @@ export default async function Home() {
       {/* Above-fold: Load immediately */}
       <HeroSection />
 
-      {/* Below-fold: Progressive lazy loading */}
-      <LazySection minHeight="500px" rootMargin="200px" fallback={<BlogGridSkeleton />}>
-        <InspireSection blogs={data.inspireBlogs} />
+      <LazySection minHeight="600px" rootMargin="100px" fallback={<ProgramsGridSkeleton />}>
+        <ProgramsSection programs={data.programs} />
       </LazySection>
+
 
       <LazySection minHeight="500px" rootMargin="200px" fallback={<PlacesGridSkeleton />}>
         <PlacesSection categories={data.placeCategories} />
       </LazySection>
 
-      <LazySection minHeight="500px" rootMargin="100px">
-        <PlanTripSection />
+      {/* Below-fold: Progressive lazy loading */}
+      <LazySection minHeight="500px" rootMargin="200px" fallback={<BlogGridSkeleton />}>
+        <InspireSection blogs={data.inspireBlogs} />
       </LazySection>
 
-      <LazySection minHeight="600px" rootMargin="100px" fallback={<ProgramsGridSkeleton />}>
-        <ProgramsSection programs={data.programs} />
+      <LazySection minHeight="500px" rootMargin="100px">
+        <PlanTripSection />
       </LazySection>
 
       <LazySection minHeight="400px" rootMargin="100px">
