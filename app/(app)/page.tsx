@@ -139,11 +139,11 @@ export default async function Home() {
 
       {/* Below-fold: Progressive lazy loading */}
       <LazySection minHeight="500px" rootMargin="200px" fallback={<BlogGridSkeleton />}>
-        <InspireSection blogs={data.inspireBlogs} />
+        <PlanTripSection />
       </LazySection>
 
       <LazySection minHeight="500px" rootMargin="100px">
-        <PlanTripSection />
+        <InspireSection blogs={data.inspireBlogs} />
       </LazySection>
 
       <LazySection minHeight="400px" rootMargin="100px">
