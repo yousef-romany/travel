@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Compass, ArrowRight } from "lucide-react";
+import { MapPin, Compass, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getImageUrl } from "@/lib/utils";
 
@@ -31,6 +31,21 @@ export default function PlacesSection({ categories }: PlacesSectionProps) {
       {/* Background decoration */}
       <div className="absolute top-0 left-0 -ml-20 -mt-20 w-72 h-72 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-0 -mr-20 -mb-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="flex flex-col items-center mb-12 sm:mb-16 text-center animate-on-scroll">
+        <div className="inline-flex items-center justify-center px-4 py-1.5 bg-primary/10 text-primary rounded-full mb-6 font-semibold text-sm tracking-wide uppercase shadow-sm gap-2">
+          <Sparkles className="h-4 w-4 text-amber-500" />
+          Unforgettable Adventures Await
+        </div>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 sm:mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
+          Discover Egypt's Hidden Treasures
+        </h2>
+        <p className="text-base sm:text-lg text-muted-foreground/80 max-w-2xl font-medium px-4">
+          Journey through millennia of wonder, where ancient mysteries meet modern luxury. 
+          Experience the magic of the Nile, the grandeur of pyramids, and the warmth of Egyptian hospitality 
+          on adventures crafted exclusively for discerning travelers.
+        </p>
+      </div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <PlacesCarousel categories={categories} />

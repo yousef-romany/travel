@@ -60,7 +60,7 @@ export default function PlacesCarousel({ categories }: PlacesCarouselProps) {
     return (
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-center w-full min-h-[600px] relative">
             {/* Top Pagination Navigation (Desktop only, positioned absolute top-right) */}
-            <div className="hidden lg:flex absolute top-0 right-0 w-2/3 items-center gap-6 justify-between pr-4 items-end">
+            <div className="hidden lg:flex absolute top-0 right-0 w-2/3 h-fit items-center gap-6 justify-between pr-4 items-end flex-wrap">
                 <div className="flex items-center flex-1 transition-all duration-500 flex-wrap">
                     {categories.map((_, idx) => {
                         const isActive = idx === selectedIndex;
@@ -116,8 +116,8 @@ export default function PlacesCarousel({ categories }: PlacesCarouselProps) {
             <div className="w-full lg:w-2/3 flex flex-col order-1 lg:order-2 overflow-hidden px-4 lg:px-0 lg:pt-16">
 
                 {/* Mobile Navigation & Pagination (Visible only on mobile/tablet) */}
-                <div className="flex lg:hidden items-center justify-between mb-6">
-                    <div className="flex items-center flex-1 overflow-x-auto no-scrollbar py-2">
+                <div className="flex lg:hidden items-center justify-between mb-6 flex-wrap">
+                    <div className="flex items-center flex-2 overflow-x-auto no-scrollbar py-2 flex-wrap">
                         {categories.map((_, idx) => {
                             const isActive = idx === selectedIndex;
                             return (
@@ -140,18 +140,18 @@ export default function PlacesCarousel({ categories }: PlacesCarouselProps) {
                         })}
                     </div>
 
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 w-full justify-between">
                         <button
                             onClick={scrollPrev}
                             className="p-1 hover:text-amber-600 text-muted-foreground/50 transition-colors"
                         >
-                            <ChevronLeft className="w-5 h-5" />
+                            <ChevronLeft className="w-8 h-8" />
                         </button>
                         <button
                             onClick={scrollNext}
                             className="p-1 hover:text-amber-600 text-muted-foreground/50 transition-colors"
                         >
-                            <ChevronRight className="w-5 h-5" />
+                            <ChevronRight className="w-8 h-8" />
                         </button>
                     </div>
                 </div>
