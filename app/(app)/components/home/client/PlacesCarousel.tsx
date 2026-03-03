@@ -61,22 +61,27 @@ export default function PlacesCarousel({ categories }: PlacesCarouselProps) {
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-center w-full min-h-[600px] relative">
             {/* Top Pagination Navigation (Desktop only, positioned absolute top-right) */}
             <div className="hidden lg:flex absolute top-0 right-0 w-2/3 items-center gap-6 justify-between pr-4 items-end">
-                <div className="flex items-center gap-4 flex-1">
-                    <span className="text-4xl font-bold text-amber-600/90 tracking-tighter">
-                        {String(selectedIndex + 1).padStart(2, '0')}
-                    </span>
-                    <div className="h-[1px] w-24 xl:w-48 bg-amber-600/40" />
-                    <div className="flex gap-5 text-muted-foreground/60 text-lg font-medium tracking-wide">
-                        {categories.map((_, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => scrollTo(idx)}
-                                className={`transition-colors duration-300 ${idx === selectedIndex ? 'hidden' : 'hover:text-amber-600/80 cursor-pointer'}`}
-                            >
-                                {String(idx + 1).padStart(2, '0')}
-                            </button>
-                        ))}
-                    </div>
+                <div className="flex items-center flex-1 transition-all duration-500">
+                    {categories.map((_, idx) => {
+                        const isActive = idx === selectedIndex;
+                        return (
+                            <div key={idx} className="flex items-center">
+                                <button
+                                    onClick={() => scrollTo(idx)}
+                                    className={`transition-all duration-500 ease-out ${isActive
+                                            ? 'text-5xl font-extrabold text-[#f59e0b] tracking-tighter mx-2'
+                                            : 'text-xl font-medium text-muted-foreground/30 hover:text-[#f59e0b]/80 mx-4'
+                                        }`}
+                                >
+                                    {String(idx + 1).padStart(2, '0')}
+                                </button>
+                                <div
+                                    className={`transition-all duration-500 ease-out bg-gradient-to-r from-[#f59e0b]/80 to-transparent ${isActive ? 'h-[2px] w-20 xl:w-32 mx-4 opacity-100' : 'h-[2px] w-0 opacity-0 mx-0'
+                                        }`}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -112,22 +117,27 @@ export default function PlacesCarousel({ categories }: PlacesCarouselProps) {
 
                 {/* Mobile Navigation & Pagination (Visible only on mobile/tablet) */}
                 <div className="flex lg:hidden items-center justify-between mb-6">
-                    <div className="flex items-center gap-3 flex-1 overflow-hidden">
-                        <span className="text-2xl font-bold text-amber-600/90">
-                            {String(selectedIndex + 1).padStart(2, '0')}
-                        </span>
-                        <div className="h-[1px] w-12 bg-amber-600/40" />
-                        <div className="flex gap-3 text-muted-foreground/60 text-sm font-medium overflow-x-auto no-scrollbar mask-linear-fade">
-                            {categories.map((_, idx) => (
-                                <button
-                                    key={idx}
-                                    onClick={() => scrollTo(idx)}
-                                    className={`transition-colors duration-300 ${idx === selectedIndex ? 'hidden' : 'hover:text-amber-600/80'}`}
-                                >
-                                    {String(idx + 1).padStart(2, '0')}
-                                </button>
-                            ))}
-                        </div>
+                    <div className="flex items-center flex-1 overflow-x-auto no-scrollbar py-2">
+                        {categories.map((_, idx) => {
+                            const isActive = idx === selectedIndex;
+                            return (
+                                <div key={idx} className="flex items-center shrink-0">
+                                    <button
+                                        onClick={() => scrollTo(idx)}
+                                        className={`transition-all duration-500 ease-out ${isActive
+                                                ? 'text-3xl font-extrabold text-[#f59e0b] tracking-tighter mx-1'
+                                                : 'text-lg font-medium text-muted-foreground/30 hover:text-[#f59e0b]/80 mx-3'
+                                            }`}
+                                    >
+                                        {String(idx + 1).padStart(2, '0')}
+                                    </button>
+                                    <div
+                                        className={`transition-all duration-500 ease-out bg-gradient-to-r from-[#f59e0b]/80 to-transparent ${isActive ? 'h-[2px] w-12 md:w-16 mx-2 opacity-100' : 'h-[2px] w-0 opacity-0 mx-0'
+                                            }`}
+                                    />
+                                </div>
+                            );
+                        })}
                     </div>
 
                     <div className="flex items-center gap-1">
