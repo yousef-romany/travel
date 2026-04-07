@@ -57,9 +57,9 @@ export function ProgramImageCarousel({ program }: ProgramImageCarouselProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-screen-lg mx-auto">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <div className="relative group rounded-2xl overflow-hidden shadow-2xl border border-primary/20">
+        <div className="relative group rounded-2xl overflow-hidden shadow-2xl border border-primary/20 max-w-screen-lg mx-auto">
           <Carousel setApi={setApi} className="w-full">
             <CarouselContent>
               {images.map((img, index) => (
@@ -104,7 +104,7 @@ export function ProgramImageCarousel({ program }: ProgramImageCarouselProps) {
         </div>
 
         {/* Thumbnails */}
-        <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide py-2">
+        <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide py-2 flex-wrap gap-2 justify-center items-center">
           {images.map((img, index) => (
             <button
               key={index}

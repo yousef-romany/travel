@@ -228,7 +228,7 @@ export default async function ProgramPage({ params }: Props) {
           </header>
 
           {/* Main Content Grid */}
-          <div className="grid md:grid-cols-2 gap-8 mb-12 animate-slide-up animate-delay-200">
+          <div className="grid md:grid-cols-2 gap-8 mb-12 animate-slide-up animate-delay-200 w-full max-w-screen-lg mx-auto">
             {/* Left: Image Carousel (Client Component) */}
             <ProgramImageCarousel program={program} />
 
