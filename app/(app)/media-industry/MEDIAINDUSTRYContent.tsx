@@ -142,7 +142,7 @@ export default function MediaindustryContent() {
                     <Phone className="w-5 h-5 text-primary mt-0.5" />
                     <div>
                       <p className="font-medium">Phone</p>
-                      <a href="tel:+201555100961" className="text-primary hover:underline">
+                      <a href="tel:+201030354067" className="text-primary hover:underline">
                         +20 155 510 0961
                       </a>
                     </div>

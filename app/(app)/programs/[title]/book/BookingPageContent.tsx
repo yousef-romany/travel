@@ -72,7 +72,7 @@ interface BookingFormData {
   specialRequests: string;
 }
 
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201555100961";
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201030354067";
 
 export default function BookingPageContent({ program }: BookingPageContentProps) {
   const { user } = useAuth();

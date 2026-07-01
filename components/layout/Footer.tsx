@@ -469,7 +469,7 @@ export default function Footer() {
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Globe className="w-4 h-4" />
-              <span>Made with ♥ for Yousefx00</span>
+              <span>Made with ♥ for <Link href="https://nexocodee.space  " target="_blank" rel="noopener noreferrer">Nexocodee</Link></span>
             </div>
           </div>
         </div>
@@ -488,7 +488,7 @@ export default function Footer() {
             "logo": "https://zoeholiday.com/logo.png",
             "contactPoint": {
               "@type": "ContactPoint",
-              "telephone": "+20-XXX-XXXXXXX",
+              "telephone": "+20-103-0354067",
               "contactType": "customer service",
               "areaServed": "EG",
               "availableLanguage": ["English", "Arabic"]

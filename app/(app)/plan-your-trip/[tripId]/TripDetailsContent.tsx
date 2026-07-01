@@ -112,7 +112,7 @@ export default function TripDetailsContent({ tripId }: TripDetailsContentProps) 
   };
 
   const handleRequestQuote = () => {
-    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201555100961";
+    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201030354067";
 
     const placesList = trip?.destinations
       ?.map((dest: any, idx: number) => `Day ${idx + 1}: ${dest.title} - $${dest.price}`)

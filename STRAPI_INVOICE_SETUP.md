@@ -5,10 +5,12 @@ This guide will help you create the **Invoice** collection in your Strapi backen
 ## Steps to Create Invoice Collection
 
 ### 1. Access Strapi Admin Panel
+
 - Navigate to `https://dashboard.zoeholidays.com/admin`
 - Login with your admin credentials
 
 ### 2. Create New Collection Type
+
 1. Go to **Content-Type Builder** in the left sidebar
 2. Click on **"Create new collection type"**
 3. Enter **"invoice"** as the Display name (singular: invoice, plural: invoices)
@@ -19,6 +21,7 @@ This guide will help you create the **Invoice** collection in your Strapi backen
 Add the following fields to your Invoice collection:
 
 #### Text Fields
+
 1. **invoiceNumber** (Text - Short text)
    - Type: Text (Short text)
    - Name: `invoiceNumber`
@@ -57,6 +60,7 @@ Add the following fields to your Invoice collection:
      - Required field: ✓
 
 #### Date Field
+
 7. **tripDate** (Date)
    - Type: Date
    - Name: `tripDate`
@@ -64,6 +68,7 @@ Add the following fields to your Invoice collection:
      - Required field: ✓
 
 #### Number Fields
+
 8. **tripDuration** (Number - integer)
    - Type: Number (integer)
    - Name: `tripDuration`
@@ -89,6 +94,7 @@ Add the following fields to your Invoice collection:
       - Required field: ✓
 
 #### Optional Field
+
 12. **pdfUrl** (Text - Short text)
     - Type: Text (Short text)
     - Name: `pdfUrl`
@@ -96,6 +102,7 @@ Add the following fields to your Invoice collection:
       - Required field: ✗
 
 #### Enumeration Field
+
 13. **status** (Enumeration)
     - Type: Enumeration
     - Name: `status`
@@ -108,6 +115,7 @@ Add the following fields to your Invoice collection:
       - Required field: ✓
 
 #### Relation Field
+
 14. **user** (Relation)
     - Type: Relation
     - Name: `user`
@@ -116,6 +124,7 @@ Add the following fields to your Invoice collection:
       - Required field: ✗
 
 ### 4. Save and Restart Strapi
+
 1. Click **Save** button
 2. Wait for Strapi to restart
 3. The new Invoice collection will be available
@@ -171,8 +180,8 @@ Add the following fields to your Invoice collection:
   "tripDate": "2025-06-15T00:00:00.000Z",
   "tripDuration": 10,
   "numberOfTravelers": 2,
-  "pricePerPerson": 1250.00,
-  "totalAmount": 2500.00,
+  "pricePerPerson": 1250.0,
+  "totalAmount": 2500.0,
   "pdfUrl": null,
   "status": "pending",
   "user": "user_doc_id_123"
@@ -202,5 +211,5 @@ You can test the invoice creation using the booking functionality in the applica
 
 - The invoice PDF is automatically generated and downloaded when a booking is confirmed
 - The invoice number follows the format: `INV-{timestamp}-{bookingId}`
-- WhatsApp notifications are sent to +201555100961 with booking details
+- WhatsApp notifications are sent to +201030354067 with booking details
 - The system automatically invalidates and refetches booking queries to keep UI in sync

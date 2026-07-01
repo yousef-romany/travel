@@ -264,7 +264,7 @@ export default function PlanYourTripContent() {
   };
 
   const handleRequestQuote = () => {
-    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201555100961";
+    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201030354067";
 
     const placesList = travelPlan.map((place, idx) => `Day ${idx + 1}: ${place.title} - $${place.price}`).join("\n");
 

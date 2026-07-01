@@ -70,7 +70,7 @@ interface PDFInvoiceData extends CreateInvoiceData {
   bookingDate: string;
 }
 
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201555100961";
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201030354067";
 
 const generateInvoiceData = (
   formData: BookingFormData,
