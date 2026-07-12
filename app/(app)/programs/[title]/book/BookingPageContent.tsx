@@ -36,7 +36,6 @@ import { toast } from "sonner";
 import Image from "next/image";
 import { getImageUrl } from "@/lib/utils";
 import Link from "next/link";
-import PaymentComingSoonBanner from "@/components/payment-coming-soon-banner";
 import { trackWhatsAppBooking } from "@/lib/analytics";
 import { fetchProgramAvailability } from "@/fetch/availability";
 import { PromoCodeInput } from "@/components/booking/PromoCodeInput";
@@ -44,6 +43,7 @@ import { PromoCode, incrementPromoCodeUsage } from "@/fetch/promo-codes";
 import PayPalPayment from "@/components/booking/PayPalPayment";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+
 
 interface BookingPageContentProps {
   program: {
@@ -87,9 +87,9 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     discountAmount: number;
     finalPrice: number;
   } | null>(null);
-  const [paymentStep, setPaymentStep] = useState<"details" | "payment">("details");
-
+  const [paymentStep, setPaymentStep] = useState<"details" | "payment" | "error">("details");
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [paymentRef, setPaymentRef] = useState<string | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
   const [formData, setFormData] = useState<BookingFormData>({
@@ -282,17 +282,13 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     mutationFn: (data: { orderID: string; bookingData: any }) =>
       verifyBookingPayment(data.orderID, data.bookingData),
     onSuccess: async (data: any) => {
-      // Reuse the success logic from createBookingMutation
-      // We can just extract the success logic into a helper function or copy it
-      // For simplicity/robustness, let's copy the essential success logic here
-      // or trigger the onSuccess of the other mutation if possible (not easily).
-      // Let's refactor the success logic to a constant
       await handleBookingSuccess(data);
     },
     onError: (error: any) => {
       console.error("Verification error:", error);
-      setPaymentError("Payment verification failed. Please contact support.");
-      toast.error("Payment verification failed.");
+      // Show recovery screen — payment was captured but booking failed
+      setPaymentStep('error');
+      toast.error("Payment was received but booking creation failed. Please contact us with your PayPal reference.");
     }
   });
 
@@ -338,10 +334,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
         console.error("PDF upload failed:", uploadError);
       }
 
-      await createInvoice({
-        ...invoiceData,
-        pdfUrl,
-      });
+      await createInvoice({ ...invoiceData, pdfUrl });
 
       // Update invoice to paid since this came from PayPal
       try {
@@ -353,20 +346,22 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
 
       await downloadInvoicePDF(invoiceData, `invoice-${invoiceNumber}.pdf`);
 
-      const discountText = appliedPromo ? `\n• Discount: -$${appliedPromo.discountAmount.toFixed(2)} (${appliedPromo.code.code})` : "";
-      const servicesText = selectedServices.length > 0
-        ? `\n• Services: ${(program.services || [])
-          .filter(s => selectedServices.includes(s.documentId))
-          .map(s => `${s.name} ($${s.price})`)
-          .join(", ")}`
-        : "";
-
-      const whatsAppMessage = `🎉 *New Booking Request*\n\n📋 *Booking Details:*\n• Tour: ${program.title}\n• Customer: ${formData.fullName}\n• Email: ${formData.email}\n• Phone: ${formData.phone}\n• Number of Travelers: ${formData.numberOfTravelers}\n• Travel Date: ${format(formData.travelDate!, "PPP")}${servicesText}${discountText}\n• Total Amount: $${finalAmount.toFixed(2)}\n\n${formData.specialRequests ? `📝 *Special Requests:*\n${formData.specialRequests}\n` : ""}Please confirm this booking as soon as possible.\n\nThank you! 🙏`;
-
-      const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsAppMessage)}`;
-
-      trackWhatsAppBooking(program.title, program.documentId, finalAmount);
-      window.open(whatsappUrl, "_blank");
+      // Send WhatsApp notification (non-blocking, don't redirect)
+      try {
+        const discountText = appliedPromo ? `\n• Discount: -$${appliedPromo.discountAmount.toFixed(2)} (${appliedPromo.code.code})` : "";
+        const servicesText = selectedServices.length > 0
+          ? `\n• Services: ${(program.services || [])
+            .filter(s => selectedServices.includes(s.documentId))
+            .map(s => `${s.name} ($${s.price})`)
+            .join(", ")}`
+          : "";
+        const whatsAppMessage = `🎉 *Booking Confirmed via PayPal*\n\n📋 *Details:*\n• Tour: ${program.title}\n• Customer: ${formData.fullName}\n• Email: ${formData.email}\n• Phone: ${formData.phone}\n• Travelers: ${formData.numberOfTravelers}\n• Date: ${format(formData.travelDate!, "PPP")}${servicesText}${discountText}\n• Total: $${finalAmount.toFixed(2)}\n• PayPal Ref: ${paymentRef || 'N/A'}\n\nPayment confirmed ✅`;
+        const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsAppMessage)}`;
+        trackWhatsAppBooking(program.title, program.documentId, finalAmount);
+        window.open(whatsappUrl, "_blank");
+      } catch (waError) {
+        console.error("WhatsApp notification failed (non-fatal):", waError);
+      }
 
       toast.success("Booking confirmed! Invoice downloaded.");
       router.push(`/booking/success?bookingId=${data.data.documentId}`);
@@ -379,14 +374,14 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
 
 
   const handlePaymentSuccess = (details: any) => {
-    // Payment approved!
+    const orderId: string = details?.id || details?.orderID || 'UNKNOWN';
+    setPaymentRef(orderId);
     toast.success("Payment successful! Verifying and finalizing booking...");
-    const totalAmount = program.price * formData.numberOfTravelers;
-    const finalAmount = appliedPromo ? appliedPromo.finalPrice : totalAmount;
+    const totalAmountCalc = program.price * formData.numberOfTravelers;
+    const finalAmount = appliedPromo ? appliedPromo.finalPrice : totalAmountCalc;
 
-    // Call verify endpoint
     verifyBookingMutation.mutate({
-      orderID: details.id, // PayPal returns 'id' as order ID
+      orderID: orderId,
       bookingData: {
         fullName: formData.fullName,
         email: formData.email,
@@ -405,11 +400,14 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     });
   };
 
-
   const handlePaymentError = (error: any) => {
     console.error("PayPal Error:", error);
     setPaymentError("Payment failed or was cancelled. Please try again.");
-    toast.error("Payment failed. Please try again.");
+    toast.error("Payment failed. Please try again or use a different payment method.");
+  };
+
+  const handlePaymentCancel = () => {
+    toast.info("Payment cancelled. You can try again when ready.");
   };
 
   const handleProceedToPayment = async (e: React.FormEvent) => {
@@ -604,15 +602,59 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                         currency="USD"
                         onSuccess={handlePaymentSuccess}
                         onError={handlePaymentError}
+                        onCancel={handlePaymentCancel}
                       />
                       <Button
                         variant="ghost"
                         onClick={() => setPaymentStep("details")}
                         className="w-full mt-4"
+                        disabled={verifyBookingMutation.isPending}
                       >
                         Back to Details
                       </Button>
                     </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* Error Recovery: payment captured, booking creation failed */}
+            {paymentStep === "error" && (
+              <div className="mb-6 animate-in slide-in-from-top-4 fade-in duration-500">
+                <Card className="border-destructive/30 shadow-xl border-l-4 border-l-destructive bg-destructive/5">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="w-6 h-6 text-destructive mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h3 className="text-lg font-bold text-destructive">Payment received, but booking failed</h3>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Your payment was successfully captured by PayPal, but we encountered an error
+                          creating your booking record. <strong>You have NOT been charged twice.</strong>
+                        </p>
+                      </div>
+                    </div>
+
+                    {paymentRef && (
+                      <div className="rounded-lg bg-muted p-4 space-y-1">
+                        <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">PayPal Reference ID</p>
+                        <p className="font-mono text-sm font-bold break-all select-all text-foreground">{paymentRef}</p>
+                        <p className="text-xs text-muted-foreground">Screenshot or copy this before contacting us.</p>
+                      </div>
+                    )}
+
+                    <p className="text-sm text-muted-foreground">
+                      Please contact us with this reference and we will manually confirm your booking within 24 hours.
+                    </p>
+
+                    <Button
+                      className="w-full"
+                      onClick={() => {
+                        const msg = `Hi, I paid via PayPal (Ref: ${paymentRef}) for "${program.title}" but my booking was not confirmed. Please help.`;
+                        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+                      }}
+                    >
+                      Contact Us on WhatsApp
+                    </Button>
                   </CardContent>
                 </Card>
               </div>
@@ -623,7 +665,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                 <CardTitle>Booking Information</CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleProceedToPayment} className={`space-y-6 ${paymentStep === "payment" ? "opacity-50 pointer-events-none grayscale" : ""}`}>
+                <form onSubmit={handleProceedToPayment} className={`space-y-6 ${paymentStep === "payment" || paymentStep === "error" ? "opacity-50 pointer-events-none grayscale" : ""}`}>
                   {/* Personal Information */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -886,9 +928,9 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                     type="submit"
                     size="lg"
                     className="w-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white text-lg py-6"
-                    disabled={createBookingMutation.isPending}
+                    disabled={verifyBookingMutation.isPending}
                   >
-                    {createBookingMutation.isPending ? (
+                    {verifyBookingMutation.isPending ? (
                       <>
                         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                         Processing...

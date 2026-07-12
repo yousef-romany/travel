@@ -20,15 +20,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Loader2, ChevronDownIcon } from "lucide-react";
+import { Loader2, ChevronDownIcon, ArrowLeft, ShieldCheck, AlertCircle, Phone } from "lucide-react";
 import { format } from "date-fns";
-import { createBooking } from "@/fetch/bookings";
 import { createInvoice } from "@/fetch/invoices";
 import { generateInvoicePDF, downloadInvoicePDF } from "@/lib/pdf-generator";
 import { uploadFileToStrapi } from "@/lib/upload-file";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import PaymentComingSoonBanner from "@/components/payment-coming-soon-banner";
+import PayPalPayment from "@/components/booking/PayPalPayment";
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -175,6 +174,9 @@ export default function BookingDialog({
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [step, setStep] = useState<"form" | "payment" | "error">("form");
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentRef, setPaymentRef] = useState<string | null>(null); // Holds PayPal orderID on backend failure
 
   const [formData, setFormData] = useState<BookingFormData>({
     fullName: "",
@@ -199,72 +201,110 @@ export default function BookingDialog({
     }
   }, [user]);
 
-  const createBookingMutation = useMutation({
-    mutationFn: createBooking,
-    onSuccess: async (data) => {
+  // Called by PayPal after user approves & order is captured
+  const handlePayPalSuccess = async (details: any) => {
+    if (isProcessingPayment) return; // Prevent double-fire
+    setIsProcessingPayment(true);
+
+    const orderId: string = details?.id || details?.orderID || 'UNKNOWN';
+    setPaymentRef(orderId);
+
+    const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+    const strapiToken = process.env.NEXT_PUBLIC_STRAPI_TOKEN;
+
+    if (!strapiUrl || !strapiToken) {
+      toast.error('Configuration error. Please contact support.');
+      setIsProcessingPayment(false);
+      return;
+    }
+
+    const bookingPayload = {
+      fullName: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+      numberOfTravelers: formData.numberOfTravelers,
+      travelDate: formData.travelDate!.toISOString(),
+      specialRequests: formData.specialRequests,
+      programId: program.documentId,
+      userId: user!.documentId,
+      totalAmount: totalAmount,
+    };
+
+    try {
+      // 15-second timeout to prevent infinite spinner
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15_000);
+
+      let verifyRes: Response;
+      try {
+        verifyRes = await fetch(`${strapiUrl}/api/bookings/verify-payment`, {
+          method: 'POST',
+          signal: controller.signal,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${strapiToken}`,
+          },
+          body: JSON.stringify({ orderID: orderId, bookingData: bookingPayload }),
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
+
+      if (!verifyRes.ok) {
+        const errData = await verifyRes.json().catch(() => ({} as any)) as any;
+        const message = errData?.error?.message || errData?.message || 'Booking creation failed';
+        // Payment was captured but booking failed — show recovery screen
+        setStep('error');
+        toast.error('Your payment was received but booking confirmation failed. Use the reference below to contact us.');
+        return;
+      }
+
+      const data = await verifyRes.json() as { data: { documentId: string } };
       queryClient.invalidateQueries({ queryKey: ["userBookings"] });
 
+      // Generate and download invoice (non-blocking — don't fail the success flow)
       try {
         const { createData, pdfData } = generateInvoiceData(
-          formData,
-          program,
-          data.data.documentId,
-          user?.documentId
+          formData, program, data.data.documentId, user?.documentId
         );
-
-        // Generate PDF blob
         const pdfBlob = await generateInvoicePDF(pdfData);
-
-        // Upload PDF to Strapi and get URL
         let pdfUrl: string | undefined;
         try {
-          pdfUrl = await uploadFileToStrapi(
-            pdfBlob,
-            `invoice-${createData.invoiceNumber}.pdf`
-          );
-          console.log("PDF uploaded successfully:", pdfUrl);
-        } catch (uploadError) {
-          console.error("PDF upload failed:", uploadError);
-          // Continue without PDF URL if upload fails
+          pdfUrl = await uploadFileToStrapi(pdfBlob, `invoice-${createData.invoiceNumber}.pdf`);
+        } catch {
+          // PDF upload failure is non-fatal
         }
-
-        // Create invoice with PDF URL
-        await createInvoice({
-          ...createData,
-          pdfUrl,
-        });
-
-        // Download PDF for user
+        await createInvoice({ ...createData, pdfUrl });
         await downloadInvoicePDF(pdfData, `invoice-${createData.invoiceNumber}.pdf`);
-
-        const whatsAppMessage = generateWhatsAppMessage(formData, program);
-        openWhatsApp(whatsAppMessage);
-
-        toast.success("Booking submitted successfully! Invoice PDF downloaded.");
-      } catch (error) {
-        console.error("Invoice generation error:", error);
-        toast.error("Booking created but invoice generation failed.");
+      } catch (invoiceError) {
+        console.error('Invoice error (non-fatal):', invoiceError);
       }
 
+      toast.success('🎉 Payment successful! Your booking is confirmed.');
       onClose();
       resetForm();
-    },
-    onError: (error: any) => {
-      console.error("Booking error:", error);
-
-      let errorMessage = "Failed to submit booking. Please try again.";
-
-      if (error.response?.data?.error?.message) {
-        errorMessage = error.response.data.error.message;
-      } else if (error.response?.status === 403) {
-        errorMessage = "Access denied. Please make sure you're logged in.";
-      } else if (error.response?.status === 400) {
-        errorMessage = "Invalid booking data. Please check all fields.";
+    } catch (err: any) {
+      if (err?.name === 'AbortError') {
+        setStep('error');
+        toast.error('Request timed out. Your payment may have gone through — use the reference below to contact us.');
+      } else {
+        console.error('Payment processing error:', err);
+        setStep('error');
+        toast.error('An unexpected error occurred. Please contact us with your PayPal reference.');
       }
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
 
-      toast.error(errorMessage);
-    },
-  });
+  const handlePayPalError = (error: any) => {
+    console.error('PayPal error:', error);
+    toast.error('Payment failed. Please try again or use a different payment method.');
+  };
+
+  const handlePayPalCancel = () => {
+    toast.info('Payment cancelled. You can try again when ready.');
+  };
 
   const resetForm = () => {
     setFormData({
@@ -278,6 +318,8 @@ export default function BookingDialog({
       specialRequests: "",
     });
     setIsCalendarOpen(false);
+    setStep("form");
+    setPaymentRef(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -289,17 +331,8 @@ export default function BookingDialog({
       return;
     }
 
-    createBookingMutation.mutate({
-      fullName: formData.fullName,
-      email: formData.email,
-      phone: formData.phone,
-      numberOfTravelers: formData.numberOfTravelers,
-      travelDate: formData.travelDate!.toISOString(),
-      specialRequests: formData.specialRequests,
-      programId: program.documentId,
-      userId: user!.documentId,
-      totalAmount: totalAmount,
-    });
+    // Advance to payment step
+    setStep("payment");
   };
 
   const handleInputChange = (
@@ -322,148 +355,252 @@ export default function BookingDialog({
   const totalAmount = program.price * formData.numberOfTravelers;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    // Prevent closing dialog while payment is processing
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!isProcessingPayment) onClose(); }}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Book Your Tour</DialogTitle>
+          <DialogTitle>
+            {step === "form" ? "Book Your Tour" : "Complete Payment"}
+          </DialogTitle>
           <DialogDescription>
-            Complete the form below to book <strong>{program.title}</strong>
+            {step === "form"
+              ? <>Complete the form below to book <strong>{program.title}</strong></>
+              : <>Secure online payment for <strong>{program.title}</strong></>}
           </DialogDescription>
         </DialogHeader>
 
-        <PaymentComingSoonBanner />
+        {/* Step 1: Booking Form */}
+        {step === "form" && (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <FormField id="fullName" label="Full Name" required>
+              <Input
+                id="fullName"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                placeholder="Enter your full name"
+                required
+              />
+            </FormField>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <FormField id="fullName" label="Full Name" required>
-            <Input
-              id="fullName"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleInputChange}
-              placeholder="Enter your full name"
-              required
-            />
-          </FormField>
+            <FormField id="email" label="Email" required>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Enter your email"
+                required
+              />
+            </FormField>
 
-          <FormField id="email" label="Email" required>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              placeholder="Enter your email"
-              required
-            />
-          </FormField>
+            <FormField id="phone" label="Phone Number" required>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="+20 123 456 7890"
+                required
+              />
+            </FormField>
 
-          <FormField id="phone" label="Phone Number" required>
-            <Input
-              id="phone"
-              name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleInputChange}
-              placeholder="+20 123 456 7890"
-              required
-            />
-          </FormField>
+            <FormField id="numberOfTravelers" label="Number of Travelers" required>
+              <Input
+                id="numberOfTravelers"
+                name="numberOfTravelers"
+                type="number"
+                min="1"
+                max="50"
+                value={formData.numberOfTravelers}
+                onChange={handleInputChange}
+                required
+              />
+            </FormField>
 
-          <FormField id="numberOfTravelers" label="Number of Travelers" required>
-            <Input
-              id="numberOfTravelers"
-              name="numberOfTravelers"
-              type="number"
-              min="1"
-              max="50"
-              value={formData.numberOfTravelers}
-              onChange={handleInputChange}
-              required
-            />
-          </FormField>
-
-          <FormField id="travelDate" label="Preferred Travel Date" required>
-            <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  id="travelDate"
-                  className="w-full justify-between font-normal h-11"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsCalendarOpen(!isCalendarOpen);
-                  }}
+            <FormField id="travelDate" label="Preferred Travel Date" required>
+              <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    id="travelDate"
+                    className="w-full justify-between font-normal h-11"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsCalendarOpen(!isCalendarOpen);
+                    }}
+                  >
+                    {formData.travelDate ? (
+                      format(formData.travelDate, "PPP")
+                    ) : (
+                      <span className="text-muted-foreground">Select date</span>
+                    )}
+                    <ChevronDownIcon className="h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto overflow-hidden p-0"
+                  align="center"
+                  onOpenAutoFocus={(e) => e.preventDefault()}
                 >
-                  {formData.travelDate ? (
-                    format(formData.travelDate, "PPP")
-                  ) : (
-                    <span className="text-muted-foreground">Select date</span>
-                  )}
-                  <ChevronDownIcon className="h-4 w-4 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="w-auto overflow-hidden p-0"
-                align="center"
-                onOpenAutoFocus={(e) => e.preventDefault()}
-              >
-                <Calendar
-                  mode="single"
-                  selected={formData.travelDate}
-                  captionLayout="dropdown"
-                  onSelect={handleDateSelect}
-                  disabled={(date: Date) => {
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    return date < today;
-                  }}
-                  fromYear={new Date().getFullYear()}
-                  toYear={new Date().getFullYear() + 10}
-                  defaultMonth={formData.travelDate || new Date()}
-                />
-              </PopoverContent>
-            </Popover>
-          </FormField>
+                  <Calendar
+                    mode="single"
+                    selected={formData.travelDate}
+                    captionLayout="dropdown"
+                    onSelect={handleDateSelect}
+                    disabled={(date: Date) => {
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      return date < today;
+                    }}
+                    fromYear={new Date().getFullYear()}
+                    toYear={new Date().getFullYear() + 10}
+                    defaultMonth={formData.travelDate || new Date()}
+                  />
+                </PopoverContent>
+              </Popover>
+            </FormField>
 
-          <FormField id="specialRequests" label="Special Requests (Optional)">
-            <Textarea
-              id="specialRequests"
-              name="specialRequests"
-              value={formData.specialRequests}
-              onChange={handleInputChange}
-              placeholder="Any dietary restrictions, accessibility needs, or special requests..."
-              rows={4}
+            <FormField id="specialRequests" label="Special Requests (Optional)">
+              <Textarea
+                id="specialRequests"
+                name="specialRequests"
+                value={formData.specialRequests}
+                onChange={handleInputChange}
+                placeholder="Any dietary restrictions, accessibility needs, or special requests..."
+                rows={3}
+              />
+            </FormField>
+
+            <PriceSummary
+              pricePerPerson={program.price}
+              numberOfTravelers={formData.numberOfTravelers}
+              totalAmount={totalAmount}
             />
-          </FormField>
 
-          <PriceSummary
-            pricePerPerson={program.price}
-            numberOfTravelers={formData.numberOfTravelers}
-            totalAmount={totalAmount}
-          />
+            <DialogFooter className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+              >
+                Cancel
+              </Button>
+              <Button type="submit">
+                Proceed to Payment →
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
 
-          <DialogFooter className="flex gap-2">
+        {/* Step 2: PayPal Payment */}
+        {step === "payment" && (
+          <div className="space-y-5">
+            {/* Order summary card */}
+            <div className="rounded-xl border bg-muted/40 p-4 space-y-3">
+              <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                <ShieldCheck className="w-4 h-4 text-green-500" />
+                Order Summary
+              </div>
+              <div className="space-y-1.5 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Tour</span>
+                  <span className="font-medium">{program.title}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Traveler(s)</span>
+                  <span className="font-medium">{formData.numberOfTravelers}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Date</span>
+                  <span className="font-medium">
+                    {formData.travelDate ? format(formData.travelDate, "PPP") : "—"}
+                  </span>
+                </div>
+                <div className="flex justify-between border-t pt-2 mt-1">
+                  <span className="font-bold">Total</span>
+                  <span className="font-bold text-primary text-base">${totalAmount.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+
+            {isProcessingPayment ? (
+              <div className="flex flex-col items-center gap-3 py-8">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <p className="text-sm text-muted-foreground">Confirming your booking…</p>
+                <p className="text-xs text-muted-foreground">Please don&apos;t close this window.</p>
+              </div>
+            ) : (
+              <>
+                <p className="text-xs text-center text-muted-foreground">
+                  🔒 Payments are securely processed by PayPal. Pay with your PayPal account or any credit/debit card.
+                </p>
+                <PayPalPayment
+                  amount={totalAmount}
+                  currency="USD"
+                  onSuccess={handlePayPalSuccess}
+                  onError={handlePayPalError}
+                  onCancel={handlePayPalCancel}
+                />
+              </>
+            )}
+
             <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={createBookingMutation.isPending}
+              variant="ghost"
+              size="sm"
+              className="w-full"
+              onClick={() => setStep("form")}
+              disabled={isProcessingPayment}
             >
-              Cancel
+              <ArrowLeft className="w-4 h-4 mr-1" /> Back to booking details
             </Button>
-            <Button type="submit" disabled={createBookingMutation.isPending}>
-              {createBookingMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Submitting...
-                </>
-              ) : (
-                "Confirm Booking"
+          </div>
+        )}
+
+        {/* Step 3: Error Recovery (payment captured, booking creation failed) */}
+        {step === "error" && (
+          <div className="space-y-5">
+            <div className="rounded-xl border border-destructive/40 bg-destructive/5 p-5 space-y-4">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-destructive">Payment received, but booking failed</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Your payment was successfully captured by PayPal, but we encountered an error creating your booking record.
+                    <strong> You have NOT been charged twice.</strong>
+                  </p>
+                </div>
+              </div>
+
+              {paymentRef && (
+                <div className="rounded-lg bg-muted p-3 space-y-1">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">PayPal Reference ID</p>
+                  <p className="font-mono text-sm font-medium break-all select-all">{paymentRef}</p>
+                </div>
               )}
-            </Button>
-          </DialogFooter>
-        </form>
+
+              <p className="text-sm text-muted-foreground">
+                Please contact us with this reference ID and we will manually confirm your booking within 24 hours.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Button
+                className="w-full"
+                onClick={() => {
+                  const msg = `Hi, I paid via PayPal (Ref: ${paymentRef}) for ${program.title} but my booking was not confirmed. Please help.`;
+                  window.open(`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '201030354067'}?text=${encodeURIComponent(msg)}`, '_blank');
+                }}
+              >
+                <Phone className="w-4 h-4 mr-2" /> Contact Us on WhatsApp
+              </Button>
+              <Button variant="outline" onClick={onClose}>Close</Button>
+            </div>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
