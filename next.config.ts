@@ -81,13 +81,13 @@ const nextConfig: NextConfig = {
             value: process.env.NODE_ENV === "production"
               ? [
                   "default-src 'self'",
-                  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google-analytics.com https://www.googletagmanager.com https://www.instagram.com https://translate.google.com https://translate.googleapis.com",
+                  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google-analytics.com https://www.googletagmanager.com https://www.instagram.com https://translate.google.com https://translate.googleapis.com https://www.paypal.com https://www.sandbox.paypal.com",
                   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://cdn.jsdelivr.net",
                   "img-src 'self' data: blob: https:",
                   "font-src 'self' data: https://fonts.gstatic.com",
-                  "connect-src 'self' https://dashboard.zoeholidays.com https://www.google-analytics.com https://graph.instagram.com https://*.cdninstagram.com https://*.fbcdn.net https://translate.googleapis.com",
+                  "connect-src 'self' https://dashboard.zoeholidays.com https://www.google-analytics.com https://graph.instagram.com https://*.cdninstagram.com https://*.fbcdn.net https://translate.googleapis.com https://www.paypal.com https://www.sandbox.paypal.com",
                   "media-src 'self' blob: data: https:",
-                  "frame-src 'self' https://www.google.com https://www.instagram.com https://www.youtube.com https://translate.google.com",
+                  "frame-src 'self' https://www.google.com https://www.instagram.com https://www.youtube.com https://translate.google.com https://www.paypal.com https://www.sandbox.paypal.com",
                   "worker-src 'self' blob:",
                   "object-src 'none'",
                   "base-uri 'self'",
