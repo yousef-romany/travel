@@ -50,13 +50,14 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Set secure httpOnly cookie
+    // ✅ Auto-confirm: no email verification step.
+    // Set cookie immediately so the user is logged in right after registration.
     const cookieStore = await cookies()
     cookieStore.set('authToken', data.jwt, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
       path: '/',
     })
 

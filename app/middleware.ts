@@ -6,7 +6,6 @@ const PROTECTED_ROUTES = [
   '/me',
   '/invoices',
   '/edit-profile',
-  '/complete-profile',
   '/booking',
   '/wishlist',
   '/promo-codes',

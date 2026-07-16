@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // ✅ SIGNUP — calls server route that sets httpOnly cookie
+  // ✅ SIGNUP — auto-confirms, no email verification step
   const signup = async (email: string, password: string, referralCode?: string) => {
     const res = await fetch("/api/auth/register", {
       method: "POST",
@@ -98,8 +98,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const data = await res.json();
     if (!res.ok) throw new Error(data?.error || "Signup failed");
 
+    // Cookie already set server-side — hydrate client state
     setUser(data.user);
-    router.push("/email-confirmation");
+    // Send to profile setup wizard (can be skipped)
+    router.push("/complete-profile");
   };
 
   // ✅ FORGOT PASSWORD — now properly surfaces errors

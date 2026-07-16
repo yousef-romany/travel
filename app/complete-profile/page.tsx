@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { CheckCircle, ArrowLeft } from "lucide-react";
+import { CheckCircle, ArrowLeft, ArrowRight, SkipForward, User, Globe, Shield } from "lucide-react";
 import { FormField } from "@/components/form-field";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,576 +20,509 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useAuth } from "@/context/AuthContext";
-import { validateCompleteProfile } from "@/lib/validation";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-const MotionButton = motion(Button);
+const MotionDiv = motion.div;
 
-// ---------------- Countries List ----------------
+// ── Countries ──────────────────────────────────────────────
 const COUNTRIES = [
-  "Afghanistan",
-  "Albania",
-  "Algeria",
-  "Andorra",
-  "Angola",
-  "Antigua and Barbuda",
-  "Argentina",
-  "Armenia",
-  "Aruba",
-  "Australia",
-  "Austria",
-  "Azerbaijan",
-  "Bahamas",
-  "Bahrain",
-  "Bangladesh",
-  "Barbados",
-  "Belarus",
-  "Belgium",
-  "Belize",
-  "Benin",
-  "Bhutan",
-  "Bolivia",
-  "Bosnia and Herzegovina",
-  "Botswana",
-  "Brazil",
-  "Brunei",
-  "Bulgaria",
-  "Burkina Faso",
-  "Burundi",
-  "Cabo Verde",
-  "Cambodia",
-  "Cameroon",
-  "Canada",
-  "Central African Republic",
-  "Chad",
-  "Chile",
-  "China",
-  "Colombia",
-  "Comoros",
-  "Congo, Republic of the",
-  "Congo, Democratic Republic of the",
-  "Costa Rica",
-  "Côte d'Ivoire",
-  "Croatia",
-  "Cuba",
-  "Curaçao",
-  "Cyprus",
-  "Czechia",
-  "Denmark",
-  "Djibouti",
-  "Dominica",
-  "Dominican Republic",
-  "Ecuador",
-  "Egypt",
-  "El Salvador",
-  "Equatorial Guinea",
-  "Eritrea",
-  "Estonia",
-  "Eswatini",
-  "Ethiopia",
-  "Fiji",
-  "Finland",
-  "France",
-  "Gabon",
-  "Gambia",
-  "Georgia",
-  "Germany",
-  "Ghana",
-  "Greece",
-  "Grenada",
-  "Guatemala",
-  "Guinea",
-  "Guinea-Bissau",
-  "Guyana",
-  "Haiti",
-  "Honduras",
-  "Hong Kong",
-  "Hungary",
-  "Iceland",
-  "India",
-  "Indonesia",
-  "Iran",
-  "Iraq",
-  "Ireland",
-  "Israel",
-  "Italy",
-  "Jamaica",
-  "Japan",
-  "Jordan",
-  "Kazakhstan",
-  "Kenya",
-  "Kuwait",
-  "Kyrgyzstan",
-  "Laos",
-  "Latvia",
-  "Lebanon",
-  "Lesotho",
-  "Liberia",
-  "Libya",
-  "Lithuania",
-  "Luxembourg",
-  "Madagascar",
-  "Malawi",
-  "Malaysia",
-  "Maldives",
-  "Mali",
-  "Malta",
-  "Mauritania",
-  "Mauritius",
-  "Mexico",
-  "Moldova",
-  "Monaco",
-  "Mongolia",
-  "Montenegro",
-  "Morocco",
-  "Mozambique",
-  "Myanmar",
-  "Namibia",
-  "Nepal",
-  "Netherlands",
-  "New Zealand",
-  "Nicaragua",
-  "Niger",
-  "Nigeria",
-  "North Macedonia",
-  "Norway",
-  "Oman",
-  "Pakistan",
-  "Panama",
-  "Paraguay",
-  "Peru",
-  "Philippines",
-  "Poland",
-  "Portugal",
-  "Qatar",
-  "Romania",
-  "Russia",
-  "Rwanda",
-  "Saudi Arabia",
-  "Senegal",
-  "Serbia",
-  "Seychelles",
-  "Sierra Leone",
-  "Singapore",
-  "Slovakia",
-  "Slovenia",
-  "Somalia",
-  "South Africa",
-  "South Korea",
-  "Spain",
-  "Sri Lanka",
-  "Sudan",
-  "Suriname",
-  "Sweden",
-  "Switzerland",
-  "Syria",
-  "Taiwan",
-  "Tajikistan",
-  "Tanzania",
-  "Thailand",
-  "Togo",
-  "Trinidad and Tobago",
-  "Tunisia",
-  "Turkey",
-  "Uganda",
-  "Ukraine",
-  "United Arab Emirates",
-  "United Kingdom",
-  "United States",
-  "Uruguay",
-  "Uzbekistan",
-  "Vatican City",
-  "Venezuela",
-  "Vietnam",
-  "Yemen",
-  "Zambia",
-  "Zimbabwe",
+  "Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina",
+  "Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Belarus",
+  "Belgium","Bolivia","Bosnia and Herzegovina","Brazil","Bulgaria","Cambodia","Canada",
+  "Chile","China","Colombia","Croatia","Cuba","Cyprus","Czechia","Denmark","Ecuador",
+  "Egypt","Estonia","Ethiopia","Finland","France","Georgia","Germany","Ghana","Greece",
+  "Guatemala","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel",
+  "Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kuwait","Lebanon","Libya",
+  "Lithuania","Luxembourg","Malaysia","Maldives","Malta","Mexico","Moldova","Morocco",
+  "Myanmar","Nepal","Netherlands","New Zealand","Nigeria","Norway","Oman","Pakistan",
+  "Panama","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia",
+  "Saudi Arabia","Senegal","Serbia","Singapore","Slovakia","Slovenia","Somalia",
+  "South Africa","South Korea","Spain","Sri Lanka","Sudan","Sweden","Switzerland",
+  "Syria","Taiwan","Tanzania","Thailand","Tunisia","Turkey","Uganda","Ukraine",
+  "United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan",
+  "Venezuela","Vietnam","Yemen","Zambia","Zimbabwe",
 ];
 
-// ---------------- Page ----------------
+// ── Steps definition ──────────────────────────────────────
+const STEPS = [
+  {
+    id: "personal",
+    title: "Personal Info",
+    subtitle: "Tell us about yourself",
+    icon: User,
+    required: true,
+  },
+  {
+    id: "travel",
+    title: "Travel Details",
+    subtitle: "For bookings & visas",
+    icon: Globe,
+    required: false,
+  },
+  {
+    id: "emergency",
+    title: "Emergency Contact",
+    subtitle: "Required for group tours",
+    icon: Shield,
+    required: false,
+  },
+];
+
+// ── Component ─────────────────────────────────────────────
 export default function CompleteProfilePage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const [step, setStep] = useState(0);
+  const [direction, setDirection] = useState(1); // 1 = forward, -1 = back
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
 
   const [formData, setFormData] = useState({
+    // Step 1 — required
     firstName: "",
     lastName: "",
     phone: "",
     dateOfBirth: "",
     nationality: "",
+    // Step 2 — optional
     passportNumber: "",
     passportExpiry: "",
     address: "",
     city: "",
     country: "",
     zipCode: "",
+    // Step 3 — optional
     emergencyContactName: "",
     emergencyContactPhone: "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
   const [countryOpen, setCountryOpen] = useState(false);
   const [countryQuery, setCountryQuery] = useState("");
 
-  // ✅ Prevent redirect loop
-  useEffect(() => {
-    if (!authLoading && !user?.token) {
-      window.location.href = "/login";
-    }
-  }, [authLoading, user]);
-
   const filteredCountries = countryQuery
-    ? COUNTRIES.filter((c) =>
-      c.toLowerCase().includes(countryQuery.toLowerCase())
-    )
+    ? COUNTRIES.filter((c) => c.toLowerCase().includes(countryQuery.toLowerCase()))
     : COUNTRIES;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  const handleSelectCountry = (c: string) => {
-    setFormData({ ...formData, country: c });
-    setCountryOpen(false);
-    setCountryQuery("");
-  };
+  // ── Validate only the current step ──
+  const validateStep = () => {
+    const newErrors: Record<string, string> = {};
 
-  // ---------------- Submit ----------------
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    setErrors({});
-
-    // Validate form data
-    const validation = validateCompleteProfile(formData);
-    if (!validation.isValid) {
-      setErrors(validation.errors);
-      toast.error("Please fix the errors in the form");
-      return;
+    if (step === 0) {
+      if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+      if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+      if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
     }
 
-    setLoading(true);
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
+  const goNext = () => {
+    if (!validateStep()) return;
+    setDirection(1);
+    setStep((s) => Math.min(s + 1, STEPS.length - 1));
+  };
+
+  const goBack = () => {
+    setDirection(-1);
+    setStep((s) => Math.max(s - 1, 0));
+  };
+
+  // ── Save whatever we have (partial or complete) ──
+  const saveProfile = async (markCompleted: boolean) => {
+    if (!user?.token) return router.push("/login");
+
+    setSubmitting(true);
     try {
-      const token = user?.token;
-      if (!token) return (window.location.href = "/login");
-
-      console.log("Current User:", user); // Debug user object
-      const userId = user.documentId || user.id;
-      if (!userId) {
-        toast.error("User ID missing. Please login again.");
-        return;
-      }
-
-      // 1. Check if profile exists
       const me = await fetch(
         `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me?populate=profile`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${user.token}` } }
       ).then((r) => r.json());
 
-      let profileId;
+      const payload = {
+        ...formData,
+        isProfileCompleted: markCompleted,
+      };
 
-      // 2. Create profile if not found
       if (!me.profile) {
+        // Create
         const created = await fetch(
           `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles`,
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              data: {
-                ...formData,
-                isProfileCompleted: true,
-              },
-            }),
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` },
+            body: JSON.stringify({ data: payload }),
           }
         ).then(async (r) => {
-          const res = await r.json();
-          if (!r.ok) {
-            console.error("Create Profile Error:", res);
-            throw res.error || new Error("Failed to create profile");
-          }
-          return res;
+          const d = await r.json();
+          if (!r.ok) throw new Error(d?.error?.message || "Failed to create profile");
+          return d;
         });
 
-        if (!created.data) throw new Error("create-failed");
-
-        profileId = created.data.documentId;
-
-        // 4. Link Profile to User (Since Profile -> User failed)
-        await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/${user.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            profile: profileId
-          }),
-        });
-
+        const profileId = created.data?.documentId;
+        if (profileId) {
+          await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/${user.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` },
+            body: JSON.stringify({ profile: profileId }),
+          });
+        }
       } else {
-        // 3. Update existing profile
-        profileId = me.profile.documentId;
-
+        // Update
         await fetch(
-          `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles/${profileId}`,
+          `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles/${me.profile.documentId}`,
           {
             method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              data: {
-                ...formData,
-                isProfileCompleted: true,
-              },
-            }),
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` },
+            body: JSON.stringify({ data: payload }),
           }
-        );
+        ).then(async (r) => {
+          if (!r.ok) {
+            const d = await r.json();
+            throw new Error(d?.error?.message || "Failed to update profile");
+          }
+        });
       }
 
-      setSuccess(true);
-      setTimeout(() => (window.location.href = "/"), 1000);
-
+      setDone(true);
+      setTimeout(() => router.push("/"), 1200);
     } catch (err: any) {
-      console.error("Full Error Object:", err);
-      let msg = "Error updating/creating profile";
-
-      // 1. Check for standard Error object
-      if (err instanceof Error) {
-        msg = err.message;
-      }
-      // 2. Check for Strapi error format
-      else if (err?.error?.message) {
-        msg = err.error.message;
-      }
-      // 3. Check for Strapi detailed validation errors
-      else if (err?.data?.error?.message) {
-        msg = err.data.error.message;
-      }
-
-      toast.error(msg);
+      toast.error(err?.message || "Error saving profile. Please try again.");
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
-  if (success)
+  const handleFinish = () => {
+    if (!validateStep()) return;
+    saveProfile(true);
+  };
+
+  const handleSkipAll = () => {
+    // Allow user to explore — save what they've filled so far (if anything)
+    const hasAnyData = formData.firstName || formData.phone;
+    if (hasAnyData) {
+      saveProfile(false); // partial save, not marked completed
+    } else {
+      router.push("/programs"); // go explore directly
+    }
+  };
+
+  // ── Success screen ──
+  if (done) {
     return (
-      <div className="min-h-screen flex justify-center items-center text-primary">
-        <CheckCircle size={72} />
-        <p className="ml-3 text-2xl font-semibold">Profile Completed!</p>
+      <div className="min-h-screen flex flex-col justify-center items-center gap-4 text-primary">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 200 }}
+        >
+          <CheckCircle size={80} />
+        </motion.div>
+        <p className="text-2xl font-semibold">Profile Saved!</p>
+        <p className="text-muted-foreground">Taking you home...</p>
       </div>
     );
+  }
+
+  // ── Variants for slide animation ──
+  const variants = {
+    enter: (dir: number) => ({ x: dir > 0 ? 60 : -60, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: number) => ({ x: dir > 0 ? -60 : 60, opacity: 0 }),
+  };
 
   return (
     <div className="min-h-screen py-12 bg-gradient-to-br from-background to-muted flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Glow background */}
+      {/* Glow */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="absolute top-10 right-16 w-72 h-72 bg-primary/50 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-10 left-16 w-72 h-72 bg-primary/60 rounded-full blur-[120px]"></div>
+        <div className="absolute top-10 right-16 w-72 h-72 bg-primary/50 rounded-full blur-[120px]" />
+        <div className="absolute bottom-10 left-16 w-72 h-72 bg-primary/60 rounded-full blur-[120px]" />
       </div>
 
-      <motion.div className="w-full max-w-4xl bg-card/80 backdrop-blur-sm p-10 rounded-2xl border border-primary/20 shadow-2xl">
-        <form onSubmit={handleSubmit} className="space-y-12">
-          {/* PERSONAL */}
-          <div className="grid grid-cols-2 gap-6">
-            <FormField
-              label="First Name"
-              placeholder="Joe"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-              error={errors.firstName}
-            />
-            <FormField
-              label="Last Name"
-              placeholder="Romany"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-              error={errors.lastName}
-            />
-            <FormField
-              label="Phone Number"
-              placeholder="+20 10 123 4567"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-              error={errors.phone}
-            />
-            <FormField
-              type="date"
-              label="Date of Birth"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-              required
-              error={errors.dateOfBirth}
-            />
-            <FormField
-              label="Nationality"
-              placeholder="Egyptian"
-              name="nationality"
-              value={formData.nationality}
-              onChange={handleChange}
-              required
-              error={errors.nationality}
-            />
-          </div>
+      <div className="w-full max-w-2xl">
 
-          {/* PASSPORT */}
-          <div className="grid grid-cols-2 gap-6">
-            <FormField
-              label="Passport Number"
-              placeholder="A12345678"
-              name="passportNumber"
-              value={formData.passportNumber}
-              onChange={handleChange}
-              required
-              error={errors.passportNumber}
-            />
-            <FormField
-              type="date"
-              label="Passport Expiry"
-              name="passportExpiry"
-              value={formData.passportExpiry}
-              onChange={handleChange}
-              required
-              error={errors.passportExpiry}
-            />
-          </div>
+        {/* ── Header ── */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-1">Complete Your Profile</h1>
+          <p className="text-muted-foreground text-sm">
+            This helps us personalise your travel experience. You can skip and do it later.
+          </p>
+        </div>
 
-          {/* ADDRESS */}
-          <div className="grid grid-cols-2 gap-6">
-            <FormField
-              label="Street Address"
-              placeholder="12 Garden St"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              required
-              error={errors.address}
-            />
-            <FormField
-              label="City"
-              placeholder="Cairo"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              required
-              error={errors.city}
-            />
+        {/* ── Step Indicators ── */}
+        <div className="flex items-center justify-center gap-3 mb-8">
+          {STEPS.map((s, i) => {
+            const Icon = s.icon;
+            const isActive = i === step;
+            const isDone = i < step;
+            return (
+              <React.Fragment key={s.id}>
+                <div className="flex flex-col items-center gap-1">
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                      isDone
+                        ? "bg-primary border-primary text-primary-foreground"
+                        : isActive
+                        ? "border-primary text-primary bg-primary/10"
+                        : "border-muted-foreground/30 text-muted-foreground/50"
+                    }`}
+                  >
+                    {isDone ? <CheckCircle size={18} /> : <Icon size={18} />}
+                  </div>
+                  <span
+                    className={`text-xs font-medium hidden sm:block ${
+                      isActive ? "text-primary" : isDone ? "text-primary/70" : "text-muted-foreground/50"
+                    }`}
+                  >
+                    {s.title}
+                  </span>
+                </div>
+                {i < STEPS.length - 1 && (
+                  <div
+                    className={`flex-1 h-0.5 rounded-full transition-all duration-500 ${
+                      i < step ? "bg-primary" : "bg-muted-foreground/20"
+                    }`}
+                  />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
 
-            {/* COUNTRY DROPDOWN */}
-            <div>
-              <label className="text-sm text-primary">Country</label>
-              <Popover open={countryOpen} onOpenChange={setCountryOpen}>
-                <PopoverTrigger asChild>
-                  <button className={`w-full px-4 py-3 rounded-xl text-primary border border-primary/20 text-left ${errors.country ? "border-destructive" : ""
-                    }`}>
-                    {formData.country || "Select country..."}
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 w-[260px]">
-                  <Command>
-                    <CommandInput
-                      placeholder="Search..."
-                      value={countryQuery}
-                      onValueChange={setCountryQuery}
-                    />
-                    <CommandList>
-                      <CommandEmpty>No results.</CommandEmpty>
-                      <CommandGroup>
-                        {filteredCountries.map((c) => (
-                          <CommandItem
-                            key={c}
-                            onSelect={() => handleSelectCountry(c)}
-                          >
-                            {c}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              {errors.country && (
-                <p className="text-xs text-destructive mt-1">{errors.country}</p>
+        {/* ── Card ── */}
+        <div className="bg-card/80 backdrop-blur-sm border border-primary/20 rounded-2xl shadow-2xl overflow-hidden">
+          <AnimatePresence mode="wait" custom={direction}>
+            <MotionDiv
+              key={step}
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="p-8 space-y-6"
+            >
+              {/* Step header */}
+              <div className="mb-2">
+                <h2 className="text-xl font-bold">{STEPS[step].title}</h2>
+                <p className="text-muted-foreground text-sm">{STEPS[step].subtitle}</p>
+                {!STEPS[step].required && (
+                  <span className="inline-block mt-1 text-xs bg-amber-500/10 text-amber-500 border border-amber-500/20 px-2 py-0.5 rounded-full">
+                    Optional — you can skip this step
+                  </span>
+                )}
+              </div>
+
+              {/* ── Step 1: Personal Info ── */}
+              {step === 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <FormField
+                    label="First Name *"
+                    placeholder="Joe"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    error={errors.firstName}
+                  />
+                  <FormField
+                    label="Last Name *"
+                    placeholder="Smith"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    error={errors.lastName}
+                  />
+                  <FormField
+                    label="Phone Number *"
+                    placeholder="+20 10 123 4567"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    error={errors.phone}
+                  />
+                  <FormField
+                    type="date"
+                    label="Date of Birth"
+                    name="dateOfBirth"
+                    value={formData.dateOfBirth}
+                    onChange={handleChange}
+                  />
+                  <FormField
+                    label="Nationality"
+                    placeholder="Egyptian"
+                    name="nationality"
+                    value={formData.nationality}
+                    onChange={handleChange}
+                  />
+                </div>
+              )}
+
+              {/* ── Step 2: Travel Details ── */}
+              {step === 1 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <FormField
+                    label="Passport Number"
+                    placeholder="A12345678"
+                    name="passportNumber"
+                    value={formData.passportNumber}
+                    onChange={handleChange}
+                  />
+                  <FormField
+                    type="date"
+                    label="Passport Expiry"
+                    name="passportExpiry"
+                    value={formData.passportExpiry}
+                    onChange={handleChange}
+                  />
+                  <FormField
+                    label="Street Address"
+                    placeholder="12 Garden St"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                  />
+                  <FormField
+                    label="City"
+                    placeholder="Cairo"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                  />
+
+                  {/* Country dropdown */}
+                  <div>
+                    <label className="text-sm text-primary block mb-1">Country</label>
+                    <Popover open={countryOpen} onOpenChange={setCountryOpen}>
+                      <PopoverTrigger asChild>
+                        <button className="w-full px-4 py-3 rounded-xl text-foreground border border-primary/20 text-left hover:border-primary/50 transition-colors">
+                          {formData.country || "Select country..."}
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="p-0 w-[260px]">
+                        <Command>
+                          <CommandInput
+                            placeholder="Search..."
+                            value={countryQuery}
+                            onValueChange={setCountryQuery}
+                          />
+                          <CommandList>
+                            <CommandEmpty>No results.</CommandEmpty>
+                            <CommandGroup>
+                              {filteredCountries.map((c) => (
+                                <CommandItem
+                                  key={c}
+                                  onSelect={() => {
+                                    setFormData({ ...formData, country: c });
+                                    setCountryOpen(false);
+                                    setCountryQuery("");
+                                  }}
+                                >
+                                  {c}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <FormField
+                    label="Zip / Postal Code"
+                    placeholder="11511"
+                    name="zipCode"
+                    value={formData.zipCode}
+                    onChange={handleChange}
+                  />
+                </div>
+              )}
+
+              {/* ── Step 3: Emergency Contact ── */}
+              {step === 2 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <FormField
+                    label="Emergency Contact Name"
+                    placeholder="Mohamed Ali"
+                    name="emergencyContactName"
+                    value={formData.emergencyContactName}
+                    onChange={handleChange}
+                  />
+                  <FormField
+                    label="Emergency Contact Phone"
+                    placeholder="+20 11 987 6543"
+                    name="emergencyContactPhone"
+                    value={formData.emergencyContactPhone}
+                    onChange={handleChange}
+                  />
+                  <div className="col-span-full bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-sm text-blue-800 dark:text-blue-300">
+                    <p className="font-medium mb-1">Why do we ask this?</p>
+                    <p>Emergency contact details are required for group tours and travel insurance. They will never be shared publicly.</p>
+                  </div>
+                </div>
+              )}
+            </MotionDiv>
+          </AnimatePresence>
+
+          {/* ── Navigation ── */}
+          <div className="px-8 pb-8 flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              {step > 0 && (
+                <Button variant="outline" onClick={goBack} className="gap-2">
+                  <ArrowLeft size={16} /> Back
+                </Button>
+              )}
+
+              {step < STEPS.length - 1 ? (
+                <Button className="flex-1 gap-2" onClick={goNext}>
+                  Next <ArrowRight size={16} />
+                </Button>
+              ) : (
+                <Button
+                  className="flex-1 bg-gradient-to-r from-primary to-amber-600 gap-2"
+                  onClick={handleFinish}
+                  disabled={submitting}
+                >
+                  {submitting ? (
+                    <span className="flex items-center gap-2">
+                      <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                      Saving...
+                    </span>
+                  ) : (
+                    <><CheckCircle size={16} /> Complete Profile</>
+                  )}
+                </Button>
               )}
             </div>
 
-            <FormField
-              label="Zip Code"
-              placeholder="11511"
-              name="zipCode"
-              value={formData.zipCode}
-              onChange={handleChange}
-              required
-              error={errors.zipCode}
-            />
+            {/* ✅ Skip option — users can always browse first */}
+            <button
+              onClick={handleSkipAll}
+              className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors py-1"
+            >
+              <SkipForward size={14} />
+              {step === 0 ? "Skip for now — I'll explore first" : "Skip remaining steps"}
+            </button>
           </div>
+        </div>
 
-          {/* EMERGENCY CONTACT */}
-          <div className="grid grid-cols-2 gap-6">
-            <FormField
-              label="Emergency Contact Name"
-              placeholder="Mohamed Ali"
-              name="emergencyContactName"
-              value={formData.emergencyContactName}
-              onChange={handleChange}
-              required
-              error={errors.emergencyContactName}
-            />
-            <FormField
-              label="Emergency Contact Phone"
-              placeholder="+20 11 987 6543"
-              name="emergencyContactPhone"
-              value={formData.emergencyContactPhone}
-              onChange={handleChange}
-              required
-              error={errors.emergencyContactPhone}
-            />
-          </div>
-
-          {/* SUBMIT */}
-          <MotionButton
-            whileHover={{ scale: loading ? 1 : 1.04 }}
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 text-lg font-semibold bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors"
-          >
-            {loading ? (
-              <div className="flex justify-center items-center gap-2">
-                <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></span>
-                Saving...
-              </div>
-            ) : (
-              "Complete Profile"
-            )}
-          </MotionButton>
-        </form>
-
-        <Link
-          href="/signup"
-          className="block text-center mt-6 text-primary hover:text-primary/80 transition-colors"
-        >
-          <ArrowLeft size={16} className="inline mr-1" /> Back to Signup
-        </Link>
-      </motion.div>
+        {/* Bottom note */}
+        <p className="text-center text-xs text-muted-foreground mt-4">
+          You can always complete your profile later from{" "}
+          <Link href="/me" className="text-primary hover:underline">
+            My Account
+          </Link>
+          .
+        </p>
+      </div>
     </div>
   );
 }
