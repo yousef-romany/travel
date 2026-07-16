@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "https://dashboard.zoeholidays.com";
-const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_TOKEN || "";
+// ✅ PAY-01: STRAPI_TOKEN removed from client — sensitive ops go through /api/* server routes
 
 export interface BookingType {
   id: number;
@@ -104,9 +104,10 @@ export const fetchUserBookings = async (
 
     const response = await axios.get(url, {
       headers: {
-        Authorization: `Bearer ${API_TOKEN || authToken}`,
+        // User JWT only — no server token on client
+        Authorization: `Bearer ${authToken}`,
       },
-      timeout: 10000, // 10 second timeout
+      timeout: 10000,
     });
 
     return response.data;
@@ -215,7 +216,7 @@ export const createBooking = async (bookingData: {
       },
       {
         headers: {
-          Authorization: `Bearer ${authToken || API_TOKEN}`,
+          Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",
         },
       }
@@ -236,10 +237,11 @@ export const fetchBookingById = async (
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
     const response = await axios.get(
-      `${API_URL}/api/bookings/${bookingId}?populate[program][populate][0]=images&populate[plan_trip][fields][0]=tripName&populate[plan_trip][fields][1]=totalPrice&populate[event][populate][0]=featuredImage`,
+      // ✅ PAY-03: Also populate user so success page can verify ownership
+      `${API_URL}/api/bookings/${bookingId}?populate[program][populate][0]=images&populate[plan_trip][fields][0]=tripName&populate[plan_trip][fields][1]=totalPrice&populate[event][populate][0]=featuredImage&populate[user][fields][0]=id`,
       {
         headers: {
-          Authorization: `Bearer ${authToken || API_TOKEN}`,
+          Authorization: `Bearer ${authToken}`,
         },
       }
     );
@@ -266,7 +268,7 @@ export const updateBookingStatus = async (
       },
       {
         headers: {
-          Authorization: `Bearer ${authToken || API_TOKEN}`,
+          Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",
         },
       }
@@ -312,7 +314,7 @@ export const cancelBooking = async (
   }
 };
 
-// Verify payment and create booking
+// ✅ PAY-01: verifyBookingPayment now calls the Next.js API route (server-side STRAPI_TOKEN)
 export const verifyBookingPayment = async (
   orderID: string,
   bookingData: {
@@ -335,9 +337,6 @@ export const verifyBookingPayment = async (
   }
 ): Promise<{ data: BookingType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const payload: Record<string, unknown> = {
       fullName: bookingData.fullName,
       email: bookingData.email,
@@ -354,24 +353,16 @@ export const verifyBookingPayment = async (
       ...(bookingData.selectedServices && { selectedServices: bookingData.selectedServices }),
     };
 
-    // Add relations
     if (bookingData.programId) payload.program = bookingData.programId;
     if (bookingData.planTripId) payload.plan_trip = bookingData.planTripId;
     if (bookingData.userId) payload.user = bookingData.userId;
     if (bookingData.customTripName) payload.customTripName = bookingData.customTripName;
 
+    // ✅ Calls /api/payments/verify — STRAPI_TOKEN stays on server
     const response = await axios.post(
-      `${API_URL}/api/bookings/verify-payment`,
-      {
-        orderID,
-        bookingData: payload,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${authToken || API_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
+      `/api/payments/verify`,
+      { orderID, bookingData: payload },
+      { headers: { "Content-Type": "application/json" } }
     );
 
     return response.data;
@@ -380,7 +371,7 @@ export const verifyBookingPayment = async (
   }
 };
 
-// Validate price before payment
+// ✅ PAY-01: validateBookingPrice now calls the Next.js API route
 export const validateBookingPrice = async (
   expectedPrice: number,
   numberOfTravelers: number,
@@ -389,35 +380,20 @@ export const validateBookingPrice = async (
   planTripId?: string
 ): Promise<{ valid: boolean; currentPrice: number; expectedPrice: number; message?: string }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const response = await axios.post(
-      `${API_URL}/api/bookings/validate-price`,
-      {
-        programId,
-        eventId,
-        planTripId,
-        expectedPrice,
-        numberOfTravelers
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${authToken || API_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
+      `/api/payments/validate`,
+      { programId, eventId, planTripId, expectedPrice, numberOfTravelers },
+      { headers: { "Content-Type": "application/json" } }
     );
 
     return response.data;
   } catch (error: any) {
     if (error.response?.status === 400) {
-      // Price has changed
       return {
         valid: false,
         currentPrice: error.response?.data?.currentPrice || 0,
         expectedPrice: error.response?.data?.expectedPrice || expectedPrice,
-        message: error.response?.data?.message || 'Price validation failed'
+        message: error.response?.data?.message || 'Price validation failed',
       };
     }
     throw error;

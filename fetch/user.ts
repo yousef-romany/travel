@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "https://dashboard.zoeholidays.com";
-const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_TOKEN || "";
+// ✅ DASH-04: No NEXT_PUBLIC_STRAPI_TOKEN — user token is passed in as parameter
 
 export interface UserProfile {
   id: number;
@@ -120,14 +120,12 @@ export const getUserProfile = async (userId: number, token: string): Promise<Use
 
 /**
  * Get user trips/bookings
- * For Strapi v5, fetch all bookings and filter client-side
- * Or use custom API endpoint if available
+ * ✅ DASH-04: Filters by userId server-side — no longer fetches all bookings
  */
 export const getUserTrips = async (userId: number, token: string): Promise<UserTrip[]> => {
   try {
-    // Fetch all bookings for authenticated user with proper population
-    // Fixed: Only populate fields that exist in plan_trip (no user, no startDate/endDate)
-    const url = `${API_URL}/api/bookings?populate[program][populate]=images&populate[plan_trip][fields][0]=tripName&populate[plan_trip][fields][1]=destinations&populate[plan_trip][fields][2]=totalPrice&populate[plan_trip][fields][3]=tripStatus&populate[event]=*&sort[0]=tripDate:desc`;
+    // Filter by user ID server-side — only this user's bookings are returned
+    const url = `${API_URL}/api/bookings?filters[user][id][$eq]=${userId}&populate[program][populate]=images&populate[plan_trip][fields][0]=tripName&populate[plan_trip][fields][1]=destinations&populate[plan_trip][fields][2]=totalPrice&populate[plan_trip][fields][3]=tripStatus&populate[event]=*&sort[0]=createdAt:desc`;
 
     const response = await axios.get(url, {
       headers: {
@@ -136,11 +134,8 @@ export const getUserTrips = async (userId: number, token: string): Promise<UserT
       },
     });
 
-    // Filter client-side to get only this user's bookings
-    const allBookings = response.data.data || [];
-    return allBookings.filter((booking: UserTrip) => (booking as any).user?.id === userId);
+    return response.data.data || [];
   } catch (error) {
-    // Return empty array if bookings collection doesn't exist yet
     return [];
   }
 };
@@ -167,11 +162,12 @@ export const getUserWishlist = async (token: string): Promise<UserWishlistItem[]
 
 /**
  * Get user invoices
- * For Strapi v5, fetch all invoices and filter client-side
+ * ✅ DASH-04: Filters by userId server-side
  */
 export const getUserInvoices = async (userId: number, token: string): Promise<UserInvoice[]> => {
   try {
-    const url = `${API_URL}/api/invoices?populate=booking.program&populate=user&sort=issueDate:desc`;
+    // Filter by user ID server-side
+    const url = `${API_URL}/api/invoices?filters[user][id][$eq]=${userId}&populate=booking.program&sort=issueDate:desc`;
 
     const response = await axios.get(url, {
       headers: {
@@ -180,11 +176,8 @@ export const getUserInvoices = async (userId: number, token: string): Promise<Us
       },
     });
 
-    // Filter client-side to get only this user's invoices
-    const allInvoices = response.data.data || [];
-    return allInvoices.filter((invoice: UserInvoice) => (invoice as any).user?.id === userId);
+    return response.data.data || [];
   } catch (error) {
-    // Return empty array if invoices collection doesn't exist yet
     return [];
   }
 };

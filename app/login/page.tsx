@@ -16,13 +16,14 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // ✅ AUTH-08: use a separate loadingBtn — not the global auth loading state
   const [loadingBtn, setLoadingBtn] = useState(false);
   const [error, setError] = useState("");
 
   const [showResend, setShowResend] = useState(false);
   const [resendStatus, setResendStatus] = useState<null | "sending" | "sent" | "failed">(null);
 
-  // ✅ لو المستخدم مسجّل → حوله على الصفحة المطلوبة أو /me
+  // ✅ If already authenticated, redirect away
   useEffect(() => {
     if (!loading && user) {
       const redirectUrl = searchParams.get("redirect") || "/me";
@@ -44,9 +45,10 @@ function LoginForm() {
     setError("");
 
     try {
-      await login(email, password);
+      // ✅ AUTH-04: Pass the redirect URL so AuthContext can honour it
+      const redirectUrl = searchParams.get("redirect") || "/";
+      await login(email, password, redirectUrl);
       trackAuth("login");
-      // 🚀 AuthContext بالفعل بيعمل redirect
     } catch (err: any) {
       const msg = err.message || "Invalid email or password";
 
@@ -56,9 +58,9 @@ function LoginForm() {
       } else {
         setError(msg);
       }
+    } finally {
+      setLoadingBtn(false);
     }
-
-    setLoadingBtn(false);
   };
 
   const handleResend = async () => {
@@ -120,7 +122,6 @@ function LoginForm() {
                   className="w-full px-4 py-3 rounded-lg bg-background text-forground outline-none border border-slate-700 focus:border-amber-500 transition-smooth"
                   required
                 />
-
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
@@ -137,13 +138,14 @@ function LoginForm() {
               </Link>
             </div>
 
+            {/* ✅ AUTH-08: disabled uses loadingBtn, not the global loading */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={loadingBtn}
               className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:brightness-110 disabled:opacity-50 text-slate-900 font-semibold rounded-lg transition-smooth flex justify-center items-center gap-2 animate-slide-up animate-delay-500 hover-glow"
             >
-              {loading && <Loader2 size={18} className="animate-spin" />}
-              {loading ? "Signing in..." : "Sign In"}
+              {loadingBtn && <Loader2 size={18} className="animate-spin" />}
+              {loadingBtn ? "Signing in..." : "Sign In"}
             </button>
           </form>
 
@@ -151,7 +153,7 @@ function LoginForm() {
           {showResend && (
             <div className="mt-6 bg-slate-800 p-4 rounded-lg text-center space-y-3 animate-slide-down">
               <p className="text-slate-300 text-sm">
-                Didn't receive the verification email?
+                Didn&apos;t receive the verification email?
               </p>
 
               <button
@@ -168,7 +170,7 @@ function LoginForm() {
           )}
 
           <p className="text-center text-slate-400 mt-6 animate-fade-in animate-delay-600">
-            Don't have an account?
+            Don&apos;t have an account?
             <Link href="/signup" className="text-amber-400 hover:text-amber-300 font-semibold"> Create one</Link>
           </p>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type UserProfile = {
   id: number;
@@ -13,9 +14,7 @@ type UserProfile = {
   country?: string;
   isProfileCompleted?: boolean;
   role?: string;
-  avatar?: {
-    url: string;
-  } | string;
+  avatar?: { url: string } | string;
 };
 
 type User = {
@@ -25,18 +24,19 @@ type User = {
   username: string;
   profile?: UserProfile;
   createdAt?: string;
-  token: string; // ✅ مهم
+  /** JWT kept in-memory only — never written to localStorage */
+  token: string;
 };
 
 type AuthContextType = {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, redirectUrl?: string) => Promise<void>;
   signup: (email: string, password: string, referralCode?: string) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   resetPassword: (code: string, password: string, passwordConfirmation: string) => Promise<void>;
   resendConfirmation: (email: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -44,153 +44,117 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-  // ✅ Load user on refresh
+  // ✅ Hydrate session on mount via httpOnly cookie (no localStorage)
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
-    const loadUser = async () => {
+    const checkSession = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me?populate=profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!res.ok) throw new Error();
-
-        const rawUser = await res.json();
-        setUser({ ...rawUser, token });
-      } catch (err) {
-        localStorage.removeItem("authToken");
+        const res = await fetch("/api/auth/me", { credentials: "include" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.user) setUser(data.user);
+        }
+      } catch {
+        // Network error — treat as logged out
       } finally {
         setLoading(false);
       }
     };
-
-    loadUser();
+    checkSession();
   }, []);
 
-  // ✅ LOGIN
-  const login = async (email: string, password: string) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/local`, {
+  // ✅ LOGIN — calls server route that sets httpOnly cookie
+  const login = async (email: string, password: string, redirectUrl = "/") => {
+    const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ identifier: email, password }),
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error(data?.error?.message || "Login failed");
+    if (!res.ok) throw new Error(data?.error || "Login failed");
 
-    localStorage.setItem("authToken", data.jwt);
+    setUser(data.user);
 
-    const userRes = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me?populate=profile`,
-      { headers: { Authorization: `Bearer ${data.jwt}` } }
-    );
-    const rawUser = await userRes.json();
-
-    setUser({ ...rawUser, token: data.jwt });
-
-    // ✅ Redirect
-    if (rawUser.profile?.isProfileCompleted) {
-      window.location.href = "/";
+    // ✅ Respect the ?redirect= param; fall through to profile check
+    if (!data.user.profile?.isProfileCompleted) {
+      router.push("/complete-profile");
     } else {
-      window.location.href = "/complete-profile";
+      router.push(redirectUrl);
     }
   };
 
-  // ✅ SIGNUP
+  // ✅ SIGNUP — calls server route that sets httpOnly cookie
   const signup = async (email: string, password: string, referralCode?: string) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/local/register`, {
+    const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: email, email, password }),
+      credentials: "include",
+      body: JSON.stringify({ email, password, referralCode }),
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error(data?.error?.message || "Signup failed");
+    if (!res.ok) throw new Error(data?.error || "Signup failed");
 
-    localStorage.setItem("authToken", data.jwt);
-
-    // Create profile
-    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/profiles`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${data.jwt}`,
-      },
-      body: JSON.stringify({
-        data: { user: data.user.id, isProfileCompleted: false },
-      }),
-    });
-
-    // If referral code provided, process it
-    if (referralCode) {
-      try {
-        await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/referrals/use-code`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${data.jwt}`,
-          },
-          body: JSON.stringify({
-            referralCode: referralCode,
-            newUserId: data.user.documentId,
-          }),
-        });
-      } catch (error) {
-        // Don't fail signup if referral code fails
-        // Silently continue - referral code is optional
-      }
-    }
-
-    setUser({ ...data.user, token: data.jwt });
-    window.location.href = "/email-confirmation";
+    setUser(data.user);
+    router.push("/email-confirmation");
   };
 
-  // ✅ Forgot Password
+  // ✅ FORGOT PASSWORD — now properly surfaces errors
   const forgotPassword = async (email: string) => {
-    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/forgot-password`, {
+    const res = await fetch("/api/auth/forgot-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data?.error || "Failed to send reset email");
+    }
   };
 
-  // ✅ Reset Password
-  const resetPassword = async (code: string, password: string, passwordConfirmation: string) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/reset-password`, {
+  // ✅ RESET PASSWORD — sets new session cookie via server route
+  const resetPassword = async (
+    code: string,
+    password: string,
+    passwordConfirmation: string
+  ) => {
+    const res = await fetch("/api/auth/reset-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ code, password, passwordConfirmation }),
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error?.message || "Reset failed");
+    if (!res.ok) throw new Error(data?.error || "Reset failed");
 
-    localStorage.setItem("authToken", data.jwt);
-
-    setUser({ ...data.user, token: data.jwt });
-    window.location.href = "/";
+    setUser(data.user);
+    router.push("/");
   };
 
-  // ✅ Resend Confirmation
+  // ✅ RESEND CONFIRMATION — now surfaces errors
   const resendConfirmation = async (email: string) => {
-    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/send-email-confirmation`, {
+    const res = await fetch("/api/auth/send-confirmation", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data?.error || "Failed to resend confirmation");
+    }
   };
 
-  // ✅ Logout
-  const logout = () => {
-    localStorage.removeItem("authToken");
+  // ✅ LOGOUT — clears httpOnly cookie server-side
+  const logout = async () => {
+    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
     setUser(null);
-    window.location.href = "/login";
+    router.push("/login");
   };
 
   return (

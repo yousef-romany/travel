@@ -10,121 +10,129 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LoyaltyDashboard } from "@/components/loyalty/LoyaltyDashboard";
 import { ReferralProgram } from "@/components/social/ReferralProgram";
 import { getMockLoyaltyData } from "@/lib/loyalty";
+import type { PointTransaction } from "@/lib/loyalty";
 import { getRecentlyViewed } from "@/lib/recently-viewed";
 import { Calendar, Heart, Clock, Award, MapPin, DollarSign, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserBookings, type BookingType } from "@/fetch/bookings";
-import { getUserStats, getUserWishlist } from "@/fetch/user";
+import { getUserStats, getUserWishlist, getLoyaltyData } from "@/fetch/user";
 import { getImageUrl } from "@/lib/utils";
 import TripsSection from "@/components/trips-section";
 import WishlistSection from "@/components/wishlist-section";
 
+// ✅ DASH-10: Proper type for loyalty data — uses PointTransaction from lib/loyalty
+type LoyaltyState = {
+  totalPoints: number;
+  lifetimeSpent: number;
+  bookingsCount: number;
+  earnedThisMonth: number;
+  history: PointTransaction[];
+  currentTier: string;
+};
+
 export default function DashboardPage() {
   const { user, loading } = useAuth();
-  const router = useRouter();
-  const [loyaltyData, setLoyaltyData] = useState<any>(null);
   const [recentlyViewed, setRecentlyViewed] = useState<any[]>([]);
 
-  // Fetch user bookings from Strapi
+  // Fetch user bookings
   const { data: bookingsData, isLoading: bookingsLoading, isError: bookingsError, error: bookingsErrorObj } = useQuery({
     queryKey: ["userBookings", user?.documentId],
     queryFn: () => fetchUserBookings(user?.documentId),
     enabled: !!user,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 2 * 60 * 1000,
   });
 
-  // Fetch user wishlist from Strapi
+  // ✅ DASH-02: Use user.token from context — not localStorage
   const { data: wishlistData, isLoading: wishlistLoading } = useQuery({
     queryKey: ["userWishlist"],
-    queryFn: async () => {
-      const authToken = localStorage.getItem("authToken");
-      if (!authToken) return [];
-      return getUserWishlist(authToken);
-    },
+    queryFn: () => getUserWishlist(user!.token),
     enabled: !!user,
     staleTime: 2 * 60 * 1000,
   });
 
-  // Fetch user stats from Strapi
+  // ✅ DASH-02: Use user.token from context
   const { data: userStats, isLoading: statsLoading } = useQuery({
     queryKey: ["userStats", user?.id],
-    queryFn: async () => {
-      const authToken = localStorage.getItem("authToken");
-      if (!authToken || !user) return null;
-      return getUserStats(user.id, authToken);
-    },
+    queryFn: () => getUserStats(user!.id, user!.token),
     enabled: !!user,
     staleTime: 2 * 60 * 1000,
   });
 
+  // ✅ DASH-03: Loyalty is its own isolated query — no useEffect waterfall
+  const { data: loyaltyRaw } = useQuery({
+    queryKey: ["loyaltyData", user?.id],
+    queryFn: () => getLoyaltyData(user!.token),
+    enabled: !!user,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // ✅ DASH-03: Compute loyaltyData from two queries — no useEffect dependency issue
+  const loyaltyData: LoyaltyState | null = loyaltyRaw
+    ? (() => {
+        const now = new Date();
+        const earnedThisMonth = (loyaltyRaw.history || [])
+          .filter((h) => {
+            const d = new Date(h.date);
+            return (
+              d.getMonth() === now.getMonth() &&
+              d.getFullYear() === now.getFullYear() &&
+              h.type === "earned"
+            );
+          })
+          .reduce((sum, h) => sum + h.amount, 0);
+
+        return {
+          totalPoints: loyaltyRaw.points,
+          lifetimeSpent: userStats?.totalSpent || 0,
+          bookingsCount: userStats?.totalTrips || 0,
+          earnedThisMonth,
+          // Map Strapi history shape → PointTransaction shape
+          history: (loyaltyRaw.history || []).map((h: any, i: number) => ({
+            id: h.id ?? String(i),
+            type: h.type,
+            amount: h.amount,
+            description: h.reason || h.description || "",
+            date: h.date,
+          })) as PointTransaction[],
+          currentTier: loyaltyRaw.tier,
+        };
+      })()
+    : userStats
+    ? (() => {
+        // Fallback mock when no loyalty record yet
+        const mock = getMockLoyaltyData(user!.id);
+        return {
+          ...mock,
+          lifetimeSpent: userStats.totalSpent || 0,
+          bookingsCount: userStats.totalTrips || 0,
+        };
+      })()
+    : null;
+
+  // Load recently viewed from localStorage (device-local by design)
   useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login?redirect=/dashboard");
-      return;
-    }
-
-
     if (user) {
-      // Load loyalty data
-      const token = localStorage.getItem("authToken");
-      if (token) {
-        import("@/fetch/user").then(async ({ getLoyaltyData }) => {
-          const fetchedLoyalty = await getLoyaltyData(token);
-
-          if (fetchedLoyalty) {
-            // Calculate earned this month
-            const now = new Date();
-            const earnedThisMonth = (fetchedLoyalty.history || [])
-              .filter(h => {
-                const d = new Date(h.date);
-                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && h.type === 'earned';
-              })
-              .reduce((sum, h) => sum + h.amount, 0);
-
-            setLoyaltyData({
-              totalPoints: fetchedLoyalty.points,
-              lifetimeSpent: userStats?.totalSpent || 0, // Using stats from other query
-              bookingsCount: userStats?.totalTrips || 0,
-              earnedThisMonth: earnedThisMonth,
-              history: fetchedLoyalty.history || [],
-              currentTier: fetchedLoyalty.tier
-            });
-          } else {
-            // Fallback to empty/mock if no record yet
-            const data = getMockLoyaltyData(user.id);
-            setLoyaltyData({
-              ...data,
-              lifetimeSpent: userStats?.totalSpent || 0,
-              bookingsCount: userStats?.totalTrips || 0
-            });
-          }
-        });
-      }
-
-      // Load recently viewed
-      const viewed = getRecentlyViewed();
-      setRecentlyViewed(viewed);
+      setRecentlyViewed(getRecentlyViewed());
     }
-  }, [user, loading, router, userStats]);
+  }, [user]);
 
-  if (loading) {
-    return <DashboardSkeleton />;
-  }
+  if (loading) return <DashboardSkeleton />;
+  // ✅ DASH-01: null render after middleware already redirected — no flash
+  if (!user) return null;
 
-  if (!user) {
-    return null;
-  }
+  // ✅ DASH-07: Prefer firstName over username
+  const displayName =
+    user.profile?.firstName
+      ? `${user.profile.firstName}${user.profile.lastName ? ` ${user.profile.lastName}` : ""}`
+      : user.username;
 
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">
-          Welcome back, {user.username}!
-        </h1>
+        <h1 className="text-4xl font-bold mb-2">Welcome back, {displayName}!</h1>
         <p className="text-muted-foreground">
           Manage your bookings, loyalty points, and travel preferences
         </p>
@@ -194,9 +202,7 @@ export default function DashboardPage() {
                 ) : (
                   <>
                     <div className="text-2xl font-bold">{wishlistData?.length || 0}</div>
-                    <p className="text-xs text-muted-foreground">
-                      Saved programs
-                    </p>
+                    <p className="text-xs text-muted-foreground">Saved programs</p>
                   </>
                 )}
               </CardContent>
@@ -269,28 +275,44 @@ export default function DashboardPage() {
                     const planTripData = booking.plan_trip;
                     const eventData = booking.event;
 
-                    const title = programData?.title || planTripData?.tripName || eventData?.title || booking.customTripName || "Trip";
-                    const location = programData?.Location || planTripData?.destinations?.[0]?.location || eventData?.location || "Egypt";
-                    const imageUrl = programData?.images?.[0] ? getImageUrl(programData.images[0]) :
-                      eventData?.featuredImage ? getImageUrl(eventData.featuredImage) :
-                        eventData?.gallery?.[0] ? getImageUrl(eventData.gallery[0]) : null;
+                    const title =
+                      programData?.title ||
+                      planTripData?.tripName ||
+                      eventData?.title ||
+                      booking.customTripName ||
+                      "Trip";
+                    const location =
+                      programData?.Location ||
+                      planTripData?.destinations?.[0]?.location ||
+                      eventData?.location ||
+                      "Egypt";
+                    const imageUrl = programData?.images?.[0]
+                      ? getImageUrl(programData.images[0])
+                      : eventData?.featuredImage
+                      ? getImageUrl(eventData.featuredImage)
+                      : eventData?.gallery?.[0]
+                      ? getImageUrl(eventData.gallery[0])
+                      : null;
 
                     const travelDate = new Date(booking.travelDate);
-                    const formattedDate = travelDate.toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
+                    const formattedDate = travelDate.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
                     });
 
                     return (
-                      <div key={booking.documentId} className={`flex items-center gap-4 ${index === 0 ? 'border-b pb-4' : ''}`}>
+                      <div
+                        key={booking.documentId}
+                        className={`flex items-center gap-4 ${index === 0 ? "border-b pb-4" : ""}`}
+                      >
                         <div className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
                           {imageUrl && (
                             <Image
                               src={imageUrl}
                               alt={title}
                               fill
-                              sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
+                              sizes="96px"
                               className="object-cover"
                             />
                           )}
@@ -307,16 +329,24 @@ export default function DashboardPage() {
                               {location}
                             </span>
                           </div>
-                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${booking.bookingStatus === 'confirmed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-                            booking.bookingStatus === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                              'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
-                            }`}>
+                          <span
+                            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${
+                              booking.bookingStatus === "confirmed"
+                                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                                : booking.bookingStatus === "pending"
+                                ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                : "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400"
+                            }`}
+                          >
                             {booking.bookingStatus}
                           </span>
                         </div>
                         <div className="text-right">
                           <div className="font-bold text-lg">${booking.totalAmount}</div>
-                          <Button size="sm" variant="outline">View Details</Button>
+                          {/* ✅ DASH-05: "View Details" now links to booking success page */}
+                          <Link href={`/booking/success?bookingId=${booking.documentId}`}>
+                            <Button size="sm" variant="outline">View Details</Button>
+                          </Link>
                         </div>
                       </div>
                     );
@@ -344,7 +374,7 @@ export default function DashboardPage() {
                       <Clock className="h-5 w-5" />
                       Recently Viewed
                     </CardTitle>
-                    <CardDescription>Programs you've checked out</CardDescription>
+                    <CardDescription>Programs you&apos;ve checked out</CardDescription>
                   </div>
                   <Link href="/programs">
                     <Button variant="outline" size="sm">Browse More</Button>
@@ -366,7 +396,7 @@ export default function DashboardPage() {
                               src={program.imageUrl}
                               alt={program.title}
                               fill
-                              sizes="(max-width: 768px) 100vw, (max-width: 1440px) 50vw, 400px"
+                              sizes="(max-width: 768px) 100vw, 400px"
                               className="object-cover group-hover:scale-105 transition-transform"
                             />
                           </div>
@@ -375,7 +405,7 @@ export default function DashboardPage() {
                           <h4 className="font-semibold line-clamp-1">{program.title}</h4>
                           <div className="flex items-center justify-between mt-2 text-sm">
                             <span className="text-muted-foreground">
-                              {program.duration} {program.duration === 1 ? 'day' : 'days'}
+                              {program.duration} {program.duration === 1 ? "day" : "days"}
                             </span>
                             <span className="font-bold text-primary">
                               ${program.price.toLocaleString()}
@@ -398,7 +428,8 @@ export default function DashboardPage() {
 
         {/* Loyalty Tab */}
         <TabsContent value="loyalty">
-          {loyaltyData && (
+          {/* ✅ DASH-09: Show fallback message instead of blank tab */}
+          {loyaltyData ? (
             <LoyaltyDashboard
               userId={user.id}
               totalPoints={loyaltyData.totalPoints}
@@ -407,6 +438,13 @@ export default function DashboardPage() {
               earnedThisMonth={loyaltyData.earnedThisMonth}
               history={loyaltyData.history}
             />
+          ) : (
+            <Card>
+              <CardContent className="py-12 text-center text-muted-foreground">
+                <Award className="h-12 w-12 mx-auto mb-4 opacity-40" />
+                <p>Complete your first booking to start earning loyalty points.</p>
+              </CardContent>
+            </Card>
           )}
         </TabsContent>
 
