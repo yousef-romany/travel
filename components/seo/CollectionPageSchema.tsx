@@ -16,7 +16,7 @@ export default function CollectionPageSchema({
     url,
     items,
 }: CollectionPageSchemaProps) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
     const schema = {
         "@context": "https://schema.org",

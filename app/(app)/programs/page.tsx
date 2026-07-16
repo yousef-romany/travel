@@ -4,7 +4,7 @@ import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import CollectionPageSchema from "@/components/seo/CollectionPageSchema";
 import { fetchProgramsList } from "@/fetch/programs";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 const OG_IMAGE = `${SITE_URL}/og-programs.jpg`;
 
 export const metadata: Metadata = {

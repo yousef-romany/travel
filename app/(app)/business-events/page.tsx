@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   description: "Organize corporate events, conferences, team building activities, and business travel in Egypt with ZoeHoliday's professional event management services.",
   keywords: ["corporate events Egypt", "business conferences", "team building", "MICE tourism", "corporate travel", "Egypt event management"],
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/business-events`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/business-events`,
   },
   openGraph: {
     title: "Business Events & MICE Services in Egypt | ZoeHoliday",
     description: "Elevate your corporate gatherings with our comprehensive MICE services in Egypt's most prestigious venues.",
     type: "website",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/business-events`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/business-events`,
     images: [
       {
         url: "/images/business-events-og.jpg",

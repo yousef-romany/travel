@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
 export async function GET() {
   const currentDate = new Date().toISOString();
@@ -27,8 +27,8 @@ export async function GET() {
 
   return new NextResponse(sitemapIndex, {
     headers: {
-      'Content-Type': 'application/xml',
-      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      "Content-Type": "application/xml",
+      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
     },
   });
 }

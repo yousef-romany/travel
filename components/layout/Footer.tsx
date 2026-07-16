@@ -333,10 +333,10 @@ export default function Footer() {
                   <div>
                     <p className="text-sm font-medium">Email Us</p>
                     <a
-                      href="mailto:info@zoeholiday.com"
+                      href="mailto:info@zoeholidays.com"
                       className="text-sm text-muted-foreground hover:text-primary transition-colors"
                     >
-                      info@zoeholiday.com
+                      info@zoeholidays.com
                     </a>
                   </div>
                 </div>
@@ -455,7 +455,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-sm text-muted-foreground text-center md:text-left">
               <p>
-                © {currentYear} ZoeHoliday. All rights reserved. |
+                © {currentYear} zoeholidays. All rights reserved. |
                 <Link href="/privacy-policy" className="hover:text-primary ml-1">
                   Privacy Policy
                 </Link> |
@@ -484,8 +484,8 @@ export default function Footer() {
             "@type": "Organization",
             "name": "ZoeHoliday",
             "description": "Egypt Travel and Tour Packages - Explore Ancient Wonders",
-            "url": "https://zoeholiday.com",
-            "logo": "https://zoeholiday.com/logo.png",
+            "url": "https://zoeholidays.com",
+            "logo": "https://zoeholidays.com/logo.png",
             "contactPoint": {
               "@type": "ContactPoint",
               "telephone": "+20-103-0354067",

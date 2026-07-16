@@ -132,7 +132,7 @@ export default function PrivacypolicyContent() {
               If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at:
             </p>
             <div className="bg-muted p-4 rounded-lg">
-              <p><strong>Email:</strong> privacy@zoeholiday.com</p>
+              <p><strong>Email:</strong> privacy@zoeholidays.com</p>
               <p><strong>Phone:</strong> +20 155 510 0961</p>
               <p><strong>Address:</strong> Egypt, Cairo</p>
             </div>

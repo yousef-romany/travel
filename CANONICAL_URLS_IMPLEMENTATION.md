@@ -1,9 +1,11 @@
 # Canonical URLs Implementation Summary
 
 ## Overview
+
 Canonical URLs have been successfully implemented across all pages in the ZoeHoliday travel website to improve SEO and prevent duplicate content issues.
 
 ## What Are Canonical URLs?
+
 Canonical URLs tell search engines which version of a page is the "main" version when there are multiple URLs with similar content. This prevents duplicate content penalties and consolidates SEO value to a single URL.
 
 ## Implementation Details
@@ -11,7 +13,8 @@ Canonical URLs tell search engines which version of a page is the "main" version
 ### Pages with Canonical URLs
 
 #### Static Pages
-- ✅ **Home Page** (`/`) - `https://zoeholiday.com`
+
+- ✅ **Home Page** (`/`) - `https://zoeholidays.com`
 - ✅ **Programs List** (`/programs`) - Full URL with SITE_URL
 - ✅ **Places To Go** (`/placesTogo`) - Full URL with SITE_URL
 - ✅ **Inspiration** (`/inspiration`) - Full URL with SITE_URL
@@ -31,6 +34,7 @@ Canonical URLs tell search engines which version of a page is the "main" version
 - ✅ **User Profile** (`/me`) - Full URL with SITE_URL (noindex, nofollow)
 
 #### Dynamic Pages
+
 - ✅ **Program Details** (`/programs/[title]`) - Uses documentId in canonical
 - ✅ **Places Category** (`/placesTogo/[category]`) - Uses category slug
 - ✅ **Places Subcategory** (`/placesTogo/[category]/[subCategory]`) - Full path
@@ -43,6 +47,7 @@ Canonical URLs tell search engines which version of a page is the "main" version
 ### Pages Without Canonical URLs (By Design)
 
 #### User-Specific/Private Pages
+
 - **Dashboard** (`/dashboard`) - Client component, user-specific (no SEO needed)
 - **Trip Details** (`/plan-your-trip/[tripId]`) - User-specific, noindex/nofollow set
 - **Program Booking** (`/programs/[title]/book`) - Client component, transaction page
@@ -50,6 +55,7 @@ Canonical URLs tell search engines which version of a page is the "main" version
 - **Invoices** (`/invoices/[id]`) - Client component, user-specific
 
 #### Internal/Demo Pages
+
 - **Invoice Demo** (`/invoice-demo`) - Demo page, not for production
 - **SEO Dashboard** (`/seo-dashboard`) - Internal tool, noindex/nofollow set
 
@@ -61,7 +67,7 @@ All canonical URLs follow this pattern:
 export const metadata: Metadata = {
   // ... other metadata
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/[path]`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com"}/[path]`,
   },
 };
 ```
@@ -80,10 +86,10 @@ alternates: {
 The implementation uses the `NEXT_PUBLIC_SITE_URL` environment variable, which should be set in your `.env` file:
 
 ```env
-NEXT_PUBLIC_SITE_URL=https://zoeholiday.com
+NEXT_PUBLIC_SITE_URL=https://zoeholidays.com
 ```
 
-If not set, it defaults to `https://zoeholiday.com`.
+If not set, it defaults to `https://zoeholidays.com`.
 
 ## SEO Benefits
 
@@ -105,6 +111,7 @@ You can verify canonical URLs are working by:
 ## Testing
 
 All TypeScript checks pass:
+
 ```bash
 npx tsc --noEmit --skipLibCheck
 # No errors
@@ -160,4 +167,4 @@ After deployment, you should:
 
 ---
 
-*Implementation completed on: December 19, 2025*
+_Implementation completed on: December 19, 2025_

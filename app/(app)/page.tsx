@@ -34,13 +34,13 @@ export const metadata: Metadata = {
     "ZoeHoliday"
   ],
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com',
+    canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com',
   },
   openGraph: {
     title: "Egypt Tours & Packages | Pyramids, Nile Cruises & Temples | ZoeHoliday",
     description: "Visit Egypt's Pyramids, Luxor temples, Nile cruises & Red Sea. Best time: October-April. Expert guides, custom tours, 24/7 support. Book your adventure with ZoeHoliday!",
     type: "website",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com",
     siteName: "ZoeHoliday - Egypt Travel & Tours",
     images: [
       {
@@ -76,7 +76,7 @@ const faqs = [
   },
   {
     question: "Is Egypt safe for tourists?",
-    answer: "Egypt is generally safe for tourists, especially in major tourist areas like Cairo, Luxor, Aswan, and the Red Sea resorts. Always follow local advice, stay in well-known tourist areas, and book tours with reputable companies like ZoeHoliday."
+    answer: "Egypt is generally safe for tourists, especially in major tourist areas like Cairo, Luxor, Aswan, and the Red Sea resorts. Always follow local advice, stay in well-known tourist areas, and book tours with reputable companies like zoeholidays."
   },
   {
     question: "What are the must-see attractions in Egypt?",
@@ -107,7 +107,7 @@ export default async function Home() {
       {/* SEO Schemas */}
       <WebPageSchema
         name="ZoeHoliday - Egypt Travel & Tours"
-        description="Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure with our curated travel packages."
+        description="Discover the magic of Egypt with zoeholidays. Experience 7,000 years of history, culture, and adventure with our curated travel packages."
         url="/"
       />
       <BreadcrumbSchema

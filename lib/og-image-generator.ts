@@ -8,7 +8,7 @@ export interface OGImageParams {
   location?: string;
   price?: number;
   rating?: number;
-  type?: 'program' | 'destination' | 'article';
+  type?: "program" | "destination" | "article";
   image?: string;
 }
 
@@ -16,30 +16,30 @@ export interface OGImageParams {
  * Generate OG image URL for any content type
  */
 export function generateOGImageUrl(params: OGImageParams): string {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
-  const apiUrl = new URL('/api/og', baseUrl);
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
+  const apiUrl = new URL("/api/og", baseUrl);
 
   // Add all parameters to URL
-  apiUrl.searchParams.set('title', params.title);
+  apiUrl.searchParams.set("title", params.title);
 
   if (params.location) {
-    apiUrl.searchParams.set('location', params.location);
+    apiUrl.searchParams.set("location", params.location);
   }
 
   if (params.price !== undefined) {
-    apiUrl.searchParams.set('price', params.price.toString());
+    apiUrl.searchParams.set("price", params.price.toString());
   }
 
   if (params.rating !== undefined) {
-    apiUrl.searchParams.set('rating', params.rating.toString());
+    apiUrl.searchParams.set("rating", params.rating.toString());
   }
 
   if (params.type) {
-    apiUrl.searchParams.set('type', params.type);
+    apiUrl.searchParams.set("type", params.type);
   }
 
   if (params.image) {
-    apiUrl.searchParams.set('image', params.image);
+    apiUrl.searchParams.set("image", params.image);
   }
 
   return apiUrl.toString();
@@ -52,14 +52,14 @@ export function generateProgramOGImage(
   title: string,
   location: string,
   price?: number,
-  rating?: number
+  rating?: number,
 ): string {
   return generateOGImageUrl({
     title,
     location,
     price,
     rating,
-    type: 'program',
+    type: "program",
   });
 }
 
@@ -69,13 +69,13 @@ export function generateProgramOGImage(
 export function generateDestinationOGImage(
   title: string,
   location: string,
-  rating?: number
+  rating?: number,
 ): string {
   return generateOGImageUrl({
     title,
     location,
     rating,
-    type: 'destination',
+    type: "destination",
   });
 }
 
@@ -84,12 +84,12 @@ export function generateDestinationOGImage(
  */
 export function generateArticleOGImage(
   title: string,
-  category?: string
+  category?: string,
 ): string {
   return generateOGImageUrl({
     title,
     location: category,
-    type: 'article',
+    type: "article",
   });
 }
 
@@ -102,10 +102,11 @@ export function generateProgramOGMetadata(
   location: string,
   price?: number,
   rating?: number,
-  imageUrl?: string
+  imageUrl?: string,
 ) {
-  const ogImageUrl = imageUrl || generateProgramOGImage(title, location, price, rating);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+  const ogImageUrl =
+    imageUrl || generateProgramOGImage(title, location, price, rating);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
   return {
     title,
@@ -113,9 +114,9 @@ export function generateProgramOGMetadata(
     openGraph: {
       title,
       description,
-      type: 'website' as const,
+      type: "website" as const,
       url: siteUrl,
-      siteName: 'ZoeHoliday',
+      siteName: "ZoeHoliday",
       images: [
         {
           url: ogImageUrl,
@@ -124,15 +125,15 @@ export function generateProgramOGMetadata(
           alt: `${title} - ${location} Tour`,
         },
       ],
-      locale: 'en_US',
+      locale: "en_US",
     },
     twitter: {
-      card: 'summary_large_image' as const,
+      card: "summary_large_image" as const,
       title,
       description,
       images: [ogImageUrl],
-      creator: '@zoeholiday',
-      site: '@zoeholiday',
+      creator: "@zoeholiday",
+      site: "@zoeholiday",
     },
   };
 }
@@ -145,10 +146,11 @@ export function generateDestinationOGMetadata(
   description: string,
   location: string,
   rating?: number,
-  imageUrl?: string
+  imageUrl?: string,
 ) {
-  const ogImageUrl = imageUrl || generateDestinationOGImage(title, location, rating);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+  const ogImageUrl =
+    imageUrl || generateDestinationOGImage(title, location, rating);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
   return {
     title,
@@ -156,9 +158,9 @@ export function generateDestinationOGMetadata(
     openGraph: {
       title,
       description,
-      type: 'website' as const,
+      type: "website" as const,
       url: siteUrl,
-      siteName: 'ZoeHoliday',
+      siteName: "ZoeHoliday",
       images: [
         {
           url: ogImageUrl,
@@ -167,15 +169,15 @@ export function generateDestinationOGMetadata(
           alt: `Explore ${title} - ${location}`,
         },
       ],
-      locale: 'en_US',
+      locale: "en_US",
     },
     twitter: {
-      card: 'summary_large_image' as const,
+      card: "summary_large_image" as const,
       title,
       description,
       images: [ogImageUrl],
-      creator: '@zoeholiday',
-      site: '@zoeholiday',
+      creator: "@zoeholiday",
+      site: "@zoeholiday",
     },
   };
 }
@@ -187,10 +189,10 @@ export function generateArticleOGMetadata(
   title: string,
   description: string,
   category?: string,
-  imageUrl?: string
+  imageUrl?: string,
 ) {
   const ogImageUrl = imageUrl || generateArticleOGImage(title, category);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
   return {
     title,
@@ -198,9 +200,9 @@ export function generateArticleOGMetadata(
     openGraph: {
       title,
       description,
-      type: 'article' as const,
+      type: "article" as const,
       url: siteUrl,
-      siteName: 'ZoeHoliday',
+      siteName: "ZoeHoliday",
       images: [
         {
           url: ogImageUrl,
@@ -209,15 +211,15 @@ export function generateArticleOGMetadata(
           alt: title,
         },
       ],
-      locale: 'en_US',
+      locale: "en_US",
     },
     twitter: {
-      card: 'summary_large_image' as const,
+      card: "summary_large_image" as const,
       title,
       description,
       images: [ogImageUrl],
-      creator: '@zoeholiday',
-      site: '@zoeholiday',
+      creator: "@zoeholiday",
+      site: "@zoeholiday",
     },
   };
 }
@@ -227,8 +229,8 @@ export function generateArticleOGMetadata(
  */
 export function getDefaultOGImage(): string {
   return generateOGImageUrl({
-    title: 'Discover Egypt with ZoeHoliday',
-    location: 'Egypt',
-    type: 'program',
+    title: "Discover Egypt with ZoeHoliday",
+    location: "Egypt",
+    type: "program",
   });
 }

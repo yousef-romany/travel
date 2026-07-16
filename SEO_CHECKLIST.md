@@ -3,8 +3,9 @@
 ## 🚀 Google Search Console Setup
 
 ### Initial Setup (Do Once)
+
 - [ ] Create Google Search Console account
-- [ ] Add property: `https://zoeholiday.com`
+- [ ] Add property: `https://zoeholidays.com`
 - [ ] Verify ownership using HTML file (`google867a9b2aa9e028e7.html`) ✅ Already uploaded!
 - [ ] Verify ownership using HTML meta tag ✅ Already added!
 - [ ] Submit main sitemap: `/sitemap.xml`
@@ -13,6 +14,7 @@
 - [ ] Link Google Analytics 4 to Search Console
 
 ### Week 1 Tasks
+
 - [ ] Check Coverage report daily
 - [ ] Request indexing for homepage
 - [ ] Request indexing for /programs
@@ -24,6 +26,7 @@
 - [ ] Check Core Web Vitals baseline
 
 ### Week 2 Tasks
+
 - [ ] Review Performance report (queries, pages, countries)
 - [ ] Identify top 10 keywords driving traffic
 - [ ] Find queries ranking positions 4-10 (quick wins)
@@ -34,6 +37,7 @@
 - [ ] Monitor indexed pages count daily
 
 ### Week 3 Tasks
+
 - [ ] Check for duplicate content issues
 - [ ] Add canonical tags where needed
 - [ ] Review and fix broken internal links
@@ -44,6 +48,7 @@
 - [ ] Start link building outreach (5 sites)
 
 ### Week 4 Tasks
+
 - [ ] Analyze month 1 performance vs baseline
 - [ ] Identify content gaps (keywords ranking 11-30)
 - [ ] Create 3 new SEO-optimized blog posts/pages
@@ -58,17 +63,19 @@
 ## 📊 Daily Checklist (5 Minutes Every Morning)
 
 ### Quick Dashboard Check
+
 - [ ] Open Google Search Console
 - [ ] Check Performance → Last 7 days
-  - Total Clicks: ______
-  - Total Impressions: ______
-  - Average CTR: ______%
-  - Average Position: ______
+  - Total Clicks: **\_\_**
+  - Total Impressions: **\_\_**
+  - Average CTR: **\_\_**%
+  - Average Position: **\_\_**
 - [ ] Look for Coverage errors (should be 0)
 - [ ] Check for email alerts from Google
 - [ ] Review top 3 queries from yesterday
 
 ### Daily Action Items
+
 - [ ] If new page published → Request indexing
 - [ ] If page updated → Request re-indexing
 - [ ] If errors found → Add to fix list
@@ -80,6 +87,7 @@
 ## 📈 Weekly Checklist (30 Minutes Every Monday)
 
 ### Performance Analysis
+
 - [ ] Compare last 7 days vs previous 7 days
 - [ ] Identify new keywords ranking
 - [ ] Find keywords moved up in rankings
@@ -88,6 +96,7 @@
 - [ ] Identify pages with high impressions, low clicks
 
 ### Technical Health Check
+
 - [ ] Review Coverage report trends
 - [ ] Check mobile usability issues
 - [ ] Review Core Web Vitals scores
@@ -96,6 +105,7 @@
 - [ ] Review robots.txt (any changes needed?)
 
 ### Content Optimization
+
 - [ ] Pick 2 pages to optimize this week
 - [ ] Find 5 new keyword opportunities
 - [ ] Update 1 old blog post/page
@@ -103,6 +113,7 @@
 - [ ] Check for outdated information
 
 ### Link Building
+
 - [ ] Review new backlinks (if any)
 - [ ] Send 3 outreach emails
 - [ ] Check competitor backlinks
@@ -114,21 +125,24 @@
 ## 🎯 Monthly Checklist (2 Hours First Monday of Month)
 
 ### Performance Review
-- [ ] Total clicks this month: ______
-- [ ] Growth vs last month: ______%
-- [ ] New keywords in top 10: ______
-- [ ] Pages indexed: ______
-- [ ] Backlinks gained: ______
-- [ ] Average position change: ______
+
+- [ ] Total clicks this month: **\_\_**
+- [ ] Growth vs last month: **\_\_**%
+- [ ] New keywords in top 10: **\_\_**
+- [ ] Pages indexed: **\_\_**
+- [ ] Backlinks gained: **\_\_**
+- [ ] Average position change: **\_\_**
 
 ### Goal Setting
-- [ ] Set traffic goal for next month: ______
-- [ ] Set indexing goal: ______%
-- [ ] Set ranking improvement goal: ______
-- [ ] Set backlink goal: ______
-- [ ] Set content creation goal: ______
+
+- [ ] Set traffic goal for next month: **\_\_**
+- [ ] Set indexing goal: **\_\_**%
+- [ ] Set ranking improvement goal: **\_\_**
+- [ ] Set backlink goal: **\_\_**
+- [ ] Set content creation goal: **\_\_**
 
 ### Content Strategy
+
 - [ ] Analyze content performance (top 10 pages)
 - [ ] Identify 5 content gaps
 - [ ] Plan 5-10 new pages/posts
@@ -136,6 +150,7 @@
 - [ ] Remove/improve thin content
 
 ### Technical Audit
+
 - [ ] Run full site crawl (Screaming Frog)
 - [ ] Check all pages for meta descriptions
 - [ ] Verify all images have alt tags
@@ -145,6 +160,7 @@
 - [ ] Review security (HTTPS, no mixed content)
 
 ### Competitive Analysis
+
 - [ ] Track top 5 competitors
 - [ ] Analyze their new content
 - [ ] Check their backlink profile
@@ -156,6 +172,7 @@
 ## 🔧 Technical SEO Checklist
 
 ### On-Page SEO
+
 - [x] Title tags optimized (50-60 chars) ✅
 - [x] Meta descriptions compelling (150-160 chars) ✅
 - [x] H1 tag on every page ✅
@@ -168,6 +185,7 @@
 - [ ] Keyword density 1-2% (natural)
 
 ### Technical SEO
+
 - [x] Sitemap created and submitted ✅
 - [x] Robots.txt configured properly ✅
 - [x] HTTPS enabled ✅
@@ -180,6 +198,7 @@
 - [x] Twitter Card tags ✅
 
 ### Performance
+
 - [x] Images optimized (WebP, compressed) ✅
 - [x] Lazy loading enabled ✅
 - [x] CDN configured (Cloudinary) ✅
@@ -194,6 +213,7 @@
 ## 🎓 Learning & Improvement
 
 ### Monthly Learning
+
 - [ ] Read 2-3 SEO blog posts
 - [ ] Watch 1 SEO tutorial video
 - [ ] Review Google Search Central updates
@@ -201,6 +221,7 @@
 - [ ] Test 1 new SEO tactic
 
 ### Tools to Master
+
 - [ ] Google Search Console (essential)
 - [ ] Google Analytics 4 (essential)
 - [ ] Google PageSpeed Insights
@@ -214,6 +235,7 @@
 ## 🏆 Success Metrics
 
 ### Month 1 Targets
+
 - [ ] 100+ pages indexed
 - [ ] 100+ organic clicks
 - [ ] Average position < 20
@@ -222,6 +244,7 @@
 - [ ] Mobile usability 100%
 
 ### Month 3 Targets
+
 - [ ] 150+ pages indexed
 - [ ] 500+ organic clicks
 - [ ] Average position < 15
@@ -231,6 +254,7 @@
 - [ ] Core Web Vitals green
 
 ### Month 6 Targets
+
 - [ ] All pages indexed
 - [ ] 2000+ organic clicks
 - [ ] Average position < 10
@@ -240,6 +264,7 @@
 - [ ] 5+ rich results
 
 ### Month 12 Targets
+
 - [ ] 10,000+ organic clicks
 - [ ] Average position < 8
 - [ ] 100+ keywords in top 10
@@ -252,6 +277,7 @@
 ## 📝 Notes & Progress Tracking
 
 ### Week 1 Notes
+
 ```
 Date: __________
 Baseline metrics:
@@ -271,6 +297,7 @@ Next week goals:
 ```
 
 ### Week 2 Notes
+
 ```
 Date: __________
 Progress:
@@ -294,6 +321,7 @@ Next week goals:
 ## 🚨 Emergency Checklist (If Traffic Drops)
 
 ### Immediate Actions (Within 1 Hour)
+
 - [ ] Check Google Search Console for manual actions
 - [ ] Check Coverage report for indexing errors
 - [ ] Verify site is online and accessible
@@ -302,6 +330,7 @@ Next week goals:
 - [ ] Check for Google algorithm updates
 
 ### Within 24 Hours
+
 - [ ] Analyze which pages lost traffic
 - [ ] Check if competitors gained those rankings
 - [ ] Review backlink profile (any toxic links?)
@@ -310,6 +339,7 @@ Next week goals:
 - [ ] Review content quality
 
 ### Within 1 Week
+
 - [ ] Fix all identified issues
 - [ ] Request reconsideration (if manual action)
 - [ ] Improve content on affected pages

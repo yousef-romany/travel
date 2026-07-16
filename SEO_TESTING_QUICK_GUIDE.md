@@ -5,8 +5,9 @@
 ### 1. Test Server-Side Rendering (Most Important!)
 
 **Command:**
+
 ```bash
-curl https://zoeholiday.com/programs/YOUR_PROGRAM_ID | grep "Travel Itinerary"
+curl https://zoeholidays.com/programs/YOUR_PROGRAM_ID | grep "Travel Itinerary"
 ```
 
 **Expected Result:** ✅ You should see "Travel Itinerary" in the response
@@ -14,7 +15,7 @@ curl https://zoeholiday.com/programs/YOUR_PROGRAM_ID | grep "Travel Itinerary"
 
 ### 2. View Page Source
 
-1. Open any program page: `https://zoeholiday.com/programs/YOUR_PROGRAM_ID`
+1. Open any program page: `https://zoeholidays.com/programs/YOUR_PROGRAM_ID`
 2. Right-click → "View Page Source"
 3. Search for (Ctrl+F): "Travel Itinerary"
 
@@ -32,38 +33,43 @@ curl https://zoeholiday.com/programs/YOUR_PROGRAM_ID | grep "Travel Itinerary"
 
 ### 4. Verify Sitemap
 
-Visit: https://zoeholiday.com/sitemap.xml
+Visit: https://zoeholidays.com/sitemap.xml
 
 **✅ Check:**
+
 - Contains program URLs
-- Uses https://zoeholiday.com domain
+- Uses https://zoeholidays.com domain
 - Shows recent lastModified dates
 
 ### 5. Check Robots.txt
 
-Visit: https://zoeholiday.com/robots.txt
+Visit: https://zoeholidays.com/robots.txt
 
 **✅ Should contain:**
+
 ```
 User-agent: *
 Allow: /
-Sitemap: https://zoeholiday.com/sitemap.xml
+Sitemap: https://zoeholidays.com/sitemap.xml
 ```
 
 ## Quick Fixes
 
 ### If content not showing:
+
 1. Clear Cloudflare/CDN cache
 2. Rebuild: `npm run build`
 3. Redeploy to Coolify
 4. Wait 5 minutes for propagation
 
 ### If sitemap 404:
-1. Check environment: `NEXT_PUBLIC_SITE_URL=https://zoeholiday.com`
+
+1. Check environment: `NEXT_PUBLIC_SITE_URL=https://zoeholidays.com`
 2. Rebuild application
 3. Verify `.next/server/app/sitemap.xml` exists
 
 ### If metadata wrong:
+
 1. Check `NEXT_PUBLIC_SITE_URL` in production
 2. Ensure `generateMetadata` is async
 3. Clear browser cache (Ctrl+Shift+R)
@@ -71,12 +77,14 @@ Sitemap: https://zoeholiday.com/sitemap.xml
 ## Google Search Console
 
 ### Submit Your Sitemap (Do This First!)
+
 1. Go to: https://search.google.com/search-console
-2. Add property: `https://zoeholiday.com`
+2. Add property: `https://zoeholidays.com`
 3. Sitemap → Add sitemap: `sitemap.xml`
 4. Submit
 
 ### Request Indexing for Top Pages
+
 1. URL Inspection → Enter program URL
 2. Click "Request Indexing"
 3. Repeat for your top 10 programs
@@ -101,4 +109,5 @@ Sitemap: https://zoeholiday.com/sitemap.xml
 Check the full documentation: `SEO_IMPROVEMENTS_2025.md`
 
 ---
+
 **Status:** Ready for Production ✅

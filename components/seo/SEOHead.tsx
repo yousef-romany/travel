@@ -30,7 +30,7 @@ export default function SEOHead({
   author,
   noindex = false,
 }: SEOHeadProps) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
   const fullTitle = generatePageTitle(title);
   const metaDescription = generateMetaDescription(description);
   const canonical = url ? generateCanonicalUrl(url) : siteUrl;

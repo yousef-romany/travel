@@ -4,7 +4,7 @@
  */
 
 export default function LocalBusinessSchema() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
   const schema = {
     "@context": "https://schema.org",
@@ -25,7 +25,7 @@ export default function LocalBusinessSchema() {
       "https://res.cloudinary.com/dir8ao2mt/image/upload/v1764631854/__1_l2obyo.jpg",
     ],
     "telephone": "+20-100-000-0000", // Replace with actual phone
-    "email": "info@zoeholiday.com",
+    "email": "info@zoeholidays.com",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Cairo, Egypt", // Add specific address

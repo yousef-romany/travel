@@ -19,7 +19,7 @@ export default function PaginationSEO({
   baseUrl,
   includeQueryParams = {},
 }: PaginationSEOProps) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 
   // Build query string from additional params
   const queryString = Object.entries(includeQueryParams)
@@ -106,7 +106,7 @@ export function PageSelector({
 }: PageSelectorProps) {
   if (totalPages <= 1) return null;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 
   // Calculate page range to display
   const getPageRange = () => {
@@ -238,7 +238,7 @@ export function generatePaginationMetadata(
   baseUrl: string,
   baseTitle: string
 ) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 
   const title = currentPage === 1
     ? baseTitle

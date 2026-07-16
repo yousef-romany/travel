@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   description: "Compare different Egypt tour packages side-by-side. Analyze prices, durations, ratings, and features to find your perfect Egyptian vacation.",
   keywords: ["compare tours Egypt", "Egypt tour comparison", "travel package comparison", "best Egypt tours", "tour price comparison"],
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/compare`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/compare`,
   },
   openGraph: {
     title: "Compare Tour Programs | ZoeHoliday",
     description: "Compare different Egypt tour packages side-by-side to find your perfect vacation.",
     type: "website",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/compare`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/compare`,
   },
   twitter: {
     card: "summary_large_image",

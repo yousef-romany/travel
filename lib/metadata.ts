@@ -1,13 +1,13 @@
-import { Metadata } from 'next';
+import { Metadata } from "next";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
 /**
  * Generate canonical URL for a given path
  */
 export function getCanonicalUrl(path: string): string {
   // Remove trailing slash if present (except for root)
-  const cleanPath = path === '/' ? path : path.replace(/\/$/, '');
+  const cleanPath = path === "/" ? path : path.replace(/\/$/, "");
   return `${SITE_URL}${cleanPath}`;
 }
 
@@ -16,7 +16,7 @@ export function getCanonicalUrl(path: string): string {
  */
 export function generateMetadata(
   path: string,
-  customMetadata?: Metadata
+  customMetadata?: Metadata,
 ): Metadata {
   const canonical = getCanonicalUrl(path);
 
@@ -40,7 +40,7 @@ export function generateProgramMetadata(
   title: string,
   description: string,
   image?: string,
-  price?: number
+  price?: number,
 ): Metadata {
   const path = `/programs/${encodeURIComponent(title)}`;
   const canonical = getCanonicalUrl(path);
@@ -55,18 +55,20 @@ export function generateProgramMetadata(
       title: `${title} | ZoeHoliday Egypt Tours`,
       description: description.slice(0, 160),
       url: canonical,
-      type: 'website',
-      images: image ? [
-        {
-          url: image,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ] : [],
+      type: "website",
+      images: image
+        ? [
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+              alt: title,
+            },
+          ]
+        : [],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: `${title} | ZoeHoliday`,
       description: description.slice(0, 160),
       images: image ? [image] : [],
@@ -82,7 +84,7 @@ export function generatePlaceMetadata(
   subCategory: string,
   title: string,
   description: string,
-  image?: string
+  image?: string,
 ): Metadata {
   const path = `/placesTogo/${category}/${subCategory}/${title}`;
   const canonical = getCanonicalUrl(path);
@@ -97,18 +99,20 @@ export function generatePlaceMetadata(
       title: `${title} | ZoeHoliday Egypt Guide`,
       description: description.slice(0, 160),
       url: canonical,
-      type: 'article',
-      images: image ? [
-        {
-          url: image,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ] : [],
+      type: "article",
+      images: image
+        ? [
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+              alt: title,
+            },
+          ]
+        : [],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: `${title} | ZoeHoliday`,
       description: description.slice(0, 160),
       images: image ? [image] : [],

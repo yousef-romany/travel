@@ -346,7 +346,7 @@ export default function TourisminvestmentContent() {
               <Button size="lg" variant="outline" className="hover-glow">Download Investment Guide</Button>
             </div>
             <p className="mt-6 text-sm text-muted-foreground">
-              Email: <a href="mailto:invest@zoeholiday.com" className="text-primary hover:underline">invest@zoeholiday.com</a> |
+              Email: <a href="mailto:invest@zoeholidays.com" className="text-primary hover:underline">invest@zoeholidays.com</a> |
               Phone: <a href="tel:+201030354067" className="text-primary hover:underline">+20 155 510 0961</a>
             </p>
           </div>

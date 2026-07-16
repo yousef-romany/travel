@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description = categoryData?.description
     ? categoryData.description.slice(0, 160)
-    : `Explore the best places to visit in ${category}, Egypt. Discover top attractions, hidden gems, and travel tips with ZoeHoliday.`;
+    : `Explore the best places to visit in ${category}, Egypt. Discover top attractions, hidden gems, and travel tips with zoeholidays.`;
 
   return {
     title,
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: categoryData?.image ? [{ url: categoryData.image.url }] : [],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesTogo/${resolvedParams.category}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/placesTogo/${resolvedParams.category}`,
     },
   };
 }

@@ -39,7 +39,7 @@ export default function VideoObjectSchema({
   interactionStatistic,
   publisher = {
     name: 'ZoeHoliday',
-    logo: 'https://zoeholiday.com/icons/icon-512x512.png',
+    logo: 'https://zoeholidays.com/icons/icon-512x512.png',
   },
   expires,
   hasPart,

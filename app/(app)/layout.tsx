@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     default: "ZoeHoliday - Explore Egypt | Travel & Tour Packages",
     template: "%s | ZoeHoliday"
   },
-  description: "Discover the magic of Egypt with ZoeHoliday. Curated travel experiences featuring pyramids, Nile cruises, ancient temples, and Red Sea adventures. Book your Egyptian journey today.",
+  description: "Discover the magic of Egypt with zoeholidays. Curated travel experiences featuring pyramids, Nile cruises, ancient temples, and Red Sea adventures. Book your Egyptian journey today.",
 };
 
 export default function RootLayout({

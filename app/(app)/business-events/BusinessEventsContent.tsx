@@ -241,7 +241,7 @@ export default function BusinessEventsContent() {
                             <Button size="lg" variant="outline">Contact Event Team</Button>
                         </div>
                         <p className="mt-6 text-sm text-muted-foreground">
-                            Email: <a href="mailto:events@zoeholiday.com" className="text-primary hover:underline">events@zoeholiday.com</a> |
+                            Email: <a href="mailto:events@zoeholidays.com" className="text-primary hover:underline">events@zoeholidays.com</a> |
                             Phone: <a href="tel:+201030354067" className="text-primary hover:underline">+20 155 510 0961</a>
                         </p>
                     </div>

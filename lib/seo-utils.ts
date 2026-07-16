@@ -7,9 +7,12 @@
  * Generate SEO-friendly meta description
  * Keeps it between 120-160 characters for optimal display
  */
-export function generateMetaDescription(content: string, maxLength: number = 155): string {
+export function generateMetaDescription(
+  content: string,
+  maxLength: number = 155,
+): string {
   // Remove HTML tags if any
-  const cleanContent = content.replace(/<[^>]*>/g, '');
+  const cleanContent = content.replace(/<[^>]*>/g, "");
 
   // Trim and truncate
   const trimmed = cleanContent.trim();
@@ -20,21 +23,28 @@ export function generateMetaDescription(content: string, maxLength: number = 155
 
   // Truncate at last complete word before maxLength
   const truncated = trimmed.substring(0, maxLength);
-  const lastSpace = truncated.lastIndexOf(' ');
+  const lastSpace = truncated.lastIndexOf(" ");
 
-  return lastSpace > 0 ? truncated.substring(0, lastSpace) + '...' : truncated + '...';
+  return lastSpace > 0
+    ? truncated.substring(0, lastSpace) + "..."
+    : truncated + "...";
 }
 
 /**
  * Generate dynamic title with brand
  * Format: "Page Title | Brand Name"
  */
-export function generatePageTitle(title: string, includeBrand: boolean = true): string {
+export function generatePageTitle(
+  title: string,
+  includeBrand: boolean = true,
+): string {
   const brand = "ZoeHoliday";
   const maxLength = 60; // Google typically shows 50-60 characters
 
   if (!includeBrand) {
-    return title.length <= maxLength ? title : title.substring(0, maxLength - 3) + '...';
+    return title.length <= maxLength
+      ? title
+      : title.substring(0, maxLength - 3) + "...";
   }
 
   const fullTitle = `${title} | ${brand}`;
@@ -54,12 +64,16 @@ export function generatePageTitle(title: string, includeBrand: boolean = true): 
 export function generateKeywords(
   baseKeywords: string[],
   location?: string,
-  category?: string
+  category?: string,
 ): string[] {
   const keywords = [...baseKeywords];
 
   if (location) {
-    keywords.push(`${location} tours`, `visit ${location}`, `${location} travel`);
+    keywords.push(
+      `${location} tours`,
+      `visit ${location}`,
+      `${location} travel`,
+    );
   }
 
   if (category) {
@@ -67,7 +81,7 @@ export function generateKeywords(
   }
 
   // Add Egypt-specific keywords
-  keywords.push('Egypt tours', 'Egypt travel', 'Egyptian vacation');
+  keywords.push("Egypt tours", "Egypt travel", "Egyptian vacation");
 
   return [...new Set(keywords)]; // Remove duplicates
 }
@@ -84,10 +98,10 @@ export function generateOGDescription(content: string): string {
  * Generate canonical URL
  */
 export function generateCanonicalUrl(path: string): string {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
   // Remove trailing slashes and ensure single leading slash
-  const cleanPath = path.replace(/\/+$/, '').replace(/^\/+/, '/');
-  return `${siteUrl}${cleanPath === '/' ? '' : cleanPath}`;
+  const cleanPath = path.replace(/\/+$/, "").replace(/^\/+/, "/");
+  return `${siteUrl}${cleanPath === "/" ? "" : cleanPath}`;
 }
 
 /**
@@ -99,13 +113,13 @@ export interface BreadcrumbItem {
 }
 
 export function generateBreadcrumbs(items: BreadcrumbItem[]): BreadcrumbItem[] {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
   return [
-    { name: 'Home', url: siteUrl },
-    ...items.map(item => ({
+    { name: "Home", url: siteUrl },
+    ...items.map((item) => ({
       ...item,
-      url: item.url.startsWith('http') ? item.url : `${siteUrl}${item.url}`,
+      url: item.url.startsWith("http") ? item.url : `${siteUrl}${item.url}`,
     })),
   ];
 }
@@ -115,9 +129,9 @@ export function generateBreadcrumbs(items: BreadcrumbItem[]): BreadcrumbItem[] {
  */
 export function sanitizeForSchema(text: string): string {
   return text
-    .replace(/[\n\r]/g, ' ')
+    .replace(/[\n\r]/g, " ")
     .replace(/"/g, '\\"')
-    .replace(/\s+/g, ' ')
+    .replace(/\s+/g, " ")
     .trim();
 }
 
@@ -130,15 +144,15 @@ export interface HreflangTag {
 }
 
 export function generateHreflangTags(path: string): HreflangTag[] {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
-  const cleanPath = path.replace(/^\/+/, '/');
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
+  const cleanPath = path.replace(/^\/+/, "/");
 
   return [
-    { lang: 'en', url: `${siteUrl}${cleanPath}` },
-    { lang: 'ar', url: `${siteUrl}/ar${cleanPath}` },
-    { lang: 'fr', url: `${siteUrl}/fr${cleanPath}` },
-    { lang: 'de', url: `${siteUrl}/de${cleanPath}` },
-    { lang: 'x-default', url: `${siteUrl}${cleanPath}` },
+    { lang: "en", url: `${siteUrl}${cleanPath}` },
+    { lang: "ar", url: `${siteUrl}/ar${cleanPath}` },
+    { lang: "fr", url: `${siteUrl}/fr${cleanPath}` },
+    { lang: "de", url: `${siteUrl}/de${cleanPath}` },
+    { lang: "x-default", url: `${siteUrl}${cleanPath}` },
   ];
 }
 
@@ -154,7 +168,9 @@ export function calculateReadingTime(text: string): number {
 /**
  * Extract first image from content
  */
-export function extractFirstImage(images?: Array<{ url?: string; imageUrl?: string }>): string | undefined {
+export function extractFirstImage(
+  images?: Array<{ url?: string; imageUrl?: string }>,
+): string | undefined {
   if (!images || images.length === 0) return undefined;
 
   const firstImage = images[0];
@@ -162,7 +178,7 @@ export function extractFirstImage(images?: Array<{ url?: string; imageUrl?: stri
 
   if (!imageUrl) return undefined;
 
-  return imageUrl.startsWith('http')
+  return imageUrl.startsWith("http")
     ? imageUrl
     : `${process.env.NEXT_PUBLIC_STRAPI_URL}${imageUrl}`;
 }
@@ -179,12 +195,12 @@ export function generateFAQSchema(faqs: FAQItem[]) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": faqs.map(faq => ({
+    mainEntity: faqs.map((faq) => ({
       "@type": "Question",
-      "name": faq.question,
-      "acceptedAnswer": {
+      name: faq.question,
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": faq.answer,
+        text: faq.answer,
       },
     })),
   };

@@ -4,22 +4,22 @@ export default function OrganizationSchema() {
     "@type": ["TravelAgency", "LocalBusiness", "Organization"],
     "name": "ZoeHoliday",
     "alternateName": "Zoe Holidays Egypt Tours",
-    "description": "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure. Premium Egypt tour packages, Nile cruises, and cultural experiences.",
-    "url": process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com",
+    "description": "Discover the magic of Egypt with zoeholidays. Experience 7,000 years of history, culture, and adventure. Premium Egypt tour packages, Nile cruises, and cultural experiences.",
+    "url": process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com",
     "logo": {
       "@type": "ImageObject",
-      "url": `${process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com"}/logo.png`,
+      "url": `${process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com"}/logo.png`,
       "width": 250,
       "height": 60
     },
     "image": {
       "@type": "ImageObject",
-      "url": `${process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com"}/og-image.jpg`,
+      "url": `${process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com"}/og-image.jpg`,
       "width": 1200,
       "height": 630
     },
-    "telephone": "+20-100-000-0000",
-    "email": "info@zoeholiday.com",
+    "telephone": "+20-103-035-4067",
+    "email": "info@zoeholidays.com",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Cairo, Egypt",

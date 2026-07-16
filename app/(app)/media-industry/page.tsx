@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   description: "ZoeHoliday media resources, press releases, industry partnerships, and professional travel services for media and tourism professionals in Egypt.",
   keywords: ["media kit", "press releases", "tourism industry", "travel media", "Egypt tourism news", "travel partnerships", "ZoeHoliday press"],
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/media-industry`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/media-industry`,
   },
   openGraph: {
     title: "Media & Industry Resources | ZoeHoliday",
     description: "Resources and partnerships for media professionals and tourism industry stakeholders.",
     type: "website",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/media-industry`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/media-industry`,
     images: [
       {
         url: "/images/media-industry-og.jpg",

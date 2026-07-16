@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 const OG_IMAGE = `${SITE_URL}/og-places.jpg`;
 
 export const metadata: Metadata = {

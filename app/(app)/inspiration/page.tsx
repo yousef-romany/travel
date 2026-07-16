@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     "Egypt travel tips", "best of Egypt", "Egypt hidden gems"
   ],
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/inspiration`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/inspiration`,
   },
   openGraph: {
     title: "Egypt Travel Inspiration & Ideas | ZoeHoliday",
     description: "Get inspired for your Egypt adventure! Discover travel stories, cultural insights, and historical wonders.",
     type: "website",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/inspiration`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/inspiration`,
     images: [
       {
         url: "/og-inspiration.jpg",

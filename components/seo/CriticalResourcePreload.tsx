@@ -4,7 +4,7 @@
  */
 
 export default function CriticalResourcePreload() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
   const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://dashboard.zoeholidays.com';
 
   return (

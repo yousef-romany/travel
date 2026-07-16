@@ -22,7 +22,7 @@ export default function AdvancedMetaTags({
   availability = 'instock',
   type = 'website',
 }: AdvancedMetaTagsProps) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
   const fullUrl = url.startsWith('http') ? url : `${siteUrl}${url}`;
   const fullImage = image.startsWith('http') ? image : `${siteUrl}${image}`;
 

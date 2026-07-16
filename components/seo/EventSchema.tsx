@@ -40,7 +40,7 @@ export default function EventSchema({
   url,
   organizer = {
     name: 'ZoeHoliday',
-    url: 'https://zoeholiday.com',
+    url: 'https://zoeholidays.com',
   },
   performer,
   eventStatus = 'EventScheduled',

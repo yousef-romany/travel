@@ -33,13 +33,13 @@ export default function WebPageSchema({
   image,
   datePublished,
   dateModified,
-  author = { name: 'ZoeHoliday', url: 'https://zoeholiday.com' },
+  author = { name: 'ZoeHoliday', url: 'https://zoeholidays.com' },
   breadcrumb,
   speakable,
   inLanguage = 'en-US',
   keywords,
 }: WebPageSchemaProps) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
   const fullUrl = `${siteUrl}${url}`;
 
   const schema = {

@@ -13,7 +13,6 @@ import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import BackgroundAudio from "@/components/BackgroundAudio";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import LocalBusinessSchema from "@/components/seo/LocalBusinessSchema";
 import CriticalResourcePreload from "@/components/seo/CriticalResourcePreload";
 import { PerformanceMonitor } from "@/components/performance/PerformanceMonitor";
 
@@ -24,7 +23,7 @@ const fontVariables = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'),
   title: {
     default: "Egypt Travel & Tour Packages | ZoeHoliday - Explore Pyramids, Nile Cruises & Ancient Wonders",
     template: "%s | ZoeHoliday"
@@ -38,7 +37,7 @@ export const metadata: Metadata = {
     "Abu Simbel", "Egypt cultural tours", "Egypt family vacation", "Egypt honeymoon packages",
     "best time to visit Egypt", "Egypt October to April", "Egypt winter travel", "Egypt tour packages 2025"
   ],
-  authors: [{ name: "ZoeHoliday", url: "https://zoeholiday.com" }],
+  authors: [{ name: "ZoeHoliday", url: "https://zoeholidays.com" }],
   creator: "ZoeHoliday",
   publisher: "ZoeHoliday",
   category: "Travel & Tourism",
@@ -74,7 +73,7 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "ZoeHoliday - Egypt Travel & Tours",
     title: "Egypt Travel & Tour Packages | ZoeHoliday - Pyramids, Nile & Ancient Temples",
-    description: "Explore Egypt's pyramids, Nile cruises, temples & Red Sea with ZoeHoliday. Best time: October-April. Expert guides, custom tours, 24/7 support. Book your Egyptian adventure today!",
+    description: "Explore Egypt's pyramids, Nile cruises, temples & Red Sea with zoeholidays. Best time: October-April. Expert guides, custom tours, 24/7 support. Book your Egyptian adventure today!",
     images: [
       {
         url: "https://res.cloudinary.com/dir8ao2mt/image/upload/v1764631854/__1_l2obyo.jpg",
@@ -151,7 +150,6 @@ export default function RootLayout({
         <OrganizationSchema />
         <WebSiteSchema />
         <ServiceSchema />
-        <LocalBusinessSchema />
 
         <meta name="google-site-verification" content="lPn8MP-8chhi7XKEZeAbSyMqBcRpx4khZK6aKDqS4vs" />
         {/* PWA Meta Tags */}

@@ -1,22 +1,27 @@
 # SEO Improvements - Production Ready (2025)
 
 ## Overview
+
 This document outlines the comprehensive SEO improvements made to ensure website content appears correctly in production, especially on Hostinger server using Coolify.
 
 ## Critical Issues Fixed
 
 ### 1. **Server-Side Rendering (SSR) for Program Pages** ✅
+
 **Problem:** All program page content was client-side rendered (`"use client"`), making it invisible to search engine crawlers.
 
 **Solution:** Completely refactored program pages to use Server Components:
+
 - `app/(app)/programs/[title]/page.tsx` is now a Server Component
 - All SEO-critical content (itinerary, includes, excludes, overview, FAQs) is server-rendered
 - Search engines can now crawl and index all tour content
 
 ### 2. **Static Site Generation (SSG)** ✅
+
 **Problem:** Program pages were dynamically rendered on every request without pre-rendering.
 
 **Solution:** Added `generateStaticParams` function:
+
 ```typescript
 export async function generateStaticParams() {
   const { data } = await fetchProgramsList(50);
@@ -27,15 +32,18 @@ export async function generateStaticParams() {
 ```
 
 **Benefits:**
+
 - Pages are pre-rendered at build time
 - Faster page loads (served as static HTML)
 - Better SEO (search engines see complete HTML immediately)
 - Build output shows `● (SSG)` for program pages
 
 ### 3. **Server-Rendered Structured Data** ✅
+
 **Problem:** JSON-LD schemas (TourPackageSchema, BreadcrumbSchema) were in client components.
 
 **Solution:** Moved all structured data to server components:
+
 - `<TourPackageSchema>` - Provides rich tour information to Google
 - `<BreadcrumbSchema>` - Shows site hierarchy
 - `<ProgramFAQGenerator>` - FAQ schema for rich snippets
@@ -44,6 +52,7 @@ export async function generateStaticParams() {
 ### 4. **Component Architecture Refactor** ✅
 
 **New Structure:**
+
 ```
 app/(app)/programs/[title]/
 ├── page.tsx                           # Server Component (SEO-friendly)
@@ -56,6 +65,7 @@ app/(app)/programs/[title]/
 ```
 
 **Server-Rendered Content:**
+
 - Hero section with title and duration
 - Complete travel itinerary with images
 - Overview/description text
@@ -64,6 +74,7 @@ app/(app)/programs/[title]/
 - Metadata and Open Graph tags
 
 **Client-Rendered Parts (Interactive Only):**
+
 - Image carousel navigation
 - Booking button with analytics tracking
 - Share button
@@ -71,7 +82,9 @@ app/(app)/programs/[title]/
 - Recently viewed tracking
 
 ### 5. **Semantic HTML for SEO** ✅
+
 Added proper semantic HTML5 elements:
+
 - `<article>` for program content
 - `<header>` for hero section
 - `<section>` for each major content block
@@ -80,13 +93,15 @@ Added proper semantic HTML5 elements:
 - ARIA labels for accessibility
 
 ### 6. **Schema.org Microdata** ✅
+
 Added schema.org itemScope attributes:
+
 ```html
 <article itemScope itemType="https://schema.org/TouristTrip">
-  <h3 itemProp="name">...</h3>
-  <div itemProp="address">...</div>
-  <ul itemScope itemType="https://schema.org/ItemList">
-    <li itemProp="itemListElement">...</li>
+  <h3 itemprop="name">...</h3>
+  <div itemprop="address">...</div>
+  <ul itemscope itemtype="https://schema.org/ItemList">
+    <li itemprop="itemListElement">...</li>
   </ul>
 </article>
 ```
@@ -94,6 +109,7 @@ Added schema.org itemScope attributes:
 ## SEO Checklist
 
 ### ✅ Content Visibility
+
 - [x] All tour content server-rendered
 - [x] Itinerary details visible to crawlers
 - [x] Includes/Excludes lists in HTML
@@ -101,6 +117,7 @@ Added schema.org itemScope attributes:
 - [x] Images with proper alt attributes
 
 ### ✅ Technical SEO
+
 - [x] Static generation enabled (SSG)
 - [x] Proper metadata generation
 - [x] Canonical URLs configured
@@ -110,6 +127,7 @@ Added schema.org itemScope attributes:
 - [x] Robots.txt properly configured
 
 ### ✅ Performance
+
 - [x] First Contentful Paint improved
 - [x] Time to Interactive optimized
 - [x] Largest Contentful Paint enhanced
@@ -117,6 +135,7 @@ Added schema.org itemScope attributes:
 - [x] Client hydration deferred for interactivity
 
 ### ✅ Structured Data
+
 - [x] TourPackageSchema (TouristTrip)
 - [x] BreadcrumbSchema (navigation)
 - [x] FAQSchema (rich snippets)
@@ -126,28 +145,37 @@ Added schema.org itemScope attributes:
 ## Testing SEO in Production
 
 ### 1. Verify Server-Side Rendering
+
 ```bash
-curl https://zoeholiday.com/programs/[documentId] | grep -A 10 "Travel Itinerary"
+curl https://zoeholidays.com/programs/[documentId] | grep -A 10 "Travel Itinerary"
 ```
+
 You should see the complete itinerary content in the HTML response.
 
 ### 2. Test with Google's Rich Results Tool
+
 1. Visit: https://search.google.com/test/rich-results
 2. Enter your program URL
 3. Verify structured data is detected
 
 ### 3. Check Sitemap
-Visit: https://zoeholiday.com/sitemap.xml
+
+Visit: https://zoeholidays.com/sitemap.xml
+
 - Should include all program pages
 - Should use correct production URLs
 
 ### 4. Verify Robots.txt
-Visit: https://zoeholiday.com/robots.txt
+
+Visit: https://zoeholidays.com/robots.txt
+
 - Should allow crawling of /programs
 - Should reference sitemap
 
 ### 5. View Page Source
+
 Right-click → "View Page Source" on any program page:
+
 - ✅ Should see complete HTML content
 - ✅ Should see JSON-LD schemas
 - ✅ Should see meta tags
@@ -156,18 +184,22 @@ Right-click → "View Page Source" on any program page:
 ## Google Search Console Setup
 
 ### Submit Sitemap
+
 1. Go to Google Search Console
-2. Add property: `https://zoeholiday.com`
-3. Submit sitemap: `https://zoeholiday.com/sitemap.xml`
+2. Add property: `https://zoeholidays.com`
+3. Submit sitemap: `https://zoeholidays.com/sitemap.xml`
 4. Request indexing for key pages
 
 ### Monitor Index Coverage
+
 - Check "Coverage" report
 - Ensure program pages are indexed
 - Fix any crawl errors
 
 ### Request Re-Indexing
+
 For important pages:
+
 1. URL Inspection tool
 2. Enter program URL
 3. Click "Request Indexing"
@@ -175,11 +207,13 @@ For important pages:
 ## Performance Metrics
 
 ### Before (Client-Side Rendering)
+
 - First Contentful Paint: ~2.5s
 - Search engines see: Empty shell
 - Indexed content: Minimal
 
 ### After (Server-Side Rendering + SSG)
+
 - First Contentful Paint: ~0.8s
 - Search engines see: Complete content
 - Indexed content: Full itinerary, details, FAQs
@@ -187,16 +221,19 @@ For important pages:
 ## Build Verification
 
 Build output shows static generation:
+
 ```
 ● /programs/[title]    10.5 kB    226 kB
 ```
+
 The `●` symbol indicates SSG (Static Site Generation)
 
 ## Environment Variables Required
 
 Ensure these are set in production (Coolify):
+
 ```env
-NEXT_PUBLIC_SITE_URL=https://zoeholiday.com
+NEXT_PUBLIC_SITE_URL=https://zoeholidays.com
 NEXT_PUBLIC_STRAPI_URL=https://dashboard.zoeholidays.com
 NEXT_PUBLIC_STRAPI_TOKEN=[your-token]
 ```
@@ -217,15 +254,19 @@ NEXT_PUBLIC_STRAPI_TOKEN=[your-token]
 ## Common Issues & Solutions
 
 ### Issue: Content still not visible
+
 **Solution:** Clear CDN cache (Cloudflare, etc.)
 
 ### Issue: Old cached version showing
+
 **Solution:** Force revalidation with `?v=2` query parameter
 
 ### Issue: 404 on program pages
+
 **Solution:** Ensure rewrites/redirects configured in Coolify
 
 ### Issue: Metadata not updating
+
 **Solution:** Check `generateMetadata` function is async
 
 ## Next Steps

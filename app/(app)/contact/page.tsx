@@ -114,10 +114,10 @@ export default function ContactPage() {
                                         For inquiries and partnership
                                     </p>
                                     <a
-                                        href="mailto:info@zoeholiday.com"
+                                        href="mailto:info@zoeholidays.com"
                                         className="text-primary font-medium hover:underline text-base sm:text-lg break-all inline-block min-h-[44px] flex items-center"
                                     >
-                                        info@zoeholiday.com
+                                        info@zoeholidays.com
                                     </a>
                                 </div>
                             </div>

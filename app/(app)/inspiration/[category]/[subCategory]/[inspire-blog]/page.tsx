@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description = blogData?.description
     ? blogData.description.slice(0, 160)
-    : `Read ${blogTitle} in ${subCategory}, ${category}. Inspiring travel stories from Egypt by ZoeHoliday.`;
+    : `Read ${blogTitle} in ${subCategory}, ${category}. Inspiring travel stories from Egypt by zoeholidays.`;
 
   return {
     title,
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       authors: ["ZoeHoliday"],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/inspiration/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["inspire-blog"]}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/inspiration/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["inspire-blog"]}`,
     },
   };
 }

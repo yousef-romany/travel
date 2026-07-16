@@ -160,7 +160,7 @@ export default function BookingSuccessPage() {
                         Booking Confirmed!
                     </CardTitle>
                     <p className="text-muted-foreground mt-2">
-                        Thank you for booking with ZoeHoliday. Your adventure awaits!
+                        Thank you for booking with zoeholidays. Your adventure awaits!
                     </p>
                 </CardHeader>
 

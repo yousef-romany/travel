@@ -21,7 +21,7 @@ export default function TourPackageSchema({
   reviewCount = 0,
   url,
 }: TourPackageSchemaProps) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
   const fullImageUrl = image.startsWith("http")
     ? image
     : `${process.env.NEXT_PUBLIC_STRAPI_URL}${image}`;

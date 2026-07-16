@@ -6,16 +6,16 @@ import { fetchEvents } from "@/fetch/events";
 
 export const metadata: Metadata = {
   title: "Events & Festivals in Egypt | ZoeHoliday",
-  description: "Discover upcoming events, festivals, and cultural celebrations in Egypt. Plan your trip around Egypt's vibrant calendar of events with ZoeHoliday.",
+  description: "Discover upcoming events, festivals, and cultural celebrations in Egypt. Plan your trip around Egypt's vibrant calendar of events with zoeholidays.",
   keywords: ["Egypt events", "Cairo festivals", "Egypt cultural events", "things to do in Egypt", "Egypt calendar", "music festivals Egypt"],
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/events`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/events`,
   },
   openGraph: {
     title: "Events & Festivals in Egypt | ZoeHoliday",
     description: "Discover upcoming events, festivals, and cultural celebrations in Egypt.",
     type: "website",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/events`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/events`,
     images: [
       {
         url: "/og-events.jpg",

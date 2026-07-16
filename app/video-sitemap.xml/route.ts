@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://dashboard.zoeholidays.com';
 const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_TOKEN || '';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 
 interface Program {
   documentId: string;
@@ -18,6 +18,15 @@ interface Program {
     url?: string;
     imageUrl?: string;
   }>;
+}
+
+function escapeXml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
 
 async function getPrograms(): Promise<Program[]> {
@@ -61,8 +70,8 @@ export async function GET() {
       <loc>${SITE_URL}/programs/${program.documentId}</loc>
       <video:video>
         <video:thumbnail_loc>${fullThumbnailUrl}</video:thumbnail_loc>
-        <video:title>${program.title}</video:title>
-        <video:description>${description}</video:description>
+        <video:title>${escapeXml(program.title)}</video:title>
+        <video:description>${escapeXml(description)}</video:description>
         <video:content_loc>${videoUrl}</video:content_loc>
         <video:duration>${durationSeconds}</video:duration>
         <video:publication_date>${program.updatedAt || new Date().toISOString()}</video:publication_date>

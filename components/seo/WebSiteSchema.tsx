@@ -1,5 +1,5 @@
 export default function WebSiteSchema() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
   const schema = {
     "@context": "https://schema.org",
@@ -7,7 +7,7 @@ export default function WebSiteSchema() {
     "name": "ZoeHoliday",
     "alternateName": "Zoe Holidays Egypt Tours",
     "url": baseUrl,
-    "description": "Discover the magic of Egypt with ZoeHoliday. Experience 7,000 years of history, culture, and adventure through our curated tour packages.",
+    "description": "Discover the magic of Egypt with zoeholidays. Experience 7,000 years of history, culture, and adventure through our curated tour packages.",
     "publisher": {
       "@type": "Organization",
       "name": "ZoeHoliday",

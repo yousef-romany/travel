@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 
 const SITE_NAME = "ZoeHoliday";
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com";
-const DEFAULT_OG_IMAGE = "https://res.cloudinary.com/dir8ao2mt/image/upload/v1764631854/__1_l2obyo.jpg";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
+const DEFAULT_OG_IMAGE =
+  "https://res.cloudinary.com/dir8ao2mt/image/upload/v1764631854/__1_l2obyo.jpg";
 
 /**
  * Generate canonical URL for a given path
@@ -11,9 +12,8 @@ export function getCanonicalUrl(path: string): string {
   // Remove leading slash if present
   const cleanPath = path.startsWith("/") ? path.slice(1) : path;
   // Remove trailing slash unless it's the root
-  const finalPath = cleanPath && cleanPath.endsWith("/")
-    ? cleanPath.slice(0, -1)
-    : cleanPath;
+  const finalPath =
+    cleanPath && cleanPath.endsWith("/") ? cleanPath.slice(0, -1) : cleanPath;
 
   return `${SITE_URL}${finalPath ? `/${finalPath}` : ""}`;
 }
@@ -43,7 +43,7 @@ export function truncateText(text: string, maxLength: number): string {
  */
 export function generateMetaDescription(
   content: string,
-  maxLength: number = 160
+  maxLength: number = 160,
 ): string {
   // Strip HTML tags
   const strippedContent = content.replace(/<[^>]*>/g, "");
@@ -58,14 +58,50 @@ export function generateMetaDescription(
  */
 export function extractKeywords(
   text: string,
-  additionalKeywords: string[] = []
+  additionalKeywords: string[] = [],
 ): string[] {
   // Common stop words to filter out
   const stopWords = new Set([
-    "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
-    "of", "with", "by", "from", "as", "is", "was", "are", "were", "been",
-    "be", "have", "has", "had", "do", "does", "did", "will", "would", "could",
-    "should", "may", "might", "must", "can", "this", "that", "these", "those"
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "but",
+    "in",
+    "on",
+    "at",
+    "to",
+    "for",
+    "of",
+    "with",
+    "by",
+    "from",
+    "as",
+    "is",
+    "was",
+    "are",
+    "were",
+    "been",
+    "be",
+    "have",
+    "has",
+    "had",
+    "do",
+    "does",
+    "did",
+    "will",
+    "would",
+    "could",
+    "should",
+    "may",
+    "might",
+    "must",
+    "can",
+    "this",
+    "that",
+    "these",
+    "those",
   ]);
 
   // Extract words from text
@@ -74,7 +110,7 @@ export function extractKeywords(
     .replace(/<[^>]*>/g, "") // Remove HTML
     .replace(/[^\w\s]/g, " ") // Replace special chars with space
     .split(/\s+/)
-    .filter(word => word.length > 3 && !stopWords.has(word));
+    .filter((word) => word.length > 3 && !stopWords.has(word));
 
   // Get unique words
   const uniqueWords = Array.from(new Set(words));
@@ -88,7 +124,7 @@ export function extractKeywords(
  */
 export function getOgImageUrl(
   imagePath?: string | null,
-  fallback: string = DEFAULT_OG_IMAGE
+  fallback: string = DEFAULT_OG_IMAGE,
 ): string {
   if (!imagePath) return fallback;
 
@@ -134,7 +170,9 @@ export function generatePageMetadata({
 }: GenerateMetadataParams): Metadata {
   const canonicalUrl = getCanonicalUrl(path);
   const ogImage = getOgImageUrl(image);
-  const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
+  const fullTitle = title.includes(SITE_NAME)
+    ? title
+    : `${title} | ${SITE_NAME}`;
 
   return {
     title,
@@ -240,7 +278,7 @@ export function generatePlaceMetadata({
 }): Metadata {
   const metaDescription = description
     ? generateMetaDescription(description)
-    : `Explore ${name}${category ? ` in ${category}` : ""} with ZoeHoliday. Discover Egypt's amazing destinations and cultural landmarks.`;
+    : `Explore ${name}${category ? ` in ${category}` : ""} with zoeholidays. Discover Egypt's amazing destinations and cultural landmarks.`;
 
   const keywords = [
     name,
@@ -273,11 +311,11 @@ export function generateBreadcrumbList(items: BreadcrumbItem[]) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": items.map((item, index) => ({
+    itemListElement: items.map((item, index) => ({
       "@type": "ListItem",
-      "position": index + 1,
-      "name": item.name,
-      "item": `${SITE_URL}${item.item}`,
+      position: index + 1,
+      name: item.name,
+      item: `${SITE_URL}${item.item}`,
     })),
   };
 }
@@ -285,7 +323,10 @@ export function generateBreadcrumbList(items: BreadcrumbItem[]) {
 /**
  * Calculate reading time from text content
  */
-export function calculateReadingTime(text: string, wordsPerMinute: number = 200): number {
+export function calculateReadingTime(
+  text: string,
+  wordsPerMinute: number = 200,
+): number {
   const strippedText = text.replace(/<[^>]*>/g, "");
   const words = strippedText.split(/\s+/).length;
   return Math.ceil(words / wordsPerMinute);
@@ -303,12 +344,12 @@ export function generateFAQSchema(faqs: FAQItem[]) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": faqs.map((faq) => ({
+    mainEntity: faqs.map((faq) => ({
       "@type": "Question",
-      "name": faq.question,
-      "acceptedAnswer": {
+      name: faq.question,
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": faq.answer,
+        text: faq.answer,
       },
     })),
   };

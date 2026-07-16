@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description = subCategoryData?.description
     ? subCategoryData.description.slice(0, 160)
-    : `Explore ${subCategory} in ${category}, Egypt. Find the best tours, activities, and travel guides with ZoeHoliday.`;
+    : `Explore ${subCategory} in ${category}, Egypt. Find the best tours, activities, and travel guides with zoeholidays.`;
 
   return {
     title,
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: subCategoryData?.image ? [{ url: subCategoryData.image.url }] : [],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}`,
     },
   };
 }

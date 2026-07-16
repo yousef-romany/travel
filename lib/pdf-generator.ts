@@ -48,7 +48,9 @@ const createStyledInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
 
   doc.setFontSize(14);
   doc.setFont("helvetica", "normal");
-  doc.text("Journey through the Land of Pharaohs", 105, 35, { align: "center" });
+  doc.text("Journey through the Land of Pharaohs", 105, 35, {
+    align: "center",
+  });
 
   // Invoice Number Box (top right)
   doc.setFillColor(lightGray[0], lightGray[1], lightGray[2]);
@@ -60,7 +62,11 @@ const createStyledInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
   doc.text(invoiceData.invoiceNumber, 152, 20, { maxWidth: 46 });
-  doc.text(`Date: ${new Date(invoiceData.bookingDate).toLocaleDateString()}`, 152, 28);
+  doc.text(
+    `Date: ${new Date(invoiceData.bookingDate).toLocaleDateString()}`,
+    152,
+    28,
+  );
 
   // Main Content Area
   let yPos = 65;
@@ -76,7 +82,8 @@ const createStyledInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 100, 100);
-  const desc = "Experience the wonders of Egypt with our carefully curated tour package.";
+  const desc =
+    "Experience the wonders of Egypt with our carefully curated tour package.";
   doc.text(desc, 20, yPos, { maxWidth: 85 });
   yPos += 15;
 
@@ -95,7 +102,7 @@ const createStyledInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
       year: "numeric",
     }),
     27,
-    yPos
+    yPos,
   );
   yPos += 7;
 
@@ -188,7 +195,9 @@ const createStyledInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   });
 
   doc.text("Number of Travelers:", 25, yPos + 25);
-  doc.text(`${invoiceData.numberOfTravelers}`, 165, yPos + 25, { align: "right" });
+  doc.text(`${invoiceData.numberOfTravelers}`, 165, yPos + 25, {
+    align: "right",
+  });
 
   // Services Section
   if (invoiceData.services && invoiceData.services.length > 0) {
@@ -215,24 +224,31 @@ const createStyledInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   doc.setFont("helvetica", "bold");
   doc.setTextColor(white[0], white[1], white[2]);
   doc.text("Total Amount:", 110, yPos + 18);
-  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 185, yPos + 18, { align: "right" });
+  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 185, yPos + 18, {
+    align: "right",
+  });
 
   // Footer
   yPos = 270;
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 100, 100);
-  doc.text("Thank you for choosing Egypt Tourism for your adventure!", 105, yPos, {
-    align: "center",
-  });
+  doc.text(
+    "Thank you for choosing Egypt Tourism for your adventure!",
+    105,
+    yPos,
+    {
+      align: "center",
+    },
+  );
   doc.text("For any inquiries, please contact us at:", 105, yPos + 5, {
     align: "center",
   });
   doc.text(
-    "Website: www.zoeholiday.com | Email: info@zoeholiday.com | Phone: +20 155 510 0961",
+    "Website: www.zoeholidays.com | Email: info@zoeholidays.com | Phone: +20 155 510 0961",
     105,
     yPos + 10,
-    { align: "center" }
+    { align: "center" },
   );
 
   // Bottom Border
@@ -276,7 +292,11 @@ const createCustomTripInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
   doc.text(invoiceData.invoiceNumber, 152, 20, { maxWidth: 46 });
-  doc.text(`Date: ${new Date(invoiceData.bookingDate).toLocaleDateString()}`, 152, 28);
+  doc.text(
+    `Date: ${new Date(invoiceData.bookingDate).toLocaleDateString()}`,
+    152,
+    28,
+  );
 
   let yPos = 65;
 
@@ -301,11 +321,15 @@ const createCustomTripInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   doc.setFont("helvetica", "normal");
 
   doc.rect(20, yPos - 3, 4, 4);
-  doc.text(new Date(invoiceData.tripDate).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }), 27, yPos);
+  doc.text(
+    new Date(invoiceData.tripDate).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    }),
+    27,
+    yPos,
+  );
   yPos += 7;
 
   doc.circle(22, yPos - 1.5, 2);
@@ -371,7 +395,11 @@ const createCustomTripInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
       yPos += 6;
     });
   } else {
-    doc.text("• Fully customized destinations based on your preferences", 25, yPos);
+    doc.text(
+      "• Fully customized destinations based on your preferences",
+      25,
+      yPos,
+    );
     yPos += 6;
     doc.text("• Flexible itinerary tailored to your interests", 25, yPos);
     yPos += 6;
@@ -393,10 +421,14 @@ const createCustomTripInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   doc.setFont("helvetica", "bold");
   doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
   doc.text("Price per Person:", 25, yPos + 18);
-  doc.text(`$${invoiceData.pricePerPerson.toFixed(2)}`, 165, yPos + 18, { align: "right" });
+  doc.text(`$${invoiceData.pricePerPerson.toFixed(2)}`, 165, yPos + 18, {
+    align: "right",
+  });
 
   doc.text("Number of Travelers:", 25, yPos + 25);
-  doc.text(`${invoiceData.numberOfTravelers}`, 165, yPos + 25, { align: "right" });
+  doc.text(`${invoiceData.numberOfTravelers}`, 165, yPos + 25, {
+    align: "right",
+  });
 
   // Grand Total
   doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
@@ -405,16 +437,30 @@ const createCustomTripInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   doc.setFont("helvetica", "bold");
   doc.setTextColor(white[0], white[1], white[2]);
   doc.text("Total Amount:", 110, yPos + 36);
-  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 185, yPos + 36, { align: "right" });
+  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 185, yPos + 36, {
+    align: "right",
+  });
 
   // Footer
   yPos = 270;
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 100, 100);
-  doc.text("Thank you for creating your custom Egypt adventure with us!", 105, yPos, { align: "center" });
-  doc.text("For any inquiries, please contact us at:", 105, yPos + 5, { align: "center" });
-  doc.text("Website: www.zoeholiday.com | Email: info@zoeholiday.com | Phone: +20 155 510 0961", 105, yPos + 10, { align: "center" });
+  doc.text(
+    "Thank you for creating your custom Egypt adventure with us!",
+    105,
+    yPos,
+    { align: "center" },
+  );
+  doc.text("For any inquiries, please contact us at:", 105, yPos + 5, {
+    align: "center",
+  });
+  doc.text(
+    "Website: www.zoeholidays.com | Email: info@zoeholidays.com | Phone: +20 155 510 0961",
+    105,
+    yPos + 10,
+    { align: "center" },
+  );
 
   doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
   doc.rect(0, 287, 210, 10, "F");
@@ -455,7 +501,11 @@ const createEventInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
   doc.text(invoiceData.invoiceNumber, 152, 20, { maxWidth: 46 });
-  doc.text(`Date: ${new Date(invoiceData.bookingDate).toLocaleDateString()}`, 152, 28);
+  doc.text(
+    `Date: ${new Date(invoiceData.bookingDate).toLocaleDateString()}`,
+    152,
+    28,
+  );
 
   let yPos = 65;
 
@@ -480,11 +530,15 @@ const createEventInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   doc.setFont("helvetica", "normal");
 
   doc.rect(20, yPos - 3, 4, 4);
-  doc.text(new Date(invoiceData.tripDate).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }), 27, yPos);
+  doc.text(
+    new Date(invoiceData.tripDate).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    }),
+    27,
+    yPos,
+  );
   yPos += 7;
 
   if (invoiceData.eventTime) {
@@ -501,7 +555,11 @@ const createEventInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
 
   doc.circle(21, yPos - 1.5, 1.5);
   doc.circle(23, yPos - 1.5, 1.5);
-  doc.text(`${invoiceData.numberOfTravelers} Ticket${invoiceData.numberOfTravelers > 1 ? 's' : ''}`, 27, yPos);
+  doc.text(
+    `${invoiceData.numberOfTravelers} Ticket${invoiceData.numberOfTravelers > 1 ? "s" : ""}`,
+    27,
+    yPos,
+  );
 
   // Customer Details Box
   const boxX = 115;
@@ -574,10 +632,14 @@ const createEventInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   doc.setFont("helvetica", "bold");
   doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
   doc.text("Price per Ticket:", 25, yPos + 18);
-  doc.text(`$${invoiceData.pricePerPerson.toFixed(2)}`, 165, yPos + 18, { align: "right" });
+  doc.text(`$${invoiceData.pricePerPerson.toFixed(2)}`, 165, yPos + 18, {
+    align: "right",
+  });
 
   doc.text("Number of Tickets:", 25, yPos + 25);
-  doc.text(`${invoiceData.numberOfTravelers}`, 165, yPos + 25, { align: "right" });
+  doc.text(`${invoiceData.numberOfTravelers}`, 165, yPos + 25, {
+    align: "right",
+  });
 
   // Grand Total
   doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
@@ -586,16 +648,30 @@ const createEventInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
   doc.setFont("helvetica", "bold");
   doc.setTextColor(white[0], white[1], white[2]);
   doc.text("Total Amount:", 110, yPos + 36);
-  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 185, yPos + 36, { align: "right" });
+  doc.text(`$${invoiceData.totalAmount.toFixed(2)}`, 185, yPos + 36, {
+    align: "right",
+  });
 
   // Footer
   yPos = 270;
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(100, 100, 100);
-  doc.text("Thank you for joining our event! We look forward to seeing you!", 105, yPos, { align: "center" });
-  doc.text("For any inquiries, please contact us at:", 105, yPos + 5, { align: "center" });
-  doc.text("Website: www.zoeholiday.com | Email: info@zoeholiday.com | Phone: +20 155 510 0961", 105, yPos + 10, { align: "center" });
+  doc.text(
+    "Thank you for joining our event! We look forward to seeing you!",
+    105,
+    yPos,
+    { align: "center" },
+  );
+  doc.text("For any inquiries, please contact us at:", 105, yPos + 5, {
+    align: "center",
+  });
+  doc.text(
+    "Website: www.zoeholidays.com | Email: info@zoeholidays.com | Phone: +20 155 510 0961",
+    105,
+    yPos + 10,
+    { align: "center" },
+  );
 
   doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
   doc.rect(0, 287, 210, 10, "F");
@@ -606,7 +682,7 @@ const createEventInvoice = (doc: jsPDF, invoiceData: InvoiceData) => {
 };
 
 export const generateInvoicePDF = async (
-  invoiceData: InvoiceData
+  invoiceData: InvoiceData,
 ): Promise<Blob> => {
   const doc = new jsPDF();
 
@@ -630,7 +706,7 @@ export const generateInvoicePDF = async (
 
 export const downloadInvoicePDF = async (
   invoiceData: InvoiceData,
-  filename: string = "invoice.pdf"
+  filename: string = "invoice.pdf",
 ): Promise<void> => {
   const doc = new jsPDF();
 

@@ -1,7 +1,7 @@
 import ServiceFeaturesDemo from "../components/ServiceFeaturesDemo";
 import type { Metadata } from "next";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 
 export const metadata: Metadata = {
   title: "Place-to-Go Blog Services Demo | ZoeHoliday",

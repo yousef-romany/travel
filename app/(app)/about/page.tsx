@@ -11,13 +11,13 @@ export const metadata: Metadata = {
     "history of Egypt tourism", "ZoeHoliday story", "Egypt travel guides"
   ],
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/about`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/about`,
   },
   openGraph: {
     title: "About ZoeHoliday - Egypt Travel Experts | ZoeHoliday",
     description: "Learn about ZoeHoliday, your trusted Egypt travel experts. Discover sustainable tourism and authentic Egyptian experiences.",
     type: "website",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/about`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/about`,
     images: [
       {
         url: "/og-about.jpg",

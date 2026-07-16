@@ -231,7 +231,7 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
               <div className="flex justify-center items-center mt-2 space-x-4">
                 <div className="flex items-center">
                   <Globe className="w-4 h-4 mr-1" />
-                  <span>www.zoeholiday.com</span>
+                  <span>www.zoeholidays.com</span>
                 </div>
                 <div className="flex items-center">
                   <Phone className="w-4 h-4 mr-1" />

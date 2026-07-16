@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description = categoryData?.description
     ? categoryData.description.slice(0, 160)
-    : `Get inspired for your trip to ${category}, Egypt. Discover stories, tips, and cultural insights with ZoeHoliday.`;
+    : `Get inspired for your trip to ${category}, Egypt. Discover stories, tips, and cultural insights with zoeholidays.`;
 
   return {
     title,
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: categoryData?.image ? [{ url: categoryData.image.url }] : [],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/inspiration/${resolvedParams.category}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/inspiration/${resolvedParams.category}`,
     },
   };
 }

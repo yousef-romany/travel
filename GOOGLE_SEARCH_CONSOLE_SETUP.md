@@ -1,18 +1,20 @@
 # Google Search Console Setup Guide 🔍
 
-## Step-by-Step Instructions for ZoeHoliday.com
+## Step-by-Step Instructions for zoeholidays.com
 
 ---
 
 ## STEP 1: Add Your Property ✅
 
 ### 1.1 Go to Google Search Console
+
 Visit: https://search.google.com/search-console
 
 ### 1.2 Add Property
+
 1. Click **"Add Property"** button (top left)
 2. Choose **"URL prefix"** method
-3. Enter: `https://zoeholiday.com`
+3. Enter: `https://zoeholidays.com`
 4. Click **"Continue"**
 
 ---
@@ -28,6 +30,7 @@ You have 5 verification methods. Choose ONE:
    - Download it
 
 2. **Upload to your website**
+
    ```bash
    # Copy the file to your public folder
    cp google1234567890abcdef.html /home/yousefx00/Documents/Programing\ Projects/ZoeHolidays/travel/public/
@@ -40,8 +43,9 @@ You have 5 verification methods. Choose ONE:
    ```
 
 3. **Verify it's accessible**
+
    ```bash
-   curl https://zoeholiday.com/google1234567890abcdef.html
+   curl https://zoeholidays.com/google1234567890abcdef.html
    # Should return the verification content
    ```
 
@@ -53,17 +57,19 @@ You have 5 verification methods. Choose ONE:
    - Looks like: `<meta name="google-site-verification" content="ABC123..." />`
 
 2. **Add to your layout.tsx**
+
    ```typescript
    // app/layout.tsx - in the <head> section
    export const metadata: Metadata = {
      // ... existing metadata
      verification: {
-       google: 'ABC123...', // Your verification code
+       google: "ABC123...", // Your verification code
      },
    };
    ```
 
 3. **Rebuild and deploy**
+
    ```bash
    npm run build
    # Deploy to production
@@ -94,6 +100,7 @@ You have 5 verification methods. Choose ONE:
 4. Click **"Submit"**
 
 **Expected Result:**
+
 ```
 ✅ Success - Sitemap submitted successfully
 ```
@@ -105,16 +112,17 @@ You have 5 verification methods. Choose ONE:
 3. Click **"Submit"**
 
 **Expected Result:**
+
 ```
 ✅ Success - Sitemap submitted successfully
 ```
 
 ### What You Should See After Submission
 
-| Sitemap | Type | Status | Discovered Pages |
-|---------|------|--------|------------------|
-| sitemap.xml | Web | Success | 100+ pages |
-| image-sitemap.xml | Images | Success | 200+ images |
+| Sitemap           | Type   | Status  | Discovered Pages |
+| ----------------- | ------ | ------- | ---------------- |
+| sitemap.xml       | Web    | Success | 100+ pages       |
+| image-sitemap.xml | Images | Success | 200+ images      |
 
 **Note:** It takes 1-2 hours for Google to process. The "Discovered pages" column will be empty initially, then populate after the first crawl.
 
@@ -130,21 +138,22 @@ You have 5 verification methods. Choose ONE:
 **Priority URLs to Index:**
 
 ```
-https://zoeholiday.com/
-https://zoeholiday.com/programs
-https://zoeholiday.com/programs/[your-top-program-1]
-https://zoeholiday.com/programs/[your-top-program-2]
-https://zoeholiday.com/programs/[your-top-program-3]
-https://zoeholiday.com/programs/[your-top-program-4]
-https://zoeholiday.com/programs/[your-top-program-5]
-https://zoeholiday.com/placesTogo
-https://zoeholiday.com/about
-https://zoeholiday.com/plan-your-trip
+https://zoeholidays.com/
+https://zoeholidays.com/programs
+https://zoeholidays.com/programs/[your-top-program-1]
+https://zoeholidays.com/programs/[your-top-program-2]
+https://zoeholidays.com/programs/[your-top-program-3]
+https://zoeholidays.com/programs/[your-top-program-4]
+https://zoeholidays.com/programs/[your-top-program-5]
+https://zoeholidays.com/placesTogo
+https://zoeholidays.com/about
+https://zoeholidays.com/plan-your-trip
 ```
 
 ### 4.2 Request Indexing Process
 
 For each URL:
+
 1. Paste URL in URL Inspection tool
 2. Wait for Google to check (30 seconds)
 3. If "URL is not on Google" → Click **"Request Indexing"**
@@ -162,6 +171,7 @@ For each URL:
 Go to **Sitemaps** and verify:
 
 **Main Sitemap (sitemap.xml):**
+
 ```
 ✅ Status: Success
 ✅ Discovered pages: 100+ pages
@@ -169,6 +179,7 @@ Go to **Sitemaps** and verify:
 ```
 
 **Image Sitemap (image-sitemap.xml):**
+
 ```
 ✅ Status: Success
 ✅ Discovered images: 200+ images
@@ -186,8 +197,9 @@ Go to **Sitemaps** and verify:
 ### 5.3 Check Page Indexing (After 24-48 Hours)
 
 Test with Google search:
+
 ```
-site:zoeholiday.com
+site:zoeholidays.com
 ```
 
 You should see your pages appearing in search results.
@@ -220,22 +232,25 @@ You should see your pages appearing in search results.
 ### Problem: "Sitemap could not be fetched"
 
 **Solution 1:** Check sitemap is accessible
+
 ```bash
-curl https://zoeholiday.com/sitemap.xml
-curl https://zoeholiday.com/image-sitemap.xml
+curl https://zoeholidays.com/sitemap.xml
+curl https://zoeholidays.com/image-sitemap.xml
 ```
 
 Both should return valid XML.
 
 **Solution 2:** Check robots.txt includes sitemaps
+
 ```bash
-curl https://zoeholiday.com/robots.txt
+curl https://zoeholidays.com/robots.txt
 ```
 
 Should show:
+
 ```
-Sitemap: https://zoeholiday.com/sitemap.xml
-Sitemap: https://zoeholiday.com/image-sitemap.xml
+Sitemap: https://zoeholidays.com/sitemap.xml
+Sitemap: https://zoeholidays.com/image-sitemap.xml
 ```
 
 **Solution 3:** Wait 1 hour and try re-submitting
@@ -243,21 +258,24 @@ Sitemap: https://zoeholiday.com/image-sitemap.xml
 ### Problem: "0 pages discovered"
 
 **Causes:**
+
 1. Sitemaps just submitted (wait 1-2 hours)
 2. Website not deployed yet
 3. Robots.txt blocking crawlers
 4. Server returning errors
 
 **Solution:**
+
 ```bash
 # Test if pages are accessible
-curl -I https://zoeholiday.com/programs
+curl -I https://zoeholidays.com/programs
 # Should return: HTTP/2 200
 ```
 
 ### Problem: "Verification failed"
 
 **Solution:**
+
 1. Clear browser cache
 2. Check verification file/tag is deployed
 3. Wait 5 minutes after deployment
@@ -266,15 +284,17 @@ curl -I https://zoeholiday.com/programs
 ### Problem: "Couldn't fetch"
 
 **Causes:**
+
 1. Server timeout (check Coolify logs)
 2. DNS not propagated (wait 24 hours)
 3. SSL certificate issue
 4. Firewall blocking Googlebot
 
 **Solution:**
+
 ```bash
 # Test server response time
-time curl -I https://zoeholiday.com
+time curl -I https://zoeholidays.com
 # Should be < 5 seconds
 ```
 
@@ -283,25 +303,30 @@ time curl -I https://zoeholiday.com
 ## EXPECTED TIMELINE ⏱️
 
 ### Immediate (0-1 hour)
+
 - ✅ Property added and verified
 - ✅ Sitemaps submitted
 
 ### 1-2 Hours
+
 - ✅ Google crawls sitemaps
 - ✅ Discovers pages/images
 - ⚠️ "Discovered pages" column populates
 
 ### 24-48 Hours
+
 - ✅ Pages start appearing in search
 - ✅ Coverage report shows indexed pages
 - ✅ Performance data starts showing
 
 ### 1-2 Weeks
+
 - ✅ Rich results appear (FAQs, breadcrumbs)
 - ✅ Images appear in Google Images
 - ✅ Click data appears in reports
 
 ### 1-3 Months
+
 - ✅ Rankings improve
 - ✅ Organic traffic increases
 - ✅ Full SEO benefits realized
@@ -311,16 +336,19 @@ time curl -I https://zoeholiday.com
 ## WHAT TO DO NEXT 📋
 
 ### Daily (First Week)
+
 - [ ] Check Coverage report for errors
 - [ ] Monitor indexing progress
 - [ ] Request indexing for more pages (10/day)
 
 ### Weekly
+
 - [ ] Review Performance report
 - [ ] Check for manual actions
 - [ ] Monitor Core Web Vitals
 
 ### Monthly
+
 - [ ] Analyze search queries
 - [ ] Review top performing pages
 - [ ] Check mobile usability
@@ -353,6 +381,7 @@ time curl -I https://zoeholiday.com
 ## QUICK REFERENCE CHECKLIST ✅
 
 ### Initial Setup (Do Once)
+
 - [ ] Add property to Search Console
 - [ ] Verify ownership (HTML file or meta tag)
 - [ ] Submit sitemap.xml
@@ -362,12 +391,14 @@ time curl -I https://zoeholiday.com
 - [ ] Connect Google Analytics (optional)
 
 ### After 24 Hours
+
 - [ ] Check sitemap shows discovered pages
 - [ ] Verify pages appearing in Coverage
-- [ ] Test: `site:zoeholiday.com` in Google
+- [ ] Test: `site:zoeholidays.com` in Google
 - [ ] Check for any crawl errors
 
 ### After 1 Week
+
 - [ ] Review Performance data
 - [ ] Check rich results appearing
 - [ ] Request indexing for more pages
@@ -380,7 +411,7 @@ time curl -I https://zoeholiday.com
 ### Immediate Actions:
 
 1. **Add Property**
-   - URL: `https://zoeholiday.com`
+   - URL: `https://zoeholidays.com`
    - Method: URL prefix
 
 2. **Verify Ownership** (Choose one)
@@ -406,11 +437,13 @@ time curl -I https://zoeholiday.com
 ## SUPPORT & RESOURCES 📚
 
 ### Official Documentation
+
 - [Search Console Help](https://support.google.com/webmasters)
 - [Verification Methods](https://support.google.com/webmasters/answer/9008080)
 - [Sitemap Best Practices](https://developers.google.com/search/docs/advanced/sitemaps/build-sitemap)
 
 ### Testing Tools
+
 - [Rich Results Test](https://search.google.com/test/rich-results)
 - [Mobile-Friendly Test](https://search.google.com/test/mobile-friendly)
 - [PageSpeed Insights](https://pagespeed.web.dev/)

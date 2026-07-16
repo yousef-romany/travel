@@ -5,7 +5,7 @@ interface OfferSchemaProps {
 }
 
 export default function OfferSchema({ promoCodes }: OfferSchemaProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholiday.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
   const offers = promoCodes.map((code) => ({
     "@type": "Offer",

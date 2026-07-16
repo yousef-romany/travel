@@ -26,7 +26,7 @@ export default function HowToSchema({
   steps,
   image,
 }: HowToSchemaProps) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
   const fullImage = image?.startsWith('http')
     ? image
     : image

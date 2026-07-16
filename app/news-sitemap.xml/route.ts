@@ -3,25 +3,37 @@ import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://dashboard.zoeholidays.com';
 const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_TOKEN || '';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 
-interface Article {
+function escapeXml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+interface InspireBlog {
   documentId: string;
   title: string;
   description?: string;
   publishedAt?: string;
   updatedAt?: string;
-  category?: string;
+  inspire_subcategory?: {
+    categoryName?: string;
+    inspire_category?: {
+      categoryName?: string;
+    };
+  };
 }
 
-async function getRecentArticles(): Promise<Article[]> {
+async function getRecentArticles(): Promise<InspireBlog[]> {
   try {
-    // Google News sitemaps can include articles up to 2 years old
-    // Using 30 days to ensure we always have content
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
     const response = await axios.get(
-      `${API_URL}/api/inspiration?filters[publishedAt][$gte]=${thirtyDaysAgo}&sort=publishedAt:desc&pagination[limit]=100`,
+      `${API_URL}/api/inspire-blogs?filters[publishedAt][$gte]=${thirtyDaysAgo}&sort=publishedAt:desc&pagination[limit]=100&populate[inspire_subcategory][populate]=inspire_category`,
       {
         headers: {
           Authorization: `Bearer ${API_TOKEN}`,
@@ -31,10 +43,9 @@ async function getRecentArticles(): Promise<Article[]> {
 
     const articles = response.data.data || [];
 
-    // If no articles found with date filter, get the most recent ones
     if (articles.length === 0) {
       const fallbackResponse = await axios.get(
-        `${API_URL}/api/inspiration?sort=publishedAt:desc&pagination[limit]=50`,
+        `${API_URL}/api/inspire-blogs?sort=publishedAt:desc&pagination[limit]=50&populate[inspire_subcategory][populate]=inspire_category`,
         {
           headers: {
             Authorization: `Bearer ${API_TOKEN}`,
@@ -46,10 +57,9 @@ async function getRecentArticles(): Promise<Article[]> {
 
     return articles;
   } catch (error) {
-    // Even on error, try to get at least some articles
     try {
       const fallbackResponse = await axios.get(
-        `${API_URL}/api/inspiration?sort=publishedAt:desc&pagination[limit]=50`,
+        `${API_URL}/api/inspire-blogs?sort=publishedAt:desc&pagination[limit]=50&populate[inspire_subcategory][populate]=inspire_category`,
         {
           headers: {
             Authorization: `Bearer ${API_TOKEN}`,
@@ -66,7 +76,6 @@ async function getRecentArticles(): Promise<Article[]> {
 export async function GET() {
   const articles = await getRecentArticles();
 
-  // If no articles found, return a minimal valid sitemap with the inspiration page
   if (articles.length === 0) {
     const fallbackSitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -96,21 +105,31 @@ export async function GET() {
   const newsEntries = articles
     .map((article) => {
       const pubDate = article.publishedAt || article.updatedAt || new Date().toISOString();
+      const categoryName = article.inspire_subcategory?.inspire_category?.categoryName;
+      const subCategoryName = article.inspire_subcategory?.categoryName;
+
+      if (!categoryName || !subCategoryName || !article.title) {
+        return null;
+      }
+
+      const blogSlug = encodeURIComponent(article.title);
+      const blogUrl = `${SITE_URL}/inspiration/${encodeURIComponent(categoryName)}/${encodeURIComponent(subCategoryName)}/${blogSlug}`;
 
       return `
     <url>
-      <loc>${SITE_URL}/inspiration/${article.documentId}</loc>
+      <loc>${blogUrl}</loc>
       <news:news>
         <news:publication>
           <news:name>ZoeHoliday Travel Blog</news:name>
           <news:language>en</news:language>
         </news:publication>
         <news:publication_date>${pubDate}</news:publication_date>
-        <news:title>${article.title}</news:title>
-        <news:keywords>Egypt travel, ${article.category || 'travel tips'}, tourism</news:keywords>
+        <news:title>${escapeXml(article.title)}</news:title>
+        <news:keywords>Egypt travel, ${escapeXml(categoryName)}, tourism</news:keywords>
       </news:news>
     </url>`;
     })
+    .filter(Boolean)
     .join('');
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -122,7 +141,7 @@ export async function GET() {
   return new NextResponse(sitemap, {
     headers: {
       'Content-Type': 'application/xml',
-      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600', // 5 min cache for news
+      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
     },
   });
 }

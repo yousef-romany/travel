@@ -83,7 +83,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     console.error("Error generating metadata:", error);
     return {
       title: "Egypt Tour Program",
-      description: "Explore amazing Egypt tour programs with ZoeHoliday.",
+      description: "Explore amazing Egypt tour programs with zoeholidays.",
     };
   }
 }

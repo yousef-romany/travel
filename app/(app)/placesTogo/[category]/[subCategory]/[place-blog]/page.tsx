@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description = blogData?.description
     ? blogData.description.slice(0, 160)
-    : `Read about ${blogTitle} in ${subCategory}, ${category}. Expert travel tips and guides from ZoeHoliday.`;
+    : `Read about ${blogTitle} in ${subCategory}, ${category}. Expert travel tips and guides from zoeholidays.`;
 
   return {
     title,
@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: blogData?.image ? [blogData.image.url] : [],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/placesToGo/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["place-blog"]}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/placesToGo/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["place-blog"]}`,
     },
   };
 }

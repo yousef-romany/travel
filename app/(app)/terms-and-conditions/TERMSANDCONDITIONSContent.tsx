@@ -12,7 +12,7 @@ export default function TermsandconditionsContent() {
               Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </p>
             <p>
-              Welcome to ZoeHoliday. By accessing and using our website and services, you agree to be bound by these
+              Welcome to zoeholidays. By accessing and using our website and services, you agree to be bound by these
               Terms and Conditions. Please read them carefully before making any bookings or using our services.
             </p>
           </AnimatedSection>
@@ -193,7 +193,7 @@ export default function TermsandconditionsContent() {
               For questions or concerns about these Terms and Conditions, please contact us at:
             </p>
             <div className="bg-muted p-4 rounded-lg">
-              <p><strong>Email:</strong> support@zoeholiday.com</p>
+              <p><strong>Email:</strong> support@zoeholidays.com</p>
               <p><strong>Phone:</strong> +20 155 510 0961</p>
               <p><strong>Address:</strong> Egypt, Cairo</p>
             </div>

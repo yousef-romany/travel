@@ -1,17 +1,22 @@
 # Robots.txt Error Fixed! ✅
 
 ## Problem
+
 Google Search Console showed:
+
 ```
 ❌ Error - Syntax not understood (line 29)
 ```
 
 ## Cause
+
 The previous `robots.ts` file had:
+
 1. Invalid `crawlDelay` property (not supported by Next.js)
 2. Array format for sitemaps (Google needs separate lines)
 
 ## Solution
+
 Created a custom `robots.txt/route.ts` that generates proper format:
 
 ```
@@ -25,13 +30,14 @@ User-agent: Googlebot-Image
 Allow: /
 
 # Sitemaps
-Sitemap: https://zoeholiday.com/sitemap.xml
-Sitemap: https://zoeholiday.com/image-sitemap.xml
+Sitemap: https://zoeholidays.com/sitemap.xml
+Sitemap: https://zoeholidays.com/image-sitemap.xml
 ```
 
 ## What You Need to Do Now
 
 ### 1. Deploy the Fix
+
 ```bash
 cd /home/yousefx00/Documents/Programing\ Projects/ZoeHolidays/travel
 git add .
@@ -43,20 +49,22 @@ git push
 ### 2. Wait 5-10 Minutes After Deploy
 
 ### 3. Test Robots.txt
+
 ```bash
 # After deploy, test it's working:
-curl https://zoeholiday.com/robots.txt
+curl https://zoeholidays.com/robots.txt
 ```
 
 **Expected Output:**
+
 ```
 User-agent: *
 Allow: /
 Disallow: /api/
 ...
 
-Sitemap: https://zoeholiday.com/sitemap.xml
-Sitemap: https://zoeholiday.com/image-sitemap.xml
+Sitemap: https://zoeholidays.com/sitemap.xml
+Sitemap: https://zoeholidays.com/image-sitemap.xml
 ```
 
 ### 4. Re-Test in Google Search Console
@@ -69,6 +77,7 @@ Sitemap: https://zoeholiday.com/image-sitemap.xml
 ### 5. Re-Submit Sitemaps
 
 After robots.txt is fixed:
+
 1. Go to **Sitemaps** section
 2. Remove old submissions (if any errors)
 3. Re-submit:
@@ -78,20 +87,20 @@ After robots.txt is fixed:
 
 ## Timeline
 
-| Step | Time | Action |
-|------|------|--------|
-| **Now** | 0 min | Deploy the fix |
-| **+5 min** | 5 min | Verify robots.txt is accessible |
-| **+10 min** | 10 min | Test in Google Search Console |
-| **+1 hour** | 60 min | Re-submit sitemaps |
-| **+2 hours** | 120 min | Check sitemaps show "Success" |
-| **+24 hours** | 1 day | Pages start appearing in Coverage |
+| Step          | Time    | Action                            |
+| ------------- | ------- | --------------------------------- |
+| **Now**       | 0 min   | Deploy the fix                    |
+| **+5 min**    | 5 min   | Verify robots.txt is accessible   |
+| **+10 min**   | 10 min  | Test in Google Search Console     |
+| **+1 hour**   | 60 min  | Re-submit sitemaps                |
+| **+2 hours**  | 120 min | Check sitemaps show "Success"     |
+| **+24 hours** | 1 day   | Pages start appearing in Coverage |
 
 ## Verification Checklist
 
 After deploying:
 
-- [ ] `curl https://zoeholiday.com/robots.txt` returns valid content
+- [ ] `curl https://zoeholidays.com/robots.txt` returns valid content
 - [ ] No "crawlDelay" in the output
 - [ ] Both sitemaps listed on separate lines
 - [ ] Google Search Console shows no errors
@@ -100,6 +109,7 @@ After deploying:
 ## What Changed
 
 ### Before (Broken):
+
 ```typescript
 // robots.ts - WRONG FORMAT
 {
@@ -112,15 +122,17 @@ After deploying:
 ```
 
 ### After (Fixed):
+
 ```typescript
 // robots.txt/route.ts - CORRECT FORMAT
-Sitemap: https://zoeholiday.com/sitemap.xml
-Sitemap: https://zoeholiday.com/image-sitemap.xml
+Sitemap: https://zoeholidays.com/sitemap.xml
+Sitemap: https://zoeholidays.com/image-sitemap.xml
 ```
 
 ## Expected Result
 
 ✅ **Google Search Console will show:**
+
 ```
 Crawling
 robots.txt
@@ -128,6 +140,7 @@ robots.txt
 ```
 
 ✅ **Sitemaps will be accepted:**
+
 ```
 Sitemap              Status      Discovered
 sitemap.xml         ✅ Success   100+ pages

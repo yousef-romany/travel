@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   description: "Learn how ZoeHoliday collects, uses, and protects your personal information. Read our comprehensive privacy policy for transparency and security.",
   keywords: ["privacy policy", "data protection", "user privacy", "ZoeHoliday privacy", "GDPR compliance", "data security"],
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/privacy-policy`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/privacy-policy`,
   },
   openGraph: {
     title: "Privacy Policy | ZoeHoliday",
     description: "Learn how ZoeHoliday collects, uses, and protects your personal information.",
     type: "website",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/privacy-policy`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/privacy-policy`,
   },
   twitter: {
     card: "summary",

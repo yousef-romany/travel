@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   description: "Read ZoeHoliday's terms and conditions for using our services, booking policies, cancellation rules, and legal agreements.",
   keywords: ["terms and conditions", "booking policy", "cancellation policy", "ZoeHoliday terms", "travel agreement", "refund policy"],
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/terms-and-conditions`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/terms-and-conditions`,
   },
   openGraph: {
     title: "Terms and Conditions | ZoeHoliday",
     description: "Read ZoeHoliday's terms and conditions for using our services.",
     type: "website",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/terms-and-conditions`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/terms-and-conditions`,
   },
   twitter: {
     card: "summary",

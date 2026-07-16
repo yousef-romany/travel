@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   description: "Read ZoeHoliday's terms and conditions for Egypt travel services. Learn about our booking policies, cancellation terms, travel insurance requirements, and customer responsibilities for your Egyptian adventure.",
   keywords: ["terms and conditions", "Egypt travel terms", "booking policy", "cancellation policy", "travel insurance Egypt", "ZoeHoliday terms", "Egypt tour terms"],
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/terms`,
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/terms`,
   },
   openGraph: {
     title: "Terms and Conditions - ZoeHoliday Egypt Travel",
     description: "Read ZoeHoliday's terms and conditions for Egypt travel services. Learn about our booking policies, cancellation terms, and customer responsibilities.",
     type: "website",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/terms`,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/terms`,
     images: [
       {
         url: "/og-terms.jpg",

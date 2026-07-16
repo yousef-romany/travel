@@ -143,7 +143,7 @@ export function ContactCTA({ variant = "whatsapp", size = "md", fullWidth = fals
             variant: "phone" as const,
         },
         email: {
-            href: "mailto:info@zoeholiday.com",
+            href: "mailto:info@zoeholidays.com",
             icon: <Mail className="w-5 h-5" />,
             text: "Email Us",
             variant: "email" as const,

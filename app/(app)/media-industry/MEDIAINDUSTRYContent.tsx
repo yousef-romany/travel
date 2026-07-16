@@ -133,8 +133,8 @@ export default function MediaindustryContent() {
                     <Mail className="w-5 h-5 text-primary mt-0.5" />
                     <div>
                       <p className="font-medium">Email</p>
-                      <a href="mailto:media@zoeholiday.com" className="text-primary hover:underline">
-                        media@zoeholiday.com
+                      <a href="mailto:media@zoeholidays.com" className="text-primary hover:underline">
+                        media@zoeholidays.com
                       </a>
                     </div>
                   </div>

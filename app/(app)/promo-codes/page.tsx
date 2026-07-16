@@ -5,7 +5,7 @@ import OfferSchema from "@/components/seo/OfferSchema";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { Gift, Tag, Sparkles } from "lucide-react";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 
 export const metadata: Metadata = {
   title: "Promo Codes & Special Offers | ZoeHoliday - Save on Egypt Tours",

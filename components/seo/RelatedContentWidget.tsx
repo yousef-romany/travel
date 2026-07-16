@@ -92,7 +92,7 @@ export default function RelatedContentWidget({
               item: {
                 '@type': 'TouristTrip',
                 name: item.title,
-                url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholiday.com'}/${item.type === 'program' ? 'programs' : item.type === 'destination' ? 'destinations' : 'inspiration'}/${item.documentId || item.id}`,
+                url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/${item.type === 'program' ? 'programs' : item.type === 'destination' ? 'destinations' : 'inspiration'}/${item.documentId || item.id}`,
                 ...(item.image && { image: item.image }),
                 ...(item.description && { description: item.description }),
               },
