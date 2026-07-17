@@ -1,9 +1,7 @@
-export const api = async (path: string, options: RequestInit = {}) => {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
+export const api = async (path: string, options: RequestInit = {}, authToken?: string | null) => {
   const headers = {
     "Content-Type": "application/json",
-    ...(token && { Authorization: `Bearer ${token}` }),
+    ...(authToken && { Authorization: `Bearer ${authToken}` }),
     ...(options.headers || {}),
   };
 

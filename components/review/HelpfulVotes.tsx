@@ -36,7 +36,7 @@ export default function HelpfulVotes({
     const loadUserVote = async () => {
       try {
         setLoading(true);
-        const existingVote = await getUserVote(testimonialId, user.documentId!);
+        const existingVote = await getUserVote(testimonialId, user.documentId!, user.token);
         if (existingVote) {
           setUserVote(existingVote.voteType);
           setUserVoteId(existingVote.documentId);
@@ -78,7 +78,7 @@ export default function HelpfulVotes({
     try {
       // User already voted helpful - remove vote
       if (userVote === "helpful" && userVoteId) {
-        await deleteVote(userVoteId);
+        await deleteVote(userVoteId, user.token);
         setHelpful(helpful - 1);
         setUserVote(null);
         setUserVoteId(null);
@@ -89,7 +89,7 @@ export default function HelpfulVotes({
 
       // User switching from unhelpful to helpful
       if (userVote === "unhelpful" && userVoteId) {
-        await updateVote(userVoteId, "helpful");
+        await updateVote(userVoteId, "helpful", user.token);
         setUnhelpful(unhelpful - 1);
         setHelpful(helpful + 1);
         setUserVote("helpful");
@@ -99,7 +99,7 @@ export default function HelpfulVotes({
       }
 
       // New vote
-      const newVote = await createVote(testimonialId, user.documentId!, "helpful");
+      const newVote = await createVote(testimonialId, user.documentId!, "helpful", user.token);
       setHelpful(helpful + 1);
       setUserVote("helpful");
       setUserVoteId(newVote.documentId);
@@ -132,7 +132,7 @@ export default function HelpfulVotes({
     try {
       // User already voted unhelpful - remove vote
       if (userVote === "unhelpful" && userVoteId) {
-        await deleteVote(userVoteId);
+        await deleteVote(userVoteId, user.token);
         setUnhelpful(unhelpful - 1);
         setUserVote(null);
         setUserVoteId(null);
@@ -143,7 +143,7 @@ export default function HelpfulVotes({
 
       // User switching from helpful to unhelpful
       if (userVote === "helpful" && userVoteId) {
-        await updateVote(userVoteId, "unhelpful");
+        await updateVote(userVoteId, "unhelpful", user.token);
         setHelpful(helpful - 1);
         setUnhelpful(unhelpful + 1);
         setUserVote("unhelpful");
@@ -153,7 +153,7 @@ export default function HelpfulVotes({
       }
 
       // New vote
-      const newVote = await createVote(testimonialId, user.documentId!, "unhelpful");
+      const newVote = await createVote(testimonialId, user.documentId!, "unhelpful", user.token);
       setUnhelpful(unhelpful + 1);
       setUserVote("unhelpful");
       setUserVoteId(newVote.documentId);

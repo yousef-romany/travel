@@ -108,7 +108,7 @@ export function DynamicLoader({
  * Create a dynamically loaded component
  * Wrapper for easier usage
  */
-export function createDynamicComponent<P = {}>(
+export function createDynamicComponent<P = Record<string, never>>(
   loader: () => Promise<{ default: ComponentType<P> }>,
   options?: Omit<DynamicLoaderProps, 'loader'>
 ) {

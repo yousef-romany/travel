@@ -19,7 +19,7 @@ export default function InvoicesSection() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["userInvoices", user?.documentId],
-    queryFn: () => fetchUserInvoices(user?.documentId),
+    queryFn: () => fetchUserInvoices(user?.documentId, user?.token),
     enabled: !!user?.documentId,
   })
 

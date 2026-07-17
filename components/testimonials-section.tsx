@@ -42,13 +42,13 @@ export default function TestimonialsSection() {
 
   const { data: testimonialsData, isLoading, isError, error } = useQuery({
     queryKey: ["userTestimonials", user?.documentId],
-    queryFn: () => fetchUserTestimonials(user?.documentId),
+    queryFn: () => fetchUserTestimonials(user?.documentId, user?.token),
     enabled: !!user?.documentId,
     retry: 2,
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteTestimonial,
+    mutationFn: (testimonialId: string) => deleteTestimonial(testimonialId, user?.token),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userTestimonials", user?.documentId] });
       toast.success("Testimonial deleted successfully");

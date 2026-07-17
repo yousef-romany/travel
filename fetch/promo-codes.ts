@@ -258,16 +258,14 @@ export const checkIfUserHasBookedBefore = async (
  * Increment promo code usage count with race condition protection
  */
 export const incrementPromoCodeUsage = async (
-  promoCodeId: string
+  promoCodeId: string,
+  authToken?: string | null
 ): Promise<void> => {
   const maxRetries = 3;
   let attempt = 0;
 
   while (attempt < maxRetries) {
     try {
-      const authToken =
-        typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
       // Fetch current data with version/timestamp
       const currentResponse = await axios.get(
         `${API_URL}/api/promo-codes/${promoCodeId}`,

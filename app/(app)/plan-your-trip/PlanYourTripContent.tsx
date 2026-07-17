@@ -33,7 +33,7 @@ export default function PlanYourTripContent() {
   // Fetch user's own trips
   const { data: userTripsData, isLoading: userTripsLoading, error: userTripsError, refetch: refetchUserTrips } = useQuery({
     queryKey: ["userPlanTrips", user?.documentId],
-    queryFn: () => fetchUserPlanTrips(user?.documentId),
+    queryFn: () => fetchUserPlanTrips(user?.documentId, user?.token),
     retry: 2,
     refetchOnMount: true,
     enabled: !!user?.documentId,

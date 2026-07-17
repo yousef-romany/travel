@@ -27,7 +27,7 @@ export default function PlannedTripsSection() {
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["userPlanTrips", user?.documentId],
-    queryFn: () => fetchUserPlanTrips(user?.documentId),
+    queryFn: () => fetchUserPlanTrips(user?.documentId, user?.token),
     enabled: !!user?.documentId,
     staleTime: 2 * 60 * 1000,
   });
@@ -35,7 +35,7 @@ export default function PlannedTripsSection() {
   const trips: any = data || [];
 
   const deleteTripMutation = useMutation({
-    mutationFn: (tripId: string) => deletePlanTrip(tripId),
+    mutationFn: (tripId: string) => deletePlanTrip(tripId, user?.token),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userPlanTrips"] });
       toast.success("Planned trip deleted successfully");

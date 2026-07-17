@@ -11,7 +11,7 @@ export default function PlannedTripsDebug() {
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["userPlanTrips", user?.documentId],
-    queryFn: () => fetchUserPlanTrips(user?.documentId),
+    queryFn: () => fetchUserPlanTrips(user?.documentId, user?.token),
     enabled: !!user?.documentId,
   });
 

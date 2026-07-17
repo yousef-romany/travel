@@ -40,11 +40,10 @@ export async function trackSocialShare(
   contentId: string,
   url: string,
   contentTitle?: string,
-  metadata?: any
+  metadata?: any,
+  authToken?: string | null
 ): Promise<{ success: boolean; shareId: number; message: string }> {
   try {
-    const token = localStorage.getItem("authToken");
-
     const response = await axios.post(
       `${API_URL}/api/social-shares/track`,
       {
@@ -56,9 +55,9 @@ export async function trackSocialShare(
         metadata,
       },
       {
-        headers: token
+        headers: authToken
           ? {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${authToken}`,
             }
           : {},
       }
@@ -88,14 +87,12 @@ export async function getContentShareStats(
 /**
  * Get user's sharing history
  */
-export async function getUserShareHistory(): Promise<SocialShare[]> {
-  const token = localStorage.getItem("authToken");
-
+export async function getUserShareHistory(authToken?: string | null): Promise<SocialShare[]> {
   const response = await axios.get(
     `${API_URL}/api/social-shares/user/history`,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${authToken}`,
       },
     }
   );

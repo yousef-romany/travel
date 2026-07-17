@@ -43,8 +43,8 @@ Required environment variables in `.env`:
 - **Auth Pages**: Outside route group (login, signup, complete-profile, reset-password, email-confirmation)
 
 ### Authentication Flow
-- **Context**: `AuthContext` provides global authentication state with localStorage persistence
-- **Token Storage**: JWT stored in localStorage as "authToken"
+- **Context**: `AuthContext` provides global authentication state with httpOnly cookie-based session
+- **Token Storage**: JWT stored in httpOnly cookie (set by API routes in `app/api/auth/`) with an in-memory copy in React state via `user.token`
 - **User State**: Loads on app mount from `/api/users/me?populate=profile`
 - **Profile Completion**: After signup/login, redirects to `/complete-profile` if `isProfileCompleted` is false
 - **Auth Methods**: login, signup, forgotPassword, resetPassword, resendConfirmation, logout

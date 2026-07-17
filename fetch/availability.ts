@@ -102,11 +102,8 @@ export const createAvailability = async (availabilityData: {
   date: string;
   totalSpots: number;
   availableSpots?: number;
-}): Promise<{ data: ProgramAvailability }> => {
+}, authToken?: string | null): Promise<{ data: ProgramAvailability }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const payload = {
       program: availabilityData.programId,
       date: availabilityData.date,
@@ -138,12 +135,10 @@ export const createAvailability = async (availabilityData: {
  */
 export const updateAvailableSpots = async (
   availabilityId: string,
-  spotsToBook: number
+  spotsToBook: number,
+  authToken?: string | null
 ): Promise<{ data: ProgramAvailability }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     // First, fetch current availability
     const currentResponse = await axios.get(
       `${API_URL}/api/program-availabilities/${availabilityId}`,

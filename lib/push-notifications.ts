@@ -238,18 +238,8 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
  * Get user ID from localStorage/auth
  */
 function getUserId(): string | null {
-  if (typeof window === "undefined") return null;
-  // Get from your auth context or localStorage
-  try {
-    const authToken = localStorage.getItem("authToken");
-    if (authToken) {
-      // Decode JWT or get user ID from your auth system
-      return "user_id"; // Placeholder
-    }
-  } catch (error) {
-    return null;
-  }
-  return null;
+  // Placeholder - should be replaced with actual auth context integration
+  return typeof window !== "undefined" ? "user_id" : null;
 }
 
 /**

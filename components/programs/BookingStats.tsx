@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Users, Clock, Flame } from "lucide-react";
 import { fetchUserBookings } from "@/fetch/bookings";
+import { useAuth } from "@/context/AuthContext";
 
 interface BookingStatsProps {
   programId: string;
@@ -11,6 +12,7 @@ interface BookingStatsProps {
 }
 
 export function BookingStats({ programId, programTitle }: BookingStatsProps) {
+  const { user } = useAuth();
   const [stats, setStats] = useState({
     todayBookings: 0,
     weekBookings: 0,
@@ -28,7 +30,7 @@ export function BookingStats({ programId, programTitle }: BookingStatsProps) {
       setIsLoading(true);
       // Note: In production, you'd want a specific endpoint for program booking stats
       // For now, we'll use the existing booking endpoint
-      const response = await fetchUserBookings();
+      const response = await fetchUserBookings(undefined, user?.token);
 
       const programBookings = response.data.filter(
         (booking) => booking.program?.documentId === programId

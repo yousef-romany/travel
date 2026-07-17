@@ -67,7 +67,7 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
         userId: user?.documentId,
       };
 
-      const booking = await createBooking(bookingData);
+      const booking = await createBooking(bookingData, user?.token);
 
       // Create invoice
       const invoiceData = {
@@ -90,11 +90,11 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
       await createInvoice({
         ...invoiceData,
         // Handle 'paid' status similarly to BookingPageContent
-      });
+      }, user?.token);
 
       try {
         const { updateInvoiceStatusByBookingId } = await import("@/fetch/invoices");
-        await updateInvoiceStatusByBookingId(booking.data.documentId, "paid");
+        await updateInvoiceStatusByBookingId(booking.data.documentId, "paid", user?.token);
       } catch (statusError) {
         console.error("Failed to update invoice status to paid", statusError);
       }

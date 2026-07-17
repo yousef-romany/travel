@@ -270,11 +270,11 @@ export default function BookingDialog({
         const pdfBlob = await generateInvoicePDF(pdfData);
         let pdfUrl: string | undefined;
         try {
-          pdfUrl = await uploadFileToStrapi(pdfBlob, `invoice-${createData.invoiceNumber}.pdf`);
+          pdfUrl = await uploadFileToStrapi(pdfBlob, `invoice-${createData.invoiceNumber}.pdf`, user?.token);
         } catch {
           // PDF upload failure is non-fatal
         }
-        await createInvoice({ ...createData, pdfUrl });
+        await createInvoice({ ...createData, pdfUrl }, user?.token);
         await downloadInvoicePDF(pdfData, `invoice-${createData.invoiceNumber}.pdf`);
       } catch (invoiceError) {
         console.error('Invoice error (non-fatal):', invoiceError);

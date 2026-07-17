@@ -33,19 +33,17 @@ export interface ReferralStats {
 /**
  * Generate a referral code for the current user
  */
-export async function generateReferralCode(): Promise<{
+export async function generateReferralCode(authToken?: string | null): Promise<{
   referralCode: string;
   expiryDate: string;
   message: string;
 }> {
-  const token = localStorage.getItem("authToken");
-
   const response = await axios.post(
     `${API_URL}/api/referrals/generate`,
     {},
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${authToken}`,
       },
     }
   );
@@ -56,20 +54,18 @@ export async function generateReferralCode(): Promise<{
 /**
  * Validate a referral code
  */
-export async function validateReferralCode(referralCode: string): Promise<{
+export async function validateReferralCode(referralCode: string, authToken?: string | null): Promise<{
   isValid: boolean;
   referralReward?: number;
   referredReward?: number;
   message: string;
 }> {
-  const token = localStorage.getItem("authToken");
-
   const response = await axios.post(
     `${API_URL}/api/referrals/validate`,
     { referralCode },
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${authToken}`,
       },
     }
   );
@@ -80,20 +76,18 @@ export async function validateReferralCode(referralCode: string): Promise<{
 /**
  * Complete a referral (called after first booking)
  */
-export async function completeReferral(bookingId: string): Promise<{
+export async function completeReferral(bookingId: string, authToken?: string | null): Promise<{
   success: boolean;
   referralReward: number;
   referredReward: number;
   message: string;
 }> {
-  const token = localStorage.getItem("authToken");
-
   const response = await axios.post(
     `${API_URL}/api/referrals/complete`,
     { bookingId },
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${authToken}`,
       },
     }
   );
@@ -104,20 +98,18 @@ export async function completeReferral(bookingId: string): Promise<{
 /**
  * Get user's referral statistics
  */
-export async function getReferralStats(): Promise<ReferralStats> {
+export async function getReferralStats(authToken?: string | null): Promise<ReferralStats> {
   try {
-    const token = localStorage.getItem("authToken");
-
     const response = await axios.get(
       `${API_URL}/api/referrals/stats`,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
 
-    return response.data;
+  return response.data;
   } catch (error: any) {
     // Return default empty stats if endpoint doesn't exist
     if (error.response?.status === 404 || error.code === 'ERR_BAD_REQUEST') {
@@ -140,20 +132,18 @@ export async function getReferralStats(): Promise<ReferralStats> {
 /**
  * Get user's referral history
  */
-export async function getReferralHistory(): Promise<Referral[]> {
+export async function getReferralHistory(authToken?: string | null): Promise<Referral[]> {
   try {
-    const token = localStorage.getItem("authToken");
-
     const response = await axios.get(
       `${API_URL}/api/referrals/history`,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
 
-    return response.data;
+  return response.data;
   } catch (error: any) {
     // Return empty array if endpoint doesn't exist
     if (error.response?.status === 404 || error.code === 'ERR_BAD_REQUEST') {

@@ -44,7 +44,7 @@ function BookingSuccessContent() {
     error: bookingError,
   } = useQuery({
     queryKey: ["booking", bookingId],
-    queryFn: () => fetchBookingById(bookingId!),
+    queryFn: () => fetchBookingById(bookingId!, user?.token),
     enabled: !!bookingId,
     retry: 1,
   });
@@ -52,7 +52,7 @@ function BookingSuccessContent() {
   // Fetch invoice details
   const { data: invoiceData, isLoading: invoiceLoading } = useQuery({
     queryKey: ["invoice", bookingId],
-    queryFn: () => fetchInvoiceByBookingId(bookingId!),
+    queryFn: () => fetchInvoiceByBookingId(bookingId!, user?.token),
     enabled: !!bookingId,
     retry: 1,
   });

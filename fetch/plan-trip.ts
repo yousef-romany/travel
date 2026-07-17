@@ -43,12 +43,10 @@ export interface PlanTripsResponse {
 
 // Fetch all plan trips for the current user
 export const fetchUserPlanTrips = async (
-  userId?: string
+  userId?: string,
+  authToken?: string | null
 ): Promise<PlanTripsResponse> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     let url = `${API_URL}/api/plan-trips?populate=user&sort=createdAt:desc`;
 
     if (userId) {
@@ -71,13 +69,10 @@ export const fetchUserPlanTrips = async (
 
 // Fetch popular/best custom trips (excluding cancelled, sorted by total price or creation date)
 export const fetchBestCustomTrips = async (
-  limit: number = 6
+  limit: number = 6,
+  authToken?: string | null
 ): Promise<PlanTripsResponse> => {
   try {
-    // Try to get auth token from localStorage if available (for better permissions)
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const response = await axios.get(
       `${API_URL}/api/plan-trips?populate=user&filters[tripStatus][$ne]=cancelled&sort=createdAt:desc&pagination[limit]=${limit}`,
       {
@@ -107,11 +102,8 @@ export const createPlanTrip = async (planTripData: {
   notes?: string;
   userId?: string;
   tripStatus?: "draft" | "quoted" | "booked" | "completed" | "cancelled";
-}): Promise<{ data: PlanTripType }> => {
+}, authToken?: string | null): Promise<{ data: PlanTripType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const payload: any = {
       tripName: planTripData.tripName,
       destinations: planTripData.destinations,
@@ -154,12 +146,10 @@ export const createPlanTrip = async (planTripData: {
 
 // Fetch a single plan trip by ID
 export const fetchPlanTripById = async (
-  planTripId: string
+  planTripId: string,
+  authToken?: string | null
 ): Promise<{ data: PlanTripType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const response = await axios.get(
       `${API_URL}/api/plan-trips/${planTripId}?populate=*`,
       {
@@ -179,12 +169,10 @@ export const fetchPlanTripById = async (
 // Update plan trip status
 export const updatePlanTripStatus = async (
   planTripId: string,
-  tripStatus: "draft" | "quoted" | "booked" | "completed" | "cancelled"
+  tripStatus: "draft" | "quoted" | "booked" | "completed" | "cancelled",
+  authToken?: string | null
 ): Promise<{ data: PlanTripType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const response = await axios.put(
       `${API_URL}/api/plan-trips/${planTripId}`,
       {
@@ -207,12 +195,10 @@ export const updatePlanTripStatus = async (
 
 // Delete plan trip
 export const deletePlanTrip = async (
-  planTripId: string
+  planTripId: string,
+  authToken?: string | null
 ): Promise<{ data: PlanTripType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const response = await axios.delete(
       `${API_URL}/api/plan-trips/${planTripId}`,
       {

@@ -84,13 +84,10 @@ export interface BookingsResponse {
 
 // Fetch all bookings for the current user
 export const fetchUserBookings = async (
-  userId?: string
+  userId?: string,
+  authToken?: string | null
 ): Promise<BookingsResponse> => {
   try {
-    // Get auth token from localStorage
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     // Build URL with proper deep population syntax for Strapi v5
     // Event has 'featuredImage' and 'gallery', not 'images'
     // plan_trip: Only populate safe fields (tripName, destinations, totalPrice, status, notes)
@@ -167,12 +164,8 @@ export const createBooking = async (bookingData: {
 
   finalPrice?: number;
   selectedServices?: string[];
-}): Promise<{ data: BookingType }> => {
+}, authToken?: string | null): Promise<{ data: BookingType }> => {
   try {
-    // Get auth token from localStorage
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const payload: Record<string, unknown> = {
       fullName: bookingData.fullName,
       email: bookingData.email,
@@ -230,12 +223,10 @@ export const createBooking = async (bookingData: {
 
 // Fetch a single booking by ID
 export const fetchBookingById = async (
-  bookingId: string
+  bookingId: string,
+  authToken?: string | null
 ): Promise<{ data: BookingType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const response = await axios.get(
       // ✅ PAY-03: Also populate user so success page can verify ownership
       `${API_URL}/api/bookings/${bookingId}?populate[program][populate][0]=images&populate[plan_trip][fields][0]=tripName&populate[plan_trip][fields][1]=totalPrice&populate[event][populate][0]=featuredImage&populate[user][fields][0]=id`,
@@ -255,12 +246,10 @@ export const fetchBookingById = async (
 // Update booking status
 export const updateBookingStatus = async (
   bookingId: string,
-  bookingStatus: "pending" | "confirmed" | "cancelled"
+  bookingStatus: "pending" | "confirmed" | "cancelled",
+  authToken?: string | null
 ): Promise<{ data: BookingType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const response = await axios.put(
       `${API_URL}/api/bookings/${bookingId}`,
       {
@@ -283,7 +272,8 @@ export const updateBookingStatus = async (
 // Cancel booking with 24-hour policy check
 export const cancelBooking = async (
   bookingId: string,
-  bookingCreatedAt: string
+  bookingCreatedAt: string,
+  authToken?: string | null
 ): Promise<{ data: BookingType }> => {
   try {
     // Check 24-hour cancellation policy
@@ -298,12 +288,12 @@ export const cancelBooking = async (
     }
 
     // Update booking status to cancelled
-    const bookingResponse = await updateBookingStatus(bookingId, "cancelled");
+    const bookingResponse = await updateBookingStatus(bookingId, "cancelled", authToken);
 
     // Also update related invoice status to cancelled
     try {
       const { updateInvoiceStatusByBookingId } = await import("@/fetch/invoices");
-      await updateInvoiceStatusByBookingId(bookingId, "cancelled");
+      await updateInvoiceStatusByBookingId(bookingId, "cancelled", authToken);
     } catch (invoiceError) {
       // Don't throw error here - booking cancellation should succeed even if invoice update fails
     }

@@ -27,7 +27,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { format } from "date-fns";
-import { createBooking, verifyBookingPayment } from "@/fetch/bookings";
+import { verifyBookingPayment } from "@/fetch/bookings";
 import { createInvoice } from "@/fetch/invoices";
 import { generateInvoicePDF, downloadInvoicePDF } from "@/lib/pdf-generator";
 import { uploadFileToStrapi } from "@/lib/upload-file";
@@ -81,7 +81,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   // Map of date string (YYYY-MM-DD) to availability data (spots + status)
   const [availabilityMap, setAvailabilityMap] = useState<Record<string, { spots: number; status: string }>>({});
-  const [isLoadingAvailability, setIsLoadingAvailability] = useState(true);
+  const [, setIsLoadingAvailability] = useState(true);
   const [appliedPromo, setAppliedPromo] = useState<{
     code: PromoCode;
     discountAmount: number;
@@ -167,117 +167,6 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     loadAvailability();
   }, [program.documentId]);
 
-  const createBookingMutation = useMutation({
-    mutationFn: createBooking,
-    onSuccess: async (data: any) => {
-      queryClient.invalidateQueries({ queryKey: ["userBookings"] });
-
-      try {
-        // Increment promo code usage if applied
-        if (appliedPromo) {
-          await incrementPromoCodeUsage(appliedPromo.code.documentId);
-        }
-
-        const invoiceNumber = `INV-${Date.now()}-${data.data.documentId}`;
-        const finalAmount = appliedPromo ? appliedPromo.finalPrice : (program.price * formData.numberOfTravelers);
-
-        const invoiceData = {
-          invoiceNumber,
-          bookingId: data.data.documentId,
-          customerName: formData.fullName,
-          customerEmail: formData.email,
-          customerPhone: formData.phone,
-          tripName: program.title,
-          tripDate: formData.travelDate!.toISOString(),
-          tripDuration: program.duration,
-          numberOfTravelers: formData.numberOfTravelers,
-          pricePerPerson: program.price,
-          totalAmount: finalAmount,
-          bookingType: "program" as const,
-          userId: user?.documentId,
-          bookingDate: new Date().toISOString(),
-          services: (program.services || [])
-            .filter(s => selectedServices.includes(s.documentId))
-            .map(s => ({
-              name: s.name,
-              price: s.type === 'per_person' ? s.price * formData.numberOfTravelers : s.price
-            })),
-        };
-
-        // Generate PDF
-        const pdfBlob = await generateInvoicePDF(invoiceData);
-
-        // Upload PDF
-        let pdfUrl: string | undefined;
-        try {
-          pdfUrl = await uploadFileToStrapi(pdfBlob, `invoice-${invoiceNumber}.pdf`);
-        } catch (uploadError) {
-          console.error("PDF upload failed:", uploadError);
-        }
-
-        // Create invoice
-        await createInvoice({
-          ...invoiceData,
-          pdfUrl,
-          // If we are in payment step (PayPal flow), marking as paid would be ideal, 
-          // but relying on backend verification is safer. 
-          // For now, we update the status if the trigger was from payment success.
-        });
-
-        // Force update status if it was paid via PayPal
-        // Note: The createInvoice function sets default 'pending'. 
-        // If we want it 'paid', we should update it immediately or pass it if createInvoice allowed it.
-        // Checking createInvoice sig (fetch/invoices.ts), it forces 'pending'. 
-        // We will call updateInvoiceStatus if needed, or just let it be pending until verified.
-        // Actually, let's update it to 'paid' since we captured the payment.
-        try {
-          const { updateInvoiceStatusByBookingId } = await import("@/fetch/invoices");
-          await updateInvoiceStatusByBookingId(data.data.documentId, "paid");
-        } catch (statusError) {
-          console.error("Failed to update invoice status to paid", statusError);
-        }
-
-        // Download PDF
-
-        // Download PDF
-        await downloadInvoicePDF(invoiceData, `invoice-${invoiceNumber}.pdf`);
-
-        // WhatsApp message with discount info
-        const discountText = appliedPromo ? `\n• Discount: -$${appliedPromo.discountAmount.toFixed(2)} (${appliedPromo.code.code})` : "";
-        const servicesText = selectedServices.length > 0
-          ? `\n• Services: ${(program.services || [])
-            .filter(s => selectedServices.includes(s.documentId))
-            .map(s => `${s.name} ($${s.price})`)
-            .join(", ")}`
-          : "";
-
-        const whatsAppMessage = `🎉 *New Booking Request*\n\n📋 *Booking Details:*\n• Tour: ${program.title}\n• Customer: ${formData.fullName}\n• Email: ${formData.email}\n• Phone: ${formData.phone}\n• Number of Travelers: ${formData.numberOfTravelers}\n• Travel Date: ${format(formData.travelDate!, "PPP")}${servicesText}${discountText}\n• Total Amount: $${finalAmount.toFixed(2)}\n\n${formData.specialRequests ? `📝 *Special Requests:*\n${formData.specialRequests}\n` : ""}Please confirm this booking as soon as possible.\n\nThank you! 🙏`;
-
-        const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsAppMessage)}`;
-
-        // Track WhatsApp booking
-        trackWhatsAppBooking(program.title, program.documentId, finalAmount);
-
-        window.open(whatsappUrl, "_blank");
-
-        toast.success("Booking submitted successfully! Invoice PDF downloaded.");
-        router.push(`/booking/success?bookingId=${data.data.documentId}`);
-      } catch (error) {
-        console.error("Invoice generation error:", error);
-        toast.error("Booking created but invoice generation failed.");
-      }
-    },
-    onError: (error: any) => {
-      console.error("Booking error:", error);
-      let errorMessage = "Failed to submit booking. Please try again.";
-      if (error.response?.data?.error?.message) {
-        errorMessage = error.response.data.error.message;
-      }
-      toast.error(errorMessage);
-    },
-  });
-
-
   const verifyBookingMutation = useMutation({
     mutationFn: (data: { orderID: string; bookingData: any }) =>
       verifyBookingPayment(data.orderID, data.bookingData),
@@ -297,7 +186,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
 
     try {
       if (appliedPromo) {
-        await incrementPromoCodeUsage(appliedPromo.code.documentId);
+        await incrementPromoCodeUsage(appliedPromo.code.documentId, user?.token);
       }
 
       const invoiceNumber = `INV-${Date.now()}-${data.data.documentId}`;
@@ -329,17 +218,17 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
       const pdfBlob = await generateInvoicePDF(invoiceData);
       let pdfUrl: string | undefined;
       try {
-        pdfUrl = await uploadFileToStrapi(pdfBlob, `invoice-${invoiceNumber}.pdf`);
+        pdfUrl = await uploadFileToStrapi(pdfBlob, `invoice-${invoiceNumber}.pdf`, user?.token);
       } catch (uploadError) {
         console.error("PDF upload failed:", uploadError);
       }
 
-      await createInvoice({ ...invoiceData, pdfUrl });
+      await createInvoice({ ...invoiceData, pdfUrl }, user?.token);
 
       // Update invoice to paid since this came from PayPal
       try {
         const { updateInvoiceStatusByBookingId } = await import("@/fetch/invoices");
-        await updateInvoiceStatusByBookingId(data.data.documentId, "paid");
+        await updateInvoiceStatusByBookingId(data.data.documentId, "paid", user?.token);
       } catch (statusError) {
         console.error("Failed to update invoice status", statusError);
       }

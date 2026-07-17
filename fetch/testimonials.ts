@@ -170,12 +170,10 @@ export const fetchApprovedTestimonials = async (
 
 // Fetch user's own testimonials
 export const fetchUserTestimonials = async (
-  userId?: string
+  userId?: string,
+  authToken?: string | null
 ): Promise<TestimonialsResponse> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     let url = `${API_URL}/api/testimonials?populate[user][populate][0]=profile&populate[program][fields][0]=title&populate[event][fields][0]=title&populate[plan_trip][fields][0]=tripName&populate[place][fields][0]=title&sort=createdAt:desc`;
 
     if (userId) {
@@ -205,11 +203,8 @@ export const createTestimonial = async (testimonialData: {
   eventId?: string;
   planTripId?: string;
   placeId?: string;
-}): Promise<{ data: Testimonial }> => {
+}, authToken?: string | null): Promise<{ data: Testimonial }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const data: any = {
       rating: testimonialData.rating,
       comment: testimonialData.comment,
@@ -257,12 +252,10 @@ export const updateTestimonial = async (
   data: {
     rating?: number;
     comment?: string;
-  }
+  },
+  authToken?: string | null
 ): Promise<{ data: Testimonial }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const response = await axios.put(
       `${API_URL}/api/testimonials/${testimonialId}`,
       { data },
@@ -283,12 +276,10 @@ export const updateTestimonial = async (
 
 // Delete testimonial
 export const deleteTestimonial = async (
-  testimonialId: string
+  testimonialId: string,
+  authToken?: string | null
 ): Promise<void> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     await axios.delete(`${API_URL}/api/testimonials/${testimonialId}`, {
       headers: {
         Authorization: `Bearer ${authToken || API_TOKEN}`,
@@ -304,12 +295,10 @@ export const deleteTestimonial = async (
 export const getUserTestimonial = async (
   userId: string,
   type: "program" | "event" | "custom-trip" | "place",
-  relatedId: string
+  relatedId: string,
+  authToken?: string | null
 ): Promise<Testimonial | null> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     let filterField = "";
     switch (type) {
       case "program":

@@ -11,16 +11,18 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setError("")
 
     try {
-      await forgotPassword(email) // ✅ Replace fetch with context method
+      await forgotPassword(email)
       setSubmitted(true)
     } catch (err: any) {
-      alert(err.message)
+      setError(err.message)
     }
 
     setLoading(false)
@@ -52,19 +54,29 @@ export default function ForgotPasswordPage() {
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); setError(""); }}
                   placeholder="you@example.com"
                   className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-amber-400/50 focus:ring-1 focus:ring-amber-400/30 transition-all"
                   required
                 />
+                {error && (
+                  <p className="mt-2 text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2">{error}</p>
+                )}
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 disabled:opacity-50 text-slate-900 font-semibold rounded-lg transition-all duration-300 mt-6"
+                className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 disabled:opacity-50 text-slate-900 font-semibold rounded-lg transition-all duration-300 mt-6 flex items-center justify-center gap-2"
               >
-                {loading ? "Sending..." : "Send Reset Link"}
+                {loading ? (
+                  <>
+                    <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                    Sending...
+                  </>
+                ) : (
+                  "Send Reset Link"
+                )}
               </button>
 
               <Link

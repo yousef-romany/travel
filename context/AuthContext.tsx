@@ -135,7 +135,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!res.ok) throw new Error(data?.error || "Reset failed");
 
     setUser(data.user);
-    router.push("/");
+    router.push("/me");
   };
 
   // ✅ RESEND CONFIRMATION — now surfaces errors

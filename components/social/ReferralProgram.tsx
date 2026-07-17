@@ -54,9 +54,8 @@ export function ReferralProgram() {
   const loadReferralData = async () => {
     try {
       setIsLoadingStats(true);
-      // Dynamically import to avoid circular dependencies if any
       const { getMyReferralCode } = await import("@/fetch/user");
-      const token = localStorage.getItem("authToken");
+      const token = user?.token;
 
       if (!token) return;
 
@@ -109,9 +108,8 @@ export function ReferralProgram() {
 
     try {
       setIsGenerating(true);
-      // getMyReferralCode lazy-generates the code if it doesn't exist
       const { getMyReferralCode } = await import("@/fetch/user");
-      const token = localStorage.getItem("authToken");
+      const token = user?.token;
       if (token) {
         const result = await getMyReferralCode(token);
         if (result) {
@@ -497,7 +495,7 @@ export function ReferralWidget() {
 
   useEffect(() => {
     if (user) {
-      getReferralStats()
+      getReferralStats(user?.token)
         .then(setStats)
         .catch(() => {
           // Silently fail - getReferralStats already handles errors gracefully

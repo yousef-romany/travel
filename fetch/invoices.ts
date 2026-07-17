@@ -48,11 +48,10 @@ export interface InvoicesResponse {
 
 // Fetch all invoices for the current user
 export const fetchUserInvoices = async (
-  userId?: string
+  userId?: string,
+  authToken?: string | null
 ): Promise<InvoicesResponse> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
     let url = `${API_URL}/api/invoices?populate[booking][fields][0]=discountAmount&populate[booking][fields][1]=promoCodeId&populate[booking][fields][2]=finalPrice&sort=createdAt:desc`;
 
@@ -89,10 +88,8 @@ export const createInvoice = async (invoiceData: {
   pdfUrl?: string;
   bookingType?: "program" | "custom-trip" | "event";
   userId?: string;
-}): Promise<{ data: InvoiceType }> => {
+}, authToken?: string | null): Promise<{ data: InvoiceType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
     const response = await axios.post(
       `${API_URL}/api/invoices`,
@@ -132,11 +129,10 @@ export const createInvoice = async (invoiceData: {
 
 // Fetch a single invoice by ID
 export const fetchInvoiceById = async (
-  invoiceId: string
+  invoiceId: string,
+  authToken?: string | null
 ): Promise<{ data: InvoiceType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
     const response = await axios.get(
       `${API_URL}/api/invoices/${invoiceId}?populate=*`,
@@ -157,11 +153,10 @@ export const fetchInvoiceById = async (
 // Update invoice status
 export const updateInvoiceStatus = async (
   invoiceId: string,
-  invoiceStatus: "pending" | "paid" | "cancelled"
+  invoiceStatus: "pending" | "paid" | "cancelled",
+  authToken?: string | null
 ): Promise<{ data: InvoiceType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
     const response = await axios.put(
       `${API_URL}/api/invoices/${invoiceId}`,
@@ -187,11 +182,10 @@ export const updateInvoiceStatus = async (
 // Update invoice PDF URL
 export const updateInvoicePdfUrl = async (
   invoiceId: string,
-  pdfUrl: string
+  pdfUrl: string,
+  authToken?: string | null
 ): Promise<{ data: InvoiceType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
     const response = await axios.put(
       `${API_URL}/api/invoices/${invoiceId}`,
@@ -217,11 +211,10 @@ export const updateInvoicePdfUrl = async (
 // Update invoice status by booking ID
 export const updateInvoiceStatusByBookingId = async (
   bookingId: string,
-  invoiceStatus: "pending" | "paid" | "cancelled"
+  invoiceStatus: "pending" | "paid" | "cancelled",
+  authToken?: string | null
 ): Promise<{ data: InvoiceType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
     // First, find the invoice by bookingId
     const findResponse = await axios.get(
@@ -264,11 +257,10 @@ export const updateInvoiceStatusByBookingId = async (
 
 // Fetch invoice by booking ID
 export const fetchInvoiceByBookingId = async (
-  bookingId: string
+  bookingId: string,
+  authToken?: string | null
 ): Promise<{ data: InvoiceType }> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
     const response = await axios.get(
       `${API_URL}/api/invoices?filters[bookingId][$eq]=${bookingId}`,

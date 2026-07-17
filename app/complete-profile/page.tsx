@@ -102,6 +102,21 @@ export default function CompleteProfilePage() {
   const [countryOpen, setCountryOpen] = useState(false);
   const [countryQuery, setCountryQuery] = useState("");
 
+  // Pre-fill from existing profile data
+  React.useEffect(() => {
+    if (user?.profile) {
+      const p = user.profile;
+      setFormData((prev) => ({
+        ...prev,
+        firstName: p.firstName || "",
+        lastName: p.lastName || "",
+        phone: p.phone || "",
+        city: p.city || "",
+        country: p.country || "",
+      }));
+    }
+  }, [user]);
+
   const filteredCountries = countryQuery
     ? COUNTRIES.filter((c) => c.toLowerCase().includes(countryQuery.toLowerCase()))
     : COUNTRIES;
@@ -193,7 +208,7 @@ export default function CompleteProfilePage() {
       }
 
       setDone(true);
-      setTimeout(() => router.push("/"), 1200);
+      setTimeout(() => router.push("/me"), 1200);
     } catch (err: any) {
       toast.error(err?.message || "Error saving profile. Please try again.");
     } finally {
@@ -228,7 +243,7 @@ export default function CompleteProfilePage() {
           <CheckCircle size={80} />
         </motion.div>
         <p className="text-2xl font-semibold">Profile Saved!</p>
-        <p className="text-muted-foreground">Taking you home...</p>
+        <p className="text-muted-foreground">Taking you to your profile...</p>
       </div>
     );
   }

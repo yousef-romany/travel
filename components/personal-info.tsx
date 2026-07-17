@@ -43,7 +43,7 @@ export default function PersonalInfo() {
   // Fetch user's plan trips
   const { data: planTrips } = useQuery({
     queryKey: ["userPlanTrips", user?.documentId],
-    queryFn: () => fetchUserPlanTrips(user?.documentId),
+    queryFn: () => fetchUserPlanTrips(user?.documentId, user?.token),
     enabled: !!user?.documentId,
     staleTime: 2 * 60 * 1000,
   });

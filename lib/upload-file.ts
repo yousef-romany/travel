@@ -7,12 +7,10 @@ const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "https://dashboard.zoeholi
  */
 export const uploadFileToStrapi = async (
   file: Blob,
-  filename: string
+  filename: string,
+  authToken?: string | null
 ): Promise<string> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const formData = new FormData();
     formData.append("files", file, filename);
 

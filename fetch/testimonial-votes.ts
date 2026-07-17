@@ -14,12 +14,10 @@ export interface TestimonialVote {
 // Get user's vote on a specific testimonial
 export const getUserVote = async (
   testimonialId: string,
-  userId: string
+  userId: string,
+  authToken?: string | null
 ): Promise<TestimonialVote | null> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     // Query using testimonialId and userId fields (not relation filters)
     const response = await axios.get(
       `${API_URL}/api/testimonial-votes?filters[testimonialId][$eq]=${testimonialId}&filters[userId][$eq]=${userId}`,
@@ -46,12 +44,10 @@ export const getUserVote = async (
 export const createVote = async (
   testimonialId: string,
   userId: string,
-  voteType: "helpful" | "unhelpful"
+  voteType: "helpful" | "unhelpful",
+  authToken?: string | null
 ): Promise<TestimonialVote> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const payload = {
       data: {
         testimonialId: testimonialId,
@@ -107,12 +103,10 @@ export const createVote = async (
 // Update an existing vote
 export const updateVote = async (
   voteId: string,
-  voteType: "helpful" | "unhelpful"
+  voteType: "helpful" | "unhelpful",
+  authToken?: string | null
 ): Promise<TestimonialVote> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     const response = await axios.put(
       `${API_URL}/api/testimonial-votes/${voteId}`,
       {
@@ -140,11 +134,8 @@ export const updateVote = async (
 };
 
 // Delete a vote
-export const deleteVote = async (voteId: string): Promise<void> => {
+export const deleteVote = async (voteId: string, authToken?: string | null): Promise<void> => {
   try {
-    const authToken =
-      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
     await axios.delete(`${API_URL}/api/testimonial-votes/${voteId}`, {
       headers: {
         Authorization: `Bearer ${authToken || API_TOKEN}`,

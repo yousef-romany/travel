@@ -29,7 +29,7 @@ export default function TripsSection() {
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["userBookings", user?.documentId],
-    queryFn: () => fetchUserBookings(user?.documentId),
+    queryFn: () => fetchUserBookings(user?.documentId, user?.token),
     enabled: !!user?.documentId,
     staleTime: 2 * 60 * 1000,
   });

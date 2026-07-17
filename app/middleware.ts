@@ -9,6 +9,7 @@ const PROTECTED_ROUTES = [
   '/booking',
   '/wishlist',
   '/promo-codes',
+  '/complete-profile',
 ]
 
 // Routes that should redirect to /me if already authenticated

@@ -39,7 +39,7 @@ export default function DashboardPage() {
   // Fetch user bookings
   const { data: bookingsData, isLoading: bookingsLoading, isError: bookingsError, error: bookingsErrorObj } = useQuery({
     queryKey: ["userBookings", user?.documentId],
-    queryFn: () => fetchUserBookings(user?.documentId),
+    queryFn: () => fetchUserBookings(user?.documentId, user?.token),
     enabled: !!user,
     staleTime: 2 * 60 * 1000,
   });
@@ -241,7 +241,7 @@ export default function DashboardPage() {
                   <CardTitle>Upcoming Bookings</CardTitle>
                   <CardDescription>Your next adventures</CardDescription>
                 </div>
-                <Link href="/dashboard?tab=bookings">
+                <Link href="/me?tab=trips">
                   <Button variant="outline" size="sm">View All</Button>
                 </Link>
               </div>
