@@ -32,12 +32,12 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/me', request.url))
   }
 
-  // ✅ CSP Configuration
+  // ✅ CSP Configuration — nonce-based for scripts
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
 
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google-analytics.com https://www.googletagmanager.com https://www.instagram.com https://translate.google.com https://translate.googleapis.com https://www.paypal.com https://www.sandbox.paypal.com https://www.paypalobjects.com;
+    script-src 'self' 'unsafe-eval' 'nonce-${nonce}' https://www.google-analytics.com https://www.googletagmanager.com https://www.instagram.com https://translate.google.com https://translate.googleapis.com https://www.paypal.com https://www.sandbox.paypal.com https://www.paypalobjects.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://cdn.jsdelivr.net;
     img-src 'self' data: blob: https:;
     font-src 'self' data: https://fonts.gstatic.com;

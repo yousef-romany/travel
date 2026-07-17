@@ -2,12 +2,8 @@ import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
 // STRAPI_TOKEN is server-only (no NEXT_PUBLIC_ prefix) — never sent to browser
-// Falls back to NEXT_PUBLIC_STRAPI_TOKEN for environments not yet migrated
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || ''
-const STRAPI_TOKEN =
-  process.env.STRAPI_TOKEN ||
-  process.env.NEXT_PUBLIC_STRAPI_TOKEN ||
-  ''
+const STRAPI_TOKEN = process.env.STRAPI_TOKEN || ''
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,11 +16,28 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
 
+    // ✅ SECURITY: Validate required fields before forwarding to Strapi
+    if (!body?.orderID || typeof body.orderID !== 'string') {
+      return NextResponse.json({ error: 'Missing or invalid orderID' }, { status: 400 })
+    }
+
+    if (!body?.bookingData || typeof body.bookingData !== 'object') {
+      return NextResponse.json({ error: 'Missing or invalid bookingData' }, { status: 400 })
+    }
+
+    const { bookingData } = body
+    if (!bookingData.fullName || !bookingData.email || !bookingData.phone || !bookingData.travelDate || !bookingData.totalAmount || !bookingData.numberOfTravelers) {
+      return NextResponse.json({ error: 'Missing required booking fields' }, { status: 400 })
+    }
+
+    if (typeof bookingData.totalAmount !== 'number' || bookingData.totalAmount <= 0) {
+      return NextResponse.json({ error: 'Invalid totalAmount' }, { status: 400 })
+    }
+
     const res = await fetch(`${STRAPI_URL}/api/bookings/verify-payment`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Prefer the admin STRAPI_TOKEN for payment ops; fall back to user token
         Authorization: `Bearer ${STRAPI_TOKEN || userToken}`,
       },
       body: JSON.stringify(body),

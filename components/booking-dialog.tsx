@@ -209,15 +209,6 @@ export default function BookingDialog({
     const orderId: string = details?.id || details?.orderID || 'UNKNOWN';
     setPaymentRef(orderId);
 
-    const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
-    const strapiToken = process.env.NEXT_PUBLIC_STRAPI_TOKEN;
-
-    if (!strapiUrl || !strapiToken) {
-      toast.error('Configuration error. Please contact support.');
-      setIsProcessingPayment(false);
-      return;
-    }
-
     const bookingPayload = {
       fullName: formData.fullName,
       email: formData.email,
@@ -237,13 +228,11 @@ export default function BookingDialog({
 
       let verifyRes: Response;
       try {
-        verifyRes = await fetch(`${strapiUrl}/api/bookings/verify-payment`, {
+        // ✅ SECURITY: Route through server-side API proxy — no admin token on client
+        verifyRes = await fetch('/api/payments/verify', {
           method: 'POST',
           signal: controller.signal,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${strapiToken}`,
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ orderID: orderId, bookingData: bookingPayload }),
         });
       } finally {

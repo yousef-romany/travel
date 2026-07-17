@@ -1,10 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { checkRateLimit } from '@/app/api/lib/rate-limit'
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || ''
 
 export async function POST(req: NextRequest) {
   try {
+    // ✅ SECURITY: Rate limit by IP to prevent email bombing
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+    const { allowed, retryAfterMs } = checkRateLimit(`forgot-password:${ip}`, { windowMs: 300_000, maxRequests: 3 })
+
+    if (!allowed) {
+      return NextResponse.json(
+        { error: `Too many attempts. Please try again in ${Math.ceil(retryAfterMs / 1000)} seconds.` },
+        { status: 429 }
+      )
+    }
+
     const { email } = await req.json()
+
+    // ✅ SECURITY: Basic email format validation
+    if (!email || typeof email !== 'string' || email.length > 254) {
+      return NextResponse.json({ error: 'Valid email is required' }, { status: 400 })
+    }
 
     const res = await fetch(`${STRAPI_URL}/api/auth/forgot-password`, {
       method: 'POST',

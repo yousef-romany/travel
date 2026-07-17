@@ -133,7 +133,8 @@ export function getEnvConfig(): EnvConfig {
     console.error('❌ Environment configuration error:');
     console.error(error instanceof Error ? error.message : error);
     console.error('\n📖 See .env.example for required environment variables');
-    process.exit(1);
+    // ✅ SECURITY: Don't call process.exit in client context — throw instead
+    throw error;
   }
 }
 

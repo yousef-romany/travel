@@ -2,10 +2,7 @@ import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || ''
-const STRAPI_TOKEN =
-  process.env.STRAPI_TOKEN ||
-  process.env.NEXT_PUBLIC_STRAPI_TOKEN ||
-  ''
+const STRAPI_TOKEN = process.env.STRAPI_TOKEN || ''
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,6 +14,15 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
+
+    // ✅ SECURITY: Validate required fields
+    if (typeof body?.expectedPrice !== 'number' || body.expectedPrice <= 0) {
+      return NextResponse.json({ error: 'Invalid expectedPrice' }, { status: 400 })
+    }
+
+    if (typeof body?.numberOfTravelers !== 'number' || body.numberOfTravelers < 1 || body.numberOfTravelers > 200) {
+      return NextResponse.json({ error: 'Invalid numberOfTravelers' }, { status: 400 })
+    }
 
     const res = await fetch(`${STRAPI_URL}/api/bookings/validate-price`, {
       method: 'POST',

@@ -42,6 +42,7 @@ export default function Chatbot() {
     const [isLoading, setIsLoading] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const abortControllerRef = useRef<AbortController | null>(null);
 
     // Initialize Session and check for existing user info + restore chatbot state
     useEffect(() => {
@@ -204,6 +205,20 @@ export default function Chatbot() {
         setIsLoading(true);
 
         const session = sessionStorage.getItem("zoe_chat_session");
+        if (!session) {
+            setMessages((prev) => [...prev, {
+                id: uuidv4(),
+                sender: "bot",
+                text: "Session error. Please refresh the page and try again.",
+                timestamp: new Date()
+            }]);
+            setIsLoading(false);
+            return;
+        }
+
+        // Cancel any previous in-flight request
+        abortControllerRef.current?.abort();
+        abortControllerRef.current = new AbortController();
 
         try {
             const response = await fetch("/api/chat", {
@@ -211,15 +226,15 @@ export default function Chatbot() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     message: userMsg.text,
-                    session: session,
-                    userInfo: userInfo
+                    session,
+                    userInfo,
                 }),
+                signal: abortControllerRef.current.signal,
             });
 
             if (!response.ok) throw new Error("Failed to send message");
 
             const data = await response.json();
-            console.log("Chatbot response:", data);
 
             let botText = "Sorry, I didn't catch that.";
 
@@ -250,7 +265,6 @@ export default function Chatbot() {
             };
 
             // Handle various n8n response formats
-            console.log("Raw response data:", JSON.stringify(data, null, 2));
 
             // Case 1: Direct string response
             if (typeof data === 'string') {
@@ -309,8 +323,6 @@ export default function Chatbot() {
             // Cleanup: Unescape newlines
             botText = botText.replace(/\\n/g, '\n');
 
-            console.log("Extracted bot text:", botText);
-
             const botMsg: Message = {
                 id: uuidv4(),
                 sender: "bot",
@@ -321,13 +333,16 @@ export default function Chatbot() {
             setMessages((prev) => [...prev, botMsg]);
 
         } catch (error) {
-            console.error("Chat error:", error);
-            setMessages((prev) => [...prev, {
-                id: uuidv4(),
-                sender: "bot",
-                text: "Sorry, I'm having trouble connecting right now. Please try again later.",
-                timestamp: new Date()
-            }]);
+            // Ignore AbortError — request was intentionally cancelled
+            if ((error as Error).name !== "AbortError") {
+                console.error("Chat error:", error);
+                setMessages((prev) => [...prev, {
+                    id: uuidv4(),
+                    sender: "bot",
+                    text: "Sorry, I'm having trouble connecting right now. Please try again later.",
+                    timestamp: new Date()
+                }]);
+            }
         } finally {
             setIsLoading(false);
         }

@@ -4,7 +4,6 @@ import withPWA from "next-pwa";
 const nextConfig: NextConfig = {
   turbopack: {},
   images: {
-    dangerouslyAllowSVG: true,
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "th.bing.com" },
@@ -73,28 +72,6 @@ const nextConfig: NextConfig = {
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()"
-          },
-          // Content Security Policy - Disabled for debugging
-          // Re-enable after confirming CORS works
-          {
-            key: "Content-Security-Policy",
-            value: process.env.NODE_ENV === "production"
-              ? [
-                  "default-src 'self'",
-                  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google-analytics.com https://www.googletagmanager.com https://www.instagram.com https://translate.google.com https://translate.googleapis.com https://www.paypal.com https://www.sandbox.paypal.com",
-                  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://cdn.jsdelivr.net",
-                  "img-src 'self' data: blob: https:",
-                  "font-src 'self' data: https://fonts.gstatic.com",
-                  "connect-src 'self' https://dashboard.zoeholidays.com https://www.google-analytics.com https://graph.instagram.com https://*.cdninstagram.com https://*.fbcdn.net https://translate.googleapis.com https://www.paypal.com https://www.sandbox.paypal.com",
-                  "media-src 'self' blob: data: https:",
-                  "frame-src 'self' https://www.google.com https://www.instagram.com https://www.youtube.com https://translate.google.com https://www.paypal.com https://www.sandbox.paypal.com",
-                  "worker-src 'self' blob:",
-                  "object-src 'none'",
-                  "base-uri 'self'",
-                  "form-action 'self'",
-                  "frame-ancestors 'self'",
-                ].join("; ")
-              : "" // No CSP in development
           },
           // CORS for Strapi
           {

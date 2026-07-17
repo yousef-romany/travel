@@ -178,17 +178,19 @@ export const fetchProgramById = async (documentId: string): Promise<ProgramType>
  */
 export const searchPrograms = async (query: string, limit: number = 10): Promise<ProgramsResponse> => {
   try {
+    // ✅ SECURITY: URL-encode the query to prevent injection
+    const encodedQuery = encodeURIComponent(query);
     // Filter by:
     // 1. Title
     // 2. Location string
     // 3. Direct Category relation on ContentStep (if exists)
     // 4. Nested Category relation via Subcategory on ContentStep (most likely path)
     const url = `${API_URL}/api/programs?populate=images` +
-      `&filters[$or][0][title][$containsi]=${query}` +
-      `&filters[$or][1][Location][$containsi]=${query}` +
-      `&filters[$or][2][content_steps][place_to_go_categories][categoryName][$containsi]=${query}` +
-      `&filters[$or][3][content_steps][place_to_go_subcategories][place_to_go_categories][categoryName][$containsi]=${query}` +
-      `&filters[$or][4][content_steps][place_to_go_subcategories][categoryName][$containsi]=${query}` +
+      `&filters[$or][0][title][$containsi]=${encodedQuery}` +
+      `&filters[$or][1][Location][$containsi]=${encodedQuery}` +
+      `&filters[$or][2][content_steps][place_to_go_categories][categoryName][$containsi]=${encodedQuery}` +
+      `&filters[$or][3][content_steps][place_to_go_subcategories][place_to_go_categories][categoryName][$containsi]=${encodedQuery}` +
+      `&filters[$or][4][content_steps][place_to_go_subcategories][categoryName][$containsi]=${encodedQuery}` +
       `&pagination[limit]=${limit}`;
 
     const response = await axios.get(url, {
