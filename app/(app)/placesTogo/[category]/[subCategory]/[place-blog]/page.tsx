@@ -21,8 +21,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const blogTitle = decodeURIComponent(resolvedParams["place-blog"]);
 
   // Fetch data for metadata
-  const data = await fetchPlaceToGoOneBlog(blogTitle);
-  const blogData = data?.data?.at(0);
+  let blogData = null;
+  try {
+    const data = await fetchPlaceToGoOneBlog(blogTitle);
+    blogData = data?.data?.at(0) ?? null;
+  } catch {
+    // Strapi may be temporarily unavailable
+  }
 
   const title = blogData?.title
     ? `${blogData.title} - ${subCategory} | ZoeHoliday`
@@ -72,8 +77,15 @@ const PlaceToGoBlogDynamic = async ({ params }: Props) => {
   const blogTitle = decodeURIComponent(resolvedParams["place-blog"]);
 
   // Fetch data for schema and component
-  const data = await fetchPlaceToGoOneBlog(blogTitle);
-  const blogData = data?.data?.at(0);
+  let data = null;
+  let blogData = null;
+  try {
+    const result = await fetchPlaceToGoOneBlog(blogTitle);
+    data = result;
+    blogData = result?.data?.at(0) ?? null;
+  } catch {
+    // Strapi may be temporarily unavailable
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

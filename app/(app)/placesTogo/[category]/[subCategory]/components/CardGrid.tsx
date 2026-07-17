@@ -46,7 +46,7 @@ export default function CardGrid({
           </CardHeader>
           <CardContent className="p-0 flex-grow">
             <div className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
-              {details.replace(/[*#_`]/g, '').slice(0, 150)}...
+              {details.replace(/<[^>]*>/g, '').replace(/[*#_`]/g, '').trim().slice(0, 150)}...
             </div>
           </CardContent>
           <CardFooter className="p-0 mt-4 pt-4 border-t border-border/50">

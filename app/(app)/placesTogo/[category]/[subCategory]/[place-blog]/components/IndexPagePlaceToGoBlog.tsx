@@ -18,7 +18,7 @@ const IndexPagePlaceToGoBlog = ({
   slug: string;
   category: string;
   subCategory: string;
-  data: { data: PlacesToGoBlogs[]; meta: meta };
+  data: { data: PlacesToGoBlogs[]; meta: meta } | null;
 }) => {
   const place = data?.data?.at(-1);
   if (!place) return <p>Place not found</p>;
@@ -43,15 +43,15 @@ const IndexPagePlaceToGoBlog = ({
                 ✨ Discover
               </span>
             </div>
-            <h1 className="text-3xl md:text-5xl lg:text-7xl font-black text-white mb-6 drop-shadow-2xl tracking-tight animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100 leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 drop-shadow-lg tracking-tight animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100 leading-tight">
               {place.title}
             </h1>
             {(place.price !== undefined && place.price !== null) && (
-              <div className="flex items-center justify-center md:justify-start gap-4 text-white animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-                <span className="text-lg font-medium opacity-90">
+              <div className="flex items-center justify-center md:justify-start gap-3 text-white animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+                <span className="text-sm sm:text-base font-medium opacity-90">
                   {Number(place.price) === 0 ? "Price" : "Starting from"}
                 </span>
-                <span className="text-2xl md:text-4xl font-bold bg-white text-black px-4 py-1.5 md:px-6 md:py-2 rounded-full shadow-lg">
+                <span className="text-lg sm:text-xl md:text-2xl font-bold bg-white text-black px-4 py-1.5 md:px-5 md:py-1.5 rounded-full shadow-lg">
                   {Number(place.price) === 0 ? "Free" : `$${place.price}`}
                 </span>
               </div>
@@ -66,13 +66,13 @@ const IndexPagePlaceToGoBlog = ({
         {/* Content Section */}
         {/* Content Section */}
         <div className="mb-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-          <div className="prose prose-base md:prose-lg lg:prose-xl max-w-none dark:prose-invert 
+          <div className="prose prose-base md:prose-lg max-w-none dark:prose-invert 
             prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground 
             prose-p:text-muted-foreground prose-p:leading-relaxed 
             prose-strong:text-foreground prose-a:text-primary 
-            prose-img:rounded-3xl prose-img:shadow-xl prose-img:w-full
-            [&>h1]:text-2xl md:[&>h1]:text-4xl 
-            [&>h2]:text-xl md:[&>h2]:text-3xl">
+            prose-img:rounded-2xl prose-img:shadow-xl prose-img:w-full
+            [&>h1]:text-xl md:[&>h1]:text-2xl 
+            [&>h2]:text-lg md:[&>h2]:text-xl">
             <MDXRenderer mdxString={place.details as string} />
           </div>
         </div>
@@ -81,12 +81,12 @@ const IndexPagePlaceToGoBlog = ({
         {(place.instagram_posts?.length || 0) > 0 && (
           <section className="mb-12">
             <div className="flex items-center gap-3 mb-6">
-              <FaInstagram className="text-4xl text-pink-500" />
-              <h2 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+              <FaInstagram className="text-2xl md:text-3xl text-pink-500" />
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
                 Instagram Highlights
               </h2>
             </div>
-            <p className="text-muted-foreground text-lg mb-8">
+            <p className="text-muted-foreground text-sm sm:text-base mb-8">
               See what travelers are sharing about {place.title}
             </p>
 
@@ -108,12 +108,12 @@ const IndexPagePlaceToGoBlog = ({
           <section className="mb-12">
             <Separator className="mb-8" />
             <div className="flex items-center gap-3 mb-6">
-              <FaYoutube className="text-4xl text-red-600" />
-              <h2 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+              <FaYoutube className="text-2xl md:text-3xl text-red-600" />
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
                 Video Tour
               </h2>
             </div>
-            <p className="text-muted-foreground text-lg mb-8">
+            <p className="text-muted-foreground text-sm sm:text-base mb-8">
               Experience {place.title} through our curated video content
             </p>
 
@@ -128,12 +128,12 @@ const IndexPagePlaceToGoBlog = ({
           <section className="mb-8">
             <Separator className="mb-8" />
             <div className="flex items-center gap-3 mb-6">
-              <FaMapMarkerAlt className="text-4xl text-primary" />
-              <h2 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+              <FaMapMarkerAlt className="text-2xl md:text-3xl text-primary" />
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
                 Location
               </h2>
             </div>
-            <p className="text-muted-foreground text-lg mb-8">
+            <p className="text-muted-foreground text-sm sm:text-base mb-8">
               Find {place.title} on the map
             </p>
 

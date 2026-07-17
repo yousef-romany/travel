@@ -21,7 +21,7 @@ const MainContentInpiration = ({ data }: { data: InspirationCategory }) => {
         <div className="absolute top-20 right-20 w-96 h-96 bg-primary rounded-full blur-[120px]"></div>
         <div className="absolute bottom-20 left-20 w-96 h-96 bg-amber-500 rounded-full blur-[120px]"></div>
       </div>
-      <div className="bg-gradient-to-r from-primary to-amber-600 w-full p-4 px-[2em] shadow-lg relative z-10">
+      <div className="bg-gradient-to-r from-primary to-amber-600 w-full px-4 md:px-8 py-3 shadow-lg relative z-10">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem className="text-white">
@@ -46,10 +46,10 @@ const MainContentInpiration = ({ data }: { data: InspirationCategory }) => {
         />
 
         {/* Content */}
-        <div className="relative z-20 flex flex-col items-center justify-center min-h-[80vh] text-white px-4 sm:px-6 lg:px-8 py-20">
+        <div className="relative z-20 flex flex-col items-center justify-center min-h-[80vh] text-white px-4 sm:px-6 lg:px-8 py-12 md:py-20">
           {/* Badge */}
           <div className="inline-block mb-6 animate-slide-up">
-            <span className="px-6 py-3 bg-white/10 backdrop-blur-sm text-white text-sm font-semibold rounded-full border border-white/20 shadow-lg">
+            <span className="px-4 md:px-6 py-2 md:py-3 bg-white/10 backdrop-blur-sm text-white text-xs md:text-sm font-semibold rounded-full border border-white/20 shadow-lg">
               ✨ Explore Egypt's Wonders
             </span>
           </div>
@@ -57,15 +57,15 @@ const MainContentInpiration = ({ data }: { data: InspirationCategory }) => {
           {/* Main Heading */}
           <h1
             role="heading"
-            className="text-4xl sm:text-5xl md:text-7xl font-bold text-center mb-6 animate-slide-up animate-delay-100 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent drop-shadow-2xl"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-4 animate-slide-up animate-delay-100 bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent drop-shadow-lg tracking-tight"
           >
             Discover Amazing Places
           </h1>
 
           {/* Subheading */}
-          <p className="text-xl sm:text-2xl text-center mb-12 max-w-3xl animate-slide-up animate-delay-200 text-white/90 leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-center mb-10 max-w-2xl animate-slide-up animate-delay-200 text-white/90 leading-relaxed">
             Explore our curated collection of Egypt's most breathtaking destinations,
-            historical sites, and cultural experiences across various categories.
+            historical sites, and cultural experiences.
           </p>
 
           {/* Categories */}
@@ -75,7 +75,7 @@ const MainContentInpiration = ({ data }: { data: InspirationCategory }) => {
                 key={category.id}
                 href={`/placesTogo/${category.categoryName}`}
               >
-                <Button className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-xl hover:scale-105 transition-all duration-200 px-6 py-6 text-base font-semibold">
+                <Button className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-xl hover:scale-105 transition-all duration-200 px-4 md:px-6 py-4 md:py-6 text-sm md:text-base font-semibold">
                   {category.categoryName}
                 </Button>
               </Link>

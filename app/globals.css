@@ -193,17 +193,16 @@
 
 /* For specific elements */
 .mdx-container p {
-  font-size: 1.1rem;
-  /* Increase font size of paragraphs */
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 500;
   color: hsl(var(--primary));
+  line-height: 1.7;
 }
 
 h1,
 h2,
 h3 {
   color: hsl(var(--primary)) !important;
-  text-shadow: 2px 2px 4px hsl(var(--primary), 0.5);
 }
 
 p {
@@ -213,9 +212,9 @@ p {
 .mdx-container h1,
 .mdx-container h2,
 .mdx-container h3 {
-  font-size: 2.4rem;
-  /* Increase font size for headings */
-  font-weight: 900;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .mdx-container pre,
@@ -232,7 +231,7 @@ p {
 
 .mdx-container ul li {
   margin: 10px 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
   list-style: circle !important;
   color: hsl(var(--primary)) !important;
   font-weight: 500;

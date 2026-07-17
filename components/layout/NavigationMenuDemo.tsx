@@ -215,6 +215,18 @@ export function NavigationMenuDemo({
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link href="/about" legacyBehavior passHref>
+            <NavigationMenuLink
+              className={cn(
+                "text-[1.05rem] text-foreground/90 font-medium hover:text-primary transition-all duration-300 group bg-transparent hover:bg-primary/5",
+                navigationMenuTriggerStyle()
+              )}
+            >
+              About
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );

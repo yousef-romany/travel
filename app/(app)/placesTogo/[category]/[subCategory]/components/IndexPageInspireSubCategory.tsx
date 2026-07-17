@@ -15,7 +15,7 @@ const IndexPageInspireSubCategory = ({
 }) => {
   const blogs = data?.data?.at(-1)?.place_to_go_blogs || [];
   return (
-    <div className="flex gap-4 flex-col min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-background to-secondary/20">
       <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
         <div className="absolute top-20 right-20 w-96 h-96 bg-primary rounded-full blur-[120px]"></div>
         <div className="absolute bottom-20 left-20 w-96 h-96 bg-amber-500 rounded-full blur-[120px]"></div>
@@ -36,11 +36,11 @@ const IndexPageInspireSubCategory = ({
           </div>
           <h1
             role="heading"
-            className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-white drop-shadow-2xl mb-4 tracking-tight animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg mb-4 tracking-tight animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100"
           >
             {slug}
           </h1>
-          <p className="text-white/80 text-sm sm:text-base md:text-lg max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 line-clamp-3">
+          <p className="text-white/80 text-sm sm:text-base md:text-base max-w-xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 line-clamp-3">
             {data?.data?.at(-1)?.description || `Discover everything about ${slug}`}
           </p>
         </div>

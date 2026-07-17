@@ -10,7 +10,7 @@ import {
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { RiMenu2Fill } from "react-icons/ri";
-import { Sparkles, MapPin, Calendar, Compass, GitCompare } from "lucide-react";
+import { Sparkles, MapPin, Calendar, Compass, GitCompare, Info } from "lucide-react";
 import { getComparisonCount } from "@/lib/comparison";
 import {
   Accordion,
@@ -242,6 +242,19 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                   </div>
                   <span className="text-base font-medium group-hover:text-purple-600 transition-colors">
                     Events
+                  </span>
+                </Link>
+
+                <Link
+                  href="/about"
+                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-teal-500/5 transition-all group border border-transparent hover:border-teal-500/10"
+                  onClick={handleLinkClick}
+                >
+                  <div className="p-2 bg-teal-500/10 rounded-lg group-hover:bg-teal-500/20 transition-colors">
+                    <Info className="h-4 w-4 text-teal-600" />
+                  </div>
+                  <span className="text-base font-medium group-hover:text-teal-600 transition-colors">
+                    About
                   </span>
                 </Link>
               </div>

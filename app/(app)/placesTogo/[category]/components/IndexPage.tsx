@@ -40,22 +40,22 @@ const IndexPage = ({ slug, data }: { slug: string; data: PlacesToGoCategory }) =
           </div>
           <h1
             role="heading"
-            className="text-4xl sm:text-6xl md:text-8xl font-black text-white drop-shadow-2xl mb-6 tracking-tight animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg mb-4 tracking-tight animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100"
           >
             {data?.data?.at(-1)?.categoryName}
           </h1>
-          <p className="text-white/80 text-lg sm:text-xl max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+          <p className="text-white/80 text-sm sm:text-base md:text-lg max-w-xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
             Explore the wonders and hidden gems of this magnificent destination
           </p>
         </div>
       </div>
-      <div className="w-full h-fit py-16 px-[2em] space-y-16 relative z-10">
+      <div className="w-full h-fit py-10 md:py-16 px-4 md:px-4 sm:px-0 md:px-8 space-y-10 md:space-y-16 relative z-10">
         {/* sub category text */}
         <div className="w-full flex justify-center items-center mb-8">
           <div className="relative">
             <h1
               role="heading"
-              className="text-4xl sm:text-5xl font-bold text-foreground pb-2 relative z-10"
+              className="text-2xl sm:text-3xl font-bold text-foreground pb-2 relative z-10"
             >
               Subcategories
             </h1>
@@ -63,7 +63,7 @@ const IndexPage = ({ slug, data }: { slug: string; data: PlacesToGoCategory }) =
           </div>
         </div>
         {/* grid system */}
-        <div className="grid grid-cols-1 gap-10">
+        <div className="grid grid-cols-1 gap-6 md:gap-10">
           {data?.data?.at(-1)?.place_to_go_subcategories?.length ?? 0 > 0 ? (
             data?.data
               ?.at(-1)
@@ -83,10 +83,10 @@ const IndexPage = ({ slug, data }: { slug: string; data: PlacesToGoCategory }) =
                         <div className="relative">
                           <h1
                             role="heading"
-                            className="text-4xl sm:text-5xl font-bold text-foreground pb-2 relative z-10 flex items-center gap-2 group-hover:text-primary transition-colors"
+                            className="text-xl sm:text-2xl font-bold text-foreground pb-2 relative z-10 flex items-center gap-2 group-hover:text-primary transition-colors"
                           >
                             {item?.categoryName}
-                            <MdArrowOutward className="text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform text-lg sm:text-xl md:text-2xl lg:text-3xl" />
+                            <MdArrowOutward className="text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform text-sm sm:text-base md:text-lg" />
                           </h1>
                           <div className="absolute -bottom-2 left-0 w-full h-3 bg-primary/20 -rotate-1 rounded-full -z-0"></div>
                         </div>
@@ -123,7 +123,7 @@ const IndexPage = ({ slug, data }: { slug: string; data: PlacesToGoCategory }) =
                                         <div className="absolute bottom-0 left-0 p-6 w-full">
                                           <h1
                                             role="heading"
-                                            className="text-2xl font-bold text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300"
+                                            className="text-base sm:text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300"
                                           >
                                             {itemBlog?.title}
                                           </h1>

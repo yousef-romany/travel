@@ -20,7 +20,7 @@ export default function SubCategoryContent({
   return (
     <div className="w-full flex flex-col gap-6 md:gap-8 px-4 sm:px-6 md:px-8 lg:px-[2em] py-8 md:py-12 relative z-10">
       <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+        <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
           All About {slug}
         </h2>
 
