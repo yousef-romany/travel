@@ -1,4 +1,5 @@
 import { Service } from "@/type/programs";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -25,6 +26,8 @@ import {
   DollarSign,
   Check,
   ArrowLeft,
+  CreditCard,
+  Handshake,
 } from "lucide-react";
 import { format } from "date-fns";
 import { verifyBookingPayment } from "@/fetch/bookings";
@@ -91,6 +94,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentRef, setPaymentRef] = useState<string | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [paymentMethod, setPaymentMethod] = useState<"full" | "partial">("full");
 
   const [formData, setFormData] = useState<BookingFormData>({
     fullName: "",
@@ -244,7 +248,10 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
             .map(s => `${s.name} ($${s.price})`)
             .join(", ")}`
           : "";
-        const whatsAppMessage = `🎉 *Booking Confirmed via PayPal*\n\n📋 *Details:*\n• Tour: ${program.title}\n• Customer: ${formData.fullName}\n• Email: ${formData.email}\n• Phone: ${formData.phone}\n• Travelers: ${formData.numberOfTravelers}\n• Date: ${format(formData.travelDate!, "PPP")}${servicesText}${discountText}\n• Total: $${finalAmount.toFixed(2)}\n• PayPal Ref: ${paymentRef || 'N/A'}\n\nPayment confirmed ✅`;
+        const paymentMethodText = paymentMethod === "partial"
+          ? `\n• Payment: 30% PayPal ($${paypalAmount.toFixed(2)}) + 70% Face-to-Face ($${faceToFaceAmount.toFixed(2)})`
+          : `\n• Payment: Full amount via PayPal`;
+        const whatsAppMessage = `🎉 *Booking Confirmed via PayPal*\n\n📋 *Details:*\n• Tour: ${program.title}\n• Customer: ${formData.fullName}\n• Email: ${formData.email}\n• Phone: ${formData.phone}\n• Travelers: ${formData.numberOfTravelers}\n• Date: ${format(formData.travelDate!, "PPP")}${servicesText}${discountText}${paymentMethodText}\n• Total: $${finalAmount.toFixed(2)}\n• PayPal Ref: ${paymentRef || 'N/A'}\n\nPayment confirmed ✅`;
         const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsAppMessage)}`;
         trackWhatsAppBooking(program.title, program.documentId, finalAmount);
         window.open(whatsappUrl, "_blank");
@@ -281,6 +288,9 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
         programId: program.documentId,
         userId: user!.documentId,
         totalAmount: finalAmount,
+        paymentMethod: paymentMethod,
+        paypalAmount: paypalAmount,
+        faceToFaceAmount: faceToFaceAmount,
         promoCodeId: appliedPromo?.code.documentId,
         discountAmount: appliedPromo?.discountAmount,
         finalPrice: appliedPromo?.finalPrice,
@@ -436,6 +446,8 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
   const baseTotal = program.price * formData.numberOfTravelers;
   const totalAmount = baseTotal + servicesTotal;
   const finalAmount = appliedPromo ? (appliedPromo.finalPrice + servicesTotal) : totalAmount;
+  const paypalAmount = paymentMethod === "partial" ? finalAmount * 0.3 : finalAmount;
+  const faceToFaceAmount = paymentMethod === "partial" ? finalAmount * 0.7 : 0;
   const firstImage = program.images?.[0];
   const imageUrl = firstImage?.imageUrl
     ? getImageUrl(firstImage.imageUrl as string)
@@ -486,8 +498,68 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                     )}
 
                     <div className="max-w-md mx-auto mt-6">
+                      {/* Payment Method Selection */}
+                      <div className="space-y-3 mb-6">
+                        <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Choose Payment Method</p>
+                        <div className="grid grid-cols-1 gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setPaymentMethod("full")}
+                            className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 text-left ${
+                              paymentMethod === "full"
+                                ? "border-primary bg-primary/5 shadow-md"
+                                : "border-border hover:border-primary/50 bg-card"
+                            }`}
+                          >
+                            <div className={`p-2 rounded-lg ${paymentMethod === "full" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                              <CreditCard className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-semibold text-sm">Pay Full Amount Online</p>
+                              <p className="text-xs text-muted-foreground">Pay 100% via PayPal now</p>
+                            </div>
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                              paymentMethod === "full" ? "border-primary" : "border-muted-foreground/30"
+                            }`}>
+                              {paymentMethod === "full" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                            </div>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setPaymentMethod("partial")}
+                            className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 text-left ${
+                              paymentMethod === "partial"
+                                ? "border-primary bg-primary/5 shadow-md"
+                                : "border-border hover:border-primary/50 bg-card"
+                            }`}
+                          >
+                            <div className={`p-2 rounded-lg ${paymentMethod === "partial" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                              <Handshake className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-semibold text-sm">Pay 30% Now, 70% Face-to-Face</p>
+                              <p className="text-xs text-muted-foreground">Pay deposit online, rest on arrival</p>
+                            </div>
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                              paymentMethod === "partial" ? "border-primary" : "border-muted-foreground/30"
+                            }`}>
+                              {paymentMethod === "partial" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                            </div>
+                          </button>
+                        </div>
+                      </div>
+
+                      {paymentMethod === "partial" && (
+                        <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-sm">
+                          <p className="text-amber-800 font-medium">Payment Breakdown:</p>
+                          <p className="text-amber-700">Pay now via PayPal: <strong>${paypalAmount.toFixed(2)}</strong> (30%)</p>
+                          <p className="text-amber-700">Pay on arrival: <strong>${faceToFaceAmount.toFixed(2)}</strong> (70%)</p>
+                        </div>
+                      )}
+
                       <PayPalPayment
-                        amount={finalAmount}
+                        amount={paypalAmount}
                         currency="USD"
                         onSuccess={handlePaymentSuccess}
                         onError={handlePaymentError}
@@ -774,7 +846,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                                 </div>
 
                                 {service.description && (
-                                  <div className="text-sm text-muted-foreground line-clamp-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: service.description }} />
+                                  <div className="text-sm text-muted-foreground line-clamp-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: sanitizeHTML(service.description) }} />
                                 )}
                               </div>
                             );

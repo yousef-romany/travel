@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, MapPin, DollarSign, Users, Clock, CheckCircle, Loader2 } from "lucide-react";
+import { Calendar as CalendarIcon, MapPin, DollarSign, Users, Clock, CheckCircle, Loader2, CreditCard, Handshake } from "lucide-react";
 import { PlanTripType } from "@/fetch/plan-trip";
 import { createBooking } from "@/fetch/bookings";
 import { createInvoice } from "@/fetch/invoices";
@@ -41,6 +41,7 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
 
   const [paymentStep, setPaymentStep] = useState<"details" | "payment">("details");
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<"full" | "partial">("full");
 
   const bookingMutation = useMutation({
     mutationFn: async () => {
@@ -65,6 +66,9 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
         planTripId: trip.documentId,
         customTripName: trip.tripName,
         userId: user?.documentId,
+        paymentMethod: paymentMethod,
+        paypalAmount: paypalAmount,
+        faceToFaceAmount: faceToFaceAmount,
       };
 
       const booking = await createBooking(bookingData, user?.token);
@@ -153,6 +157,8 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
   };
 
   const totalCost = trip.totalPrice * formData.numberOfTravelers;
+  const paypalAmount = paymentMethod === "partial" ? totalCost * 0.3 : totalCost;
+  const faceToFaceAmount = paymentMethod === "partial" ? totalCost * 0.7 : 0;
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-6xl">
@@ -183,8 +189,68 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
                   )}
 
                   <div className="max-w-md mx-auto mt-6">
+                    {/* Payment Method Selection */}
+                    <div className="space-y-3 mb-6">
+                      <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Choose Payment Method</p>
+                      <div className="grid grid-cols-1 gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setPaymentMethod("full")}
+                          className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 text-left ${
+                            paymentMethod === "full"
+                              ? "border-primary bg-primary/5 shadow-md"
+                              : "border-border hover:border-primary/50 bg-card"
+                          }`}
+                        >
+                          <div className={`p-2 rounded-lg ${paymentMethod === "full" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                            <CreditCard className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-semibold text-sm">Pay Full Amount Online</p>
+                            <p className="text-xs text-muted-foreground">Pay 100% via PayPal now</p>
+                          </div>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                            paymentMethod === "full" ? "border-primary" : "border-muted-foreground/30"
+                          }`}>
+                            {paymentMethod === "full" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                          </div>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setPaymentMethod("partial")}
+                          className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 text-left ${
+                            paymentMethod === "partial"
+                              ? "border-primary bg-primary/5 shadow-md"
+                              : "border-border hover:border-primary/50 bg-card"
+                          }`}
+                        >
+                          <div className={`p-2 rounded-lg ${paymentMethod === "partial" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                            <Handshake className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-semibold text-sm">Pay 30% Now, 70% Face-to-Face</p>
+                            <p className="text-xs text-muted-foreground">Pay deposit online, rest on arrival</p>
+                          </div>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                            paymentMethod === "partial" ? "border-primary" : "border-muted-foreground/30"
+                          }`}>
+                            {paymentMethod === "partial" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+
+                    {paymentMethod === "partial" && (
+                      <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-sm">
+                        <p className="text-amber-800 font-medium">Payment Breakdown:</p>
+                        <p className="text-amber-700">Pay now via PayPal: <strong>${paypalAmount.toFixed(2)}</strong> (30%)</p>
+                        <p className="text-amber-700">Pay on arrival: <strong>${faceToFaceAmount.toFixed(2)}</strong> (70%)</p>
+                      </div>
+                    )}
+
                     <PayPalPayment
-                      amount={totalCost}
+                      amount={paypalAmount}
                       currency="USD"
                       onSuccess={handlePaymentSuccess}
                       onError={handlePaymentError}
@@ -381,6 +447,18 @@ export default function BookCustomTripContent({ trip }: BookCustomTripContentPro
                   <span>Total Amount:</span>
                   <span className="text-primary">${totalCost.toLocaleString()}</span>
                 </div>
+                {paymentMethod === "partial" && (
+                  <>
+                    <div className="flex justify-between text-sm text-green-600">
+                      <span>Pay now (30%):</span>
+                      <span className="font-semibold">${paypalAmount.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm text-amber-600">
+                      <span>On arrival (70%):</span>
+                      <span className="font-semibold">${faceToFaceAmount.toFixed(2)}</span>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Destinations Preview */}

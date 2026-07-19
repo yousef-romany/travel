@@ -155,11 +155,10 @@ export default function PlanYourTripContent() {
             </Card>
             <Card className="text-center border-green-500/20 bg-gradient-to-br from-card to-green-500/5 hover:shadow-xl transition-all sm:col-span-2 md:col-span-1">
               <CardContent className="pt-4 sm:pt-6 md:pt-8 pb-3 sm:pb-4 md:pb-6 px-3 sm:px-4">
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-1 sm:mb-2 md:mb-3 break-words">
-                  ${Math.min(...trips.map(t => t.totalPrice || 0)).toLocaleString()} - $
-                  {Math.max(...trips.map(t => t.totalPrice || 0)).toLocaleString()}
+                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-1 sm:mb-2 md:mb-3">
+                  {trips.filter(t => t.tripStatus === "completed").length}
                 </div>
-                <p className="text-[10px] sm:text-xs md:text-sm font-medium text-muted-foreground leading-tight">Price Range</p>
+                <p className="text-[10px] sm:text-xs md:text-sm font-medium text-muted-foreground leading-tight">Completed Trips</p>
               </CardContent>
             </Card>
           </div>
@@ -262,18 +261,6 @@ export default function PlanYourTripContent() {
                                 <CalendarIcon className="w-3 h-3 md:w-4 md:h-4" />
                                 {trip.estimatedDuration} {trip.estimatedDuration === 1 ? "day" : "days"}
                               </span>
-                            </div>
-
-                            <div className="pt-2 border-t border-border">
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs text-muted-foreground">Total Cost</span>
-                                <span className="text-lg md:text-xl font-bold text-primary">
-                                  ${trip.totalPrice?.toLocaleString()}
-                                </span>
-                              </div>
-                              <div className="text-xs text-muted-foreground mt-1">
-                                ${trip.pricePerDay?.toFixed(0)} per day
-                              </div>
                             </div>
 
                             {trip.destinations && trip.destinations.length > 0 && (
@@ -397,7 +384,7 @@ export default function PlanYourTripContent() {
                         )}
                       </CardHeader>
                       <CardContent>
-                        <div className="space-y-3">
+                          <div className="space-y-3">
                           <div className="flex items-center justify-between text-xs md:text-sm">
                             <span className="flex items-center gap-1 text-muted-foreground">
                               <MapPin className="w-3 h-3 md:w-4 md:h-4" />
@@ -407,18 +394,6 @@ export default function PlanYourTripContent() {
                               <CalendarIcon className="w-3 h-3 md:w-4 md:h-4" />
                               {trip.estimatedDuration} {trip.estimatedDuration === 1 ? "day" : "days"}
                             </span>
-                          </div>
-
-                          <div className="pt-2 border-t border-border">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs text-muted-foreground">Total Cost</span>
-                              <span className="text-lg md:text-xl font-bold text-primary">
-                                ${trip.totalPrice?.toLocaleString()}
-                              </span>
-                            </div>
-                            <div className="text-xs text-muted-foreground mt-1">
-                              ${trip.pricePerDay?.toFixed(0)} per day
-                            </div>
                           </div>
 
                           {trip.destinations && trip.destinations.length > 0 && (

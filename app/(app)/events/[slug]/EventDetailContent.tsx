@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Clock, DollarSign, Users, Mail, Phone, Sparkles, ExternalLink, Music, MessageSquare, Star } from "lucide-react";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getImageUrl } from "@/lib/utils";
+import { sanitizeHTML } from "@/lib/sanitize";
 import { format } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import Testimonials from "@/components/testimonials";
@@ -100,7 +101,7 @@ export default function EventDetailContent({ event }: EventDetailContentProps) {
               <CardContent>
                 <div
                   className="prose prose-lg max-w-none dark:prose-invert"
-                  dangerouslySetInnerHTML={{ __html: event.content }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHTML(event.content) }}
                 />
               </CardContent>
             </Card>

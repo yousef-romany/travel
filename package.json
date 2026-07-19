@@ -58,6 +58,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "dompurify": "^3.4.12",
     "embla-carousel-autoplay": "^8.5.2",
     "embla-carousel-react": "^8.5.2",
     "framer-motion": "^12.4.1",
@@ -94,6 +95,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/canvas-confetti": "^1.9.0",
+    "@types/dompurify": "^3.0.5",
     "@types/minimatch": "^6.0.0",
     "@types/node": "^20",
     "@types/react": "^19",

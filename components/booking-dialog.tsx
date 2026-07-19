@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Loader2, ChevronDownIcon, ArrowLeft, ShieldCheck, AlertCircle, Phone } from "lucide-react";
+import { Loader2, ChevronDownIcon, ArrowLeft, ShieldCheck, AlertCircle, Phone, CreditCard, Handshake } from "lucide-react";
 import { format } from "date-fns";
 import { createInvoice } from "@/fetch/invoices";
 import { generateInvoicePDF, downloadInvoicePDF } from "@/lib/pdf-generator";
@@ -106,9 +106,15 @@ const generateInvoiceData = (
 
 const generateWhatsAppMessage = (
   formData: BookingFormData,
-  program: BookingDialogProps["program"]
+  program: BookingDialogProps["program"],
+  paymentMethod: "full" | "partial",
+  paypalAmount: number,
+  faceToFaceAmount: number
 ): string => {
   const totalAmount = program.price * formData.numberOfTravelers;
+  const paymentMethodText = paymentMethod === "partial"
+    ? `\n💳 Pay via PayPal: $${paypalAmount.toFixed(2)} (30%)\n🤝 Pay face-to-face: $${faceToFaceAmount.toFixed(2)} (70%)`
+    : `\n💳 Full payment via PayPal: $${totalAmount.toFixed(2)}`;
 
   return `🎉 *New Booking Request*
 
@@ -120,6 +126,7 @@ const generateWhatsAppMessage = (
 • Number of Travelers: ${formData.numberOfTravelers}
 • Travel Date: ${formData.travelDate ? format(formData.travelDate, "PPP") : "Not specified"}
 • Total Amount: $${totalAmount.toFixed(2)}
+${paymentMethodText}
 
 ${formData.specialRequests ? `📝 *Special Requests:*\n${formData.specialRequests}\n` : ""}Please confirm this booking as soon as possible.
 
@@ -177,6 +184,7 @@ export default function BookingDialog({
   const [step, setStep] = useState<"form" | "payment" | "error">("form");
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentRef, setPaymentRef] = useState<string | null>(null); // Holds PayPal orderID on backend failure
+  const [paymentMethod, setPaymentMethod] = useState<"full" | "partial">("full");
 
   const [formData, setFormData] = useState<BookingFormData>({
     fullName: "",
@@ -219,6 +227,9 @@ export default function BookingDialog({
       programId: program.documentId,
       userId: user!.documentId,
       totalAmount: totalAmount,
+      paymentMethod: paymentMethod,
+      paypalAmount: paypalAmount,
+      faceToFaceAmount: faceToFaceAmount,
     };
 
     try {
@@ -342,6 +353,8 @@ export default function BookingDialog({
   };
 
   const totalAmount = program.price * formData.numberOfTravelers;
+  const paypalAmount = paymentMethod === "partial" ? totalAmount * 0.3 : totalAmount;
+  const faceToFaceAmount = paymentMethod === "partial" ? totalAmount * 0.7 : 0;
 
   return (
     // Prevent closing dialog while payment is processing
@@ -488,6 +501,58 @@ export default function BookingDialog({
         {/* Step 2: PayPal Payment */}
         {step === "payment" && (
           <div className="space-y-5">
+            {/* Payment Method Selection */}
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Choose Payment Method</p>
+              <div className="grid grid-cols-1 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("full")}
+                  className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 text-left ${
+                    paymentMethod === "full"
+                      ? "border-primary bg-primary/5 shadow-md"
+                      : "border-border hover:border-primary/50 bg-card"
+                  }`}
+                >
+                  <div className={`p-2 rounded-lg ${paymentMethod === "full" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                    <CreditCard className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm">Pay Full Amount Online</p>
+                    <p className="text-xs text-muted-foreground">Pay 100% via PayPal now</p>
+                  </div>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                    paymentMethod === "full" ? "border-primary" : "border-muted-foreground/30"
+                  }`}>
+                    {paymentMethod === "full" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("partial")}
+                  className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 text-left ${
+                    paymentMethod === "partial"
+                      ? "border-primary bg-primary/5 shadow-md"
+                      : "border-border hover:border-primary/50 bg-card"
+                  }`}
+                >
+                  <div className={`p-2 rounded-lg ${paymentMethod === "partial" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                    <Handshake className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm">Pay 30% Now, 70% Face-to-Face</p>
+                    <p className="text-xs text-muted-foreground">Pay deposit online, rest on arrival</p>
+                  </div>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                    paymentMethod === "partial" ? "border-primary" : "border-muted-foreground/30"
+                  }`}>
+                    {paymentMethod === "partial" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                  </div>
+                </button>
+              </div>
+            </div>
+
             {/* Order summary card */}
             <div className="rounded-xl border bg-muted/40 p-4 space-y-3">
               <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground uppercase tracking-wide">
@@ -513,6 +578,18 @@ export default function BookingDialog({
                   <span className="font-bold">Total</span>
                   <span className="font-bold text-primary text-base">${totalAmount.toFixed(2)}</span>
                 </div>
+                {paymentMethod === "partial" && (
+                  <>
+                    <div className="flex justify-between text-green-600">
+                      <span className="text-sm font-medium">Pay now via PayPal (30%)</span>
+                      <span className="font-semibold">${paypalAmount.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-amber-600">
+                      <span className="text-sm font-medium">Pay on arrival (70%)</span>
+                      <span className="font-semibold">${faceToFaceAmount.toFixed(2)}</span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -527,8 +604,13 @@ export default function BookingDialog({
                 <p className="text-xs text-center text-muted-foreground">
                   🔒 Payments are securely processed by PayPal. Pay with your PayPal account or any credit/debit card.
                 </p>
+                {paymentMethod === "partial" && (
+                  <p className="text-xs text-center text-amber-600 font-medium">
+                    You are paying 30% deposit now. The remaining 70% (${faceToFaceAmount.toFixed(2)}) will be collected face-to-face.
+                  </p>
+                )}
                 <PayPalPayment
-                  amount={totalAmount}
+                  amount={paypalAmount}
                   currency="USD"
                   onSuccess={handlePayPalSuccess}
                   onError={handlePayPalError}
@@ -617,5 +699,8 @@ const PriceSummary = ({
       <span>Total Amount:</span>
       <span className="text-primary">${totalAmount.toFixed(2)}</span>
     </div>
+    <p className="text-xs text-muted-foreground pt-1">
+      Choose your payment method in the next step: pay 100% online or 30% online + 70% on arrival.
+    </p>
   </div>
 );

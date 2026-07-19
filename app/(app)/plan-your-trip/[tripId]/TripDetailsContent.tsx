@@ -13,7 +13,6 @@ import {
   ArrowLeft,
   MapPin,
   Calendar as CalendarIcon,
-  DollarSign,
   Users,
   Clock,
   User,
@@ -115,7 +114,7 @@ export default function TripDetailsContent({ tripId }: TripDetailsContentProps) 
     const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201030354067";
 
     const placesList = trip?.destinations
-      ?.map((dest: any, idx: number) => `Day ${idx + 1}: ${dest.title} - $${dest.price}`)
+      ?.map((dest: any, idx: number) => `Day ${idx + 1}: ${dest.title}`)
       .join("\n");
 
     const message = `🌍 *Custom Trip Quote Request*
@@ -127,8 +126,6 @@ ${placesList}
 
 📊 *Trip Summary:*
 ⏱️ Duration: ${trip?.estimatedDuration} ${trip?.estimatedDuration === 1 ? "Day" : "Days"}
-💰 Total Cost: $${trip?.totalPrice}
-📈 Price/Day: $${trip?.pricePerDay?.toFixed(2)}
 🧳 Destinations: ${trip?.destinations?.length}
 
 ${user ? `👤 *Contact Info:*\n📛 Name: ${user.profile?.firstName} ${user.profile?.lastName}\n📧 Email: ${user.email}\n` : ""}
@@ -265,18 +262,6 @@ Thank you! 🙏`;
         <Card>
           <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-4 pt-3 sm:pt-4">
             <CardDescription className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs">
-              <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-              Total Cost
-            </CardDescription>
-            <CardTitle className="text-lg sm:text-xl md:text-2xl text-primary">
-              ${trip.totalPrice?.toLocaleString()}
-            </CardTitle>
-          </CardHeader>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-4 pt-3 sm:pt-4">
-            <CardDescription className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs">
               <Users className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               Created By
             </CardDescription>
@@ -307,12 +292,6 @@ Thank you! 🙏`;
                   <p className="font-semibold flex items-center gap-2">
                     <CalendarIcon className="w-4 h-4 text-primary" />
                     {formatDate(trip.updatedAt)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground mb-1">Price per Day</p>
-                  <p className="font-semibold text-primary">
-                    ${trip.pricePerDay?.toFixed(2)}
                   </p>
                 </div>
                 <div>
@@ -383,11 +362,6 @@ Thank you! 🙏`;
                             <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-gradient-to-r from-primary to-amber-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg">
                               Day {index + 1}
                             </div>
-
-                            {/* Price badge */}
-                            <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 bg-background/90 backdrop-blur-sm text-primary px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg border border-primary/20">
-                              ${dest.price}
-                            </div>
                           </div>
                         )}
 
@@ -416,14 +390,6 @@ Thank you! 🙏`;
                                 </p>
                               )}
                             </div>
-                            {!dest.image && (
-                              <div className="text-right flex-shrink-0">
-                                <p className="text-[10px] sm:text-xs text-muted-foreground mb-1 font-medium">Day Cost</p>
-                                <div className="px-2 py-1.5 sm:px-3 sm:py-2 bg-gradient-to-br from-primary/10 to-amber-600/10 rounded-lg border border-primary/20 shadow-sm">
-                                  <p className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">${dest.price}</p>
-                                </div>
-                              </div>
-                            )}
                           </div>
                         </div>
                       </div>
@@ -450,45 +416,6 @@ Thank you! 🙏`;
             </CardContent>
           </Card>
 
-          {/* Price Breakdown */}
-          <Card className="border-primary/20 shadow-xl bg-gradient-to-br from-card to-card/50">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl">
-                  <DollarSign className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-2xl bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                  Price Breakdown
-                </CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {trip.destinations?.map((dest: any, index: number) => (
-                  <div key={index} className="flex justify-between items-center p-3 bg-background/50 rounded-lg border border-primary/10 hover:border-primary/20 transition-colors">
-                    <span className="text-sm font-medium text-muted-foreground">
-                      <span className="font-bold text-foreground">Day {index + 1}:</span> {dest.title}
-                    </span>
-                    <span className="font-bold text-lg text-primary">${dest.price}</span>
-                  </div>
-                ))}
-                <div className="border-t border-primary/20 pt-4 mt-4">
-                  <div className="bg-gradient-to-r from-primary/5 to-amber-500/5 rounded-xl p-5 border border-primary/20">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-lg">Total Estimated Cost</span>
-                      <span className="font-bold text-3xl bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
-                        ${trip.totalPrice?.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <span>Average per day</span>
-                      <span className="font-semibold text-foreground">${trip.pricePerDay?.toFixed(2)}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Sidebar */}
@@ -535,10 +462,6 @@ Thank you! 🙏`;
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">Destinations</span>
                   <span className="font-bold text-primary">{trip.destinations?.length}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Avg. Cost/Day</span>
-                  <span className="font-bold text-primary">${trip.pricePerDay?.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center pt-2 border-t">
                   <span className="text-sm text-muted-foreground">Status</span>
