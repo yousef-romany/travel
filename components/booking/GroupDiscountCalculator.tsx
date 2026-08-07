@@ -5,10 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Users, TrendingDown, Sparkles } from "lucide-react";
 import {
-  calculateGroupDiscount,
-  getNextDiscountTier,
-  getGroupDiscountTiers,
-} from "@/lib/group-discounts";
+  getPriceTiers,
+  getNextPriceTier,
+  getTieredPrice,
+} from "@/lib/tiered-pricing";
 
 interface GroupDiscountCalculatorProps {
   numberOfTravelers: number;
@@ -24,19 +24,19 @@ export function GroupDiscountCalculator({
   const [calculation, setCalculation] = useState<any>(null);
 
   useEffect(() => {
-    const result = calculateGroupDiscount(numberOfTravelers, basePrice);
+    const result = getTieredPrice(numberOfTravelers, basePrice);
     setCalculation(result);
 
     if (onDiscountCalculated) {
-      onDiscountCalculated(result.originalTotal - result.finalTotal, result.finalTotal);
+      onDiscountCalculated(result.savings, result.total);
     }
   }, [numberOfTravelers, basePrice, onDiscountCalculated]);
 
   if (!calculation) return null;
 
-  const nextTier = getNextDiscountTier(numberOfTravelers);
-  const tiers = getGroupDiscountTiers();
-  const hasDiscount = calculation.discount !== null;
+  const nextTier = getNextPriceTier(numberOfTravelers);
+  const tiers = getPriceTiers();
+  const hasDiscount = calculation.savings > 0;
 
   return (
     <div className="space-y-4">
@@ -47,14 +47,14 @@ export function GroupDiscountCalculator({
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-green-600 dark:text-green-400" />
-                Group Discount Applied!
+                Group Savings Applied!
               </CardTitle>
               <Badge className="bg-green-600 dark:bg-green-700">
-                Save {calculation.discount.discountPercentage}%
+                Save {calculation.tier.discountPercent}%
               </Badge>
             </div>
             <CardDescription className="text-green-700 dark:text-green-300">
-              {calculation.discount.description}
+              {calculation.tier.description}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -63,7 +63,7 @@ export function GroupDiscountCalculator({
                 Per person discount:
               </span>
               <span className="font-semibold text-green-600 dark:text-green-400">
-                -${calculation.discountAmount.toFixed(2)}
+                -${calculation.discountPerPerson.toFixed(2)}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm">
@@ -71,7 +71,7 @@ export function GroupDiscountCalculator({
                 Discounted price per person:
               </span>
               <span className="font-semibold text-green-600 dark:text-green-400">
-                ${calculation.discountedPrice.toFixed(2)}
+                ${calculation.pricePerPerson.toFixed(2)}
               </span>
             </div>
             <div className="pt-3 border-t border-green-200 dark:border-green-900">
@@ -80,7 +80,7 @@ export function GroupDiscountCalculator({
                   Total Savings:
                 </span>
                 <span className="text-xl font-bold text-green-600 dark:text-green-400">
-                  ${(calculation.originalTotal - calculation.finalTotal).toFixed(2)}
+                  ${calculation.savings.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -98,7 +98,7 @@ export function GroupDiscountCalculator({
                 <p className="font-medium text-sm mb-1">
                   Add {nextTier.minTravelers - numberOfTravelers} more{" "}
                   {nextTier.minTravelers - numberOfTravelers === 1 ? "traveler" : "travelers"} to
-                  unlock {nextTier.discountPercentage}% discount!
+                  unlock {nextTier.discountPercent}% off per person!
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {nextTier.description} - Save even more on your group booking
@@ -114,7 +114,7 @@ export function GroupDiscountCalculator({
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <Users className="h-4 w-4" />
-            Group Discount Tiers
+            Price per Person Tiers
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -145,7 +145,7 @@ export function GroupDiscountCalculator({
                     </div>
                   </div>
                   <Badge variant={isActive ? "default" : "secondary"}>
-                    {tier.discountPercentage}% OFF
+                    ${(basePrice - (basePrice * tier.discountPercent) / 100).toFixed(0)}/person
                   </Badge>
                 </div>
               );

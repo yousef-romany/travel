@@ -28,6 +28,7 @@ import { uploadFileToStrapi } from "@/lib/upload-file";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import PayPalPayment from "@/components/booking/PayPalPayment";
+import { getTieredPrice } from "@/lib/tiered-pricing";
 
 interface BookingDialogProps {
   isOpen: boolean;
@@ -78,7 +79,10 @@ const generateInvoiceData = (
   userId?: string
 ): { createData: CreateInvoiceData; pdfData: PDFInvoiceData } => {
   const invoiceNumber = `INV-${Date.now()}-${bookingId}`;
-  const totalAmount = program.price * formData.numberOfTravelers;
+  const { pricePerPerson, total: totalAmount } = getTieredPrice(
+    formData.numberOfTravelers,
+    program.price
+  );
 
   const createData: CreateInvoiceData = {
     invoiceNumber,
@@ -90,7 +94,7 @@ const generateInvoiceData = (
     tripDate: formData.travelDate!.toISOString(),
     tripDuration: program.duration,
     numberOfTravelers: formData.numberOfTravelers,
-    pricePerPerson: program.price,
+    pricePerPerson,
     totalAmount,
     bookingType: "program" as const,
     userId,
@@ -109,9 +113,9 @@ const generateWhatsAppMessage = (
   program: BookingDialogProps["program"],
   paymentMethod: "full" | "partial",
   paypalAmount: number,
-  faceToFaceAmount: number
+  faceToFaceAmount: number,
+  totalAmount: number
 ): string => {
-  const totalAmount = program.price * formData.numberOfTravelers;
   const paymentMethodText = paymentMethod === "partial"
     ? `\n💳 Pay via PayPal: $${paypalAmount.toFixed(2)} (30%)\n🤝 Pay face-to-face: $${faceToFaceAmount.toFixed(2)} (70%)`
     : `\n💳 Full payment via PayPal: $${totalAmount.toFixed(2)}`;
@@ -352,7 +356,7 @@ export default function BookingDialog({
     }
   };
 
-  const totalAmount = program.price * formData.numberOfTravelers;
+  const totalAmount = getTieredPrice(formData.numberOfTravelers, program.price).total;
   const paypalAmount = paymentMethod === "partial" ? totalAmount * 0.3 : totalAmount;
   const faceToFaceAmount = paymentMethod === "partial" ? totalAmount * 0.7 : 0;
 
@@ -482,7 +486,6 @@ export default function BookingDialog({
               numberOfTravelers={formData.numberOfTravelers}
               totalAmount={totalAmount}
             />
-
             <DialogFooter className="flex gap-2">
               <Button
                 type="button"
@@ -685,22 +688,45 @@ const PriceSummary = ({
   pricePerPerson: number;
   numberOfTravelers: number;
   totalAmount: number;
-}) => (
-  <div className="border-t pt-4 space-y-2">
-    <div className="flex justify-between text-sm">
-      <span>Price per person:</span>
-      <span>${pricePerPerson.toFixed(2)}</span>
+}) => {
+  const tiered = getTieredPrice(numberOfTravelers, pricePerPerson);
+  const hasDiscount = tiered.savings > 0;
+
+  return (
+    <div className="border-t pt-4 space-y-2">
+      <div className="flex justify-between text-sm">
+        <span>Price per person:</span>
+        <span className="font-medium">
+          ${tiered.pricePerPerson.toFixed(2)}
+          {hasDiscount && (
+            <span className="text-muted-foreground line-through ml-2 text-xs">
+              ${tiered.basePricePerPerson.toFixed(2)}
+            </span>
+          )}
+        </span>
+      </div>
+      <div className="flex justify-between text-sm">
+        <span>Number of travelers:</span>
+        <span>{numberOfTravelers}</span>
+      </div>
+      {hasDiscount && (
+        <>
+          <div className="flex justify-between text-sm text-green-600">
+            <span>Group savings ({tiered.tier.description}):</span>
+            <span className="font-semibold">-${tiered.savings.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>{tiered.tier.discountPercent}% off per person for {numberOfTravelers} traveler{numberOfTravelers === 1 ? "" : "s"}</span>
+          </div>
+        </>
+      )}
+      <div className="flex justify-between text-lg font-bold">
+        <span>Total Amount:</span>
+        <span className="text-primary">${totalAmount.toFixed(2)}</span>
+      </div>
+      <p className="text-xs text-muted-foreground pt-1">
+        Prices decrease per person as your group grows. Choose your payment method in the next step: pay 100% online or 30% online + 70% on arrival.
+      </p>
     </div>
-    <div className="flex justify-between text-sm">
-      <span>Number of travelers:</span>
-      <span>{numberOfTravelers}</span>
-    </div>
-    <div className="flex justify-between text-lg font-bold">
-      <span>Total Amount:</span>
-      <span className="text-primary">${totalAmount.toFixed(2)}</span>
-    </div>
-    <p className="text-xs text-muted-foreground pt-1">
-      Choose your payment method in the next step: pay 100% online or 30% online + 70% on arrival.
-    </p>
-  </div>
-);
+  );
+};

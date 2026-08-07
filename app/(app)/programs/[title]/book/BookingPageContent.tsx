@@ -46,6 +46,7 @@ import { PromoCode, incrementPromoCodeUsage } from "@/fetch/promo-codes";
 import PayPalPayment from "@/components/booking/PayPalPayment";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { getTieredPrice } from "@/lib/tiered-pricing";
 
 
 interface BookingPageContentProps {
@@ -194,7 +195,8 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
       }
 
       const invoiceNumber = `INV-${Date.now()}-${data.data.documentId}`;
-      const finalAmount = appliedPromo ? appliedPromo.finalPrice : (program.price * formData.numberOfTravelers);
+      const tiered = getTieredPrice(formData.numberOfTravelers, program.price);
+      const finalAmount = appliedPromo ? appliedPromo.finalPrice : tiered.total;
 
       const invoiceData = {
         invoiceNumber,
@@ -206,7 +208,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
         tripDate: formData.travelDate!.toISOString(),
         tripDuration: program.duration,
         numberOfTravelers: formData.numberOfTravelers,
-        pricePerPerson: program.price,
+        pricePerPerson: tiered.pricePerPerson,
         totalAmount: finalAmount,
         bookingType: "program" as const,
         userId: user?.documentId,
@@ -273,7 +275,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     const orderId: string = details?.id || details?.orderID || 'UNKNOWN';
     setPaymentRef(orderId);
     toast.success("Payment successful! Verifying and finalizing booking...");
-    const totalAmountCalc = program.price * formData.numberOfTravelers;
+    const totalAmountCalc = getTieredPrice(formData.numberOfTravelers, program.price).total;
     const finalAmount = appliedPromo ? appliedPromo.finalPrice : totalAmountCalc;
 
     verifyBookingMutation.mutate({
@@ -443,7 +445,8 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
       return total + s.price;
     }, 0);
 
-  const baseTotal = program.price * formData.numberOfTravelers;
+  const tiered = getTieredPrice(formData.numberOfTravelers, program.price);
+  const baseTotal = tiered.total;
   const totalAmount = baseTotal + servicesTotal;
   const finalAmount = appliedPromo ? (appliedPromo.finalPrice + servicesTotal) : totalAmount;
   const paypalAmount = paymentMethod === "partial" ? finalAmount * 0.3 : finalAmount;
@@ -958,12 +961,26 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Price per person:</span>
-                      <span className="font-semibold">${program.price.toFixed(2)}</span>
+                      <span className="font-semibold">
+                        ${tiered.pricePerPerson.toFixed(2)}
+                        {tiered.savings > 0 && (
+                          <span className="text-muted-foreground line-through ml-2 text-xs">
+                            ${tiered.basePricePerPerson.toFixed(2)}
+                          </span>
+                        )}
+                      </span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Number of travelers:</span>
                       <span className="font-semibold">{formData.numberOfTravelers}</span>
                     </div>
+
+                    {tiered.savings > 0 && (
+                      <div className="flex justify-between text-sm text-green-600">
+                        <span>Group savings ({tiered.tier.description}):</span>
+                        <span className="font-semibold">-${tiered.savings.toFixed(2)}</span>
+                      </div>
+                    )}
 
                     {/* Selected Services Summary */}
                     {selectedServices.length > 0 && (
