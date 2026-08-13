@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import ServerNavBar from "@/components/layout/ServerNavBar";
 import { ThemeProvider } from "@/components/Providers";
-import Script from "next/script";
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "@/components/ui/sonner";
 import OrganizationSchema from "@/components/seo/OrganizationSchema";
@@ -13,7 +12,6 @@ import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import BackgroundAudio from "@/components/BackgroundAudio";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import CriticalResourcePreload from "@/components/seo/CriticalResourcePreload";
 import { PerformanceMonitor } from "@/components/performance/PerformanceMonitor";
 
 // Using system fonts to avoid Google Fonts network dependency during build
@@ -137,13 +135,6 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://dashboard.zoeholidays.com" />
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-        <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        <link rel="preconnect" href="https://translate.google.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://translate.google.com" />
-        <link rel="preconnect" href="https://cdninstagram.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://cdninstagram.com" />
-        <link rel="dns-prefetch" href="https://unpkg.com" />
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>
@@ -186,48 +177,6 @@ export default function RootLayout({
 
         {/* Apple Splash Screens */}
         <link rel="apple-touch-startup-image" href="/icons/icon-512x512.png" />
-
-        {/* Google Translate Script */}
-        <Script
-          src="/assets/scripts/lang-config.js"
-          // strategy="beforeInteractive"
-          defer
-        />
-        <Script
-          src="/assets/scripts/translation.js"
-          // strategy="beforeInteractive"
-          defer
-        />
-        <Script
-          src="//translate.google.com/translate_a/element.js?cb=TranslateInit"
-          // strategy="beforeInteractive"
-          defer
-        />
-        {/* Leaflet CSS - Load asynchronously via script to avoid blocking render */}
-        <Script
-          id="leaflet-css-loader"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                var link = document.createElement('link');
-                link.rel = 'stylesheet';
-                link.href = 'https://unpkg.com/leaflet/dist/leaflet.css';
-                document.head.appendChild(link);
-              })();
-            `
-          }}
-        />
-        <Script
-          src="https://www.instagram.com/embed.js"
-          strategy="lazyOnload"
-        // onLoad={() => {
-        //   console.log("Instagram embed script loaded");
-        //   if (window?.instgrm) {
-        //     window?.instgrm.Embeds.process(); // Manually process embeds
-        //   }
-        // }}
-        />
       </head>
       <body
         className={`antialiased relative ${fontVariables.sans} ${fontVariables.mono}`}
@@ -238,7 +187,6 @@ export default function RootLayout({
               <PerformanceMonitor />
               <ServerNavBar />
               <div className="pt-[70px]">{children}</div>
-              <div id="google_translate_element" className="hidden"></div>
               <BackgroundAudio />
               <InstallPrompt />
               <Toaster />

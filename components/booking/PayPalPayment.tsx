@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PayPalButtons, PayPalScriptProvider, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, Info, ChevronDown } from "lucide-react";
 
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test";
 
@@ -98,6 +98,56 @@ const ButtonWrapper = ({ amount, currency, onSuccess, onError, onCancel, disable
                     }
                 }}
             />
+            <PayPalFee amount={amount} currency={currency} />
+        </div>
+    );
+};
+
+const PayPalFee = ({ amount, currency }: { amount: number; currency?: string }) => {
+    const [showDetails, setShowDetails] = useState(false);
+
+    if (!amount || amount <= 0 || !isFinite(amount)) return null;
+
+    const symbol = currency === "EUR" ? "€" : currency === "GBP" ? "£" : "$";
+    const percentage = 0.0349;
+    const fixedFee = 0.49;
+    const fee = amount * percentage + fixedFee;
+    const total = amount + fee;
+
+    return (
+        <div className="mt-3 rounded-lg border border-muted bg-muted/30 px-3 py-2">
+            <div className="flex items-center justify-between text-xs">
+                <button
+                    type="button"
+                    onClick={() => setShowDetails((v) => !v)}
+                    className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-expanded={showDetails}
+                >
+                    <Info className="w-3.5 h-3.5 flex-shrink-0" />
+                    PayPal fee
+                    <ChevronDown className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${showDetails ? "rotate-180" : ""}`} />
+                </button>
+                <span className="font-semibold text-foreground">
+                    {symbol}
+                    {fee.toFixed(2)}
+                </span>
+            </div>
+            {showDetails && (
+                <div className="mt-2 space-y-1 text-xs text-muted-foreground">
+                    <p className="flex justify-between">
+                        <span>Subtotal</span>
+                        <span className="font-medium">{symbol}{amount.toFixed(2)}</span>
+                    </p>
+                    <p className="flex justify-between">
+                        <span>PayPal fee (3.49% + $0.49)</span>
+                        <span className="font-medium">{symbol}{fee.toFixed(2)}</span>
+                    </p>
+                    <p className="flex justify-between border-t pt-1 font-semibold text-foreground">
+                        <span>Total charged</span>
+                        <span>{symbol}{total.toFixed(2)}</span>
+                    </p>
+                </div>
+            )}
         </div>
     );
 };

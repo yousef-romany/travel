@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { setCookie, parseCookies } from "nookies";
 import {
   Select,
@@ -12,6 +12,11 @@ import {
 
 const COOKIE_NAME = "googtrans";
 
+interface GoogleTranslateWindow extends Window {
+  googleTranslateElementInit?: () => void;
+  google?: { translate?: unknown };
+}
+
 const languages = [
   { title: "English", name: "en" },
   { title: "Deutsch", name: "de" },
@@ -20,10 +25,43 @@ const languages = [
   { title: "Русский", name: "ru" },
 ];
 
+// Loads the Google Translate widget only when the user first opens the
+// language selector. Keeps ~10s of initialization work off the initial load.
+function loadGoogleTranslate() {
+  const gWindow = window as GoogleTranslateWindow;
+  if (typeof window === "undefined" || gWindow.google?.translate) return;
+
+  const script = document.createElement("script");
+  script.src =
+    "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  script.async = true;
+  document.body.appendChild(script);
+
+  gWindow.googleTranslateElementInit = () => {
+    const google = gWindow.google as {
+      translate: new (opts: { autoDisplay: boolean }, el: string) => void;
+    };
+    new google.translate(
+      {
+        autoDisplay: false,
+      },
+      "google_translate_element"
+    );
+  };
+}
+
 export default function LanguageSwitcher() {
   const cookies = parseCookies();
   const current = cookies[COOKIE_NAME]?.split("/")?.[2] || "en";
   const [selectedLang, setSelectedLang] = useState(current);
+  const loadedRef = useRef(false);
+
+  const onOpenChange = (open: boolean) => {
+    if (open && !loadedRef.current) {
+      loadedRef.current = true;
+      loadGoogleTranslate();
+    }
+  };
 
   const changeLang = (lang: string) => {
     setSelectedLang(lang);
@@ -38,31 +76,12 @@ export default function LanguageSwitcher() {
     window.location.reload();
   };
 
-  useEffect(() => {
-    // Load Google Translate script once
-    const script = document.createElement("script");
-    script.src =
-      "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-    script.async = true;
-    document.body.appendChild(script);
-
-    // Silent initialization (widget hidden)
-    (window as any).googleTranslateElementInit = () => {
-      new (window as any).google.translate.TranslateElement(
-        {
-          autoDisplay: false,
-        },
-        "google_translate_element"
-      );
-    };
-  }, []);
-
   return (
     <>
       {/* Hidden element to attach Google Translate to */}
       <div id="google_translate_element" style={{ display: "none" }} className="!hidden"></div>
 
-      <Select value={selectedLang} onValueChange={changeLang}>
+      <Select value={selectedLang} onValueChange={changeLang} onOpenChange={onOpenChange}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Language" />
         </SelectTrigger>
