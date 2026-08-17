@@ -138,21 +138,21 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
           href={"/"}
           className={`flex-shrink-0 z-10 transition-transform duration-500 lg:mr-auto ${
             isScrolled ? "scale-90 sm:scale-95" : "scale-100"
-          } lg:relative lg:left-auto lg:translate-x-0 mx-auto lg:mx-0`}
+          } lg:relative lg:left-auto lg:translate-x-0 lg:mx-0`}
           onClick={handleLogoClick}
         >
           {theme === "light" ? (
             <Image
               src={logoLight}
               alt="ZoeHoliday Logo"
-              className="w-[100px] sm:w-[120px] md:w-[140px] lg:w-[160px] h-auto object-contain"
+              className="w-[90px] sm:w-[120px] md:w-[140px] lg:w-[160px] h-auto object-contain"
               priority
             />
           ) : (
             <Image
               src={logo}
               alt="ZoeHoliday Logo"
-              className="w-[100px] sm:w-[120px] md:w-[140px] lg:w-[160px] h-auto object-contain"
+              className="w-[90px] sm:w-[120px] md:w-[140px] lg:w-[160px] h-auto object-contain"
               priority
             />
           )}
@@ -167,9 +167,9 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
         </div>
 
         {/* Right Section - Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-shrink-0 z-10">
+        <div className="flex items-center gap-1 sm:gap-2 md:gap-3 flex-shrink-0 z-10">
           {/* Comparison Button */}
-          <Link href="/compare" onClick={handleComparisonClick}>
+          <Link href="/compare" onClick={handleComparisonClick} className="lg:block md:block sm:hidden">
             <Button
               size="icon"
               variant="ghost"
@@ -215,7 +215,7 @@ const NavBar = ({ inspirationCategories, placesCategories }: NavBarProps) => {
           {/* Auth Section */}
           {!user ? (
             <Link href="/login" onClick={handleLoginClick} className="flex-shrink-0">
-              <Button className="px-3 sm:px-4 md:px-6 rounded-full text-xs sm:text-sm md:text-base h-8 sm:h-9 md:h-10 font-medium shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white border-0 whitespace-nowrap">
+              <Button className="px-2.5 sm:px-4 md:px-6 rounded-full text-xs sm:text-sm md:text-base h-8 sm:h-9 md:h-10 font-medium shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white border-0 whitespace-nowrap">
                 Login
               </Button>
             </Link>

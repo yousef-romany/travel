@@ -104,7 +104,7 @@ export function ProgramImageCarousel({ program }: ProgramImageCarouselProps) {
         </div>
 
         {/* Thumbnails */}
-        <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide py-2 flex-wrap gap-2 justify-center items-center">
+        <div className="flex overflow-x-auto pb-2 scrollbar-hide py-2 flex-wrap gap-2 justify-center items-center">
           {images.map((img, index) => (
             <button
               key={index}

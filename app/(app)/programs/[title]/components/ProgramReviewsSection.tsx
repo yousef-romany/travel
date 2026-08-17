@@ -51,7 +51,7 @@ export function ProgramReviewsSection({ program, initialTestimonials }: ProgramR
   return (
     <section className="mt-12 animate-slide-up animate-delay-600">
       <div className="bg-gradient-to-br from-card to-card/50 border border-primary/20 rounded-2xl p-8 shadow-xl">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 flex-wrap gap-2">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-gradient-to-r from-primary to-amber-600 rounded-xl">
               <MessageSquare className="h-7 w-7 text-white" aria-hidden="true" />

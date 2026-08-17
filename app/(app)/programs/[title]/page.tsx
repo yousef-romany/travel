@@ -212,7 +212,7 @@ export default async function ProgramPage({ params }: Props) {
                 Curated Travel Experience
               </span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-amber-600 bg-clip-text text-transparent break-words">
               {program.title}
             </h1>
             <div className="inline-block">
@@ -230,10 +230,12 @@ export default async function ProgramPage({ params }: Props) {
           {/* Main Content Grid */}
           <div className="grid md:grid-cols-2 gap-8 mb-12 animate-slide-up animate-delay-200 w-full max-w-screen-lg mx-auto">
             {/* Left: Image Carousel (Client Component) */}
-            <ProgramImageCarousel program={program} />
+            <div className="min-w-0">
+              <ProgramImageCarousel program={program} />
+            </div>
 
             {/* Right: Booking Card (Client Component with tracking) */}
-            <div className="md:sticky md:top-24 self-start space-y-6">
+            <div className="md:sticky md:top-24 self-start space-y-6 min-w-0">
               <ProgramBookingCard program={program} />
             </div>
           </div>
@@ -290,7 +292,7 @@ export default async function ProgramPage({ params }: Props) {
 
           {/* Includes/Excludes - Server-rendered for SEO */}
           <div className="grid md:grid-cols-2 gap-8 mb-12 animate-slide-up animate-delay-500">
-            <section className="bg-gradient-to-br from-green-500/5 to-card border border-green-500/20 rounded-2xl p-8 shadow-xl">
+            <section className="bg-gradient-to-br from-green-500/5 to-card border border-green-500/20 rounded-2xl p-8 shadow-xl min-w-0">
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <div className="p-2 bg-green-500/10 rounded-lg">
                   <Check className="w-6 h-6 text-green-600" aria-hidden="true" />
@@ -310,7 +312,7 @@ export default async function ProgramPage({ params }: Props) {
               </ul>
             </section>
 
-            <section className="bg-gradient-to-br from-red-500/5 to-card border border-red-500/20 rounded-2xl p-8 shadow-xl">
+            <section className="bg-gradient-to-br from-red-500/5 to-card border border-red-500/20 rounded-2xl p-8 shadow-xl min-w-0">
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <div className="p-2 bg-red-500/10 rounded-lg">
                   <X className="w-6 h-6 text-red-600" aria-hidden="true" />
