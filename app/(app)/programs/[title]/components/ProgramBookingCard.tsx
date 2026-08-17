@@ -1,10 +1,12 @@
 "use client";
-import { Star, Clock, MapPin } from "lucide-react";
+import { Star, Clock, MapPin, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShareButtonCompact } from "@/components/social/ShareButtons";
 import { generateProgramShareText, generateTravelHashtags } from "@/lib/social-sharing";
 import { trackBookingClick } from "@/lib/analytics";
 import { dataTypeCardTravel } from "@/type/programs";
+
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
 
 interface ProgramBookingCardProps {
   program: dataTypeCardTravel;
@@ -125,13 +127,29 @@ export function ProgramBookingCard({ program }: ProgramBookingCardProps) {
       </div>
 
       <div className="space-y-3">
-        <Button
-          size="lg"
-          className="w-full bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-2xl text-lg py-6 hover:scale-105 transition-transform font-semibold"
-          onClick={handleBookingClick}
-        >
-          Book This Experience
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            size="lg"
+            className="flex-1 bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-2xl text-lg py-6 hover:scale-105 transition-transform font-semibold"
+            onClick={handleBookingClick}
+          >
+            Book This Experience
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="bg-green-500 hover:bg-green-600 text-white border-green-500 hover:border-green-600 shadow-2xl text-lg py-6 hover:scale-105 transition-transform font-semibold px-6"
+            onClick={() => {
+              const message = encodeURIComponent(
+                `Hi! I'm interested in the "${program.title}" travel package. Can you provide more details?`
+              );
+              window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
+            }}
+          >
+            <MessageCircle className="w-5 h-5 mr-2" />
+            Connect with us
+          </Button>
+        </div>
 
         <div className="flex justify-center">
           <ShareButtonCompact

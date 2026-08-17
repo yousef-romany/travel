@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Footer from "@/components/layout/Footer";
-import Chatbot from "@/components/chat/Chatbot";
 import QuickProgramsButton from "@/components/programs/QuickProgramsButton";
 
 export const metadata: Metadata = {
@@ -22,7 +21,6 @@ export default function RootLayout({
         {children}
       </main>
       <Footer />
-      <Chatbot />
       <QuickProgramsButton />
     </div>
   );

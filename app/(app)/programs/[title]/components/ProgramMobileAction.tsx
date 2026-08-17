@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { dataTypeCardTravel } from "@/type/programs";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { MessageCircle } from "lucide-react";
+
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
 
 interface ProgramMobileActionProps {
     program: dataTypeCardTravel;
@@ -49,12 +52,25 @@ export function ProgramMobileAction({ program }: ProgramMobileActionProps) {
                         <span className="text-xs text-muted-foreground">/ person</span>
                     </div>
                 </div>
-                <Button
-                    onClick={handleBookingClick}
-                    className="flex-1 bg-gradient-to-r from-primary to-amber-600 shadow-lg"
-                >
-                    Book Now
-                </Button>
+                <div className="flex gap-2 flex-1">
+                    <Button
+                        onClick={handleBookingClick}
+                        className="flex-1 bg-gradient-to-r from-primary to-amber-600 shadow-lg"
+                    >
+                        Book Now
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            const message = encodeURIComponent(
+                                `Hi! I'm interested in the "${program.title}" travel package. Can you provide more details?`
+                            );
+                            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
+                        }}
+                        className="bg-green-500 hover:bg-green-600 text-white shadow-lg px-3"
+                    >
+                        <MessageCircle className="w-5 h-5" />
+                    </Button>
+                </div>
             </div>
         </div>
     );
