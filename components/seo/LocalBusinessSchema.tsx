@@ -12,7 +12,7 @@ export default function LocalBusinessSchema() {
     "@id": `${siteUrl}/#organization`,
     "name": "ZoeHoliday",
     "alternateName": "Zoe Holiday Egypt Tours",
-    "description": "Leading travel agency offering authentic Egyptian tours, Nile cruises, pyramids visits, and Red Sea adventures. Expert guides, custom packages, 24/7 support.",
+    "description": "Premium family-run travel agency with 40+ years of experience offering authentic Egyptian tours, luxury Nile cruises, and private pyramids visits. Expert local guides and personal service based in Luxor.",
     "url": siteUrl,
     "logo": {
       "@type": "ImageObject",
@@ -28,16 +28,16 @@ export default function LocalBusinessSchema() {
     "email": "info@zoeholidays.com",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Cairo, Egypt", // Add specific address
-      "addressLocality": "Cairo",
-      "addressRegion": "Cairo Governorate",
+      "streetAddress": "Luxor, Egypt",
+      "addressLocality": "Luxor",
+      "addressRegion": "Luxor Governorate",
       "addressCountry": "EG",
-      "postalCode": "11511",
+      "postalCode": "85951",
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": 30.0444,
-      "longitude": 31.2357,
+      "latitude": 25.6872,
+      "longitude": 32.6396,
     },
     "areaServed": {
       "@type": "Country",

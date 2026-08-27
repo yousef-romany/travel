@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/Providers";
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "@/components/ui/sonner";
 import OrganizationSchema from "@/components/seo/OrganizationSchema";
+import LocalBusinessSchema from "@/components/seo/LocalBusinessSchema";
 import WebSiteSchema from "@/components/seo/WebSiteSchema";
 import ServiceSchema from "@/components/seo/ServiceSchema";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
@@ -26,14 +27,13 @@ export const metadata: Metadata = {
     default: "Egypt Travel & Tour Packages | ZoeHoliday - Explore Pyramids, Nile Cruises & Ancient Wonders",
     template: "%s | ZoeHoliday"
   },
-  description: "Discover Egypt's magic with ZoeHoliday! Explore pyramids, Nile cruises, temples & Red Sea beaches. Expert guides, custom tours, best prices. Visit October-April for perfect weather. Book your Egyptian adventure today!",
+  description: "Experience premium travel experiences in Egypt with ZoeHoliday! Enjoy premium private tours of the Pyramids of Giza, exclusive Nile cruises, and Luxor temples. A family-run business with over 40 years of experience offering personal service and expert local guides.",
   keywords: [
-    "Egypt travel", "Egypt tours", "Egyptian vacation", "pyramids tour", "Nile cruise",
-    "Cairo tours", "Luxor travel", "Egyptian holidays", "travel packages Egypt", "Egypt tourism",
-    "Giza pyramids", "Valley of Kings", "Red Sea diving", "Aswan tours", "Alexandria travel",
-    "Egypt tour operator", "Egyptian adventure", "ancient Egypt tours", "Karnak Temple",
-    "Abu Simbel", "Egypt cultural tours", "Egypt family vacation", "Egypt honeymoon packages",
-    "best time to visit Egypt", "Egypt October to April", "Egypt winter travel", "Egypt tour packages 2025"
+    "premium private tours of the Pyramids of Giza", "premium travel experiences in Egypt", "luxury Egypt tours", 
+    "family-run Egypt tour company", "Egypt private local guides", "exclusive Nile cruise",
+    "Luxor expert guided tours", "custom Egypt travel packages", "premium Pyramids tours",
+    "Giza private guided tour", "luxury Nile river cruise", "VIP Egypt travel",
+    "ZoeHoliday premium tours", "Egypt cultural immersion tours", "private Egyptologist guides", "Egypt tour packages 2025"
   ],
   authors: [{ name: "ZoeHoliday", url: "https://zoeholidays.com" }],
   creator: "ZoeHoliday",
@@ -54,10 +54,6 @@ export const metadata: Metadata = {
   applicationName: 'ZoeHoliday',
   alternates: {
     canonical: '/',
-    languages: {
-      'en-US': '/en-US',
-      'ar-EG': '/ar-EG',
-    },
   },
   formatDetection: {
     email: true,
@@ -71,7 +67,7 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "ZoeHoliday - Egypt Travel & Tours",
     title: "Egypt Travel & Tour Packages | ZoeHoliday - Pyramids, Nile & Ancient Temples",
-    description: "Explore Egypt's pyramids, Nile cruises, temples & Red Sea with zoeholidays. Best time: October-April. Expert guides, custom tours, 24/7 support. Book your Egyptian adventure today!",
+    description: "Premium travel experiences in Egypt. Discover premium private tours of the Pyramids of Giza and luxury Nile cruises with our family-run business and expert local guides.",
     images: [
       {
         url: "https://res.cloudinary.com/dir8ao2mt/image/upload/v1764631854/__1_l2obyo.jpg",
@@ -94,7 +90,7 @@ export const metadata: Metadata = {
     site: "@zoeholiday",
     creator: "@zoeholiday",
     title: "Egypt Travel & Tours | Pyramids, Nile Cruises & Ancient Wonders | ZoeHoliday",
-    description: "Explore Egypt's pyramids, Nile cruises & temples. Best time: October-April. Expert guides, custom tours. Book your Egyptian adventure with ZoeHoliday!",
+    description: "Premium travel experiences in Egypt. Discover premium private tours of the Pyramids of Giza and luxury Nile cruises with our family-run business and expert local guides.",
     images: ["https://res.cloudinary.com/dir8ao2mt/image/upload/v1764631854/__1_l2obyo.jpg"],
   },
   robots: {
@@ -139,6 +135,7 @@ export default function RootLayout({
           <GoogleAnalytics />
         </Suspense>
         <OrganizationSchema />
+        <LocalBusinessSchema />
         <WebSiteSchema />
         <ServiceSchema />
 

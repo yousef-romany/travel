@@ -22,16 +22,16 @@ export default function OrganizationSchema() {
     "email": "info@zoeholidays.com",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Cairo, Egypt",
-      "addressLocality": "Cairo",
-      "addressRegion": "Cairo Governorate",
+      "streetAddress": "Luxor, Egypt",
+      "addressLocality": "Luxor",
+      "addressRegion": "Luxor Governorate",
       "addressCountry": "EG",
-      "postalCode": "11511"
+      "postalCode": "85951"
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": 30.0444,
-      "longitude": 31.2357
+      "latitude": 25.6872,
+      "longitude": 32.6396
     },
     "openingHoursSpecification": [
       {

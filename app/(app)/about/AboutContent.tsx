@@ -38,7 +38,7 @@ const ABOUT_HERO_VIDEOS = [
 ];
 
 const STATS = [
-  { value: "15+", label: "Years of Experience", icon: Clock },
+  { value: "40+", label: "Years of Experience", icon: Clock },
   { value: "50K+", label: "Happy Travelers", icon: Users },
   { value: "30+", label: "Destinations Across Egypt", icon: MapPin },
   { value: "4.9/5", label: "Average Guest Rating", icon: Star },
@@ -121,7 +121,7 @@ const FAQS = [
   {
     question: "Who is ZoeHoliday?",
     answer:
-      "ZoeHoliday is a trusted Egypt travel company that designs unforgettable journeys across the land of the pharaohs. With over 15 years of experience, we blend expert local knowledge with personalized service.",
+      "ZoeHoliday is a trusted, family-run Egypt travel company that designs unforgettable premium journeys across the land of the pharaohs. With over 40 years of experience providing personal service and knowledgeable local guides, we blend expert local knowledge with luxury travel.",
   },
   {
     question: "What types of tours do you offer?",
@@ -258,14 +258,15 @@ export default function AboutContent() {
               </h2>
               <p className="text-muted-foreground mb-4 font-serif">
                 ZoeHoliday was born from a simple passion: sharing the magic of
-                Egypt with the world. For over 15 years we have guided travelers
+                Egypt with the world. For over 40 years, our family-run business has guided travelers
                 through the pyramids of Giza, the temples of Luxor, and the golden
-                waters of the Red Sea.
+                waters of the Nile, providing premium private tours and unforgettable experiences.
               </p>
               <p className="text-muted-foreground mb-4 font-serif">
-                What started as a small family-run team has grown into a full-service
-                travel company — yet every journey is still planned with the same
-                personal care, local knowledge, and love for our homeland as day one.
+                As a family-run company based in Luxor, we pride ourselves on delivering 
+                exceptional personal service and employing only the most knowledgeable local guides. 
+                Every premium journey is planned with the same personal care, local knowledge, 
+                and love for our homeland as day one.
               </p>
               <div className="flex flex-wrap gap-4 mt-4">
                 <Button asChild className="transition-smooth hover-glow">
