@@ -292,7 +292,7 @@ export function generatePlaceMetadata({
   return generatePageMetadata({
     title: `${name}${category ? ` - ${category}` : ""} | Egypt Travel Guide`,
     description: metaDescription,
-    path: `/placesToGo/${documentId}`,
+    path: `/placesTogo/${documentId}`,
     image,
     keywords,
     type: "article",

@@ -82,65 +82,63 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const events = await getEvents();
   const placeCategories = await getPlaceCategories();
 
-  // Static pages
+  // Use a fixed "last updated" date for static pages (update manually when content changes)
+  const STATIC_PAGES_UPDATED = new Date("2026-08-01");
+
+  // Static pages — only include canonical, indexable pages
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
-      lastModified: new Date(),
-      changeFrequency: "daily",
+      lastModified: STATIC_PAGES_UPDATED,
+      changeFrequency: "weekly",
       priority: 1,
     },
     {
       url: `${SITE_URL}/programs`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
+      lastModified: STATIC_PAGES_UPDATED,
+      changeFrequency: "weekly",
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/events`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
+      lastModified: STATIC_PAGES_UPDATED,
+      changeFrequency: "weekly",
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/placesTogo`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
+      lastModified: STATIC_PAGES_UPDATED,
+      changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/inspiration`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
+      lastModified: STATIC_PAGES_UPDATED,
+      changeFrequency: "monthly",
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/plan-your-trip`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
+      lastModified: STATIC_PAGES_UPDATED,
+      changeFrequency: "monthly",
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/promo-codes`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.8,
+      lastModified: STATIC_PAGES_UPDATED,
+      changeFrequency: "weekly",
+      priority: 0.6,
     },
     {
       url: `${SITE_URL}/about`,
-      lastModified: new Date(),
+      lastModified: STATIC_PAGES_UPDATED,
       changeFrequency: "monthly",
       priority: 0.5,
     },
-    {
-      url: `${SITE_URL}/terms`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.3,
-    },
+    // /terms intentionally excluded — legal page with no search value
   ];
 
-  // Dynamic program pages with intelligent priority and changefreq
+  // Dynamic program pages
   const programPages: MetadataRoute.Sitemap = programs.map((program) => {
     const firstImage = program.images?.[0];
     const imageUrl =
@@ -151,76 +149,52 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ? `${API_URL}${imageUrl}`
         : undefined;
 
-    // Calculate intelligent priority based on freshness
     const lastModified = program.updatedAt
       ? new Date(program.updatedAt)
-      : new Date();
+      : STATIC_PAGES_UPDATED;
     const daysSinceUpdate = Math.floor(
       (Date.now() - lastModified.getTime()) / (1000 * 60 * 60 * 24),
     );
 
-    // Priority: 0.95 for new/recently updated, decreases with age
-    let priority = 0.95;
-    if (daysSinceUpdate > 30) priority = 0.85;
-    if (daysSinceUpdate > 90) priority = 0.8;
-    if (daysSinceUpdate > 180) priority = 0.75;
-
-    // Change frequency based on update recency
-    let changeFrequency: "daily" | "weekly" | "monthly" = "weekly";
-    if (daysSinceUpdate < 7) changeFrequency = "daily";
-    if (daysSinceUpdate > 90) changeFrequency = "monthly";
+    const changeFrequency: "weekly" | "monthly" =
+      daysSinceUpdate > 90 ? "monthly" : "weekly";
 
     return {
       url: `${SITE_URL}/programs/${program.documentId}`,
       lastModified,
       changeFrequency,
-      priority,
       images: fullImageUrl ? [fullImageUrl] : undefined,
     };
   });
 
-  // Dynamic event pages with time-sensitive priority
+  // Dynamic event pages
   const eventPages: MetadataRoute.Sitemap = events.map((event) => {
     const eventSlug = event.slug || event.documentId;
     const lastModified = event.updatedAt
       ? new Date(event.updatedAt)
-      : new Date();
+      : STATIC_PAGES_UPDATED;
     const daysSinceUpdate = Math.floor(
       (Date.now() - lastModified.getTime()) / (1000 * 60 * 60 * 24),
     );
 
-    // Events are time-sensitive, higher priority for recent ones
-    let priority = 0.9;
-    let changeFrequency: "daily" | "weekly" | "monthly" = "daily";
-
-    if (daysSinceUpdate < 14) {
-      priority = 0.95;
-      changeFrequency = "daily";
-    } else if (daysSinceUpdate < 30) {
-      priority = 0.85;
-      changeFrequency = "weekly";
-    } else {
-      priority = 0.7;
-      changeFrequency = "monthly";
-    }
+    const changeFrequency: "weekly" | "monthly" =
+      daysSinceUpdate > 30 ? "monthly" : "weekly";
 
     return {
       url: `${SITE_URL}/events/${encodeURIComponent(eventSlug)}`,
       lastModified,
       changeFrequency,
-      priority,
     };
   });
 
-  // Dynamic place category pages
+  // Dynamic destination (place category) pages — canonical: /placesTogo (lowercase g)
   const placeCategoryPages: MetadataRoute.Sitemap = placeCategories.map(
     (category) => ({
-      url: `${SITE_URL}/placesTogo/${encodeURIComponent(category.categoryName)}`,
+      url: `${SITE_URL}/placesTogo/${encodeURIComponent(category.categoryName.trim())}`,
       lastModified: category.updatedAt
         ? new Date(category.updatedAt)
-        : new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
+        : STATIC_PAGES_UPDATED,
+      changeFrequency: "monthly" as const,
     }),
   );
 
@@ -231,3 +205,4 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...placeCategoryPages,
   ];
 }
+

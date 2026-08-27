@@ -65,7 +65,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: blogData?.image ? [blogData.image.url] : [],
     },
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/placesToGo/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["place-blog"]}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["place-blog"]}`,
+
     },
   };
 }
@@ -135,7 +136,7 @@ const PlaceToGoBlogDynamic = async ({ params }: Props) => {
         items={[
           { name: "Home", item: "/" },
           { name: "Places To Go", item: "/placesTogo" },
-          { name: category, item: `/placesToGo/${resolvedParams.category}` },
+          { name: category, item: `/placesTogo/${resolvedParams.category}` },
           { name: subCategory, item: `/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}` },
           { name: blogTitle, item: `/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["place-blog"]}` }
         ]}

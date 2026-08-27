@@ -129,6 +129,28 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  async redirects() {
+    return [
+      // 301 Permanent redirect: fix placesToGo → placesTogo (case-sensitive SEO fix)
+      {
+        source: "/placesToGo/:path*",
+        destination: "/placesTogo/:path*",
+        permanent: true,
+      },
+      // Redirect any trailing-space encoded paths for South Sinai
+      {
+        source: "/placesTogo/South%20Sinai%20",
+        destination: "/placesTogo/South%20Sinai",
+        permanent: true,
+      },
+      {
+        source: "/placesTogo/South%20Sinai%20/:path*",
+        destination: "/placesTogo/South%20Sinai/:path*",
+        permanent: true,
+      },
+    ];
+  },
+
   // Performance optimizations
   compress: true,
   poweredByHeader: false,
