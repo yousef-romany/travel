@@ -30,6 +30,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const title = blogData?.title
+    ? `${blogData.title} - ${subCategory}`
+    : `${blogTitle} - ${subCategory}`;
+
+  const shareTitle = blogData?.title
     ? `${blogData.title} - ${subCategory} | ZoeHoliday`
     : `${blogTitle} - ${subCategory} | ZoeHoliday`;
 
@@ -50,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "tourism Egypt",
     ],
     openGraph: {
-      title,
+      title: shareTitle,
       description,
       type: "article",
       images: blogData?.image ? [{ url: blogData.image.url }] : [],
@@ -60,7 +64,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: shareTitle,
       description,
       images: blogData?.image ? [blogData.image.url] : [],
     },

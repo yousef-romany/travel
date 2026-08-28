@@ -3,7 +3,7 @@ import Content from "./PRIVACYPOLICYContent";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - ZoeHoliday Egypt",
+  title: "Privacy Policy",
   description: "Learn how ZoeHoliday collects, uses, and protects your personal information. Read our comprehensive privacy policy for transparency and security.",
   keywords: ["privacy policy", "data protection", "user privacy", "ZoeHoliday privacy", "GDPR compliance", "data security"],
   alternates: {

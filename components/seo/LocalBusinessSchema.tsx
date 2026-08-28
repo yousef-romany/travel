@@ -3,10 +3,13 @@
  * Helps Google show ZoeHoliday in local search results and Google Maps
  */
 
-export default function LocalBusinessSchema() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
+import { getSiteReviews } from "@/lib/reviews";
 
-  const schema = {
+export default async function LocalBusinessSchema() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
+  const { aggregate, reviews } = await getSiteReviews();
+
+  const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "TravelAgency",
     "@id": `${siteUrl}/#organization`,
@@ -65,14 +68,13 @@ export default function LocalBusinessSchema() {
       "https://www.instagram.com/zoeholiday",
       "https://www.twitter.com/zoeholiday",
       "https://www.linkedin.com/company/zoeholiday",
+      ...(process.env.NEXT_PUBLIC_GOOGLE_REVIEWS_URL
+        ? [process.env.NEXT_PUBLIC_GOOGLE_REVIEWS_URL]
+        : []),
+      ...(process.env.NEXT_PUBLIC_TRUSTPILOT_URL
+        ? [process.env.NEXT_PUBLIC_TRUSTPILOT_URL]
+        : []),
     ],
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "bestRating": "5",
-      "worstRating": "1",
-      "ratingCount": "250",
-    },
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "Egypt Tour Packages",
@@ -106,6 +108,35 @@ export default function LocalBusinessSchema() {
       ],
     },
   };
+
+  if (aggregate) {
+    schema["aggregateRating"] = {
+      "@type": "AggregateRating",
+      "ratingValue": aggregate.ratingValue.toFixed(1),
+      "bestRating": String(aggregate.bestRating),
+      "worstRating": String(aggregate.worstRating),
+      "ratingCount": String(aggregate.ratingCount),
+    };
+  }
+
+  if (reviews.length > 0) {
+    schema["review"] = reviews.map((review) => ({
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": review.author,
+        ...(review.sourceUrl && { "sameAs": review.sourceUrl }),
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": review.rating,
+        "bestRating": 5,
+        "worstRating": 1,
+      },
+      "reviewBody": review.reviewBody,
+      ...(review.datePublished && { "datePublished": review.datePublished }),
+    }));
+  }
 
   return (
     <script

@@ -3,7 +3,7 @@ import Content from "./MEDIAINDUSTRYContent";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 export const metadata: Metadata = {
-  title: "Media & Industry Resources | ZoeHoliday",
+  title: "Media & Industry Resources",
   description: "ZoeHoliday media resources, press releases, industry partnerships, and professional travel services for media and tourism professionals in Egypt.",
   keywords: ["media kit", "press releases", "tourism industry", "travel media", "Egypt tourism news", "travel partnerships", "ZoeHoliday press"],
   alternates: {

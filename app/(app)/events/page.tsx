@@ -5,7 +5,7 @@ import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { fetchEvents } from "@/fetch/events";
 
 export const metadata: Metadata = {
-  title: "Events & Festivals in Egypt | ZoeHoliday",
+  title: "Events & Festivals in Egypt",
   description: "Discover upcoming events, festivals, and cultural celebrations in Egypt. Plan your trip around Egypt's vibrant calendar of events with zoeholidays.",
   keywords: ["Egypt events", "Cairo festivals", "Egypt cultural events", "things to do in Egypt", "Egypt calendar", "music festivals Egypt"],
   alternates: {

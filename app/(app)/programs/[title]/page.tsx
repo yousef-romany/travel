@@ -42,6 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const fullImageUrl = imageUrl.startsWith("http")
       ? imageUrl
       : `${process.env.NEXT_PUBLIC_STRAPI_URL}${imageUrl}`;
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
     return {
       title: `${program.title} - ${program.duration} Days Egypt Tour`,
@@ -59,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: `${program.title} | ZoeHoliday`,
         description: program.descraption || program.overView,
         type: "website",
-        url: `/programs/${program.documentId}`,
+        url: `${SITE_URL}/programs/${program.documentId}`,
         images: [
           {
             url: fullImageUrl,
@@ -76,7 +77,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         images: [fullImageUrl],
       },
       alternates: {
-        canonical: `/programs/${program.documentId}`,
+        canonical: `${SITE_URL}/programs/${program.documentId}`,
       },
     };
   } catch (error) {

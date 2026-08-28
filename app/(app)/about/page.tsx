@@ -3,7 +3,7 @@ import AboutContent from "./AboutContent";
 import VideoSchema from "@/components/seo/VideoSchema";
 
 export const metadata: Metadata = {
-  title: "About ZoeHoliday - Egypt Travel Experts | ZoeHoliday",
+  title: "About ZoeHoliday - Egypt Travel Experts",
   description: "Learn about ZoeHoliday, your trusted Egypt travel experts. With a history spanning over 5000 years, we help you explore ancient wonders, breathtaking landscapes, and vibrant culture. Discover sustainable tourism and authentic Egyptian experiences.",
   keywords: [
     "about ZoeHoliday", "Egypt tourism", "Egypt travel company", "Egyptian travel experts",

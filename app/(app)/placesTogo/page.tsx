@@ -7,7 +7,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 const OG_IMAGE = `${SITE_URL}/og-places.jpg`;
 
 export const metadata: Metadata = {
-  title: "Egypt Destinations & Places to Visit | ZoeHoliday",
+  title: "Egypt Destinations & Places to Visit",
   description: "Explore the most iconic destinations across Egypt. From the ancient pyramids of Giza to the temples of Luxor, discover the best places to visit in Egypt with ZoeHoliday travel guides.",
   keywords: [
     "Egypt destinations", "places to visit in Egypt", "Cairo attractions", "Luxor temples",

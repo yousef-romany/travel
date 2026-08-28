@@ -3,7 +3,7 @@ import BusinessEventsContent from "./BusinessEventsContent";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 export const metadata: Metadata = {
-  title: "Business Events & MICE Services in Egypt | ZoeHoliday",
+  title: "Business Events & MICE Services in Egypt",
   description: "Organize corporate events, conferences, team building activities, and business travel in Egypt with ZoeHoliday's professional event management services.",
   keywords: ["corporate events Egypt", "business conferences", "team building", "MICE tourism", "corporate travel", "Egypt event management"],
   alternates: {

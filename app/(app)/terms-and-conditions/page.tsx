@@ -3,7 +3,7 @@ import Content from "./TERMSANDCONDITIONSContent";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 export const metadata: Metadata = {
-  title: "Terms and Conditions - ZoeHoliday Egypt",
+  title: "Terms and Conditions",
   description: "Read ZoeHoliday's terms and conditions for using our services, booking policies, cancellation rules, and legal agreements.",
   keywords: ["terms and conditions", "booking policy", "cancellation policy", "ZoeHoliday terms", "travel agreement", "refund policy"],
   alternates: {

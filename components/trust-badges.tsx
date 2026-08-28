@@ -34,6 +34,37 @@ export default function TrustBadges() {
         </div>
       </Link>
 
+      {/* Trustpilot */}
+      <Link
+        href="https://www.trustpilot.com/review/zoeholidays.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-3 px-4 py-3 bg-background border border-border rounded-lg hover:border-primary/50 hover:shadow-md transition-all group"
+        aria-label="Read our Trustpilot reviews"
+      >
+        <div className="relative w-10 h-10 flex-shrink-0">
+          <div className="absolute inset-0 bg-[#00B67A] rounded-full"></div>
+          <div className="absolute inset-0 flex items-center justify-center text-white">
+            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" aria-hidden="true">
+              <path d="M17.3 8.5h-4.3L12 4.7l-1 3.8H6.7l3.4 2.5-1.3 3.9 3.2-2.4 3.2 2.4-1.3-3.9 3.4-2.5zM12 0L8.7 2.6l-4-0.2L2 5.8l-0.1 4L0 12l1.9 2.2 0.1 4L4.7 21.6l4 0.2L12 24l3.3-2.2 4-0.2L21.9 18.2l0.1-4L24 12l-2-2.2-0.1-4L19.3 2.4l-4-0.2z"/>
+            </svg>
+          </div>
+        </div>
+        <div className="text-left">
+          <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+            Trustpilot
+          </p>
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star key={star} className="w-3 h-3 fill-[#00B67A] text-[#00B67A]" />
+            ))}
+            <span className="text-xs text-muted-foreground ml-1">
+              {process.env.NEXT_PUBLIC_TRUSTPILOT_RATING || "4.8"}
+            </span>
+          </div>
+        </div>
+      </Link>
+
       {/* Viator */}
       <Link
         href="https://www.viator.com/tours/Luxor/Explore-Luxor-Ultimate-Day-Tour-of-East-and-West-Bank-Highlights/d826-5610207P1"

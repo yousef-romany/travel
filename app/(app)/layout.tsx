@@ -1,14 +1,5 @@
-import type { Metadata } from "next";
 import Footer from "@/components/layout/Footer";
 import QuickProgramsButton from "@/components/programs/QuickProgramsButton";
-
-export const metadata: Metadata = {
-  title: {
-    default: "ZoeHoliday - Explore Egypt | Travel & Tour Packages",
-    template: "%s | ZoeHoliday"
-  },
-  description: "Discover the magic of Egypt with zoeholidays. Curated travel experiences featuring pyramids, Nile cruises, ancient temples, and Red Sea adventures. Book your Egyptian journey today.",
-};
 
 export default function RootLayout({
   children,

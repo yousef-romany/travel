@@ -17,6 +17,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const categoryData = data?.data?.at(-1);
 
   const title = categoryData?.categoryName
+    ? `${categoryData.categoryName} - Egypt Travel Inspiration`
+    : `${category} - Egypt Travel Inspiration`;
+
+  const ogTitle = categoryData?.categoryName
     ? `${categoryData.categoryName} - Egypt Travel Inspiration | ZoeHoliday`
     : `${category} - Egypt Travel Inspiration | ZoeHoliday`;
 
@@ -28,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     openGraph: {
-      title,
+      title: ogTitle,
       description,
       images: categoryData?.image ? [{ url: categoryData.image.url }] : [],
     },

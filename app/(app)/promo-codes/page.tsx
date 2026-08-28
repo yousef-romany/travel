@@ -8,7 +8,7 @@ import { Gift, Tag, Sparkles } from "lucide-react";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 
 export const metadata: Metadata = {
-  title: "Promo Codes & Special Offers | ZoeHoliday - Save on Egypt Tours",
+  title: "Promo Codes & Special Offers - Save on Egypt Tours",
   description: "Get exclusive promo codes and special discounts on Egypt tour packages. Save big on pyramids tours, Nile cruises, and cultural experiences. Limited time offers available!",
   keywords: [
     "Egypt tour promo codes",

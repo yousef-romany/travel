@@ -4,7 +4,7 @@ import { fetchInspirationCategories } from "@/fetch/category";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 export const metadata: Metadata = {
-  title: "Egypt Travel Inspiration & Ideas | ZoeHoliday",
+  title: "Egypt Travel Inspiration & Ideas",
   description: "Get inspired for your Egypt adventure! Discover travel stories, cultural insights, historical wonders, and planning tips for exploring the land of pharaohs. Find inspiration for your perfect Egyptian journey.",
   keywords: [
     "Egypt travel inspiration", "Egypt travel ideas", "Egypt stories", "Egyptian culture",

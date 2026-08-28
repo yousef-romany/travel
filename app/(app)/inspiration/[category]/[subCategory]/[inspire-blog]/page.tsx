@@ -4,6 +4,7 @@ import { UnifiedBreadcrumb } from "@/components/unified-breadcrumb";
 import HieroglyphEffect from "@/components/HieroglyphEffect";
 import { fetchInspirationOneBlog } from "@/fetch/category";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import ArticleSchema from "@/components/seo/ArticleSchema";
 
 type Props = {
   params: Promise<{
@@ -24,6 +25,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const blogData = data?.data?.at(0);
 
   const title = blogData?.title
+    ? `${blogData.title} - ${subCategory} Inspiration`
+    : `${blogTitle} - ${subCategory} Inspiration`;
+
+  const ogTitle = blogData?.title
     ? `${blogData.title} - ${subCategory} Inspiration | ZoeHoliday`
     : `${blogTitle} - ${subCategory} Inspiration | ZoeHoliday`;
 
@@ -35,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     openGraph: {
-      title,
+      title: ogTitle,
       description,
       type: "article",
       images: blogData?.image ? [{ url: blogData.image.url }] : [],
@@ -55,6 +60,7 @@ const InspirationDynamic = async ({ params }: Props) => {
   const subCategory = decodeURIComponent(resolvedParams.subCategory);
   const blogTitle = decodeURIComponent(resolvedParams["inspire-blog"]);
   const data = await fetchInspirationOneBlog(blogTitle);
+  const blogData = data?.data?.at(0);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -84,6 +90,20 @@ const InspirationDynamic = async ({ params }: Props) => {
           { name: blogTitle, item: `/inspiration/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["inspire-blog"]}` }
         ]}
       />
+
+      {blogData && (
+        <ArticleSchema
+          headline={blogData.title || blogTitle}
+          description={
+            blogData.description || `Read ${blogTitle} in ${subCategory}, ${category}. Inspiring travel stories from Egypt.`
+          }
+          image={blogData.image?.url || ""}
+          datePublished={blogData.createdAt || new Date().toISOString()}
+          dateModified={blogData.updatedAt || blogData.createdAt || new Date().toISOString()}
+          url={`/inspiration/${resolvedParams.category}/${resolvedParams.subCategory}/${resolvedParams["inspire-blog"]}`}
+          keywords={[category, subCategory, "Egypt travel", "inspiration"]}
+        />
+      )}
 
       <IndexPageInspireBlog
         slug={blogTitle}

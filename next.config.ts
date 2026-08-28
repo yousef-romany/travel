@@ -137,6 +137,17 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
+
+  // SEO: resolve duplicate terms pages - /terms is the redundant copy
+  async redirects() {
+    return [
+      {
+        source: "/terms",
+        destination: "/terms-and-conditions",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 // PWA Configuration

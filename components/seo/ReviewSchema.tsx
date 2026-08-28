@@ -4,6 +4,7 @@ interface Review {
   reviewBody: string;
   datePublished?: string;
   reviewTitle?: string;
+  sourceUrl?: string;
 }
 
 interface ReviewSchemaProps {
@@ -48,6 +49,7 @@ export default function ReviewSchema({
       "author": {
         "@type": "Person",
         "name": review.author,
+        ...(review.sourceUrl && { "sameAs": review.sourceUrl }),
       },
       "reviewRating": {
         "@type": "Rating",

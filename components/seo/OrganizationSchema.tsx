@@ -1,5 +1,9 @@
-export default function OrganizationSchema() {
-  const schema = {
+import { getSiteAggregateRating } from "@/lib/reviews";
+
+export default async function OrganizationSchema() {
+  const aggregate = await getSiteAggregateRating();
+
+  const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": ["TravelAgency", "LocalBusiness", "Organization"],
     "name": "ZoeHoliday",
@@ -110,14 +114,17 @@ export default function OrganizationSchema() {
         }
       ]
     },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "ratingCount": "500",
-      "bestRating": "5",
-      "worstRating": "1"
-    }
   };
+
+  if (aggregate) {
+    schema["aggregateRating"] = {
+      "@type": "AggregateRating",
+      "ratingValue": aggregate.ratingValue.toFixed(1),
+      "ratingCount": String(aggregate.ratingCount),
+      "bestRating": String(aggregate.bestRating),
+      "worstRating": String(aggregate.worstRating),
+    };
+  }
 
   return (
     <script

@@ -26,6 +26,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const subCategoryData = data?.data?.at(-1);
 
   const title = subCategoryData?.categoryName
+    ? `${subCategoryData.categoryName} - ${category} Inspiration`
+    : `${subCategory} - ${category} Inspiration`;
+
+  const ogTitle = subCategoryData?.categoryName
     ? `${subCategoryData.categoryName} - ${category} Inspiration | ZoeHoliday`
     : `${subCategory} - ${category} Inspiration | ZoeHoliday`;
 
@@ -37,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     openGraph: {
-      title,
+      title: ogTitle,
       description,
       images: subCategoryData?.image ? [{ url: subCategoryData.image.url }] : [],
     },
