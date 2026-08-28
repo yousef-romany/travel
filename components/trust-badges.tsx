@@ -46,7 +46,7 @@ export default function TrustBadges() {
           <div className="absolute inset-0 bg-[#00B67A] rounded-full"></div>
           <div className="absolute inset-0 flex items-center justify-center text-white">
             <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" aria-hidden="true">
-              <path d="M17.3 8.5h-4.3L12 4.7l-1 3.8H6.7l3.4 2.5-1.3 3.9 3.2-2.4 3.2 2.4-1.3-3.9 3.4-2.5zM12 0L8.7 2.6l-4-0.2L2 5.8l-0.1 4L0 12l1.9 2.2 0.1 4L4.7 21.6l4 0.2L12 24l3.3-2.2 4-0.2L21.9 18.2l0.1-4L24 12l-2-2.2-0.1-4L19.3 2.4l-4-0.2z"/>
+              <path d="M17.227 16.67l2.19 6.742-7.413-5.388 5.223-1.354zM24 9.31h-9.165L12.005.589l-2.84 8.723L0 9.3l7.422 5.397-2.84 8.714 7.422-5.388 4.583-3.326L24 9.311z"/>
             </svg>
           </div>
         </div>

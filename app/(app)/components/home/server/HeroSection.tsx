@@ -12,6 +12,29 @@ export default function HeroSection() {
     <section className="relative h-[95.5vh] sm:h-[95.5vh] overflow-hidden !w-full">
       <HeroClient>
         <div className="flex flex-col items-center justify-center text-white text-center px-4 sm:px-6 md:px-8 h-full">
+          {/* Trustpilot Badge */}
+          <Link 
+            href="https://www.trustpilot.com/review/zoeholidays.com" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="mb-6 animate-slide-up flex items-center gap-2.5 bg-black/30 hover:bg-black/50 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 transition-all shadow-xl group"
+          >
+            <div className="flex gap-0.5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <div key={star} className="w-5 h-5 bg-[#00B67A] flex items-center justify-center rounded-[2px]">
+                  <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5">
+                    <path d="M17.227 16.67l2.19 6.742-7.413-5.388 5.223-1.354zM24 9.31h-9.165L12.005.589l-2.84 8.723L0 9.3l7.422 5.397-2.84 8.714 7.422-5.388 4.583-3.326L24 9.311z"/>
+                  </svg>
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-white/90 group-hover:text-white transition-colors">
+              <span className="font-bold">4.8/5</span> 
+              <span className="text-white/60">|</span> 
+              <span>Trustpilot</span>
+            </div>
+          </Link>
+
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 drop-shadow-lg animate-slide-up max-w-4xl">
             Discover the Magic of Egypt
           </h1>
