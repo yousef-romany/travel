@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 export default function ServiceSchema() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
@@ -72,10 +74,5 @@ export default function ServiceSchema() {
     "@graph": services
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

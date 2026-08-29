@@ -4,6 +4,7 @@
  */
 
 import { getSiteReviews } from "@/lib/reviews";
+import JsonLd from "./JsonLd";
 
 export default async function LocalBusinessSchema() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
@@ -138,10 +139,5 @@ export default async function LocalBusinessSchema() {
     }));
   }
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

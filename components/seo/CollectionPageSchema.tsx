@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 interface CollectionPageSchemaProps {
     name: string;
     description: string;
@@ -45,10 +47,5 @@ export default function CollectionPageSchema({
         },
     };
 
-    return (
-        <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
-    );
+    return <JsonLd data={schema} />;
 }

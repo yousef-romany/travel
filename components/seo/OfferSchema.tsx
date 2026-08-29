@@ -1,4 +1,5 @@
 import { PromoCode } from "@/fetch/promo-codes";
+import JsonLd from "./JsonLd";
 
 interface OfferSchemaProps {
   promoCodes: PromoCode[];
@@ -46,10 +47,5 @@ export default function OfferSchema({ promoCodes }: OfferSchemaProps) {
     })),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

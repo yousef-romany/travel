@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 interface Review {
   author: string;
   rating: number;
@@ -63,10 +65,5 @@ export default function ReviewSchema({
     })),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

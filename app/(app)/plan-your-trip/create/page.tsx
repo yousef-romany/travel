@@ -8,6 +8,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/plan-your-trip/create`,
   },
+  openGraph: {
+    title: "Create Your Trip - Custom Itinerary Builder | ZoeHoliday",
+    description: "Create your perfect Egypt trip with our interactive itinerary builder. Drag and drop destinations, create custom travel plans, and build your dream Egyptian adventure.",
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/plan-your-trip/create`,
+    siteName: "ZoeHoliday",
+  },
 };
 
 export default function CreateTripPage() {

@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 /**
  * Enhanced FAQ Schema Generator for Program Pages
  * Automatically generates common travel FAQs for SEO
@@ -70,10 +72,5 @@ export default function ProgramFAQSchemaEnhanced({
     })),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

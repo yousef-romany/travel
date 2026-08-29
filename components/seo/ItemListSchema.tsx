@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 /**
  * ItemList Schema for Program Listings
  * Helps Google understand your list of tours and display carousels
@@ -41,10 +43,5 @@ export default function ItemListSchema({
     })),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

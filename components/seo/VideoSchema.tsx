@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 interface VideoSchemaProps {
   name: string;
   description: string;
@@ -33,10 +35,5 @@ export default function VideoSchema({
     ...(embedUrl && { embedUrl }),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

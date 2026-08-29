@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 /**
  * AggregateOffer Schema for Products with Multiple Pricing Options
  * Shows price ranges and multiple offers in search results
@@ -62,10 +64,5 @@ export default function AggregateOfferSchema({
     },
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

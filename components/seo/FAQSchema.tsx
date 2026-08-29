@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 interface FAQ {
   question: string;
   answer: string;
@@ -21,10 +23,5 @@ export default function FAQSchema({ faqs }: FAQSchemaProps) {
     }))
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

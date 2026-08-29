@@ -1,4 +1,5 @@
 import { getSiteAggregateRating } from "@/lib/reviews";
+import JsonLd from "./JsonLd";
 
 export default async function OrganizationSchema() {
   const aggregate = await getSiteAggregateRating();
@@ -126,10 +127,5 @@ export default async function OrganizationSchema() {
     };
   }
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

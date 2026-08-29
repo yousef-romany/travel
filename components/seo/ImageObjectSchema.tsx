@@ -1,4 +1,4 @@
-import Script from "next/script";
+import JsonLd from "./JsonLd";
 
 /**
  * Enhanced ImageObject Schema with Detailed Metadata
@@ -103,12 +103,5 @@ export default function ImageObjectSchema({
     ...(exifData && { "exifData": exifData }),
   };
 
-  return (
-    <Script
-      id="image-object-schema"
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
-    />
-  );
+  return <JsonLd data={schema} id="image-object-schema" />;
 }

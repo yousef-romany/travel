@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 interface TourPackageSchemaProps {
   name: string;
   description: string;
@@ -81,10 +83,5 @@ export default function TourPackageSchema({
     } : undefined,
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

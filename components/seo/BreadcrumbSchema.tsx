@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 interface BreadcrumbItem {
   name: string;
   item: string;
@@ -21,10 +23,5 @@ export default function BreadcrumbSchema({ items }: BreadcrumbSchemaProps) {
     }))
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 interface ArticleSchemaProps {
     headline: string;
     description: string;
@@ -53,10 +55,5 @@ export default function ArticleSchema({
         "keywords": keywords.join(", "),
     };
 
-    return (
-        <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
-    );
+    return <JsonLd data={schema} />;
 }

@@ -6,6 +6,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 export const metadata: Metadata = {
   title: "Place-to-Go Blog Services Demo | ZoeHoliday",
   description: "Demo of custom service features for place-to-go blogs including nearby search, featured blogs, statistics, and more.",
+  alternates: {
+    canonical: `${SITE_URL}/placesTogo/services-demo`,
+  },
   openGraph: {
     title: "Place-to-Go Blog Services Demo | ZoeHoliday",
     description: "Demo of custom service features for place-to-go blogs",

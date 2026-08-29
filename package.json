@@ -13,6 +13,7 @@
     "icons:generate": "node scripts/generate-pwa-icons.js",
     "env:check": "node scripts/check-env.js",
     "env:check:cloudflare": "node scripts/check-env.js --cloudflare",
+    "validate:schema": "node scripts/validate-schema.js",
     "env:setup": "cp .env.example .env && echo '✅ Created .env file! Please edit it with your values' && npm run env:check",
     "security:audit": "npm audit --audit-level=moderate",
     "security:fix": "npm audit fix",

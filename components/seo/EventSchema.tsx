@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 /**
  * Event Schema for Tour Departures and Special Events
  * Shows event rich results in Google Search
@@ -85,10 +87,5 @@ export default function EventSchema({
     ...(performer && { performer: { '@type': 'Person', name: performer } }),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

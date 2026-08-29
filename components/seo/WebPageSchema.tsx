@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 /**
  * Enhanced WebPage Schema with Speakable Content
  * Optimized for voice search and smart assistants (Google Assistant, Alexa, Siri)
@@ -92,10 +94,5 @@ export default function WebPageSchema({
     ...(keywords && { "keywords": keywords.join(', ') }),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 /**
  * HowTo Schema for Travel Guides
  * Shows step-by-step instructions in Google search results
@@ -64,10 +66,5 @@ export default function HowToSchema({
     }),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }

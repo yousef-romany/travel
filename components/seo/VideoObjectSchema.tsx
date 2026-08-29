@@ -1,3 +1,5 @@
+import JsonLd from "./JsonLd";
+
 /**
  * VideoObject Schema for Individual Videos
  * More detailed than video sitemap, shows video rich results
@@ -67,10 +69,5 @@ export default function VideoObjectSchema({
     ...(hasPart && { hasPart }),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
+  return <JsonLd data={schema} />;
 }
