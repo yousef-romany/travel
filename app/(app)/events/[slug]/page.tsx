@@ -6,7 +6,9 @@ import EventDetailContent from "./EventDetailContent";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import EventSchema from "@/components/seo/EventSchema";
 import ReviewSchema from "@/components/seo/ReviewSchema";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import { eventPath } from "@/lib/links";
+import { DEFAULT_OG_IMAGE, metaDescription, SITE_URL } from "@/lib/seo-config";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -23,18 +25,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       return {
         title: "Event Not Found",
         description: "The requested event could not be found.",
+        robots: { index: false, follow: false },
       };
     }
 
-    const imageUrl = event.featuredImage?.url || "/og-events.jpg";
+    const imageUrl = event.featuredImage?.url || DEFAULT_OG_IMAGE;
     const fullImageUrl = imageUrl.startsWith("http")
       ? imageUrl
       : `${process.env.NEXT_PUBLIC_STRAPI_URL}${imageUrl}`;
-    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
+    const canonicalPath = eventPath(event);
+    const description = metaDescription(
+      event.description,
+      `Discover ${event.title} in ${event.location || "Egypt"}, including dates, venue details and booking information.`,
+    );
 
     return {
       title: `${event.title} - Egypt Event`,
-      description: event.description || `Join us for ${event.title} in ${event.location}. ${event.eventType} event happening on ${event.startDate}.`,
+      description,
       keywords: [
         event.title,
         event.eventType,
@@ -45,9 +52,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ],
       openGraph: {
         title: `${event.title} | ZoeHoliday`,
-        description: event.description,
+        description,
         type: "website",
-        url: `${SITE_URL}/events/${slug}`,
+        url: `${SITE_URL}${canonicalPath}`,
         images: [
           {
             url: fullImageUrl,
@@ -60,11 +67,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       twitter: {
         card: "summary_large_image",
         title: `${event.title} | ZoeHoliday`,
-        description: event.description,
+        description,
         images: [fullImageUrl],
       },
       alternates: {
-        canonical: `${SITE_URL}/events/${slug}`,
+        canonical: `${SITE_URL}${canonicalPath}`,
       },
     };
   } catch (error) {
@@ -72,6 +79,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: "Egypt Event",
       description: "Discover exciting events in Egypt with zoeholidays.",
+      robots: { index: false, follow: false },
     };
   }
 }
@@ -93,6 +101,12 @@ export default async function EventDetailPage({ params }: Props) {
   }
 
   const event = data.data;
+
+  // Legacy documentId links become the canonical slug URL.
+  const canonicalPath = eventPath(event);
+  if (canonicalPath !== `/events/${slug}`) {
+    permanentRedirect(canonicalPath);
+  }
 
   const testimonials = await fetchEventTestimonials(event.documentId).catch(() => ({
     data: [],
@@ -134,7 +148,7 @@ export default async function EventDetailPage({ params }: Props) {
             : `${process.env.NEXT_PUBLIC_STRAPI_URL}${event.featuredImage.url}`
           : undefined}
         price={event.price}
-        url={`${process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com"}/events/${slug}`}
+        url={`${SITE_URL}${eventPath(event)}`}
         eventStatus={event.isActive === false ? "EventCancelled" : "EventScheduled"}
       />
 
@@ -142,7 +156,7 @@ export default async function EventDetailPage({ params }: Props) {
         <ReviewSchema
           itemName={event.title}
           itemType="Service"
-          itemUrl={`${process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com"}/events/${slug}`}
+          itemUrl={`${SITE_URL}${eventPath(event)}`}
           itemImage={event.featuredImage?.url
             ? event.featuredImage.url.startsWith("http")
               ? event.featuredImage.url

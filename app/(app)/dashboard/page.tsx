@@ -1,6 +1,7 @@
 "use client";
 
 import DashboardSkeleton from "@/components/loading/DashboardSkeleton";
+import { programPath } from "@/lib/links";
 
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
@@ -386,7 +387,7 @@ export default function DashboardPage() {
                   {recentlyViewed.slice(0, 3).map((program) => (
                     <Link
                       key={program.documentId}
-                      href={`/programs/${program.documentId}`}
+                      href={programPath(program)}
                       className="group"
                     >
                       <Card className="overflow-hidden hover:shadow-lg transition-shadow">

@@ -20,6 +20,7 @@ export interface InspirationCategoryData {
 export interface InspireSubcategories {
   id: number;
   documentId: string;
+  slug?: string;
   categoryName: string;
   image: Media;
   createdAt: string;
@@ -32,6 +33,7 @@ export interface InspireSubcategories {
 export interface InspireBlogs {
   id: number;
   documentId: string;
+  slug?: string;
   title: string;
   image: Media;
   details: string;

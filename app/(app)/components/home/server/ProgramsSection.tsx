@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Ticket, Star, Clock, MapPin, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProgramCarousel } from "../../../programs/components/ProgramCarousel";
+import { programPath } from "@/lib/links";
 import { CompareButton } from "@/components/programs/CompareButton";
 import { getImageUrl } from "@/lib/utils";
 
@@ -126,7 +127,7 @@ export default function ProgramsSection({ programs }: ProgramsSectionProps) {
                         </div>
                       </div>
                       <Link
-                        href={`/programs/${program.documentId}`}
+                        href={programPath(program)}
                         className="w-full sm:w-auto"
                       >
                         <Button className="w-full sm:w-auto bg-foreground text-background hover:bg-primary hover:text-primary-foreground rounded-full px-6 py-5 shadow-xl transition-all duration-300 group/btn font-semibold">

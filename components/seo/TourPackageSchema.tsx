@@ -32,6 +32,7 @@ export default function TourPackageSchema({
     "@context": "https://schema.org",
     "@type": "TouristTrip",
     "name": name,
+    "@id": `${siteUrl}${url}#tour`,
     "description": description,
     "image": fullImageUrl,
     "url": `${siteUrl}${url}`,
@@ -49,9 +50,7 @@ export default function TourPackageSchema({
       "price": price,
       "priceCurrency": "USD",
       "availability": "https://schema.org/InStock",
-      "validFrom": new Date().toISOString(),
       "url": `${siteUrl}${url}`,
-      "priceValidUntil": new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year from now
     },
     "itinerary": {
       "@type": "ItemList",
@@ -65,14 +64,10 @@ export default function TourPackageSchema({
       "Individual",
       "Group"
     ],
-    "subjectOf": {
+    "touristDestination": {
       "@type": "TouristDestination",
       "name": location,
       "description": `Visit ${location} with ZoeHoliday`,
-      "geo": {
-        "@type": "GeoCoordinates",
-        "addressCountry": "EG",
-      },
     },
     "aggregateRating": rating && reviewCount > 0 ? {
       "@type": "AggregateRating",

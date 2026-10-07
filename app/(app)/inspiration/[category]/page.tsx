@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { permanentRedirect } from "next/navigation";
 import IndexPage from "./components/IndexPage";
 import { UnifiedBreadcrumb } from "@/components/unified-breadcrumb";
 import HieroglyphEffect from "@/components/HieroglyphEffect";
@@ -46,6 +47,12 @@ const InspirationDynamic = async ({ params }: Props) => {
   const resolvedParams = await params;
   const category = decodeURIComponent(resolvedParams.category);
   const data = await fetchInspirationOneCategory(category);
+  const categoryData = data?.data?.at(-1);
+
+  // Legacy /inspiration/<categoryName> URLs become the canonical slug URL.
+  if (categoryData?.slug && categoryData.slug !== resolvedParams.category) {
+    permanentRedirect(`/inspiration/${categoryData.slug}`);
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

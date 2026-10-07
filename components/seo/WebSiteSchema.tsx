@@ -1,38 +1,32 @@
 import JsonLd from "./JsonLd";
+import { SITE_URL } from "@/lib/seo-config";
 
 export default function WebSiteSchema() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
-
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "ZoeHoliday",
     "alternateName": "Zoe Holidays Egypt Tours",
-    "url": baseUrl,
+    "@id": `${SITE_URL}/#website`,
+    "url": SITE_URL,
     "description": "Discover the magic of Egypt with zoeholidays. Experience 7,000 years of history, culture, and adventure through our curated tour packages.",
     "publisher": {
-      "@type": "Organization",
-      "name": "ZoeHoliday",
-      "logo": {
-        "@type": "ImageObject",
-        "url": `${baseUrl}/logo.png`
-      }
+      "@id": `${SITE_URL}/#organization`,
     },
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": `${baseUrl}/programs?search={search_term_string}`
+        "urlTemplate": `${SITE_URL}/programs?search={search_term_string}`
       },
       "query-input": "required name=search_term_string"
     },
     "inLanguage": "en",
     "copyrightYear": new Date().getFullYear(),
     "copyrightHolder": {
-      "@type": "Organization",
-      "name": "ZoeHoliday"
+      "@id": `${SITE_URL}/#organization`,
     }
   };
 
-  return <JsonLd data={schema} />;
+  return <JsonLd data={schema} id="website-schema" />;
 }

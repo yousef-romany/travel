@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProgramOne } from "@/fetch/programs";
+import { programPath } from "@/lib/links";
 import { dataTypeCardTravel } from "@/type/programs";
 import { meta } from "@/type/placesToGo";
 import Loading from "@/components/Loading";
@@ -11,14 +12,14 @@ import BookingPageContent from "./BookingPageContent";
 export default function ProgramBookingPage() {
   const params = useParams();
   const router = useRouter();
-  const title = decodeURIComponent(params.title as string);
+  const identifier = decodeURIComponent(params.slug as string);
 
   const { data, error, isLoading } = useQuery<
     { data: dataTypeCardTravel[]; meta: meta },
     Error
   >({
-    queryKey: ["fetchProgramOne", title],
-    queryFn: async () => await fetchProgramOne(title),
+    queryKey: ["fetchProgramOne", identifier],
+    queryFn: async () => await fetchProgramOne(identifier),
   });
 
   if (isLoading) return <Loading />;
@@ -40,10 +41,17 @@ export default function ProgramBookingPage() {
     );
   }
 
+  const canonicalPath = programPath(program);
+  if (canonicalPath !== `/programs/${identifier}`) {
+    router.replace(`${canonicalPath}/book`);
+    return <Loading />;
+  }
+
   return (
     <BookingPageContent
       program={{
         documentId: program.documentId || "",
+        slug: program.slug,
         title: program.title || "",
         price: Number(program.price) || 0,
         duration: Number(program.duration) || 1,
@@ -55,6 +63,7 @@ export default function ProgramBookingPage() {
         returnLocation: program.returnLocation,
         Location: program.Location,
         images: program.images,
+        group_tiers: program.group_tiers,
       }}
     />
   );

@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import PageContent from "./components/PageContent";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import CollectionPageSchema from "@/components/seo/CollectionPageSchema";
+import { programPath } from "@/lib/links";
 import { fetchProgramsList } from "@/fetch/programs";
+import { DEFAULT_OG_IMAGE, SITE_URL } from "@/lib/seo-config";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
-const OG_IMAGE = `${SITE_URL}/og-programs.jpg`;
+const OG_IMAGE = DEFAULT_OG_IMAGE;
 
 export const metadata: Metadata = {
   title: "Egypt Travel Programs & Tour Packages",
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
     "Egypt tour packages", "Egypt travel programs", "pyramids tour", "Nile cruise packages",
     "Cairo tours", "Luxor Aswan tours", "Egypt vacation packages", "Egyptian holiday packages",
     "luxury Egypt tours", "family Egypt tours", "honeymoon Egypt packages", "adventure tours Egypt",
-    "Egypt 2025 tours", "best Egypt tours", "affordable Egypt packages"
+    "best Egypt tours", "affordable Egypt packages"
   ],
   authors: [{ name: "ZoeHoliday" }],
   alternates: {
@@ -63,7 +64,7 @@ export default async function Programs() {
   // Prepare items for CollectionPageSchema
   const programItems = data.data.map((program) => ({
     name: program.title,
-    url: `${SITE_URL}/programs/${program.documentId}`,
+    url: `${SITE_URL}${programPath(program)}`,
     description: program.descraption,
     image: program.images?.[0]?.url || '',
   }));

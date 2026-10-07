@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getComparisonList, removeFromComparison, clearComparison, ComparisonProgram } from "@/lib/comparison";
+import { programPath } from "@/lib/links";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -118,7 +119,7 @@ export default function CompareContent() {
                             )}
                             <div className="p-4">
                                 <h3 className="font-bold mb-2 line-clamp-2">{program.title}</h3>
-                                <Link href={`/programs/${program.documentId}`}>
+                                <Link href={programPath(program)}>
                                     <Button variant="outline" size="sm" className="w-full">
                                         View Details
                                     </Button>
@@ -194,7 +195,7 @@ export default function CompareContent() {
                     <div></div>
                     {programs.map((program) => (
                         <div key={`action-${program.documentId}`} className="py-4">
-                            <Link href={`/programs/${program.documentId}`} className="block">
+                            <Link href={programPath(program)} className="block">
                                 <Button className="w-full" size="lg">
                                     Book Now
                                 </Button>
@@ -262,10 +263,10 @@ export default function CompareContent() {
                             </div>
 
                             <div className="flex gap-2">
-                                <Link href={`/programs/${program.documentId}`} className="flex-1">
+                                <Link href={programPath(program)} className="flex-1">
                                     <Button className="w-full">Book Now</Button>
                                 </Link>
-                                <Link href={`/programs/${program.documentId}`}>
+                                <Link href={programPath(program)}>
                                     <Button variant="outline">View Details</Button>
                                 </Link>
                             </div>

@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
+import { programPath } from '@/lib/links';
+import { DEFAULT_OG_IMAGE, plainText } from '@/lib/seo-config';
 
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://dashboard.zoeholidays.com';
 const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_TOKEN || '';
@@ -7,6 +9,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 
 interface Program {
   documentId: string;
+  slug?: string;
   title: string;
   descraption?: string;
   Location?: string;
@@ -28,6 +31,9 @@ function escapeXml(unsafe: string): string {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
 }
+
+const encodePath = (path: string) =>
+  path.split('/').map((part) => part ? encodeURIComponent(part) : part).join('/');
 
 async function getPrograms(): Promise<Program[]> {
   try {
@@ -55,29 +61,33 @@ export async function GET() {
         ? thumbnailUrl
         : thumbnailUrl
           ? `${API_URL}${thumbnailUrl}`
-          : `${SITE_URL}/default-thumbnail.jpg`;
+          : DEFAULT_OG_IMAGE;
 
       const videoUrl = program.videoUrl ||
         (program.youtubeId ? `https://www.youtube.com/watch?v=${program.youtubeId}` : null);
 
       if (!videoUrl) return null;
 
-      const description = program.descraption || `Explore ${program.title} - ${program.Location || 'Egypt'}`;
-      const durationSeconds = program.duration ? program.duration * 24 * 60 * 60 : 600; // Convert days to seconds, default 10 min
+      const description = plainText(program.descraption) || `Explore ${program.title} in ${program.Location || 'Egypt'}.`;
+      const videoLocation = program.youtubeId || /youtu(?:\.be|be\.com)/i.test(videoUrl)
+        ? `<video:player_loc allow_embed="yes">${escapeXml(videoUrl)}</video:player_loc>`
+        : `<video:content_loc>${escapeXml(videoUrl)}</video:content_loc>`;
+      const publicationDate = program.updatedAt
+        ? `<video:publication_date>${escapeXml(program.updatedAt)}</video:publication_date>`
+        : '';
 
       return `
     <url>
-      <loc>${SITE_URL}/programs/${program.documentId}</loc>
+      <loc>${escapeXml(`${SITE_URL}${encodePath(programPath(program))}`)}</loc>
       <video:video>
-        <video:thumbnail_loc>${fullThumbnailUrl}</video:thumbnail_loc>
+        <video:thumbnail_loc>${escapeXml(fullThumbnailUrl)}</video:thumbnail_loc>
         <video:title>${escapeXml(program.title)}</video:title>
         <video:description>${escapeXml(description)}</video:description>
-        <video:content_loc>${videoUrl}</video:content_loc>
-        <video:duration>${durationSeconds}</video:duration>
-        <video:publication_date>${program.updatedAt || new Date().toISOString()}</video:publication_date>
+        ${videoLocation}
+        ${publicationDate}
         <video:family_friendly>yes</video:family_friendly>
         <video:requires_subscription>no</video:requires_subscription>
-        <video:uploader info="${SITE_URL}">ZoeHoliday</video:uploader>
+        <video:uploader info="${escapeXml(SITE_URL)}">ZoeHoliday</video:uploader>
         <video:live>no</video:live>
       </video:video>
     </url>`;

@@ -7,6 +7,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Metadata } from "next";
+import { permanentRedirect } from "next/navigation";
 import IndexPageInspireSubCategory from "./components/IndexPageInspireSubCategory";
 import HieroglyphEffect from "@/components/HieroglyphEffect";
 import { fetchInspirationOneSubCategory } from "@/fetch/category";
@@ -56,6 +57,17 @@ const InspirationDynamic = async ({ params }: Props) => {
   const category = decodeURIComponent(resolvedParams.category);
   const subCategory = decodeURIComponent(resolvedParams.subCategory);
   const data = await fetchInspirationOneSubCategory(subCategory);
+  const inspireSubCategory = data?.data?.at(-1);
+
+  // Canonicalise this segment; the category segment canonicalises on its hop.
+  if (
+    inspireSubCategory?.slug &&
+    inspireSubCategory.slug !== resolvedParams.subCategory
+  ) {
+    permanentRedirect(
+      `/inspiration/${resolvedParams.category}/${inspireSubCategory.slug}`
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

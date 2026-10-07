@@ -3,7 +3,7 @@ import CompareContent from "./CompareContent";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 export const metadata: Metadata = {
-  title: "Compare Tour Programs | ZoeHoliday",
+  title: "Compare Tour Programs",
   description: "Compare different Egypt tour packages side-by-side. Analyze prices, durations, ratings, and features to find your perfect Egyptian vacation.",
   keywords: ["compare tours Egypt", "Egypt tour comparison", "travel package comparison", "best Egypt tours", "tour price comparison"],
   alternates: {

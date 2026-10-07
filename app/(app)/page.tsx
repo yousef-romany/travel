@@ -19,20 +19,13 @@ import { LazySection } from "@/components/LazySection";
 import ProgramsGridSkeleton from "@/components/loading/ProgramsGridSkeleton";
 import PlacesGridSkeleton from "@/components/loading/PlacesGridSkeleton";
 import BlogGridSkeleton from "@/components/loading/BlogGridSkeleton";
+import OrganizationSchema from "@/components/seo/OrganizationSchema";
+import WebSiteSchema from "@/components/seo/WebSiteSchema";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo-config";
 
 export const metadata: Metadata = {
-  title: "Egypt Tours & Travel Packages - Pyramids, Nile & Ancient Temples",
-  description: "Explore Egypt with ZoeHoliday! Visit Pyramids of Giza, Luxor temples, Nile cruises & Red Sea. Best time: October-April with perfect weather. Expert local guides, custom tours, best prices. Book your Egyptian adventure today!",
-  keywords: [
-    "Egypt travel", "Egypt tours", "Egyptian vacation", "pyramids tour", "Nile cruise",
-    "Cairo tours", "Luxor travel", "Egyptian holidays", "travel packages Egypt", "Egypt tourism",
-    "Giza pyramids", "Valley of Kings", "Red Sea diving", "Aswan tours", "Alexandria travel",
-    "Egypt tour operator", "Egyptian adventure", "ancient Egypt tours", "Karnak Temple",
-    "Abu Simbel", "Egypt cultural tours", "Egypt family vacation", "Egypt honeymoon packages",
-    "luxury Egypt tours", "Egypt vacation packages 2025", "best Egypt travel agency",
-    "best time to visit Egypt", "Egypt October to April", "Egypt weather", "Egypt winter travel",
-    "ZoeHoliday"
-  ],
+  title: "Egypt Tours & Tailor-Made Travel",
+  description: "Explore Egypt with local experts. Book private Pyramids tours, Nile cruises, Luxor experiences and tailor-made travel packages with ZoeHoliday.",
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/`,
   },
@@ -44,7 +37,7 @@ export const metadata: Metadata = {
     siteName: "ZoeHoliday - Egypt Travel & Tours",
     images: [
       {
-        url: "https://res.cloudinary.com/dir8ao2mt/image/upload/v1764631854/__1_l2obyo.jpg",
+        url: DEFAULT_OG_IMAGE,
         width: 1200,
         height: 630,
         alt: "ZoeHoliday Egypt Tours - Pyramids of Giza, Nile River Cruises, Luxor Temples and Red Sea Adventures",
@@ -55,7 +48,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Egypt Tours & Travel Packages | Pyramids, Nile & Temples | ZoeHoliday",
     description: "Explore Egypt's Pyramids, Nile cruises & temples. Best time: October-April. Expert guides, custom tours. Book with ZoeHoliday!",
-    images: ["https://res.cloudinary.com/dir8ao2mt/image/upload/v1764631854/__1_l2obyo.jpg"],
+    images: [DEFAULT_OG_IMAGE],
     creator: "@zoeholiday",
   },
 };
@@ -105,6 +98,8 @@ export default async function Home() {
   return (
     <div className="!w-full flex-1">
       {/* SEO Schemas */}
+      <OrganizationSchema />
+      <WebSiteSchema />
       <WebPageSchema
         name="ZoeHoliday - Egypt Travel & Tours"
         description="Discover the magic of Egypt with zoeholidays. Experience 7,000 years of history, culture, and adventure with our curated travel packages."
@@ -119,7 +114,7 @@ export default async function Home() {
       <VideoSchema
         name="Discover Egypt - Immersive Travel Experience"
         description="Experience the breathtaking beauty of Egypt through immersive video showcasing ancient pyramids, Nile River cruises, historic temples, and vibrant culture. Watch stunning footage of Egypt's unmatched diversity and rich heritage."
-        thumbnailUrl="/og-image.jpg"
+        thumbnailUrl={DEFAULT_OG_IMAGE}
         contentUrl="https://res.cloudinary.com/dir8ao2mt/video/upload/v1763922614/Egypt_Unmatched_Diversity_fbtjmf.mp4"
         duration="PT45S"
       />

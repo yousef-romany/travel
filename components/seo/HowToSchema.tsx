@@ -1,4 +1,5 @@
 import JsonLd from "./JsonLd";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo-config";
 
 /**
  * HowTo Schema for Travel Guides
@@ -33,7 +34,7 @@ export default function HowToSchema({
     ? image
     : image
       ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${image}`
-      : `${siteUrl}/og-image.jpg`;
+      : DEFAULT_OG_IMAGE;
 
   const schema = {
     "@context": "https://schema.org",

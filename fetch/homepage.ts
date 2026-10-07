@@ -7,12 +7,25 @@ const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_TOKEN || "";
 export interface InspireBlog {
   id: number;
   documentId: string;
+  slug?: string;
   title: string;
   image: Media;
   details: string;
   inspire_category?: {
+    documentId: string;
+    slug?: string;
     categoryName: string;
   };
+  inspire_subcategories?: Array<{
+    documentId: string;
+    slug?: string;
+    categoryName: string;
+    inspire_category?: {
+      documentId: string;
+      slug?: string;
+      categoryName: string;
+    };
+  }>;
 }
 
 export interface PlaceToGoCategory {
@@ -72,7 +85,7 @@ export interface HomePageData {
  */
 export const fetchInspireBlogs = async (limit = 3): Promise<{ data: InspireBlog[]; meta: Meta }> => {
   try {
-    const url = `${API_URL}/api/inspire-blogs?populate[inspire_category][populate]=image&populate=image&pagination[limit]=${limit}&sort=createdAt:desc`;
+    const url = `${API_URL}/api/inspire-blogs?populate[inspire_category][populate]=image&populate[inspire_subcategories][populate][inspire_category]=true&populate=image&pagination[limit]=${limit}&sort=createdAt:desc`;
 
     const response = await axios.get(url, {
       headers: {

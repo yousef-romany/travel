@@ -1,4 +1,5 @@
 import JsonLd from "./JsonLd";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo-config";
 
 /**
  * AggregateOffer Schema for Products with Multiple Pricing Options
@@ -33,7 +34,7 @@ export default function AggregateOfferSchema({
     ? image
     : image
       ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${image}`
-      : `${siteUrl}/og-image.jpg`;
+      : DEFAULT_OG_IMAGE;
 
   const prices = offers.map(o => o.price);
   const lowPrice = Math.min(...prices);

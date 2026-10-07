@@ -3,6 +3,7 @@ import { UnifiedBreadcrumb } from "@/components/unified-breadcrumb";
 import EventsContent from "./EventsContent";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { fetchEvents } from "@/fetch/events";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo-config";
 
 export const metadata: Metadata = {
   title: "Events & Festivals in Egypt",
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
     url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/events`,
     images: [
       {
-        url: "/og-events.jpg",
+        url: DEFAULT_OG_IMAGE,
         width: 1200,
         height: 630,
         alt: "Events in Egypt",
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Events & Festivals in Egypt | ZoeHoliday",
     description: "Discover upcoming events, festivals, and cultural celebrations in Egypt.",
-    images: ["/og-events.jpg"],
+    images: [DEFAULT_OG_IMAGE],
     creator: "@zoeholiday",
   },
 };

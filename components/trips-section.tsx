@@ -7,6 +7,7 @@ import { Calendar, Users, MapPin, ArrowRight, Loader2, AlertCircle, Tag, Percent
 import { useAuth } from "@/context/AuthContext"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { fetchUserBookings, type BookingType } from "@/fetch/bookings"
+import { eventPath, programPath } from "@/lib/links"
 import Image from "next/image"
 import { getImageUrl } from "@/lib/utils"
 import Link from "next/link"
@@ -135,7 +136,7 @@ export default function TripsSection() {
           location: trip.event?.location || "Egypt",
           duration: eventDuration,
           imageUrl: getImageUrl(trip.event?.featuredImage || trip.event?.gallery?.[0]),
-          detailsLink: trip.event?.documentId ? `/events/${trip.event.documentId}` : "#",
+          detailsLink: trip.event?.documentId ? eventPath(trip.event) : "#",
         };
       default: // program
         return {
@@ -143,7 +144,7 @@ export default function TripsSection() {
           location: trip.program?.Location || "Egypt",
           duration: trip.program?.duration || 1,
           imageUrl: getImageUrl(trip.program?.images?.[0]),
-          detailsLink: trip.program?.documentId ? `/programs/${trip.program.documentId}` : "#",
+          detailsLink: trip.program?.documentId ? programPath(trip.program) : "#",
         };
     }
   };

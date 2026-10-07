@@ -7,6 +7,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Metadata } from "next";
+import { permanentRedirect } from "next/navigation";
 import IndexPageInspireSubCategory from "./components/IndexPageInspireSubCategory";
 import HieroglyphEffect from "@/components/HieroglyphEffect";
 import { fetchPlaceToOneSubCategory } from "@/fetch/placesToGo";
@@ -59,6 +60,15 @@ const PlacesToGoDynamic = async ({ params }: Props) => {
   const subCategory = decodeURIComponent(resolvedParams.subCategory);
   const data = await fetchPlaceToOneSubCategory(subCategory);
   const place = data?.data?.at(-1);
+
+  // Legacy .../<categoryName>/<categoryName> URLs become the canonical slug
+  // URL for this segment; the category segment canonicalises on the next hop.
+  if (place?.slug && place.slug !== resolvedParams.subCategory) {
+    permanentRedirect(
+      `/placesTogo/${resolvedParams.category}/${place.slug}`
+    );
+  }
+
   const testimonials = place?.documentId
     ? await fetchPlaceTestimonials(place.documentId).catch(() => ({
         data: [],

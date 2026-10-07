@@ -54,6 +54,7 @@ export default function EventSchema({
     '@type': 'Event',
     name,
     description,
+    url,
     startDate,
     ...(endDate && { endDate }),
     location: {
@@ -76,7 +77,6 @@ export default function EventSchema({
         price: price.toString(),
         priceCurrency: currency,
         availability: `https://schema.org/${availability}`,
-        validFrom: new Date().toISOString(),
       },
     }),
     organizer: {

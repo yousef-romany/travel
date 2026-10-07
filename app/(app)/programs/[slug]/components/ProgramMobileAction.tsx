@@ -5,6 +5,7 @@ import { dataTypeCardTravel } from "@/type/programs";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { MessageCircle } from "lucide-react";
+import { programBookPath } from "@/lib/links";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
 
@@ -30,7 +31,7 @@ export function ProgramMobileAction({ program }: ProgramMobileActionProps) {
     }, []);
 
     const handleBookingClick = () => {
-        window.location.href = `/programs/${program.documentId}/book`;
+        window.location.href = programBookPath(program);
     };
 
     if (!program) return null;

@@ -72,6 +72,7 @@ const RelatedProgramsClient = ({ placeTitle, location, query }: RelatedProgramsP
                                 <CardTravels
                                     id={program.id}
                                     documentId={program.documentId}
+                                    slug={program.slug}
                                     images={program.images}
                                     title={program.title}
                                     descraption={program.descraption}

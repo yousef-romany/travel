@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Star, Clock, MapPin, Check, X, Info, MessageSquare, HelpCircle } from "lucide-react";
 import { fetchProgramOne } from "@/fetch/programs";
+import { programBookPath, programPath } from "@/lib/links";
 import { dataTypeCardTravel, ContentStep, Media } from "@/type/programs";
 import { useQuery } from "@tanstack/react-query";
 import { meta } from "@/type/placesToGo";
@@ -117,7 +118,7 @@ export default function ProgramContent({
       );
     }
     // Navigate to booking page using documentId
-    window.location.href = `/programs/${program.documentId}/book`;
+    window.location.href = programBookPath(program);
   };
 
   return (
@@ -139,7 +140,7 @@ export default function ProgramContent({
           location={program.Location || "Egypt"}
           rating={Number(program.rating) || 5}
           reviewCount={testimonialsData?.data?.length || 0}
-          url={`/programs/${program.documentId}`}
+          url={`${programPath(program)}`}
         />
         <BreadcrumbSchema
           items={[
@@ -147,7 +148,7 @@ export default function ProgramContent({
             { name: "Programs", item: "/programs" },
             {
               name: program.title || "Egypt Tour",
-              item: `/programs/${program.documentId}`,
+              item: `${programPath(program)}`,
             },
           ]}
         />

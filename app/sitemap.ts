@@ -1,5 +1,16 @@
 import { MetadataRoute } from "next";
 import axios from "axios";
+import {
+  encodePath,
+  eventPath,
+  inspireBlogPath,
+  inspireCategoryPath,
+  inspireSubCategoryPath,
+  placeBlogPath,
+  placeCategoryPath,
+  placeSubCategoryPath,
+  programPath,
+} from "@/lib/links";
 
 const API_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL || "https://dashboard.zoeholidays.com";
@@ -8,6 +19,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
 
 interface Program {
   documentId: string;
+  slug?: string;
   title: string;
   updatedAt?: string;
   Location?: string;
@@ -28,23 +40,26 @@ interface Event {
 
 interface Blog {
   documentId: string;
+  slug?: string;
   title: string;
   updatedAt?: string;
 }
 
 interface Category {
   categoryName: string;
+  slug?: string;
   updatedAt?: string;
   subcategories?: Array<{
     categoryName: string;
+    slug?: string;
     updatedAt?: string;
     blogs?: Blog[];
   }>;
 }
 
-const STATIC_PAGES_UPDATED = new Date("2026-08-01");
+// Update only when shared page content, metadata, or internal linking changes.
+const STATIC_PAGES_UPDATED = new Date("2026-10-07");
 const SITE = SITE_URL;
-const enc = encodeURIComponent;
 
 async function getPrograms(): Promise<Program[]> {
   try {
@@ -78,12 +93,15 @@ async function getPlaceCategories(): Promise<Category[]> {
     );
     return (response.data.data || []).map((cat: any) => ({
       categoryName: cat.categoryName,
+      slug: cat.slug,
       updatedAt: cat.updatedAt,
       subcategories: (cat.place_to_go_subcategories || []).map((sub: any) => ({
         categoryName: sub.categoryName,
+        slug: sub.slug,
         updatedAt: sub.updatedAt,
         blogs: (sub.place_to_go_blogs || []).map((b: any) => ({
           title: b.title,
+          slug: b.slug,
           documentId: b.documentId,
           updatedAt: b.updatedAt,
         })),
@@ -104,12 +122,15 @@ async function getInspirationCategories(): Promise<Category[]> {
     );
     return (response.data.data || []).map((cat: any) => ({
       categoryName: cat.categoryName,
+      slug: cat.slug,
       updatedAt: cat.updatedAt,
       subcategories: (cat.inspire_subcategories || []).map((sub: any) => ({
         categoryName: sub.categoryName,
+        slug: sub.slug,
         updatedAt: sub.updatedAt,
         blogs: (sub.inspire_blogs || []).map((b: any) => ({
           title: b.title,
+          slug: b.slug,
           documentId: b.documentId,
           updatedAt: b.updatedAt,
         })),
@@ -161,7 +182,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const changeFrequency: "weekly" | "monthly" = daysSinceUpdate > 90 ? "monthly" : "weekly";
 
     return {
-      url: `${SITE}/programs/${program.documentId}`,
+      url: `${SITE}${encodePath(programPath(program))}`,
       lastModified,
       changeFrequency,
       images: fullImageUrl ? [fullImageUrl] : undefined,
@@ -169,13 +190,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
 
   const eventPages: MetadataRoute.Sitemap = events.map((event) => {
-    const eventSlug = event.slug || event.documentId;
     const lastModified = event.updatedAt ? new Date(event.updatedAt) : STATIC_PAGES_UPDATED;
     const daysSinceUpdate = Math.floor((Date.now() - lastModified.getTime()) / (1000 * 60 * 60 * 24));
     const changeFrequency: "weekly" | "monthly" = daysSinceUpdate > 30 ? "monthly" : "weekly";
 
     return {
-      url: `${SITE}/events/${enc(eventSlug)}`,
+      url: `${SITE}${encodePath(eventPath(event))}`,
       lastModified,
       changeFrequency,
     };
@@ -184,30 +204,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Places to Go: categories, subcategories, blogs
   const placePages: MetadataRoute.Sitemap = [];
   placeCategories.forEach((cat) => {
-    const catName = String(cat.categoryName || "").trim();
-    if (!catName) return;
+    const catPath = placeCategoryPath(cat);
+    if (catPath.endsWith("/")) return;
     const catLastMod = cat.updatedAt ? new Date(cat.updatedAt) : STATIC_PAGES_UPDATED;
     placePages.push({
-      url: `${SITE}/placesTogo/${enc(catName)}`,
+      url: `${SITE}${encodePath(catPath)}`,
       lastModified: catLastMod,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     });
     (cat.subcategories || []).forEach((sub) => {
-      const subName = String(sub.categoryName || "").trim();
-      if (!subName) return;
+      const subPath = placeSubCategoryPath(cat, sub);
+      if (subPath.endsWith("/")) return;
       const subLastMod = sub.updatedAt ? new Date(sub.updatedAt) : catLastMod;
       placePages.push({
-        url: `${SITE}/placesTogo/${enc(catName)}/${enc(subName)}`,
+        url: `${SITE}${encodePath(subPath)}`,
         lastModified: subLastMod,
         changeFrequency: "monthly" as const,
         priority: 0.6,
       });
       (sub.blogs || []).forEach((blog) => {
-        const title = String(blog.title || "").trim();
-        if (!title) return;
+        const blogPath = placeBlogPath(cat, sub, blog);
+        if (blogPath.endsWith("/")) return;
         placePages.push({
-          url: `${SITE}/placesTogo/${enc(catName)}/${enc(subName)}/${enc(title)}`,
+          url: `${SITE}${encodePath(blogPath)}`,
           lastModified: blog.updatedAt ? new Date(blog.updatedAt) : subLastMod,
           changeFrequency: "monthly" as const,
           priority: 0.5,
@@ -219,30 +239,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Inspiration: categories, subcategories, blogs
   const inspirationPages: MetadataRoute.Sitemap = [];
   inspirationCategories.forEach((cat) => {
-    const catName = String(cat.categoryName || "").trim();
-    if (!catName) return;
+    const catPath = inspireCategoryPath(cat);
+    if (catPath.endsWith("/")) return;
     const catLastMod = cat.updatedAt ? new Date(cat.updatedAt) : STATIC_PAGES_UPDATED;
     inspirationPages.push({
-      url: `${SITE}/inspiration/${enc(catName)}`,
+      url: `${SITE}${encodePath(catPath)}`,
       lastModified: catLastMod,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     });
     (cat.subcategories || []).forEach((sub) => {
-      const subName = String(sub.categoryName || "").trim();
-      if (!subName) return;
+      const subPath = inspireSubCategoryPath(cat, sub);
+      if (subPath.endsWith("/")) return;
       const subLastMod = sub.updatedAt ? new Date(sub.updatedAt) : catLastMod;
       inspirationPages.push({
-        url: `${SITE}/inspiration/${enc(catName)}/${enc(subName)}`,
+        url: `${SITE}${encodePath(subPath)}`,
         lastModified: subLastMod,
         changeFrequency: "monthly" as const,
         priority: 0.6,
       });
       (sub.blogs || []).forEach((blog) => {
-        const title = String(blog.title || "").trim();
-        if (!title) return;
+        const blogPath = inspireBlogPath(cat, sub, blog);
+        if (blogPath.endsWith("/")) return;
         inspirationPages.push({
-          url: `${SITE}/inspiration/${enc(catName)}/${enc(subName)}/${enc(title)}`,
+          url: `${SITE}${encodePath(blogPath)}`,
           lastModified: blog.updatedAt ? new Date(blog.updatedAt) : subLastMod,
           changeFrequency: "monthly" as const,
           priority: 0.5,

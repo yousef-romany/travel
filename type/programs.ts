@@ -1,3 +1,5 @@
+import type { GroupTier } from "@/lib/tiered-pricing";
+
 export interface ContentStep {
   title: string;
   imageUrl?: string;
@@ -7,11 +9,13 @@ export interface ContentStep {
   place_to_go_subcategories?: {
     id: number;
     documentId: string;
+    slug?: string;
     categoryName: string;
     image?: Media;
     place_to_go_categories?: {
       id: number;
       documentId: string;
+      slug?: string;
       categoryName: string;
     }[];
   }[];
@@ -24,6 +28,7 @@ export interface dataTypeCardTravel {
   descraption?: string;
   documentId?: string;
   duration?: string;
+  group_tiers?: GroupTier[];
   tripType?: "single-day" | "multi-day";
   startTime?: string;
   endTime?: string;
@@ -38,6 +43,7 @@ export interface dataTypeCardTravel {
   price?: string;
   publishedAt?: string;
   rating?: string;
+  slug?: string;
   title?: string;
   updatedAt?: string;
 }
@@ -78,12 +84,14 @@ export interface Media {
 export interface ProgramType {
   id: number;
   documentId: string;
+  slug?: string;
   title: string;
   descraption: string;
   Location: string;
   duration: number;
   price: number;
   rating: number;
+  group_tiers?: GroupTier[];
 
   overView: string;
   images: Media[];

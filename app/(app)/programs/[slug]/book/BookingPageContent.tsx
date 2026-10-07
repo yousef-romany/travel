@@ -1,5 +1,6 @@
 import { Service } from "@/type/programs";
 import { sanitizeHTML } from "@/lib/sanitize";
+import { programBookPath, programPath } from "@/lib/links";
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -46,12 +47,14 @@ import { PromoCode, incrementPromoCodeUsage } from "@/fetch/promo-codes";
 import PayPalPayment from "@/components/booking/PayPalPayment";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { getTieredPrice } from "@/lib/tiered-pricing";
+import { getTieredPrice, type GroupTier } from "@/lib/tiered-pricing";
+import { useGroupTiers } from "@/hooks/useGroupTiers";
 
 
 interface BookingPageContentProps {
   program: {
     documentId: string;
+    slug?: string;
     title: string;
     price: number;
     duration: number;
@@ -64,6 +67,7 @@ interface BookingPageContentProps {
     Location?: string;
     images?: any[];
     services?: Service[];
+    group_tiers?: GroupTier[];
   };
 }
 
@@ -97,6 +101,9 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<"full" | "partial">("full");
 
+  // Same tier precedence the server uses: program -> global settings -> defaults.
+  const { tiers: groupTiers, source: tierSource } = useGroupTiers(program.group_tiers);
+
   const [formData, setFormData] = useState<BookingFormData>({
     fullName: "",
     email: "",
@@ -110,7 +117,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
   useEffect(() => {
     if (!user) {
       toast.error("Please log in to make a booking");
-      router.push(`/login?redirect=/programs/${program.documentId}/book`);
+      router.push(`/login?redirect=${programBookPath(program)}`);
     }
   }, [user, router, program.documentId]);
 
@@ -195,7 +202,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
       }
 
       const invoiceNumber = `INV-${Date.now()}-${data.data.documentId}`;
-      const tiered = getTieredPrice(formData.numberOfTravelers, program.price);
+      const tiered = getTieredPrice(formData.numberOfTravelers, program.price, groupTiers, tierSource);
       const finalAmount = appliedPromo ? appliedPromo.finalPrice : tiered.total;
 
       const invoiceData = {
@@ -275,7 +282,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
     const orderId: string = details?.id || details?.orderID || 'UNKNOWN';
     setPaymentRef(orderId);
     toast.success("Payment successful! Verifying and finalizing booking...");
-    const totalAmountCalc = getTieredPrice(formData.numberOfTravelers, program.price).total;
+    const totalAmountCalc = getTieredPrice(formData.numberOfTravelers, program.price, groupTiers, tierSource).total;
     const finalAmount = appliedPromo ? appliedPromo.finalPrice : totalAmountCalc;
 
     verifyBookingMutation.mutate({
@@ -445,7 +452,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
       return total + s.price;
     }, 0);
 
-  const tiered = getTieredPrice(formData.numberOfTravelers, program.price);
+  const tiered = getTieredPrice(formData.numberOfTravelers, program.price, groupTiers, tierSource);
   const baseTotal = tiered.total;
   const totalAmount = baseTotal + servicesTotal;
   const finalAmount = appliedPromo ? (appliedPromo.finalPrice + servicesTotal) : totalAmount;
@@ -465,7 +472,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Back Button */}
         <Link
-          href={`/programs/${program.documentId}`}
+          href={programPath(program)}
           className="inline-flex items-center gap-2 text-primary hover:underline mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -977,7 +984,7 @@ export default function BookingPageContent({ program }: BookingPageContentProps)
 
                     {tiered.savings > 0 && (
                       <div className="flex justify-between text-sm text-green-600">
-                        <span>Group savings ({tiered.tier.description}):</span>
+                        <span>Group savings ({tiered.tierLabel}):</span>
                         <span className="font-semibold">-${tiered.savings.toFixed(2)}</span>
                       </div>
                     )}

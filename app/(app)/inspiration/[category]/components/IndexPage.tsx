@@ -3,6 +3,7 @@ import {
   InspireBlogs,
   InspireSubcategories,
 } from "@/type/inspiration";
+import { inspireBlogPath, inspireSubCategoryPath } from "@/lib/links";
 import {
   Carousel,
   CarouselContent,
@@ -81,7 +82,7 @@ const IndexPage = ({ slug, data }: { slug: string; data: InspirationCategory }) 
                 >
                   {/* title subcategory */}
                   <Link
-                    href={`/inspiration/${slug}/${item?.categoryName}`}
+                    href={inspireSubCategoryPath(slug, item)}
                     className="w-fit group"
                   >
                     <div className="w-full flex justify-center items-center mb-8">
@@ -112,7 +113,7 @@ const IndexPage = ({ slug, data }: { slug: string; data: InspirationCategory }) 
                             className="pl-2 md:pl-4 basis-full sm:basis-2 lg:basis-1/3 xl:basis-1/4"
                           >
                             <Link
-                              href={`/inspiration/${slug}/${item?.categoryName}/${itemBlog?.title}`}
+                              href={inspireBlogPath(slug, item, itemBlog)}
                               className="block h-full"
                             >
                               <Card className="p-0 h-full rounded-xl md:rounded-2xl overflow-hidden border-primary/20 bg-gradient-to-br from-card to-card/50 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/50 transition-all duration-300 group">

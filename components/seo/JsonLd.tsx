@@ -13,7 +13,14 @@ interface JsonLdProps {
  * - Optional `id` attribute for multiple blocks on the same page
  */
 function JsonLd({ data, id }: JsonLdProps) {
-  const payload = JSON.stringify(data);
+  // Escape characters that can terminate a script tag when CMS content is
+  // serialized into JSON-LD. JSON parsers decode these escapes normally.
+  const payload = JSON.stringify(data)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
   return (
     <script
       type="application/ld+json"

@@ -99,58 +99,109 @@ export const fetchProgramsList = async (limit = 100): Promise<ProgramsResponse> 
 };
 
 /**
- * Fetch a single program by title or documentId
+ * Decode a route/fetch identifier without ever throwing: `decodeURIComponent`
+ * raises on stray `%` sequences that can appear in legacy title-based URLs.
  */
-export const fetchProgramOne = async (titleOrId: string) => {
+export const safeDecode = (value: string): string => {
   try {
-    // Clean and decode the input
-    const cleanInput = decodeURIComponent(titleOrId).trim();
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
 
-    // First try to fetch by documentId (most efficient)
+/**
+ * Fetch a single program by slug, documentId or title.
+ *
+ * Order matters: slug is the canonical URL identifier, documentId keeps old
+ * share/bookmarked links working (the page then 308s to the slug), and title
+ * is a last-resort legacy fallback.
+ *
+ * Every step is best-effort so a backend that has not been redeployed with the
+ * `slug` field yet (which answers `400 Invalid key slug`) still resolves the
+ * old way instead of breaking the page.
+ */
+const LEGACY_PROGRAM_DETAIL_POPULATE =
+  "populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=*&populate[includes]=true&populate[images]=true&populate[excludes]=true&populate[services][populate]=image";
+const PROGRAM_DETAIL_POPULATES = [
+  `${LEGACY_PROGRAM_DETAIL_POPULATE}&populate[group_tiers]=*`,
+  LEGACY_PROGRAM_DETAIL_POPULATE,
+] as const;
+
+async function getProgramWithCompatiblePopulate(
+  createUrl: (populate: string) => string,
+  headers: Record<string, string>,
+) {
+  let lastError: unknown;
+
+  for (const populate of PROGRAM_DETAIL_POPULATES) {
     try {
-      const urlById = `${API_URL}/api/programs/${encodeURIComponent(cleanInput)}?populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=*&populate[includes]=true&populate[images]=true&populate[excludes]=true&populate[services][populate]=image`;
-
-      const responseById = await axios.get(urlById, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${API_TOKEN}`,
-        },
-      });
-
-      // If found by ID, wrap in array format
-      if (responseById.data.data) {
-        return {
-          data: [responseById.data.data],
-          meta: responseById.data.meta || {}
-        };
-      }
-    } catch (idError: any) {
-      // If 404, continue to try by title
-      if (idError.response?.status !== 404) {
-        throw idError;
-      }
+      return await axios.get(createUrl(populate), { headers });
+    } catch (error: any) {
+      lastError = error;
+      // A 400 commonly means production Strapi has not received the new
+      // group_tiers relation yet. Retry with the legacy population query.
+      if (error?.response?.status !== 400) throw error;
     }
+  }
 
-    // If not found by ID, try to fetch by title
-    const urlByTitle = `${API_URL}/api/programs?populate[content_steps][populate][0]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=*&populate[includes]=true&populate[images]=true&populate[excludes]=true&populate[services][populate]=image&filters[title][$eq]=${encodeURIComponent(cleanInput)}`;
+  throw lastError;
+}
 
-    const responseByTitle = await axios.get(urlByTitle, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${API_TOKEN}`,
-      },
-    });
+export const fetchProgramOne = async (identifier: string) => {
+  const cleanInput = safeDecode(identifier).trim();
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${API_TOKEN}`,
+  };
 
-    // If found by title, return result
+  // 1) Canonical: resolve by slug
+  try {
+    const responseBySlug = await getProgramWithCompatiblePopulate(
+      (populate) => `${API_URL}/api/programs?${populate}&filters[slug][$eq]=${encodeURIComponent(cleanInput)}`,
+      headers,
+    );
+    if (responseBySlug.data.data && responseBySlug.data.data.length > 0) {
+      return responseBySlug.data;
+    }
+  } catch {
+    // Slug unsupported/unavailable - fall through to the legacy identifiers.
+  }
+
+  // 2) Legacy: resolve by documentId
+  try {
+    const responseById = await getProgramWithCompatiblePopulate(
+      (populate) => `${API_URL}/api/programs/${encodeURIComponent(cleanInput)}?${populate}`,
+      headers,
+    );
+
+    if (responseById.data.data) {
+      return {
+        data: [responseById.data.data],
+        meta: responseById.data.meta || {},
+      };
+    }
+  } catch (idError: any) {
+    // Anything other than "not found" is a real failure
+    if (idError.response?.status !== 404) {
+      throw idError;
+    }
+  }
+
+  // 3) Legacy: resolve by exact title
+  try {
+    const responseByTitle = await getProgramWithCompatiblePopulate(
+      (populate) => `${API_URL}/api/programs?${populate}&filters[title][$eq]=${encodeURIComponent(cleanInput)}`,
+      headers,
+    );
     if (responseByTitle.data.data && responseByTitle.data.data.length > 0) {
       return responseByTitle.data;
     }
-
-    // If still not found, throw error
-    throw new Error(`Program not found with identifier: ${cleanInput}`);
-  } catch (error) {
-    throw error;
+  } catch {
+    // fall through to the "not found" error below
   }
+
+  throw new Error(`Program not found with identifier: ${cleanInput}`);
 };
 
 /**
@@ -158,7 +209,7 @@ export const fetchProgramOne = async (titleOrId: string) => {
  */
 export const fetchProgramById = async (documentId: string): Promise<ProgramType> => {
   try {
-    const url = `${API_URL}/api/programs/${documentId}?populate[images]=*&populate[includes]=*&populate[excludes]=*&populate[services][populate]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=*`;
+    const url = `${API_URL}/api/programs/${documentId}?populate[images]=*&populate[includes]=*&populate[excludes]=*&populate[services][populate]=image&populate[content_steps][populate][place_to_go_subcategories][populate]=*&populate[group_tiers]=*`;
 
     const response = await axios.get(url, {
       headers: {

@@ -4,6 +4,7 @@
  */
 
 import { generateCanonicalUrl, generatePageTitle, generateMetaDescription } from '@/lib/seo-utils';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo-config';
 
 export interface SEOHeadProps {
   title: string;
@@ -38,7 +39,7 @@ export default function SEOHead({
     ? image
     : image
       ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${image}`
-      : `${siteUrl}/og-image.jpg`;
+      : DEFAULT_OG_IMAGE;
 
   return (
     <>

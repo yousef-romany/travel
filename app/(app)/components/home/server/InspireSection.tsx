@@ -4,13 +4,30 @@ import { Heart, Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getImageUrl } from "@/lib/utils";
+import { inspireBlogPath, inspireCategoryPath } from "@/lib/links";
 
 interface InspireBlog {
   id: number;
   documentId: string;
+  slug?: string;
   title: string;
   details?: string;
   image: any;
+  inspire_category?: {
+    documentId: string;
+    slug?: string;
+    categoryName: string;
+  };
+  inspire_subcategories?: Array<{
+    documentId: string;
+    slug?: string;
+    categoryName: string;
+    inspire_category?: {
+      documentId: string;
+      slug?: string;
+      categoryName: string;
+    };
+  }>;
 }
 
 interface InspireSectionProps {
@@ -38,6 +55,15 @@ export default function InspireSection({ blogs }: InspireSectionProps) {
         {blogs && blogs.length > 0 ? (
           blogs.map((blog) => {
             const image = blog.image;
+            const subCategory = blog.inspire_subcategories?.at(-1);
+            const category =
+              subCategory?.inspire_category ?? blog.inspire_category;
+            const href =
+              subCategory && category
+                ? inspireBlogPath(category, subCategory, blog)
+                : category
+                  ? inspireCategoryPath(category)
+                  : "/inspiration";
 
             return (
               <article key={blog.id} className="overflow-hidden group hover-lift animate-on-scroll">
@@ -62,7 +88,7 @@ export default function InspireSection({ blogs }: InspireSectionProps) {
                         "Explore amazing destinations"}
                     </p>
                     <Link
-                      href={`/inspiration/${blog.documentId}`}
+                      href={href}
                       className="text-primary font-medium hover:underline inline-flex items-center transition-smooth text-sm sm:text-base"
                     >
                       Read more about {blog.title}{" "}

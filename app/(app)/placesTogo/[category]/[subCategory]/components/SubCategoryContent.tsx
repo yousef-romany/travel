@@ -5,6 +5,7 @@ import CardFlex from "./CardFlex";
 import CardGrid from "./CardGrid";
 import ViewToggle from "./ViewToggle";
 import { PlacesToGoBlogs } from "@/type/placesToGo";
+import { placeBlogPath } from "@/lib/links";
 
 export default function SubCategoryContent({
   slug,
@@ -37,7 +38,7 @@ export default function SubCategoryContent({
               imageUrl={item.image}
               routes={routes}
               slug={slug}
-              link={`/placesTogo/${routes}/${slug}/${item.title}`}
+              link={placeBlogPath(routes, slug, item)}
             />
           ))}
         </div>
@@ -51,7 +52,7 @@ export default function SubCategoryContent({
               imageUrl={item.image}
               routes={routes}
               slug={slug}
-              link={`/placesTogo/${routes}/${slug}/${item.title}`}
+              link={placeBlogPath(routes, slug, item)}
             />
           ))}
         </div>

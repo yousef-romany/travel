@@ -49,6 +49,7 @@ interface Media {
 export interface ProgramType {
   id: number;
   documentId: string;
+  slug?: string;
   title: string;
   descraption: string;
   Location: string;
@@ -201,6 +202,7 @@ export default function PageContent({
                 <CardTravels
                   id={program.id}
                   documentId={program.documentId}
+                  slug={program.slug}
                   title={program.title}
                   rating={program.rating}
                   duration={program.duration}

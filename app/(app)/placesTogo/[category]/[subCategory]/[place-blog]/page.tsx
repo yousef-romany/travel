@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { permanentRedirect } from "next/navigation";
 import IndexPagePlaceToGoBlog from "./components/IndexPagePlaceToGoBlog";
 import { UnifiedBreadcrumb } from "@/components/unified-breadcrumb";
 import HieroglyphEffect from "@/components/HieroglyphEffect";
@@ -90,6 +91,14 @@ const PlaceToGoBlogDynamic = async ({ params }: Props) => {
     blogData = result?.data?.at(0) ?? null;
   } catch {
     // Strapi may be temporarily unavailable
+  }
+
+  // Legacy .../<title> URLs become the canonical slug URL; the two parent
+  // segments canonicalise on their own hops.
+  if (blogData?.slug && blogData.slug !== resolvedParams["place-blog"]) {
+    permanentRedirect(
+      `/placesTogo/${resolvedParams.category}/${resolvedParams.subCategory}/${blogData.slug}`
+    );
   }
 
   return (

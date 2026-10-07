@@ -11,6 +11,7 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
+import { placeSubCategoryPath } from "@/lib/links";
 
 interface ProgramItineraryProps {
     steps: ContentStep[];
@@ -38,7 +39,7 @@ export function ProgramItinerary({ steps }: ProgramItineraryProps) {
                             subCategoryName = subCat.categoryName;
                             const mainCat = subCat.place_to_go_categories?.at(0);
                             if (mainCat) {
-                                placeLink = `/placesTogo/${encodeURIComponent(mainCat.categoryName)}/${encodeURIComponent(subCat.categoryName)}`;
+                                placeLink = placeSubCategoryPath(mainCat, subCat);
                             }
                         }
                     }

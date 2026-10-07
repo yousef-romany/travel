@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import { placeBlogPath, placeSubCategoryPath } from "@/lib/links";
 import { MdArrowOutward } from "react-icons/md";
 import {
   PlacesToGoBlogs,
@@ -76,7 +77,7 @@ const IndexPage = ({ slug, data }: { slug: string; data: PlacesToGoCategory }) =
                   >
                     {/* title subcategory */}
                     <Link
-                      href={`/placesTogo/${slug}/${item?.categoryName}`}
+                      href={placeSubCategoryPath(slug, item)}
                       className="w-fit group"
                     >
                       <div className="w-full flex justify-center items-center mb-8">
@@ -108,7 +109,7 @@ const IndexPage = ({ slug, data }: { slug: string; data: PlacesToGoCategory }) =
                                 className="basis-full md:basis-1/2 lg:basis-1/3 group pl-6"
                               >
                                 <Link
-                                  href={`/placesTogo/${slug}/${item?.categoryName}/${itemBlog?.title}`}
+                                  href={placeBlogPath(slug, item, itemBlog)}
                                   className="block h-full"
                                 >
                                   <Card className="p-0 h-full rounded-3xl overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 group bg-card">

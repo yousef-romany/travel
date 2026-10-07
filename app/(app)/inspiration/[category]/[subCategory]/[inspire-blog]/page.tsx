@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { permanentRedirect } from "next/navigation";
 import IndexPageInspireBlog from "./components/IndexPageInspireBlog";
 import { UnifiedBreadcrumb } from "@/components/unified-breadcrumb";
 import HieroglyphEffect from "@/components/HieroglyphEffect";
@@ -61,6 +62,14 @@ const InspirationDynamic = async ({ params }: Props) => {
   const blogTitle = decodeURIComponent(resolvedParams["inspire-blog"]);
   const data = await fetchInspirationOneBlog(blogTitle);
   const blogData = data?.data?.at(0);
+
+  // Legacy .../<title> URLs become the canonical slug URL; the two parent
+  // segments canonicalise on their own hops.
+  if (blogData?.slug && blogData.slug !== resolvedParams["inspire-blog"]) {
+    permanentRedirect(
+      `/inspiration/${resolvedParams.category}/${resolvedParams.subCategory}/${blogData.slug}`
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

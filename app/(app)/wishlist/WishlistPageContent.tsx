@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { programPath } from "@/lib/links"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -346,7 +347,7 @@ export default function WishlistPageContent() {
                         <span className="text-sm text-muted-foreground">/person</span>
                       </div>
                     </div>
-                    <Link href={`/programs/${item.program.documentId}`} className="block">
+                    <Link href={programPath(item.program)} className="block">
                       <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-smooth shadow-md hover:shadow-lg hover-glow">
                         View Details
                       </Button>

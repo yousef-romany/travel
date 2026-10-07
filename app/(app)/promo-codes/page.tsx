@@ -4,8 +4,8 @@ import { getActivePromoCodes, PromoCode } from "@/fetch/promo-codes";
 import OfferSchema from "@/components/seo/OfferSchema";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import { Gift, Tag, Sparkles } from "lucide-react";
+import { DEFAULT_OG_IMAGE, SITE_URL } from "@/lib/seo-config";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
 
 export const metadata: Metadata = {
   title: "Promo Codes & Special Offers - Save on Egypt Tours",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     "discount coupons Egypt tours",
     "special offers Egypt",
     "cheap Egypt tours",
-    "Egypt tour deals 2025"
+    "Egypt tour deals"
   ],
   authors: [{ name: "ZoeHoliday" }],
   alternates: {
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: `${SITE_URL}/og-promo.jpg`,
+        url: DEFAULT_OG_IMAGE,
         width: 1200,
         height: 630,
         alt: "ZoeHoliday Promo Codes - Special Discounts on Egypt Tours",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Exclusive Promo Codes & Deals | ZoeHoliday Egypt Tours",
     description: "Save big with our exclusive promo codes! Get discounts on Egypt tour packages, Nile cruises, and more.",
-    images: [`${SITE_URL}/og-promo.jpg`],
+    images: [DEFAULT_OG_IMAGE],
     creator: "@zoeholiday",
     site: "@zoeholiday",
   },

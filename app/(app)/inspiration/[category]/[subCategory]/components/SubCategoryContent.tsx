@@ -5,6 +5,7 @@ import CardFlex from "./CardFlex";
 import CardGrid from "./CardGrid";
 import ViewToggle from "./ViewToggle";
 import { InspireBlogs } from "@/type/inspiration";
+import { inspireBlogPath } from "@/lib/links";
 
 export default function SubCategoryContent({
   slug,
@@ -37,7 +38,7 @@ export default function SubCategoryContent({
               imageUrl={item.image}
               routes={routes}
               slug={slug}
-              link={`/inspiration/${routes}/${slug}/${item.title}`}
+              link={inspireBlogPath(routes, slug, item)}
             />
           ))}
         </div>
@@ -51,7 +52,7 @@ export default function SubCategoryContent({
               imageUrl={item.image}
               routes={routes}
               slug={slug}
-              link={`/inspiration/${routes}/${slug}/${item.title}`}
+              link={inspireBlogPath(routes, slug, item)}
             />
           ))}
         </div>

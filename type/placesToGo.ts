@@ -20,6 +20,7 @@ export interface PlacesToGoCategoryData {
 export interface PlacesToGoSubcategories {
   id: number;
   documentId: string;
+  slug?: string;
   categoryName: string;
   image: Media;
   createdAt: string;
@@ -33,6 +34,7 @@ export interface PlacesToGoBlogs {
   id: number;
   instagram_posts?: string[];
   documentId: string;
+  slug?: string;
   title: string;
   image: Media;
   details: string;

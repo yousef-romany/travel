@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import WishlistPageContent from "./WishlistPageContent";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo-config";
 
 export const metadata: Metadata = {
   title: "My Wishlist - Saved Egypt Travel Programs",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
     url: "/wishlist",
     images: [
       {
-        url: "/og-wishlist.jpg",
+        url: DEFAULT_OG_IMAGE,
         width: 1200,
         height: 630,
         alt: "My Travel Wishlist",
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "My Wishlist - Saved Egypt Travel Programs | ZoeHoliday",
     description: "View and manage your saved Egypt travel programs and tours.",
-    images: ["/og-wishlist.jpg"],
+    images: [DEFAULT_OG_IMAGE],
   },
   robots: {
     index: false, // Don't index personal wishlist pages

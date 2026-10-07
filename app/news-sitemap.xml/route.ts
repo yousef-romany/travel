@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
+import { inspireBlogPath } from '@/lib/links';
 
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://dashboard.zoeholidays.com';
 const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_TOKEN || '';
@@ -16,16 +17,21 @@ function escapeXml(unsafe: string): string {
 
 interface InspireBlog {
   documentId: string;
+  slug?: string;
   title: string;
   description?: string;
   publishedAt?: string;
   updatedAt?: string;
-  inspire_subcategory?: {
+  inspire_subcategories?: Array<{
+    documentId: string;
+    slug?: string;
     categoryName?: string;
     inspire_category?: {
+      documentId: string;
+      slug?: string;
       categoryName?: string;
     };
-  };
+  }>;
 }
 
 async function getRecentArticles(): Promise<InspireBlog[]> {
@@ -33,7 +39,7 @@ async function getRecentArticles(): Promise<InspireBlog[]> {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
     const response = await axios.get(
-      `${API_URL}/api/inspire-blogs?filters[publishedAt][$gte]=${thirtyDaysAgo}&sort=publishedAt:desc&pagination[limit]=100&populate[inspire_subcategory][populate]=inspire_category`,
+      `${API_URL}/api/inspire-blogs?filters[publishedAt][$gte]=${thirtyDaysAgo}&sort=publishedAt:desc&pagination[limit]=100&populate[inspire_subcategories][populate]=inspire_category`,
       {
         headers: {
           Authorization: `Bearer ${API_TOKEN}`,
@@ -45,7 +51,7 @@ async function getRecentArticles(): Promise<InspireBlog[]> {
 
     if (articles.length === 0) {
       const fallbackResponse = await axios.get(
-        `${API_URL}/api/inspire-blogs?sort=publishedAt:desc&pagination[limit]=50&populate[inspire_subcategory][populate]=inspire_category`,
+        `${API_URL}/api/inspire-blogs?sort=publishedAt:desc&pagination[limit]=50&populate[inspire_subcategories][populate]=inspire_category`,
         {
           headers: {
             Authorization: `Bearer ${API_TOKEN}`,
@@ -59,7 +65,7 @@ async function getRecentArticles(): Promise<InspireBlog[]> {
   } catch (error) {
     try {
       const fallbackResponse = await axios.get(
-        `${API_URL}/api/inspire-blogs?sort=publishedAt:desc&pagination[limit]=50&populate[inspire_subcategory][populate]=inspire_category`,
+        `${API_URL}/api/inspire-blogs?sort=publishedAt:desc&pagination[limit]=50&populate[inspire_subcategories][populate]=inspire_category`,
         {
           headers: {
             Authorization: `Bearer ${API_TOKEN}`,
@@ -105,15 +111,16 @@ export async function GET() {
   const newsEntries = articles
     .map((article) => {
       const pubDate = article.publishedAt || article.updatedAt || new Date().toISOString();
-      const categoryName = article.inspire_subcategory?.inspire_category?.categoryName;
-      const subCategoryName = article.inspire_subcategory?.categoryName;
+      const subCategory = article.inspire_subcategories?.at(-1);
+      const category = subCategory?.inspire_category;
+      const categoryName = category?.categoryName;
+      const subCategoryName = subCategory?.categoryName;
 
       if (!categoryName || !subCategoryName || !article.title) {
         return null;
       }
 
-      const blogSlug = encodeURIComponent(article.title);
-      const blogUrl = `${SITE_URL}/inspiration/${encodeURIComponent(categoryName)}/${encodeURIComponent(subCategoryName)}/${blogSlug}`;
+      const blogUrl = `${SITE_URL}${inspireBlogPath(category, subCategory, article)}`;
 
       return `
     <url>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ShareButtonCompact } from "@/components/social/ShareButtons";
 import { generateProgramShareText, generateTravelHashtags } from "@/lib/social-sharing";
 import { trackBookingClick } from "@/lib/analytics";
+import { programBookPath } from "@/lib/links";
 import { dataTypeCardTravel } from "@/type/programs";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
@@ -21,7 +22,7 @@ export function ProgramBookingCard({ program }: ProgramBookingCardProps) {
         Number(program.price)
       );
     }
-    window.location.href = `/programs/${program.documentId}/book`;
+    window.location.href = programBookPath(program);
   };
 
   return (

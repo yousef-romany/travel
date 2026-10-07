@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import PlanYourTripContent from "./PlanYourTripContent";
 import PlanTripHero from "@/components/plan-trip-hero";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo-config";
 
 export const metadata: Metadata = {
   title: "Plan Your Egypt Trip - Custom Itinerary Builder",
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
     url: "/plan-your-trip",
     images: [
       {
-        url: "/og-plan.jpg",
+        url: DEFAULT_OG_IMAGE,
         width: 1200,
         height: 630,
         alt: "Plan Your Egypt Trip",
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Plan Your Egypt Trip - Custom Itinerary Builder | ZoeHoliday",
     description: "Plan your perfect Egypt trip with our interactive itinerary builder. Drag and drop destinations to create your dream adventure.",
-    images: ["/og-plan.jpg"],
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

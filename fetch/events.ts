@@ -96,22 +96,43 @@ export const fetchEvents = async (params?: {
   }
 };
 
-// Fetch single event by slug or documentId
+// Fetch single event by slug, falling back to documentId for legacy links.
+// Each lookup is best-effort so one failing query cannot break the page.
 export const fetchEventBySlug = async (
-  slug: string
+  identifier: string
 ): Promise<{ data: Event }> => {
   try {
-    const response = await axios.get(
-      `${API_URL}/api/events?filters[slug][$eq]=${slug}&populate=*`,
-      {
-        headers: {
-          Authorization: `Bearer ${API_TOKEN}`,
-        },
-      }
-    );
+    const cleanInput = identifier.trim();
+    const headers = {
+      Authorization: `Bearer ${API_TOKEN}`,
+    };
 
-    if (response.data.data && response.data.data.length > 0) {
-      return { data: response.data.data[0] };
+    try {
+      const bySlug = await axios.get(
+        `${API_URL}/api/events?filters[slug][$eq]=${encodeURIComponent(cleanInput)}&populate=*`,
+        { headers }
+      );
+
+      if (bySlug.data.data && bySlug.data.data.length > 0) {
+        return { data: bySlug.data.data[0] };
+      }
+    } catch {
+      // slug lookup unavailable - fall through
+    }
+
+    try {
+      const byId = await axios.get(
+        `${API_URL}/api/events/${encodeURIComponent(cleanInput)}?populate=*`,
+        { headers }
+      );
+
+      if (byId.data.data) {
+        return { data: byId.data.data };
+      }
+    } catch (idError: any) {
+      if (idError.response?.status !== 404) {
+        throw idError;
+      }
     }
 
     throw new Error("Event not found");

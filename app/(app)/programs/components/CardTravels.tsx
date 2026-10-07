@@ -17,6 +17,7 @@ import WishlistButton from "@/components/WishlistButton";
 import { CompareButton } from "@/components/programs/CompareButton";
 import { trackCardClick, trackExploreClick } from "@/lib/analytics";
 import { getImageUrl } from "@/lib/utils";
+import { programPath } from "@/lib/links";
 
 interface MediaFormat {
   url: string;
@@ -39,6 +40,7 @@ interface Media {
 interface CardTravelsProps {
   id: number;
   documentId: string;
+  slug?: string;
   images: Media[];
   title: string;
   descraption: string;
@@ -53,6 +55,7 @@ interface CardTravelsProps {
 const CardTravels = ({
   id,
   documentId,
+  slug,
   images,
   title,
   descraption,
@@ -67,7 +70,7 @@ const CardTravels = ({
   const handleViewDetails = () => {
     trackCardClick("Travel Program", title, documentId);
     trackExploreClick("Program", title, documentId);
-    router.push(`/programs/${documentId}`);
+    router.push(programPath({ slug, documentId }));
   };
 
   return (

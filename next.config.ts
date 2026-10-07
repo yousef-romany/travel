@@ -1,6 +1,28 @@
 import type { NextConfig } from "next";
 import withPWA from "next-pwa";
 
+const noindexRoutes = [
+  "/login",
+  "/signup",
+  "/forgot-password",
+  "/reset-password",
+  "/email-confirmation",
+  "/complete-profile",
+  "/edit-profile",
+  "/me",
+  "/dashboard/:path*",
+  "/wishlist",
+  "/compare",
+  "/booking/:path*",
+  "/invoices/:path*",
+  "/invoice-demo",
+  "/book-custom-trip/:path*",
+  "/plan-your-trip/:tripId",
+  "/programs/:slug/book",
+  "/seo-dashboard",
+  "/placesTogo/services-demo",
+];
+
 const nextConfig: NextConfig = {
   turbopack: {},
   images: {
@@ -40,6 +62,15 @@ const nextConfig: NextConfig = {
 
   async headers() {
     return [
+      ...noindexRoutes.map((source) => ({
+        source,
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      })),
       {
         // Apply security headers to all routes
         source: "/:path*",
@@ -295,4 +326,3 @@ const pwaConfig = withPWA({
 });
 
 export default pwaConfig(nextConfig);
-

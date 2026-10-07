@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { programPath } from "@/lib/links";
 import { getRecentlyViewed, RecentlyViewedProgram } from "@/lib/recently-viewed";
 import Link from "next/link";
 import ProgressiveImage from "@/components/ProgressiveImage";
@@ -46,7 +47,7 @@ export function RecentlyViewed() {
           {programs.slice(0, 6).map((program) => (
             <Link
               key={program.documentId}
-              href={`/programs/${program.documentId}`}
+              href={programPath(program)}
               className="group block"
             >
               <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { resolveBySlugThenField } from "./resolve";
 
 export const fetchPlaceToGoCategories = async () => {
   try {
@@ -19,66 +20,48 @@ export const fetchPlaceToGoCategories = async () => {
 };
 
 export const fetchPlaceToGoCategoriesOneCategory = async (name: string) => {
-  // https://dashboard.zoeholidays.com/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
-    const url =
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/place-to-go-categories` +
-      `?filters[categoryName][$eq]=${encodeURIComponent(name)}` +
-      `&populate[image]=true` +
-      `&populate[place_to_go_subcategories][populate][image]=true` +
-      `&populate[place_to_go_subcategories][populate][place_to_go_blogs][populate][image]=true`;
-
-
-
-    const response = await axios.get(String(url), {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_TOKEN ?? ""}`,
-      },
+    return await resolveBySlugThenField({
+      collection: "place-to-go-categories",
+      query: name,
+      legacyField: "categoryName",
+      populate:
+        `&populate[image]=true` +
+        `&populate[place_to_go_subcategories][populate][image]=true` +
+        `&populate[place_to_go_subcategories][populate][place_to_go_blogs][populate][image]=true`,
     });
-    return response.data;
   } catch (error) {
-    console.error("Error fetching inspiration categories:", error || error);
+    console.error("Error fetching place to go category:", error);
     throw error; // Re-throw for higher-level error handling if needed
   }
 };
 
 export const fetchPlaceToOneSubCategory = async (name: string) => {
-  // https://dashboard.zoeholidays.com/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
-    const url =
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/place-to-go-subcategories` +
-      `?filters[categoryName][$eq]=${encodeURIComponent(name)}` +
-      `&populate[image]=true` +
-      `&populate[place_to_go_blogs][populate][image]=true`;
-
-    const response = await axios.get(String(url), {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_TOKEN ?? ""}`,
-      },
+    return await resolveBySlugThenField({
+      collection: "place-to-go-subcategories",
+      query: name,
+      legacyField: "categoryName",
+      populate:
+        `&populate[image]=true` +
+        `&populate[place_to_go_blogs][populate][image]=true`,
     });
-    return response.data;
   } catch (error) {
-    console.error("Error fetching place to go subcategory:", error || error);
+    console.error("Error fetching place to go subcategory:", error);
     throw error; // Re-throw for higher-level error handling if needed
   }
 };
 
 export const fetchPlaceToGoOneBlog = async (name: string) => {
-  // https://dashboard.zoeholidays.com/api/inspire-categories?filters[categoryName][$eq]=culture&populate=*
   try {
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/place-to-go-blogs?filters[title][$eq]=${encodeURIComponent(name)}&populate=*`;
-
-    const response = await axios.get(String(url), {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_TOKEN ?? ""}`,
-      },
+    return await resolveBySlugThenField({
+      collection: "place-to-go-blogs",
+      query: name,
+      legacyField: "title",
+      populate: `&populate=*`,
     });
-    return response.data;
   } catch (error) {
-    console.error("Error fetching inspiration categories:", error || error);
+    console.error("Error fetching place to go blog:", error);
     throw error; // Re-throw for higher-level error handling if needed
   }
 };

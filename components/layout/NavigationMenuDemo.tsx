@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { cn, getImageUrl } from "@/lib/utils";
+import { inspireCategoryPath, placeCategoryPath } from "@/lib/links";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -66,7 +67,7 @@ const InspiredMenuContent = ({ categories }: { categories: InspirationCategoryDa
           ? categories?.map((category: InspirationCategoryData) => (
             <ListItem
               key={category.id}
-              href={`/inspiration/${category.categoryName}`}
+              href={inspireCategoryPath(category)}
               title={category.categoryName}
               className="text-primary group"
             >
@@ -114,7 +115,7 @@ const PlacesToGoMenuContent = ({ categories }: { categories: InspirationCategory
           ? categories?.map((category: InspirationCategoryData) => (
             <ListItem
               key={category.id}
-              href={`/placesTogo/${category.categoryName}`}
+              href={placeCategoryPath(category)}
               title={category.categoryName}
               className="text-primary group"
             >

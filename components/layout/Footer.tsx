@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Link from "next/link";
+import { placeCategoryPath } from "@/lib/links";
 import {
   Facebook,
   Instagram,
@@ -406,7 +407,7 @@ export default function Footer() {
               destinations.map((destination) => (
                 <Link
                   key={destination.name}
-                  href={`/placesTogo/${encodeURIComponent(destination.category)}`}
+                  href={placeCategoryPath(destination.category)}
                   className="text-sm text-muted-foreground hover:text-primary transition-colors hover:underline"
                   title={`Explore ${destination.name} - Egypt Travel Guide`}
                 >
@@ -475,38 +476,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Structured Data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "ZoeHoliday",
-            "description": "Egypt Travel and Tour Packages - Explore Ancient Wonders",
-            "url": "https://zoeholidays.com",
-            "logo": "https://zoeholidays.com/logo.png",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "+20-103-0354067",
-              "contactType": "customer service",
-              "areaServed": "EG",
-              "availableLanguage": ["English", "Arabic"]
-            },
-            "sameAs": [
-              "https://facebook.com/zoeholiday",
-              "https://instagram.com/zoeholiday",
-              "https://twitter.com/zoeholiday",
-              "https://youtube.com/@zoeholiday"
-            ],
-            "address": {
-              "@type": "PostalAddress",
-              "addressCountry": "EG",
-              "addressLocality": "Cairo"
-            }
-          })
-        }}
-      />
     </footer>
   );
 }

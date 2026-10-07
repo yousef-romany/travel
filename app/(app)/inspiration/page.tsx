@@ -2,6 +2,7 @@ import MainContentInpiration from "./components/MainContentInpiration";
 import type { Metadata } from "next";
 import { fetchInspirationCategories } from "@/fetch/category";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo-config";
 
 export const metadata: Metadata = {
   title: "Egypt Travel Inspiration & Ideas",
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
     url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com'}/inspiration`,
     images: [
       {
-        url: "/og-inspiration.jpg",
+        url: DEFAULT_OG_IMAGE,
         width: 1200,
         height: 630,
         alt: "Egypt Travel Inspiration",
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Egypt Travel Inspiration & Ideas | ZoeHoliday",
     description: "Get inspired for your Egypt adventure! Discover travel stories, cultural insights, and historical wonders.",
-    images: ["/og-inspiration.jpg"],
+    images: [DEFAULT_OG_IMAGE],
     creator: "@zoeholiday",
   },
 };

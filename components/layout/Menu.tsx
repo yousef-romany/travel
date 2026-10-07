@@ -12,6 +12,7 @@ import { Badge } from "../ui/badge";
 import { RiMenu2Fill } from "react-icons/ri";
 import { Sparkles, MapPin, Calendar, Compass, GitCompare, Info } from "lucide-react";
 import { getComparisonCount } from "@/lib/comparison";
+import { inspireCategoryPath, placeCategoryPath } from "@/lib/links";
 import {
   Accordion,
   AccordionContent,
@@ -130,7 +131,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                           (category: InspirationCategoryData) => (
                             <Link
                               key={category.id}
-                              href={`/placesTogo/${category.categoryName}`}
+                              href={placeCategoryPath(category)}
                               onClick={handleLinkClick}
                               className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-500/5 transition-colors group"
                             >
@@ -200,7 +201,7 @@ const Menu = ({ categories, placesTogCategorie }: MenuProps) => {
                         categories.map((category: InspirationCategoryData) => (
                           <Link
                             key={category.id}
-                            href={`/inspiration/${category.categoryName}`}
+                            href={inspireCategoryPath(category)}
                             onClick={handleLinkClick}
                             className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors group"
                           >

@@ -325,6 +325,7 @@ export default function EnhancedPageContent() {
                     <CardTravels
                       id={program.id}
                       documentId={program.documentId}
+                      slug={program.slug}
                       title={program.title}
                       rating={program.rating}
                       duration={program.duration}

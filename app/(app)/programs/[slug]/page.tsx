@@ -1,5 +1,7 @@
 import { Metadata } from "next";
+import { notFound, permanentRedirect } from "next/navigation";
 import { fetchProgramOne, fetchProgramsList } from "@/fetch/programs";
+import { programPath } from "@/lib/links";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { Clock, MapPin, Check, X, HelpCircle } from "lucide-react";
 import Image from "next/image";
@@ -18,35 +20,40 @@ import { ProgramTracking } from "./components/ProgramTracking";
 import { ProgramMobileAction } from "./components/ProgramMobileAction";
 import { ProgramItinerary } from "./components/ProgramItinerary";
 import RelatedProgramsClient from "@/components/programs/RelatedProgramsClient";
+import { DEFAULT_OG_IMAGE, metaDescription, SITE_URL } from "@/lib/seo-config";
 
 type Props = {
-  params: Promise<{ title: string }>;
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const resolvedParams = await params;
-    const titleOrId = decodeURIComponent(resolvedParams.title);
-    const data = await fetchProgramOne(titleOrId);
+    const identifier = decodeURIComponent(resolvedParams.slug);
+    const data = await fetchProgramOne(identifier);
     const program = data?.data?.at(0);
 
     if (!program) {
       return {
         title: "Program Not Found",
         description: "The requested program could not be found.",
+        robots: { index: false, follow: false },
       };
     }
 
     const firstImage = program.images?.[0];
-    const imageUrl = firstImage?.image || firstImage?.url || "/og-programs.jpg";
+    const imageUrl = firstImage?.image || firstImage?.url || DEFAULT_OG_IMAGE;
     const fullImageUrl = imageUrl.startsWith("http")
       ? imageUrl
       : `${process.env.NEXT_PUBLIC_STRAPI_URL}${imageUrl}`;
-    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zoeholidays.com";
+    const description = metaDescription(
+      program.descraption || program.overView,
+      `Explore ${program.title}, a ${program.duration}-day Egypt tour in ${program.Location} with local guides and flexible booking.`,
+    );
 
     return {
-      title: `${program.title} - ${program.duration} Days Egypt Tour`,
-      description: program.descraption || program.overView || `Discover ${program.title} in Egypt. ${program.duration} days tour starting at $${program.price}. Visit ${program.Location} and experience authentic Egyptian culture.`,
+      title: program.title,
+      description,
       keywords: [
         program.title,
         `${program.Location} tour`,
@@ -58,9 +65,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ],
       openGraph: {
         title: `${program.title} | ZoeHoliday`,
-        description: program.descraption || program.overView,
+        description,
         type: "website",
-        url: `${SITE_URL}/programs/${program.documentId}`,
+        url: `${SITE_URL}${programPath(program)}`,
         images: [
           {
             url: fullImageUrl,
@@ -73,11 +80,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       twitter: {
         card: "summary_large_image",
         title: `${program.title} | ZoeHoliday`,
-        description: program.descraption || program.overView,
+        description,
         images: [fullImageUrl],
       },
       alternates: {
-        canonical: `${SITE_URL}/programs/${program.documentId}`,
+        canonical: `${SITE_URL}${programPath(program)}`,
       },
     };
   } catch (error) {
@@ -85,6 +92,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: "Egypt Tour Program",
       description: "Explore amazing Egypt tour programs with zoeholidays.",
+      robots: { index: false, follow: false },
     };
   }
 }
@@ -99,7 +107,10 @@ export async function generateStaticParams() {
     }
 
     return data.map((program) => ({
-      title: program.documentId || encodeURIComponent(program.title || ""),
+      slug:
+        program.slug ||
+        program.documentId ||
+        encodeURIComponent(program.title || ""),
     }));
   } catch (error) {
     console.error("Error generating static params:", error);
@@ -112,28 +123,32 @@ export const revalidate = 1800; // 30 minutes in seconds
 
 export default async function ProgramPage({ params }: Props) {
   const resolvedParams = await params;
-  const titleOrId = decodeURIComponent(resolvedParams.title);
+  const identifier = decodeURIComponent(resolvedParams.slug);
 
-  const [programData, testimonialsData] = await Promise.allSettled([
-    fetchProgramOne(titleOrId),
-    fetchProgramTestimonials(titleOrId).catch(() => ({ data: [], meta: { pagination: { total: 0 } } })),
-  ]);
-
-  const data = programData.status === 'fulfilled' ? programData.value : null;
-  const testimonials = testimonialsData.status === 'fulfilled' ? testimonialsData.value : { data: [], meta: { pagination: { total: 0 } } };
+  let data: Awaited<ReturnType<typeof fetchProgramOne>> | null = null;
+  try {
+    data = await fetchProgramOne(identifier);
+  } catch {
+    data = null;
+  }
 
   const program = data?.data?.at(0);
 
   if (!program) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Program Not Found</h1>
-          <p className="text-muted-foreground">The requested program could not be found.</p>
-        </div>
-      </div>
-    );
+    notFound();
   }
+
+  // Legacy URLs (/programs/<documentId> or /programs/<title>) become the
+  // canonical slug URL with a permanent redirect so link equity is preserved.
+  const canonicalPath = programPath(program);
+  if (canonicalPath !== `/programs/${identifier}`) {
+    permanentRedirect(canonicalPath);
+  }
+
+  // Testimonials are keyed on documentId, never on the URL identifier.
+  const testimonials = await fetchProgramTestimonials(program.documentId).catch(
+    () => ({ data: [], meta: { pagination: { total: 0 } } })
+  );
 
   const firstImageObj = program.images?.[0];
   const imageUrl = firstImageObj?.imageUrl
@@ -156,13 +171,13 @@ export default async function ProgramPage({ params }: Props) {
         location={program.Location || "Egypt"}
         rating={Number(program.rating) || 5}
         reviewCount={testimonials?.data?.length || 0}
-        url={`/programs/${program.documentId}`}
+        url={`${programPath(program)}`}
       />
       <BreadcrumbSchema
         items={[
           { name: "Home", item: "/" },
           { name: "Programs", item: "/programs" },
-          { name: program.title || "Egypt Tour", item: `/programs/${program.documentId}` },
+          { name: program.title || "Egypt Tour", item: `${programPath(program)}` },
         ]}
       />
       {/* Image SEO */}
@@ -181,7 +196,7 @@ export default async function ProgramPage({ params }: Props) {
         <ReviewSchema
           itemName={program.title || "Egypt Tour"}
           itemType="TouristTrip"
-          itemUrl={`/programs/${program.documentId}`}
+          itemUrl={`${programPath(program)}`}
           itemImage={imageUrl}
           reviews={testimonials.data.map((testimonial) => ({
             author: testimonial.reviewerName || testimonial.user?.profile?.firstName || testimonial.user?.username || "Anonymous",

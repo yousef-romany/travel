@@ -2,9 +2,9 @@ import MainContentInpiration from "./components/MainContentInpiration";
 import type { Metadata } from "next";
 import { fetchPlaceToGoCategories } from "@/fetch/placesToGo";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import { DEFAULT_OG_IMAGE, SITE_URL } from "@/lib/seo-config";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://zoeholidays.com';
-const OG_IMAGE = `${SITE_URL}/og-places.jpg`;
+const OG_IMAGE = DEFAULT_OG_IMAGE;
 
 export const metadata: Metadata = {
   title: "Egypt Destinations & Places to Visit",

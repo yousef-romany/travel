@@ -1,4 +1,5 @@
 import OptimizedImage from "@/components/OptimizedImage";
+import { placeCategoryPath } from "@/lib/links";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -73,7 +74,7 @@ const MainContentInpiration = ({ data }: { data: InspirationCategory }) => {
             {data?.data?.map((category: InspirationCategoryData) => (
               <Link
                 key={category.id}
-                href={`/placesTogo/${category.categoryName}`}
+                href={placeCategoryPath(category)}
               >
                 <Button className="bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-white shadow-xl hover:scale-105 transition-all duration-200 px-4 md:px-6 py-4 md:py-6 text-sm md:text-base font-semibold">
                   {category.categoryName}
